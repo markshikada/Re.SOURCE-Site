@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../../assets/vendor/react.production.min.js"></script>
+<script src="../../assets/vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Brand LOGO" description="Master LOGO. The core and its six Base triangles, plus the wordmark in Figtree, with lockups, the size ladder and clear space." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="../../lib/masters-nav.js"></script>
+<style>@font-face{font-family:'Figtree';src:url('../../assets/fonts/Figtree-Variable.woff2') format('woff2-variations');font-weight:300 900;font-display:swap}@font-face{font-family:'JetBrains Mono';src:url('../../assets/fonts/JetBrainsMono-Variable.woff2') format('woff2-variations');font-weight:100 800;font-display:swap}html,body{margin:0;padding:0;background:#000}@media (max-width:719px){[data-logo-panels]{grid-template-columns:1fr!important}[data-logo-panels]>div{padding:24px!important}[data-logo-metrics]{grid-template-columns:1fr!important;gap:12px!important}[data-logo-root]{padding-top:24px!important;padding-bottom:24px!important;gap:24px!important}}</style>
+</helmet>
+<div data-logo-root="" data-pad="" data-grid="" style="min-height:100vh;background:#000;color:#fff;font-family:'Figtree',sans-serif;font-size:12px;line-height:18px;padding-top:48px;padding-bottom:48px;display:grid;gap:48px">
+
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;line-height:18px;text-transform:uppercase;color:#888888;margin-bottom:12px">Brand LOGO</div>
+<h1 style="margin:0;font-size:48px;line-height:54px;font-weight:800">The mark, and how it is built</h1>
+<p data-narrow="" style="margin:24px 0 0;max-width:62ch;font-size:18px;line-height:30px;color:#fff;text-wrap:pretty">Re.SOURCE is built around pattern, colour, word and geometry. Twelve positions sit at thirty degree steps on a wheel. A word system keeps re-deciding which word sits at each one, and a Flower of Life geometry arranges them. It is a personal, long-running research project rather than a product: slow work, no schedule.</p>
+<p style="margin:12px 0 0;max-width:74ch;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:18px;color:#888888;text-wrap:pretty">The mark is the core and the six Base triangles standing on it. The twelve petals belong to the diagram, not to the signature: they carry a reading, and a logo has no reading to carry. What is left is what survives at 12px — one ring, six triangles, one centre — and it is drawn by a component, LogoMark, so the signature has a single source.</p>
+</div>
+
+<div data-logo-panels="" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#333333;border:1px solid #333333;border-radius:24px;overflow:hidden">
+
+<div style="background:#000;padding:48px;display:grid;gap:24px;align-content:start">
+<div style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#888888">The mark</div>
+<div style="display:flex;align-items:center;justify-content:center;padding:24px 0"><x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.LogoMark" size="{{ sizeLarge }}" colour="{{ ink }}" rotate="{{ spin }}" hint-size="280px,280px"></x-import></div>
+</div>
+
+<div style="background:#000;padding:48px;display:grid;gap:24px;align-content:start">
+<div style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#888888">Stacked lockup</div>
+<div style="display:grid;gap:24px;justify-items:center;padding:24px 0">
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.LogoMark" size="{{ sizeMedium }}" colour="{{ ink }}" rotate="{{ spin }}" hint-size="160px,160px"></x-import>
+<div style="font-weight:800;font-size:36px;line-height:48px">Re.SOURCE</div>
+</div>
+</div>
+
+<div style="background:#000;padding:48px;display:grid;gap:24px;align-content:start;grid-column:1 / -1">
+<div style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#888888">Horizontal lockup</div>
+<div style="display:flex;align-items:center;gap:24px;padding:24px 0">
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.LogoMark" size="{{ sizeLock }}" colour="{{ ink }}" rotate="{{ spin }}" hint-size="54px,54px"></x-import>
+<div style="font-weight:800;font-size:48px;line-height:54px">Re.SOURCE</div>
+</div>
+<p style="margin:0;max-width:62ch;font-family:'JetBrains Mono',monospace;color:#888888;text-wrap:pretty">Mark height matches the wordmark's line height, 54. The triangle apex touches the top and bottom of the mark's box, so there is nothing hidden vertically. Sideways there is an 8-unit bearing — 3.6px at this size — so the 24 between the two boxes reads as roughly 28 from triangle tip to R. Clear space is quoted from the box: 24 on every side.</p>
+</div>
+</div>
+
+</div>
+
+<div style="display:grid;gap:24px">
+<div style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#888888">Stroke beside solid</div>
+<div data-logo-panels="" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#333333;border:1px solid #333333;border-radius:24px;overflow:hidden">
+<div style="background:#000;padding:36px;display:grid;gap:24px;justify-items:center;align-content:start">
+<span style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#888888;justify-self:start">Stroke</span>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.LogoMark" size="200" stroke="3" colour="{{ ink }}" hint-size="200px,200px"></x-import>
+</div>
+<div style="background:#000;padding:36px;display:grid;gap:24px;justify-items:center;align-content:start">
+<span style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#888888;justify-self:start">Solid</span>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.LogoMark" size="200" colour="{{ ink }}" hint-size="200px,200px"></x-import>
+</div>
+</div>
+<p style="margin:0;max-width:84ch;font-family:'JetBrains Mono',monospace;color:#888888;text-wrap:pretty">Same geometry, two renderings. The stroke version draws the circle family itself — ring inner and outer as two lines rather than one filled band — and holds to about 24 before it thins out. The solid is the mark. The stroke is for line-art contexts and engraving, where a filled ring would flood. Solid also beats dashed outright below 32: a dash of 1 on 3 goes sub-pixel long before the mark does, and a ring of twelve separate dots merges into a band by 16.</p>
+</div>
+
+<div style="display:grid;gap:24px">
+<div style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#888888">The circle family</div>
+<div data-logo-panels="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:1px;background:#333333;border:1px solid #333333;border-radius:24px;overflow:hidden">
+<div style="background:#000;padding:36px;display:grid;gap:24px;align-content:start">
+<div style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#555555">Family</div>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.LogoConstruction" view="family" hint-size="100%,860px"></x-import>
+</div>
+<div style="background:#000;padding:36px;display:grid;gap:24px;align-content:start">
+<div style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#555555">One marker</div>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.LogoConstruction" view="marker" hint-size="100%,620px"></x-import>
+</div>
+</div>
+</div>
+
+<div style="display:grid;gap:24px">
+<div style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#888888">Every measurement</div>
+<div style="display:grid;gap:6px;font-family:'JetBrains Mono',monospace;color:#888888">
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px;text-transform:uppercase;color:#555555"><span>Element</span><span>Figure</span><span>Units</span><span>Derivation</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Box</span><span style="color:#fff">120 × 120</span><span style="color:#fff">10u</span><span>The authoring square</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Unit</span><span style="color:#fff">12</span><span style="color:#fff">u</span><span>Authored — the one free number</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Apex circle</span><span style="color:#fff">r 60</span><span style="color:#fff">5u</span><span>Half the box · the apex touches it</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Ring outer</span><span style="color:#fff">r 48</span><span style="color:#fff">4u</span><span>Family step · marker circle centres</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Triangle base circle</span><span style="color:#fff">r 42</span><span style="color:#fff">3.5u</span><span>48 − 1u / 2 · the inscribed base</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Ring inner</span><span style="color:#fff">r 36</span><span style="color:#fff">3u</span><span>Family step</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Ring stroke</span><span style="color:#fff">12</span><span style="color:#fff">1u</span><span>4u − 3u</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Centre disc</span><span style="color:#fff">r 18</span><span style="color:#fff">1.5u</span><span>Midpoint of 1u and 2u</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Annulus</span><span style="color:#fff">18</span><span style="color:#fff">1.5u</span><span>3u − 1.5u · equal to the disc's radius</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Marker circle</span><span style="color:#fff">r 12</span><span style="color:#fff">1u</span><span>Centred on r 48</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Triangle side</span><span style="color:#fff">12√3 ≈ 20.78</span><span style="color:#fff">—</span><span>Inscribed equilateral: side = r√3</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Triangle height</span><span style="color:#fff">18</span><span style="color:#fff">1.5u</span><span>Inscribed equilateral: height = 1.5r</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Half-base</span><span style="color:#fff">6√3 ≈ 10.39</span><span style="color:#fff">—</span><span>Computed, never authored</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Every triangle angle</span><span style="color:#fff">60°</span><span style="color:#fff">—</span><span>Equilateral</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Shows above ring</span><span style="color:#fff">12</span><span style="color:#fff">1u</span><span>5u − 4u</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Marker spacing</span><span style="color:#fff">60°</span><span style="color:#fff">—</span><span>Six Base positions</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Drawn height</span><span style="color:#fff">120</span><span style="color:#fff">10u</span><span>Apex to apex</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px;border-bottom:1px solid #333333;padding-bottom:6px"><span>Drawn width</span><span style="color:#fff">104</span><span style="color:#fff">—</span><span>2 × 60 sin 60</span></div>
+<div data-logo-metrics="" style="display:grid;grid-template-columns:1.1fr 1fr 0.6fr 1.6fr;gap:24px"><span>Side bearing</span><span style="color:#fff">8</span><span style="color:#fff">—</span><span>(120 − 104) / 2</span></div>
+</div>
+<p style="margin:0;max-width:84ch;font-family:'JetBrains Mono',monospace;color:#888888;text-wrap:pretty">Multiply any figure by size / 120 for a rendered size. The triangles are equilateral, so their base cannot be a whole number: sixty degrees and a whole-number circle do not both give whole coordinates. The system's rule is that a decimal in the result means the logic is wrong — here the logic is right and the decimal is √3, so it is computed at draw time from the marker circle rather than typed into the path.</p>
+</div>
+
+<div style="border-top:1px solid #333333;padding-top:24px;display:grid;gap:12px">
+<div style="font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:#888888">Rules</div>
+<p style="margin:0;max-width:84ch;color:#888888;text-wrap:pretty"><b style="color:#fff;font-weight:700">LogoMark signs, Mark describes.</b> The signature is the core and its six triangles. The twelve-ring diagram stays on cards and in the flower, where a reading is being shown. Neither substitutes for the other.</p>
+<p style="margin:0;max-width:84ch;color:#888888;text-wrap:pretty"><b style="color:#fff;font-weight:700">The mark is white on black.</b> Never in a position colour, never boxed, never reversed onto a colour. On a coloured ground it is the ground that changes, not the mark.</p>
+<p style="margin:0;max-width:84ch;color:#888888;text-wrap:pretty"><b style="color:#fff;font-weight:700">A triangle points up.</b> Rotation is for animation, not for a fixed alternative orientation.</p>
+<p style="margin:0;max-width:84ch;color:#888888;text-wrap:pretty"><b style="color:#fff;font-weight:700">The markers are equilateral, by construction.</b> Not by eye and not by a base width chosen to look right. Each is inscribed in a 1u circle on r 48, which fixes its apex, its base and all three angles at once.</p>
+<p style="margin:0;max-width:84ch;color:#888888;text-wrap:pretty"><b style="color:#fff;font-weight:700">The wordmark is Figtree 800 with letter spacing left alone.</b> No tracking is declared, at any size.</p>
+<p style="margin:0;max-width:84ch;color:#888888;text-wrap:pretty"><b style="color:#fff;font-weight:700">The full stop is part of the name.</b> Re.SOURCE, never ReSOURCE or RE.SOURCE.</p>
+</div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;colour&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FFFFFF&quot;,&quot;options&quot;:[&quot;#FFFFFF&quot;,&quot;#CCCCCC&quot;,&quot;#888888&quot;,&quot;#000000&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Mark&quot;},&quot;rotate&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0,&quot;min&quot;:0,&quot;max&quot;:360,&quot;step&quot;:15,&quot;unit&quot;:&quot;°&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mark&quot;}}">
+class Component extends DCLogic {
+  /* Sizes and ink only. The mark is the shipped LogoMark component, mounted from
+     the bundle, so the master and every surface draw the same signature. */
+  renderVals() {
+    const p = this.props;
+    return {
+      ink: p.colour ?? '#FFFFFF',
+      spin: p.rotate ?? 0,
+      sizeLarge: 280,
+      sizeMedium: 160,
+      sizeLock: 54,
+      s96: 96, s48: 48, s36: 36, s24: 24, s16: 16, s12: 12
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+/* Universal top bar — one shared component (edition v11, compact modern).
+   Mark's ruling 2026-09-20: HQ only, with the adoption pattern documented
+   for the other pages later; the bar carries brand + master switcher +
+   context slot (page section links) + edition/week stamp; fixed on scroll,
+   page content starts below it.
+
+   Edition v11 (compact law): the bar and the floating pill share one compact
+   treatment — 32px rows, 6px paddings, 2px gaps, tokens only, no heavy glows.
+   Desktop and mobile are identical; only wrapping differs. Masters and pages
+   fit together because both use the same surface, border and radius.
+
+   One markup pattern: <header id="rsTopBar" class="rs-topbar"> with an inner
+   row of four zones — .rs-topbar-brand, .rs-topbar-context,
+   .rs-topbar-switcher, .rs-topbar-stamp. One builder: lib/masters-nav.js bar
+   mode fills the switcher zone with the same .rsnav component the floating
+   pill uses, and wires the context links to the scroll spy. Values are
+   tokens only. */
+
+.rs-topbar-page {
+  --rs-topbar-border: calc(var(--u) / 4);
+  --rs-topbar-row: 32px; /* compact: was var(--space-xl)=48px, now 32px for modern density */
+  /* The HUD States law, amended 23 September 2026 from a flat 44px minimum: "a control's visual
+     row is 32px and its hit area is 44px behind it". A control in this bar measures
+     --rs-topbar-hit and hands half the difference back on each side as a negative margin, so the
+     row it sits in still contributes --rs-topbar-row, the bar still measures what --rs-topbar-h
+     and lib/hq.js say, and getBoundingClientRect() on the target reads 44. The paint — chip,
+     pill, list row, focus ring — lives on the control's own ::before, inset by
+     --rs-topbar-hit-pad, so what a reader sees does not move. */
+  --rs-topbar-hit: 44px;
+  --rs-topbar-hit-pad: calc((var(--rs-topbar-hit) - var(--rs-topbar-row)) / 2);
+  --rs-topbar-rowgap: var(--space-xs);
+  /* Deterministic per breakpoint: two rows under 1081, one row at 1081+. */
+  --rs-topbar-h: calc(var(--rs-topbar-row) * 2 + var(--rs-topbar-rowgap) + var(--rs-topbar-border) + env(safe-area-inset-top));
+}
+@media (min-width: 1081px) {
+  .rs-topbar-page {
+    --rs-topbar-h: calc(var(--rs-topbar-row) + var(--rs-topbar-border) + env(safe-area-inset-top));
+  }
+}
+.rs-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--surface-page);
+  border-bottom: var(--rs-topbar-border) solid var(--surface-border);
+  padding-top: env(safe-area-inset-top);
+  /* Compact bar has no extra shadow — it is a hairline, not a floating card */
+  box-shadow: none;
+}
+.rs-topbar-inner {
+  width: 100%;
+  max-width: calc(var(--space-2xl) * 15);
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--rs-topbar-rowgap) var(--space-md);
+  padding-block: var(--space-xs); /* compact vertical breathing */
+}
+.rs-topbar-inner > * {
+  min-height: var(--rs-topbar-row);
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+/* Under 1081: identity + stamp first, then a full-width nav row — context
+   links (scrollable when crowded) and the switcher on the right, so the
+   switcher's dropdown always anchors inside the viewport. */
+.rs-topbar-brand { order: 1; }
+.rs-topbar .rs-topbar-stamp { order: 2; margin: 0 0 0 auto; }
+.rs-topbar-navrow { order: 3; width: 100%; display: flex; align-items: center; gap: var(--space-md); }
+/* At 1081+: one row — brand, context, switcher, stamp. The nav row unwraps. */
+@media (min-width: 1081px) {
+  .rs-topbar-inner { flex-wrap: nowrap; padding-block: 0; }
+  .rs-topbar-brand { order: 1; }
+  .rs-topbar .rs-topbar-stamp { order: 4; margin: 0; }
+  .rs-topbar-navrow { display: contents; }
+  .rs-topbar-context { order: 2; flex: 0 1 auto; margin-left: var(--space-xl); overflow: visible; }
+  .rs-topbar-switcher { order: 3; margin-left: auto; }
+}
+.rs-topbar-brand {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-h1);
+  color: var(--text-primary);
+  text-decoration: none;
+  gap: var(--space-md);
+  min-height: var(--rs-topbar-row);
+}
+.rs-topbar-brand span {
+  padding-left: var(--space-md);
+  border-left: var(--rs-topbar-border) solid var(--surface-border);
+  color: var(--text-secondary);
+  font-weight: var(--fw-body);
+}
+.rs-topbar-context {
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 1 1 0;
+  min-width: 0;
+  gap: var(--space-sm); /* compact gap, was lg */
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* The links below carry a 44px hit box in a 32px row (States law). This slot holds the half
+     row of head-room they stand in, so its own horizontal scroll — which clips at the padding
+     box — does not cut their top and bottom, and pays the same amount back as a negative margin
+     so the slot still measures one row to the bar. */
+  padding-block: var(--rs-topbar-hit-pad);
+  margin-block: calc(-1 * var(--rs-topbar-hit-pad));
+}
+.rs-topbar-context::-webkit-scrollbar { display: none; }
+.rs-topbar-context a {
+  flex: 0 0 auto;
+  min-height: var(--rs-topbar-hit); /* 44px hit area behind the 32px row (States law, amended 2026-09-23) */
+  margin-block: calc(-1 * var(--rs-topbar-hit-pad));
+  position: relative;
+  z-index: 0;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: color 120ms var(--ease-place);
+}
+/* The chip a reader sees stays 32px: the anchor's own box carries the pointer, its ::before
+   carries the paint, and the ring below is drawn to the same inset. */
+.rs-topbar-context a::before {
+  content: '';
+  position: absolute;
+  inset: var(--rs-topbar-hit-pad) 0;
+  z-index: -1;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  transition: background 120ms var(--ease-place);
+}
+.rs-topbar-context a:hover {
+  color: var(--text-primary);
+}
+.rs-topbar-context a:hover::before {
+  background: var(--g12);
+}
+.rs-topbar-context a.rsnav-section-active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.rs-topbar-context a.rsnav-section-active::before {
+  background: var(--g12);
+}
+/* The focus ring keeps its old seat: the box grew by --rs-topbar-hit-pad a side, so the offset
+   gives back the exact outline it drew when the box was the row itself, ring and all. */
+.rs-topbar .rs-topbar-context a:focus-visible,
+.rs-topbar .rsnav-trigger:focus-visible,
+.rs-topbar .rsnav-link:focus-visible {
+  outline-offset: calc(var(--space-xs) - var(--rs-topbar-hit-pad));
+}
+.rs-topbar-switcher { flex: 0 0 auto; }
+
+/* The switcher is the floating pill absorbed into the bar: same .rsnav
+   markup and builder as the pill (lib/masters-nav.js), restyled only for
+   placement. Compact law v11: bar and pill share identical list treatment —
+   6px padding, 2px gap, 32px rows, subtle shadow. No separate bar skin. */
+.rs-topbar .rsnav {
+  position: relative;
+  top: auto;
+  right: auto;
+  gap: 0;
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+/* The trigger keeps its v11 pill exactly as drawn: the button box is the 44px hit area and its
+   ::before is the 32px pill (surface-card, 1px border, radius-sm, compact shadow). The button's
+   own skin is handed to that layer, and padding goes 6px 10px -> 6px 11px to keep the 1px border
+   it used to carry in the same place, so neither the pill's outer size nor the text's seat inside
+   it moves by a pixel. The injected pill skin (lib/masters-nav.js) and its hover and open states
+   are re-pointed at the ::before here, where this bar's specificity beats them. */
+.rs-topbar .rsnav-trigger {
+  min-height: var(--rs-topbar-hit);
+  margin-block: calc(-1 * var(--rs-topbar-hit-pad));
+  position: relative;
+  z-index: 0;
+  padding: 6px 11px;
+  border: 0;
+  box-shadow: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  background: transparent;
+}
+.rs-topbar .rsnav-trigger::before {
+  content: '';
+  position: absolute;
+  inset: var(--rs-topbar-hit-pad) 0;
+  z-index: -1;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-card);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+  transition: border-color 150ms var(--ease-place), background 150ms var(--ease-place);
+}
+.rs-topbar .rsnav-trigger:hover,
+.rs-topbar .rsnav.rsnav-open .rsnav-trigger {
+  background: transparent;
+}
+.rs-topbar .rsnav-trigger:hover::before {
+  background: var(--surface-raised);
+  border-color: var(--g66);
+}
+.rs-topbar .rsnav.rsnav-open .rsnav-trigger::before {
+  background: var(--surface-raised);
+  border-color: var(--text-secondary);
+}
+.rs-topbar .rsnav-list {
+  /* Inherits compact treatment from injected styles; only constrain to viewport */
+  max-width: min(280px, calc(100vw - 16px));
+  max-height: calc(100dvh - var(--rs-topbar-h) - 12px);
+  /* Ensure compact values win over any legacy override */
+  padding: 6px;
+  gap: 2px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  border-color: var(--surface-border);
+  background: var(--surface-card);
+  top: calc(100% + 6px);
+}
+/* The list keeps its compact card and its 32px rows; each row's hit area is the 44px behind it
+   (States law), and the list's own 6px padding is exactly that half-row, so the first and last
+   row end on the list's clip edge and its scroll height does not move. */
+.rs-topbar .rsnav-link {
+  display: flex;
+  align-items: center;
+  min-height: var(--rs-topbar-hit);
+  margin-block: calc(-1 * var(--rs-topbar-hit-pad));
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+}
+.rs-topbar .rsnav-link::before {
+  content: '';
+  position: absolute;
+  inset: var(--rs-topbar-hit-pad) 0;
+  z-index: -1;
+  border-radius: 6px;
+  background: transparent;
+  transition: background 120ms var(--ease-place);
+}
+.rs-topbar .rsnav-link:hover,
+.rs-topbar .rsnav-link.rsnav-current,
+.rs-topbar .rsnav-link.rsnav-section-active {
+  background: transparent;
+}
+.rs-topbar .rsnav-link:hover::before,
+.rs-topbar .rsnav-link.rsnav-current::before,
+.rs-topbar .rsnav-link.rsnav-section-active::before {
+  background: var(--g12);
+}
+.rs-topbar .rsnav-link.rsnav-current { 
+  color: var(--text-primary); 
+}
+.rs-topbar .rsnav-heading {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  padding: 8px 10px 2px;
+}
+.rs-topbar .rsnav-divider {
+  width: calc(100% - 20px);
+  margin: 4px 10px;
+  background: var(--surface-border);
+}
+.rs-topbar-stamp {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  gap: 0;
+  min-height: 32px;
+}
+.rs-topbar-stamp time { color: var(--text-primary); }
+.rs-topbar-sep {
+  margin-inline: var(--space-xs);
+  color: var(--text-dim);
+}

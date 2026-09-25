@@ -1,0 +1,17 @@
+/* Fonts. Figtree for everything, JetBrains Mono for code, coordinates and data.
+   Both are self-hosted variable woff2, so a build renders correctly offline and
+   in print with no network call. Both are SIL OFL, licences in assets/fonts/.
+   Retired: the Google Fonts @import pair. It was how every Re.SOURCE build
+   loaded them, but it made the type conditional on a CDN. */
+@font-face{font-family:'Figtree';src:url("../assets/fonts/Figtree-Variable.woff2") format("woff2-variations");font-weight:300 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Figtree';src:url("../assets/fonts/Figtree-Italic-Variable.woff2") format("woff2-variations");font-weight:300 900;font-style:italic;font-display:swap}
+@font-face{font-family:'JetBrains Mono';src:url("../assets/fonts/JetBrainsMono-Variable.woff2") format("woff2-variations");font-weight:100 800;font-style:normal;font-display:swap}
+@font-face{font-family:'JetBrains Mono';src:url("../assets/fonts/JetBrainsMono-Italic-Variable.woff2") format("woff2-variations");font-weight:100 800;font-style:italic;font-display:swap}
+
+:root{
+  --font-sans:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --font-body:var(--font-sans);
+  --font-display:var(--font-sans);
+  --font-data:var(--font-mono);
+}

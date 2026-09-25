@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../../assets/vendor/react.production.min.js"></script>
+<script src="../../assets/vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Word CARD" description="Master CARD. One card at its printed size, 360 x 504, with its set, holding and word grid in tweaks." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="../../lib/masters-nav.js"></script>
+<style>
+html,body{margin:0;padding:0;background:#000000}
+/* Mobile-first, on the field (2026-09-21, Mark: "responsive design needs more considered layout
+   rules for mobile"). The card and its spec are the field's own pair, 5 and 7 of twelve, 3 and 3
+   of six, stacked at three: tokens/grid.css halves them, so this page declares no breakpoint of
+   its own. The base rules are the three-column frame; wider frames add to them. */
+/* The eyebrow shares its row with the masters nav pill (24 from the top, 36 tall), so on a frame
+   where the title could reach the pill the row is the pill's height and the title starts beneath. */
+[data-wc-eyebrow]{min-height:36px}
+/* The printed card is 360 wide; the column is that or the frame, whichever is less, and the card
+   zooms to the column (the deck and the flower scale the same component the same way). */
+[data-wc-cardcol]{position:sticky;top:24px;width:min(360px,100%);min-width:0}
+[data-wc-dl]{display:grid;grid-template-columns:minmax(0,1fr);row-gap:4px;margin:0}
+[data-wc-dl] dt{margin-top:8px}
+@media (min-width:721px){
+  [data-wc-dl]{grid-template-columns:auto minmax(0,1fr);column-gap:24px;row-gap:8px}
+  [data-wc-dl] dt{margin-top:0}
+}
+@media (min-width:1081px){
+  [data-wc-eyebrow]{min-height:0}
+}
+</style>
+</helmet>
+<div data-wc-pad="" data-pad="" data-grid="" style="position:relative;isolation:isolate;padding-top:24px;padding-bottom:24px;min-height:100vh;background:var(--surface-page);color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-caption);line-height:var(--lh-caption)">
+  <div data-ov="" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <p data-wc-eyebrow="" style="margin:0 0 12px;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);text-transform:uppercase;color:var(--text-dim)">Word CARD</p>
+  <h1 style="margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1)">The card, at the size it prints</h1>
+  <p data-narrow="" style="margin:12px 0 0;max-width:62ch;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">One card at its printed size. Every card in the system is this same component at a scale: the deck draws it at half, the flower's pane at full. Set and holding are buttons here as well as tweaks. The word grid is in Tweaks, and the flip control sits on the card itself.</p>
+  <div data-sub="" data-pair="" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--surface-border);row-gap:24px">
+    <div ref="{{ colRef }}" data-wc-cardcol="">
+<div data-wc-cardwrap="" style="touch-action:pan-y;zoom:{{ cardZoom }}" onTouchStart="{{ onSwipeStart }}" onTouchEnd="{{ onSwipeEnd }}">
+        <sc-if value="{{ hasEntry }}" hint-placeholder-val="{{ true }}">
+          <x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.AspectCard" entry="{{ entry }}" flipped="{{ flipped }}" on-flip="{{ onFlip }}" show-grid="{{ showGrid }}" base-words="{{ baseWords }}" blend-words="{{ blendWords }}" petal-shadow-size="{{ petalShadowSize }}" petal-shadow-depth="{{ petalShadowDepth }}" petal-shadow-drop="{{ petalShadowDrop }}" void-glow-size="{{ voidGlowSize }}" void-glow-depth="{{ voidGlowDepth }}" hint-size="360px,504px"></x-import>
+        </sc-if>
+        <sc-if value="{{ noEntry }}" hint-placeholder-val="{{ false }}">
+          <x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.AspectCardBlank" positions="—" line="No card holds that selection." hint-size="360px,504px"></x-import>
+        </sc-if>
+      </div>
+      <div style="margin-top:16px;position:relative;height:16px">
+        <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--surface-border);transform:translateY(-50%)"></div>
+        <div style="position:absolute;top:0;left:0;right:0;height:16px;display:grid;grid-template-columns:repeat(6,1fr);align-items:center;pointer-events:none">
+          <sc-for list="{{ scrubTicks }}" as="t" hint-placeholder-count="6">
+            <sc-if value="{{ t.active }}" hint-placeholder-val="{{ false }}">
+              <span style="width:9px;height:9px;margin:0 auto;border-radius:50%;background:var(--text-primary);box-shadow:0 0 0 5px var(--g24)"></span>
+            </sc-if>
+            <sc-if value="{{ t.inactive }}" hint-placeholder-val="{{ true }}">
+              <span style="width:5px;height:5px;margin:0 auto;border-radius:50%;background:var(--text-secondary)"></span>
+            </sc-if>
+          </sc-for>
+        </div>
+        <input type="range" min="0" max="{{ scrubMax }}" step="1" value="{{ scrubIndex }}" onChange="{{ scrubChange }}" style="-webkit-appearance:none;appearance:none;position:absolute;inset:0;width:100%;height:16px;margin:0;background:transparent;opacity:0;cursor:pointer">
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);margin-top:12px">
+          <sc-for list="{{ scrubTicks }}" as="t" hint-placeholder-count="6">
+            <sc-if value="{{ t.active }}" hint-placeholder-val="{{ false }}">
+              <span onClick="{{ t.pick }}" style="cursor:pointer;text-align:center;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);text-transform:uppercase;color:var(--text-primary)">{{ t.label }}</span>
+            </sc-if>
+            <sc-if value="{{ t.inactive }}" hint-placeholder-val="{{ true }}">
+              <span onClick="{{ t.pick }}" style="cursor:pointer;text-align:center;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);text-transform:uppercase;color:var(--text-secondary)">{{ t.label }}</span>
+            </sc-if>
+          </sc-for>
+        </div>
+    </div>
+    <div style="min-width:0;display:grid;gap:20px">
+      <div style="display:grid;gap:8px">
+        <h2 style="margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;text-transform:uppercase;color:var(--text-secondary)">Showing</h2>
+        <p style="margin:0;max-width:42ch;color:var(--text-primary)">{{ showing }}</p>
+      </div>
+      <div style="display:grid;gap:8px">
+        <h2 style="margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;text-transform:uppercase;color:var(--text-secondary)">The flip</h2>
+        <p style="margin:0;max-width:42ch;color:var(--text-secondary);text-wrap:pretty">Flip turns a card over to its counter. A Pair swaps which of its two words leads. A Single turns to the position opposite it, a Triad between Prime and Part, a Group between Base and Blend. Core and Set stand alone. The control sits on the card, between the title column and the mark.</p>
+      </div>
+      <div style="display:grid;gap:12px">
+        <h2 style="margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;text-transform:uppercase;color:var(--text-secondary)">Set</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <sc-for list="{{ setButtons }}" as="b" hint-placeholder-count="3">
+            <x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" active="{{ b.on }}" onClick="{{ b.pick }}" hint-size="132px,44px">{{ b.label }}</x-import>
+          </sc-for>
+        </div>
+        <h2 style="margin:12px 0 0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;text-transform:uppercase;color:var(--text-secondary)">Holding</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <sc-for list="{{ holdButtons }}" as="b" hint-placeholder-count="6">
+            <x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" active="{{ b.on }}" onClick="{{ b.pick }}" hint-size="96px,44px">{{ b.label }}</x-import>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:grid;gap:8px;max-width:280px">
+        <h2 style="margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;text-transform:uppercase;color:var(--text-secondary)">Mark shadow &amp; glow</h2>
+        <p style="margin:0;color:var(--text-secondary);text-wrap:pretty">Colour FLOWER's own knobs, on this card's mark.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 12px">
+          <sc-for list="{{ markSliders }}" as="s" hint-placeholder-count="5">
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <div style="display:flex;justify-content:space-between;gap:8px;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption)"><span style="text-transform:uppercase;color:var(--text-secondary)">{{ s.label }}</span><span style="color:var(--text-primary);font-variant-numeric:tabular-nums">{{ s.display }}</span></div>
+              <input type="range" min="{{ s.min }}" max="{{ s.max }}" step="{{ s.step }}" value="{{ s.value }}" onChange="{{ s.onInput }}" style="-webkit-appearance:none;appearance:none;width:100%;height:3px;margin:6px 0;border-radius:2px;background:var(--g48);accent-color:var(--text-primary);cursor:pointer">
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:grid;gap:8px">
+        <h2 style="margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;text-transform:uppercase;color:var(--text-secondary)">Every slot, top down</h2>
+        <dl data-wc-dl="">
+          <sc-for list="{{ slots }}" as="row" hint-placeholder-count="10">
+            <dt style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);text-transform:uppercase;color:var(--text-secondary);white-space:nowrap">{{ row.k }}</dt>
+            <dd style="margin:0;color:var(--text-primary);text-wrap:pretty">{{ row.v }}</dd>
+          </sc-for>
+        </dl>
+        <p style="margin:8px 0 0;max-width:42ch;color:var(--text-secondary);text-wrap:pretty">Slack collects in one spacer between the reading and the foot, so a short reading never opens a hole in the middle of a card. Radius 14 is a documented departure from 8 / 12 / 24: the trim size sets it. Where the mark sits is unsettled and needs a ruling.</p>
+      </div>
+      <sc-if value="{{ showSpec }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;gap:8px">
+          <h2 style="margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;text-transform:uppercase;color:var(--text-secondary)">The spec</h2>
+          <dl data-wc-dl="">
+            <sc-for list="{{ spec }}" as="row" hint-placeholder-count="10">
+              <dt style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);text-transform:uppercase;color:var(--text-secondary);white-space:nowrap">{{ row.k }}</dt>
+              <dd style="margin:0;color:var(--text-primary);text-wrap:pretty">{{ row.v }}</dd>
+            </sc-for>
+          </dl>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+  <sc-if value="{{ waiting }}" hint-placeholder-val="{{ false }}">
+    <p style="margin:24px 0 0;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary)">Waiting for the deck data and the compiled design system.</p>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:920},&quot;set&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Abstract REALM&quot;,&quot;Aspect STATE&quot;,&quot;Anchor TAG&quot;],&quot;default&quot;:&quot;Abstract REALM&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Card&quot;},&quot;holding&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;CORE&quot;,&quot;SINGLE&quot;,&quot;PAIR&quot;,&quot;TRIAD&quot;,&quot;GROUP&quot;,&quot;SET&quot;],&quot;default&quot;:&quot;PAIR&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Card&quot;},&quot;cardIndex&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1,&quot;min&quot;:1,&quot;max&quot;:12,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Card&quot;},&quot;wordGrid&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Standard&quot;,&quot;Always&quot;,&quot;Never&quot;],&quot;default&quot;:&quot;Standard&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Card&quot;},&quot;showSpec&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Page&quot;},&quot;tagWords&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:30,&quot;min&quot;:12,&quot;max&quot;:72,&quot;step&quot;:6,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Words&quot;},&quot;stateWords&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:36,&quot;min&quot;:12,&quot;max&quot;:72,&quot;step&quot;:6,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Words&quot;},&quot;realmWords&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:48,&quot;min&quot;:12,&quot;max&quot;:72,&quot;step&quot;:6,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Words&quot;},&quot;glowDepth&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.2,&quot;max&quot;:2,&quot;step&quot;:0.05,&quot;unit&quot;:&quot;×&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Shadow&quot;},&quot;shadowSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:50,&quot;min&quot;:2,&quot;max&quot;:50,&quot;step&quot;:1,&quot;unit&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Shadow&quot;},&quot;shadowDepth&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:1,&quot;step&quot;:0.05,&quot;unit&quot;:&quot;×&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Shadow&quot;}}">
+/* The master card, one card at its printed size. Nothing about the card is decided here: the
+   AspectCard component owns its edge, frame accent, labels, bar and flip. This page only picks
+   which of the ninety it shows, and reads its words and its counter out of lib/aspect-render.js
+   so the deck and the flower cannot drift from it. */
+class Component extends DCLogic {
+  static SETS = ['Abstract REALM', 'Aspect STATE', 'Anchor TAG'];
+  /* Base and Blend are two rows in the data and one holding on the card, GROUP, so the flip
+     turns between them rather than a control choosing. */
+  static ROWS = { CORE: ['CORE'], SINGLE: ['SINGLE'], PAIR: ['PAIR'], TRIAD: ['TRIAD'], GROUP: ['BASE', 'BLEND'], SET: ['SET'] };
+  state = { ready: false, flip: false, flipKey: null, ov: null, setOv: null, holdOv: null, cardZoom: 1 };
+  /* Named once, so the buttons, the tweaks and the slot list cannot drift from each other. */
+  static SLOTS = [
+    ['Set label', 'Mono caps, on the frame line, top left. The ring: REALM, STATE or TAG'],
+    ['Type badge', 'Top right, over the mark. How much of the ring the card holds'],
+    ['Title', '36 / 36 · 700 · nowrap. One line, about seven characters in 156px'],
+    ['Colour rule', '3px, one segment per held position, sized to the word it sits under'],
+    ['Mark', '120px, its centre level with the centre of the colour rule'],
+    ['Gloss', '18 / 24 · bold · white. One sentence, two lines at most'],
+    ['Reading', '18 / 24 · regular · g66. Clips at whatever the other bands leave'],
+    ['Question', '12 / 18, above a rule'],
+    ['Foot row', 'Mono label and its counterpart, above a rule'],
+    ['Position label', 'Bottom right. The positions held, lead first, or VOID']
+  ];
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      if (window.DECK_CARDS && window.AspectRender) {
+        clearInterval(this.timer); this.timer = null; this.setState({ ready: true });
+      }
+    }, 60);
+    /* The card is drawn at 360 and zoomed to its column, never narrower than the frame allows:
+       the column is min(360px, 100%), so the ratio is read off it, floored to a hundredth so
+       the card never overruns. */
+    const col = this.colRef.current;
+    if (col && typeof ResizeObserver !== 'undefined') {
+      this.ro = new ResizeObserver(() => {
+        const z = Math.min(1, Math.floor((col.getBoundingClientRect().width / 360) * 100) / 100) || 1;
+        if (z !== this.state.cardZoom) this.setState({ cardZoom: z });
+      });
+      this.ro.observe(col);
+    }
+  }
+  componentWillUnmount() { if (this.timer) clearInterval(this.timer); if (this.ro) this.ro.disconnect(); }
+  colRef = React.createRef();
+  renderVals() {
+    const C = this.constructor, p = this.props;
+    const deck = (typeof window !== 'undefined' && window.DECK_CARDS) || [];
+    const R = typeof window !== 'undefined' ? window.AspectRender : null;
+    const slots = C.SLOTS.map(s => ({ k: s[0], v: s[1] }));
+    /* The mark's own shadow and glow, editable here the same way the Flower edits its own:
+       Size, Depth, Drop for the shadow, Size and Depth for the glow \u2014 the exact knobs
+       Mark.jsx now exposes. Defaults reproduce the mark exactly as it always drew. */
+    const rv = (k, d) => this.state[k] != null ? this.state[k] : (p[k] != null ? p[k] : d);
+    const mkSlider = (key, label, min, max, step, unit, def) => {
+      const value = rv(key, def);
+      return { key, label, min, max, step, value, display: (Math.round(value * 100) / 100) + (unit ? '\u2009' + unit : ''), onInput: e => this.setState({ [key]: parseFloat(e.target.value) }) };
+    };
+    const markShadowSize = rv('markShadowSize', 12);
+    const markShadowDepth = rv('markShadowDepth', 1);
+    const markShadowDrop = rv('markShadowDrop', 0);
+    const markGlowSize = rv('markGlowSize', 1);
+    const markGlowDepth = rv('markGlowDepth', 1.25);
+    const markSliders = [
+      mkSlider('markShadowSize', 'Shadow Size', 0, 30, 1, 'px', 12),
+      mkSlider('markShadowDepth', 'Shadow Depth', 0, 2, 0.05, '', 1),
+      mkSlider('markShadowDrop', 'Shadow Drop', 0, 1, 0.05, '', 0),
+      mkSlider('markGlowSize', 'Glow Size', 0.25, 2, 0.05, '\u00d7', 1),
+      mkSlider('markGlowDepth', 'Glow Depth', 0.2, 2, 0.05, '\u00d7', 1.25)
+    ];
+    const markProps = { petalShadowSize: markShadowSize, petalShadowDepth: markShadowDepth, petalShadowDrop: markShadowDrop, voidGlowSize: markGlowSize, voidGlowDepth: markGlowDepth };
+    const cardZoom = this.state.cardZoom;
+    if (!this.state.ready || !deck.length || !R) return { waiting: true, cardZoom, colRef: this.colRef, hasEntry: false, noEntry: false, spec: [], showing: '', slots, setButtons: [], holdButtons: [], markSliders, scrubMax: 5, scrubIndex: 0, scrubChange: () => {}, scrubTicks: [], onSwipeStart: () => {}, onSwipeEnd: () => {}, ...markProps };
+
+    const set = this.state.setOv ?? p.set ?? C.SETS[0];
+    const holding = this.state.holdOv ?? p.holding ?? 'PAIR';
+    /* Picking a set or a holding clears any flip, any counter the flip landed on and any scrub
+       position, so the card shown is always the one the buttons name. */
+    const setButtons = C.SETS.map(s => ({
+      label: s, on: s === set,
+      pick: () => this.setState({ setOv: s, ov: null, idxOv: null, flipKey: null, flip: false })
+    }));
+    const holdButtons = Object.keys(C.ROWS).map(h => ({
+      label: h, on: h === holding,
+      pick: () => this.setState({ holdOv: h, ov: null, idxOv: null, flipKey: null, flip: false })
+    }));
+    const rows = C.ROWS[holding] || [];
+    const pool = deck.filter(c => c.set === set && rows.includes(c.row));
+    const idxRaw = this.state.idxOv != null ? this.state.idxOv : (p.cardIndex ?? 1) - 1;
+    const idx = Math.min(Math.max(idxRaw, 0), Math.max(pool.length - 1, 0));
+    const key = set + '|' + holding + '|' + idx;
+
+    /* The scrub track walks the six holding types, within the current set, as one ordered
+       sequence \u2014 CORE, SINGLE, PAIR, TRIAD, GROUP, SET \u2014 so the slider and a swipe both
+       step through card types rather than every one of the ninety individual cards. */
+    const holdKeys = Object.keys(C.ROWS);
+    const scrubIndex = Math.max(holdKeys.indexOf(holding), 0);
+    const jumpHold = (i) => this.setState({ holdOv: holdKeys[i], ov: null, idxOv: null, flipKey: null, flip: false });
+    const stepHold = (dir) => jumpHold((scrubIndex + dir + holdKeys.length) % holdKeys.length);
+    const scrubChange = (e) => jumpHold(parseInt(e.target.value, 10));
+    const scrubTicks = holdKeys.map((h, i) => ({ label: h, active: h === holding, inactive: h !== holding, pick: () => jumpHold(i) }));
+    /* A left or right swipe on the card scrubs the same way the slider does. Tracked on the
+       instance, not state, so the drag itself never triggers a re-render. */
+    const onSwipeStart = (e) => { this._tx = e.touches[0].clientX; };
+    const onSwipeEnd = (e) => {
+      if (this._tx == null) return;
+      const dx = e.changedTouches[0].clientX - this._tx;
+      this._tx = null;
+      if (Math.abs(dx) < 40) return;
+      stepHold(dx < 0 ? 1 : -1);
+    };
+
+    /* A flip that lands on another card holds until the selection itself changes, so stepping the
+       tweaks always returns to the card the tweaks name. */
+    const ov = this.state.ov;
+    const entry = (ov && ov.key === key ? deck.find(c => c.id === ov.id) : null) || pool[idx] || null;
+    const flipped = this.state.flipKey === key ? this.state.flip : false;
+    if (!entry) return { waiting: false, cardZoom, colRef: this.colRef, hasEntry: false, noEntry: true, spec: [], showing: 'Nothing holds that selection.', slots, setButtons, holdButtons, markSliders, scrubMax: holdKeys.length - 1, scrubIndex, scrubChange, scrubTicks, onSwipeStart, onSwipeEnd, ...markProps };
+
+    const counter = R.counterOf(entry, deck);
+    const words = R.wordsFor(set, deck);
+    const isPair = entry.titles.length > 1;
+    const onFlip = (isPair || counter) ? () => {
+      if (isPair) this.setState({ flipKey: key, flip: !flipped });
+      else this.setState({ ov: { key, id: counter.id }, flipKey: null, flip: false });
+    } : undefined;
+
+    const pref = p.wordGrid ?? 'Standard';
+    const showGrid = pref === 'Always' ? true : pref === 'Never' ? false : entry.holds >= 3;
+
+    return {
+      waiting: false, cardZoom, colRef: this.colRef, hasEntry: true, noEntry: false,
+      entry, flipped, onFlip, showGrid, slots, setButtons, holdButtons, scrubMax: holdKeys.length - 1, scrubIndex, scrubChange, scrubTicks, onSwipeStart, onSwipeEnd,
+      baseWords: words.base, blendWords: words.blend,
+      markSliders, ...markProps,
+      showSpec: p.showSpec ?? true,
+      showing: entry.titles.join(' · ') + ' — ' + holding + ', ' + set + (pool.length > 1 ? ' · card ' + (idx + 1) + ' of ' + pool.length : ''),
+      spec: [
+        { k: 'Size', v: '360 × 504, printed' },
+        { k: 'Radius', v: '14, frame inset 10 at radius 4' },
+        { k: 'Padding', v: '24, band and rule gaps 12' },
+        { k: 'Title', v: '36px / 36px, weight 700, Figtree' },
+        { k: 'Reading', v: '18px / 24px, weight 400, g66' },
+        { k: 'Labels', v: '12px mono, uppercase, g66. Set label and content 12px Figtree, weight 700' },
+        { k: 'Colour', v: 'On the title, the 3px bar, the inner frame and the mark. Never behind a word' },
+        { k: 'Flip', v: onFlip ? (isPair ? 'Swaps the leading word' : 'Turns to ' + counter.titles.join(' · ')) : 'This card stands alone' },
+        { k: 'Word grid', v: 'The twelve positions, this set’s words from its Single cards. Standard on a card holding three or more' },
+        { k: 'Source', v: 'data/deck-data.js · ' + entry.id }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

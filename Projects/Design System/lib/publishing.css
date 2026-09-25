@@ -1,0 +1,129 @@
+/* Publishing routes – the decision page for lane 4.
+   Scoped to body.pub, tokens only, no hardcoded hex, px or font name.
+   Colour stays a stroke on a shape, never a fill behind text. */
+
+.pub .skip-link{position:absolute;left:var(--space-lg);top:var(--space-lg);z-index:1;
+  background:var(--surface-raised);border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);padding:var(--space-sm) var(--space-md);
+  transform:translateY(-300%);transition:transform var(--dur-md) var(--ease-arrive)}
+.pub .skip-link:focus{transform:translateY(0)}
+
+.pub .shell{max-width:1200px;margin:0 auto}
+.pub main{padding-top:var(--space-xl);padding-bottom:var(--space-2xl);row-gap:var(--space-xl)}
+.pub h1{font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display);margin:0}
+.pub h2{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);margin:0}
+.pub h3{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0}
+.pub p,.pub li{font-size:var(--fs-body);line-height:var(--lh-body);margin:0}
+.pub .eyebrow{font-family:var(--font-data);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--text-secondary)}
+.pub .caption{font-family:var(--font-data);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--text-secondary)}
+.pub a:focus-visible,.pub summary:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+
+/* Masthead, the same language as HQ until lane 10 replaces both. */
+.pub .masthead{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--space-lg);
+  padding-top:var(--space-lg);padding-bottom:var(--space-lg);
+  border-bottom:1px solid var(--surface-border)}
+.pub .brand{font-family:var(--font-display);font-size:var(--fs-h2);line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);text-decoration:none}
+.pub .brand span{color:var(--text-secondary);font-weight:var(--fw-caption)}
+.pub .masthead .spacer{flex:1 1 auto}
+.pub .stamp{text-align:right}
+.pub .stamp .eyebrow{display:block}
+
+/* The ask. One question, led. */
+.pub .ask{background:var(--surface-card);border:1px solid var(--surface-border);
+  border-left:var(--stroke) solid var(--cl-02-flux);border-radius:var(--radius-md);
+  padding:var(--space-lg)}
+.pub .ask h1{margin-top:var(--space-sm)}
+.pub .ask p{color:var(--text-secondary);margin-top:var(--space-md);max-width:62ch}
+.pub .ask .question{color:var(--text-primary);font-weight:var(--fw-h2);margin-top:var(--space-lg)}
+
+/* Route cards. Recommended carries the stroke, the rest stay neutral. */
+.pub .routes{row-gap:var(--space-lg)}
+.pub .route{background:var(--surface-card);border:1px solid var(--surface-border);
+  border-radius:var(--radius-md);padding:var(--space-lg);
+  display:flex;flex-direction:column;gap:var(--space-md)}
+.pub .route .route-top{display:flex;align-items:baseline;gap:var(--space-md);flex-wrap:wrap}
+.pub .route .rank{font-family:var(--font-data);font-size:var(--fs-caption);
+  line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--text-dim)}
+.pub .route.recommended{border-left:var(--stroke) solid var(--cl-12-life)}
+.pub .route.viable{border-left:var(--stroke) solid var(--cl-10-form)}
+.pub .route.fallback{border-left:var(--stroke) solid var(--cl-06-fire)}
+.pub .route .badge{font-family:var(--font-data);font-size:var(--fs-caption);
+  line-height:var(--lh-caption);font-weight:var(--fw-caption);
+  border:1px solid var(--surface-border);border-radius:var(--pill-radius);
+  padding:var(--space-xs) var(--space-md);color:var(--text-secondary)}
+.pub .route.recommended .badge{border-color:var(--cl-12-life);color:var(--cl-12-life)}
+.pub .route p.lede{color:var(--text-secondary)}
+
+/* The fact table: what a route costs and what it exposes. */
+.pub .facts{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-md);margin:0}
+.pub .facts dt{font-family:var(--font-data);font-size:var(--fs-caption);
+  line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--text-dim)}
+.pub .facts dd{margin:0 0 var(--space-md);font-size:var(--fs-body);line-height:var(--lh-body)}
+.pub .facts dd .yes{color:var(--cl-12-life)}
+.pub .facts dd .no{color:var(--cl-06-fire)}
+
+/* Disclosure, matching HQ's pattern so the page reads as one system. */
+.pub details{border-top:1px solid var(--surface-border)}
+.pub summary{list-style:none;cursor:pointer;padding:var(--space-md) 0;
+  display:flex;align-items:center;justify-content:space-between;gap:var(--space-md);
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2)}
+.pub summary::-webkit-details-marker{display:none}
+.pub .chevron{width:var(--space-md);height:var(--space-md);flex:0 0 auto;
+  border-right:2px solid var(--text-secondary);border-bottom:2px solid var(--text-secondary);
+  transform:rotate(45deg) translateY(-25%);
+  transition:transform var(--dur-md) var(--ease-arrive)}
+.pub details[open] > summary .chevron{transform:rotate(225deg) translateY(-25%)}
+.pub .disclosure-body{padding-bottom:var(--space-lg);display:flex;flex-direction:column;gap:var(--space-md)}
+
+/* The ledger: every claim on the page and the command that produced it. */
+.pub .ledger-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pub .ledger{width:100%;border-collapse:collapse}
+.pub .ledger th,.pub .ledger td{text-align:left;padding:var(--space-sm) var(--space-md);
+  border-bottom:1px solid var(--surface-border);vertical-align:top}
+.pub .ledger th{font-family:var(--font-data);font-size:var(--fs-caption);
+  line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--text-dim)}
+.pub .ledger td{font-size:var(--fs-body);line-height:var(--lh-body)}
+.pub .ledger td.code{font-family:var(--font-data);font-size:var(--fs-caption);
+  line-height:var(--lh-caption);color:var(--text-secondary);word-break:break-word}
+
+.pub ul{margin:0;padding-left:var(--space-lg)}
+.pub ul li{margin-bottom:var(--space-sm)}
+.pub code{font-family:var(--font-data);font-size:var(--fs-caption);line-height:var(--lh-caption);
+  background:var(--surface-raised);border-radius:var(--radius-sm);padding:2px var(--space-sm)}
+
+.pub .foot{border-top:1px solid var(--surface-border);padding-top:var(--space-lg);
+  color:var(--text-dim)}
+
+@media (max-width:720px){
+  .pub .facts{grid-template-columns:1fr}
+  .pub main{padding-top:var(--space-lg);row-gap:var(--space-lg)}
+  .pub .stamp{text-align:left}
+
+  /* The ledger stops being a table on a phone: a two-column table at 320px
+     puts a 40-character command next to a sentence and pushes the page wide.
+     Each row becomes a labelled block instead, the phone's own convention. */
+  .pub .ledger-wrap{overflow-x:visible}
+  .pub .ledger thead{display:none}
+  .pub .ledger,.pub .ledger tbody,.pub .ledger tr,.pub .ledger td{display:block;width:100%}
+  .pub .ledger tr{padding:var(--space-md) 0;border-bottom:1px solid var(--surface-border)}
+  .pub .ledger td{border-bottom:0;padding:0}
+  .pub .ledger td.code{margin-top:var(--space-xs);color:var(--text-dim)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .pub .chevron{transition:none}
+}
+
+/* Ruled-answered line on the routes page and the setup runbook's step cards,
+   added 2026-09-20 when the publishing ruling landed. Tokens only. */
+.pub .ask .ruled{color:var(--text-primary);margin-top:var(--space-lg);
+  padding-left:var(--space-md);border-left:var(--stroke) solid var(--cl-12-life)}
+.pub .ask .ruled a{color:var(--text-primary)}
+.pub .route.step{border-left:var(--stroke) solid var(--g66)}
+.pub .route.step .badge{border-color:var(--g66);color:var(--text-secondary)}
+.pub .route.step.lead{border-left-color:var(--cl-12-life)}
+.pub .route.step.lead .badge{border-color:var(--cl-12-life);color:var(--cl-12-life)}
+/* Long addresses in code chips must break at the narrowest phone (320) or the
+   runbook page overflows; the ledger's own code cells already break. */
+.pub code{overflow-wrap:anywhere}

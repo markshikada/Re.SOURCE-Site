@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../../assets/vendor/react.production.min.js"></script>
+<script src="../../assets/vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div ref="{{ boxRef }}" onClick="{{ onPick }}">
+  <sc-for list="{{ cards }}" as="cd" hint-placeholder-count="2">
+    <div data-slot="">
+      <x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.AspectCard" entry="{{ cd.entry }}" scale="{{ cd.scale }}" flipped="{{ cd.flipped }}" onFlip="{{ cd.onFlip }}" showGrid="{{ cd.showGrid }}" baseWords="{{ cd.bw }}" blendWords="{{ cd.lw }}" hint-size="180px,252px"></x-import>
+    </div>
+  </sc-for>
+  <sc-if value="{{ hasTie }}" hint-placeholder-val="{{ false }}">
+    <button type="button" onClick="{{ onTie }}" aria-label="Trade places" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;display:flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;background:var(--surface-page);border:1px solid var(--surface-border);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.7);color:#555555;cursor:pointer;touch-action:manipulation" style-hover="color:#FFFFFF;border-color:var(--g66)" style-focus="outline:2px solid var(--g88);outline-offset:3px">
+      <svg viewBox="0 0 26 26" aria-hidden="true" style="display:block;width:16px;height:16px">
+        <path d="{{ d1 }}" fill="currentColor"></path>
+        <path d="{{ d2 }}" fill="currentColor"></path>
+      </svg>
+    </button>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:400,&quot;height&quot;:280},&quot;boxStyle&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;cards&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object[]&quot;},&quot;hasTie&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;d1&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;d2&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onTie&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;},&quot;onPick&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(e) =&gt; void&quot;}}">/* The cell's box and each card slot are pure geometry, recomputed as the deck's Tweaks sliders
+   move. They arrive as strings from FullDeck and are written to the elements after render rather
+   than through style holes, so the template's own styles stay literal. */
+class Component extends DCLogic {
+  boxRef = React.createRef();
+  apply() {
+    const el = this.boxRef.current;
+    if (!el) return;
+    el.style.cssText = this.props.boxStyle || '';
+    const slots = el.querySelectorAll('[data-slot]');
+    (this.props.cards || []).forEach((c, i) => { if (slots[i]) slots[i].style.cssText = c.slotStyle || ''; });
+  }
+  componentDidMount() { this.apply(); }
+  componentDidUpdate() { this.apply(); }
+  renderVals() { return { boxRef: this.boxRef }; }
+}
+</script>
+</body>
+</html>

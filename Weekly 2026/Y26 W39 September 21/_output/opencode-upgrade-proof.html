@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenCode upgrade – proof</title>
+<style>
+  :root{--g06:#0d0d0d;--g12:#1a1a1a;--g24:#2e2e2e;--g48:#5c5c5c;--g66:#7a7a7a;--g88:#b0b0b0;--tx:#f2f2f2;--ac:#e8c15a;--sp-s:8px;--sp-m:12px;--sp-l:24px}
+  *{box-sizing:border-box}
+  body{background:#000;color:var(--tx);font:18px/30px -apple-system,"Segoe UI",system-ui,sans-serif;margin:0}
+  .wrap{max-width:960px;margin:0 auto;padding:var(--sp-l) var(--sp-l) 64px}
+  .stamp{font:12px/18px ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.02em;color:var(--g88)}
+  h1{font-size:36px;line-height:48px;margin:12px 0}
+  h2{font-size:24px;line-height:36px;margin:36px 0 8px}
+  .card{background:var(--g06);border:1px solid var(--g24);border-radius:12px;padding:16px;margin:12px 0}
+  .card h3{font-size:18px;line-height:30px;margin:0 0 6px}
+  .pill{display:inline-block;background:#000;border:1px solid var(--ac);border-radius:24px;color:#fff;font-size:12px;line-height:18px;padding:4px 10px;margin:2px 6px 2px 0}
+  .pill.grey{border-color:var(--g66)}
+  code{font:12px/18px ui-monospace,Menlo,monospace;background:#000;border:1px solid var(--g24);border-radius:6px;padding:1px 6px}
+  pre{font:12px/18px ui-monospace,Menlo,monospace;background:#000;border:1px solid var(--g24);border-radius:8px;padding:12px;overflow-x:auto}
+  .ok{color:#9fe6a0}.todo{color:var(--ac)}
+  @media (max-width:720px){body{font-size:18px}h1{font-size:24px;line-height:36px}.wrap{padding:12px 12px 48px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stamp">Updated 2026-09-23 12:40 London · Y26 W39</div>
+  <h1>OpenCode upgrade – proof</h1>
+  <p>Three local skills, one reviewer agent, Playwright MCP wired. Nothing in <code>Projects/</code> moved. Cheap driver untouched.</p>
+
+  <div class="card"><h3>What landed</h3>
+    <span class="pill">resource-design</span><span class="pill">research-first</span><span class="pill">design-review</span><span class="pill grey">design-reviewer agent</span><span class="pill grey">playwright MCP</span>
+    <p>Skills live in <code>.opencode/skills/</code> so OpenCode finds them on its own. The reviewer lives in <code>.opencode/agents/</code> and runs read only. MCP and skill permission sit in <code>opencode.jsonc</code>.</p>
+  </div>
+
+  <div class="card"><h3>How to use it</h3>
+    <p>Visual work loads <code>resource-design</code> first, then builds from the masters. New marks run <code>research-first</code> and wait at the gate. Every surface closes with <code>design-review</code> at 1440, 820 and 390.</p>
+    <pre>Use the design-reviewer subagent to check Colour FLOWER at 1440, 820 and 390.</pre>
+  </div>
+
+  <div class="card"><h3>Learning loop</h3>
+    <p>Boot skill <code>re-source-boot</code> orders the cold start. <code>notes/where-things-live.md</code> maps each question to its file. Playbook section 9 now triages every suggestion into a rule edit or a dated queue Log entry. The <code>re-source-boot</code> plugin attaches the boot files to each session first prompt on its own.</p>
+    <p><span class="ok">Pass:</span> <code>opencode plugin list</code> shows the local plugin; four skills on disk.</p>
+  </div>
+
+  <div class="card"><h3>Checks</h3>
+    <p><span class="ok">Pass:</span> <code>opencode.jsonc</code> parses, model still the cheap driver, MCP key present, three skills discovered by path, reviewer denies edit.</p>
+    <p><span class="todo">Not run here:</span> live Playwright session, external skill downloads. Test is <code>opencode mcp list</code> then one reviewer run in a browser equipped session.</p>
+  </div>
+
+  <h2>Next</h2>
+  <p>Run the reviewer once against Colour FLOWER, then decide if outside skills join. Outside additions stay separate until a master adopts them.</p>
+</div>
+</body>
+</html>

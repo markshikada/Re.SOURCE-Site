@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Re.SOURCE HQ: what is now and next, what waits on Mark, the landed archive, and the words we use.">
+  <title>HQ · Re.SOURCE</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="lib/hq.css">
+  <link rel="stylesheet" href="lib/topbar.css">
+  <script src="lib/masters-nav.js" defer></script>
+  <script src="lib/hq.js" defer></script>
+<style>.rs-vault-only{border-bottom:1px dotted var(--surface-border,#555);cursor:help;text-decoration:none}</style></head>
+<body class="hq rs-topbar-page">
+  <a class="skip-link" href="#main">Skip to work</a>
+  <!-- Universal top bar (edition v8): one shared component — markup here, styles in
+       lib/topbar.css, switcher built by lib/masters-nav.js bar mode. The floating
+       pill is absorbed into the bar on this page; the bar is fixed and content
+       starts below it. -->
+  <header class="rs-topbar" id="rsTopBar">
+    <div class="rs-topbar-inner" data-pad>
+      <a class="rs-topbar-brand" href="HQ.html" aria-label="Re.SOURCE HQ home">Re.SOURCE <span>HQ</span></a>
+      <p class="rs-topbar-stamp"><span>v11.2</span><span class="rs-topbar-sep" aria-hidden="true">·</span><span>W39</span></p>
+      <div class="rs-topbar-navrow">
+        <nav class="rs-topbar-context" aria-label="HQ sections">
+          <a href="#work">Now and next</a>
+          <a href="#instruments">Instruments</a>
+          <a href="#later">Later</a>
+          <a href="#publishing">Waiting</a>
+          <a href="#landed">Landed</a>
+          <a href="#playbook">Playbook</a>
+        </nav>
+        <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a class="button" href="Masters.html">Open masters</a></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="main" data-pad data-grid tabindex="-1">
+    <section class="intro" data-span="12" aria-labelledby="hq-title">
+      <div class="intro-copy">
+        <p class="eyebrow">Workspace</p>
+        <h1 id="hq-title">Your work, in focus.</h1>
+        <p>Direction sets the priority. Finished work folds away; the now and the next stay in front.</p>
+      </div>
+      <div class="edition">
+        <time datetime="2026-09-25T17:30Z">Updated 25 Sep · W39</time>
+      </div>
+    </section>
+
+    <section class="work-section" id="work" data-sub data-span="12" aria-labelledby="work-title">
+      <div class="section-heading">
+        <h2 id="work-title">Now and next</h2>
+        <span class="eyebrow">In reach · small and self-contained</span>
+      </div>
+      <div class="feature-grid" data-sub data-pair>
+                <article class="task-card featured" aria-labelledby="task-flower-title">
+          <div class="card-topline"><span class="eyebrow">Now · Master FLOWER</span><span class="status">7 of 9 complete · lane 26 merged</span></div>
+          <h3 id="task-flower-title">The Flower backlog: seven complete; lane 3 is next.</h3>
+          <p>Seven of the nine Flower lanes are complete in the queue: the Schematics hover read, the gesture sheet, one step of undo, the share link with its URL law, the motion sweep, the readings port and the copy sweep. Lane 3 is next, beginning with a live-Drive access check. The hover card preview remains a held draft until it has a purpose; the screen-reader and iPhone pass still waits on hardware.</p>
+          <p class="caption task-note">One flower lane at a time for the master; lane 28 is card-side. Lanes 20, 21 and 23 rest in the landed archive below with their briefs; lanes 24, 25 and 28 fold in at the next HQ tier pass. Lane 22 stays a draft until it carries its Solves line. The old cluster numbers are corrected everywhere after the compact law v11.1 of 22 September.</p>          <div class="actions">
+            <a class="button button-primary" href="flower-work.html">Open the Flower backlog</a>
+            <button class="button" data-copy="lane26" data-press hidden>Copy the lane 26 brief</button>
+            <button class="button" data-copy="lane22" data-press hidden>Copy the lane 22 brief</button>
+          </div>
+          <details class="disclosure" id="lane26-details">
+            <summary>Lane 26, the copy sweep &ndash; complete<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              
+              <pre class="prompt" id="prompt-lane26" tabindex="0" aria-label="Lane 26, the copy sweep, starting brief">LANE 26 · COPY SWEEP · Master FLOWER · never retitle a live word · one branch, stop at PR
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 26 from Projects/HQ/queue.md, the copy sweep on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md → notes/reasoning.md (&quot;Voice and copy&quot;, &quot;Words means real words, learned 2026-09-01, twice&quot;, &quot;What the flower means&quot;) → the tour's copy in templates/colour-flower/ColourFlower.dc.html (TOUR_TITLES, TOUR_BODIES, the live-word splices, the status region) → the Schematics card's labels and the spacing names → research/set-pages-copy.md.
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip; confirm no other flower lane is open; run node tests/flower-geometry.cjs; alignment needs a browser, report honestly if there is none.
+
+Task, lane 26: the copy sweep. In order: (1) list every string the master shows, in the session note, before editing any of them — the six chapter titles and bodies, the sitting questions inside the bodies, the intro's prompts, the first-visit hint, the blank slot's line, the status announcements, the Schematics card's labels and its four spacing names, the Render drawer's labels, the set names and their short forms; (2) mark each one live or static: anything that reads off the position table is live and must not be retitled by hand, because a word move in the Sheet renames it by itself; (3) read the static ones against the voice — a fellow traveller, never an authority, sentences rather than fragments, real words, nothing that leans on a word that could move; (4) fix drift, and where a line is better left alone say so and why, since a sweep that rewrites everything has no judgement in it; (5) check the announced strings for a screen reader: what is spoken and what is seen must say the same thing, and neither should read out markup or numbers without units; (6) check the copy at 12/6/3 — a line that fits a desktop card and overflows a phone sheet is a defect, and so is a chapter body that cannot be read inside half a frame.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; data/deck-data.js (the deck's own copy is a card session's, and lane 3 audits it); the live word assignments, which come from the Sheet and are never hardcoded; the geometry; other masters' files.
+
+Done-when: the string list in the session note with a live or static mark and a keep or change verdict on each; geometry green in node, alignment green in a browser if one exists and honestly reported if not; a check added for any string that could overflow at three columns; captures at 12/6/3 if a browser exists; anything that becomes a voice rule written into notes/reasoning.md; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+            </div>
+          </details>
+          <details class="disclosure" id="lane22-details">
+            <summary>Lane 22, on hold for a purpose<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              
+              <pre class="prompt" id="prompt-lane22" tabindex="0" aria-label="Lane 22, hover ghost card, starting brief">LANE 22 · HOVER PREVIEW · Master FLOWER · never steals a click · one branch, stop at PR
+
+HELD 23 September 2026 – draft, do not start. This brief states no purpose and names no failure mode, and the artwork view already answers hover with a lift while a click opens the real card. It starts only once it carries a Solves line. See lane 22 in Projects/HQ/queue.md.
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 22 from Projects/HQ/queue.md, the hover card preview on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md (the HUD law, the mobile layout rules) → notes/flower-alignment-review.md ("Shared facts", the printed card and its placement) → notes/reasoning.md ("Mobile layout rules for the masters", the compact law v11.1 entry) → the master's card path in templates/colour-flower/ColourFlower.dc.html (cardOn, blankOn, the sheet behaviour, the tour panel's slot) → components/core/AspectCard.jsx.
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip; read the cluster numbers off lib/tweaks-drawer.js and measurements.css (v11.1: nav 20, Tweaks 60, Schematics 100, Walkthrough 140, Render 180); run node tests/flower-geometry.cjs; alignment needs a browser, report honestly if there is none.
+
+Task, lane 22: the hover card preview. In order: (1) hovering a position in the artwork view previews that position's card in the walkthrough panel's slot at reduced strength, using a token-driven value from the greyscale or an existing opacity law — never a new magic number, and never a second card component; (2) it never steals a click: the pick, the hit targets, the drag-to-rotate and the core hold all behave exactly as before, and the preview is not a selection; (3) it never fires on touch and never appears while a real card is open, while a pick is held, while the intro is active, or in Schematics; (4) reduced motion holds the change at 1ms rather than deleting it; (5) on a narrow frame, where the printed card is a bottom sheet, decide and record whether the preview exists at all — the recommendation is that it does not, since a tap already opens the real card and a half-frame sheet has no room for a ghost; (6) if a position has no card, the preview shows the blank slot's own line rather than nothing, so the two states stay distinguishable.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; the card's size, its placement law and the sheet behaviour; the parked Tweaks rollout; other masters' files. No other flower lane runs in parallel.
+
+Done-when: geometry green in node, alignment green in a browser if one exists and honestly reported if not; new checks for hover on and off, no-fire on touch, no-fire with a card open, reduced motion, and the blank-slot case; captures at 12/6/3 in this week's _output/ if a browser exists; anything that becomes a rule written into AGENTS.md and notes/reasoning.md; session note in this week's _notes/ ending with efficiency suggestions; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+              <p class="caption">Held until it carries a Solves line. The other briefs are on the Flower page and in <span class="rs-vault-only" title="Vault-only note, not published to the public site">prompts.md</span>, the source of record; lanes 20 and 21's briefs as they ran are in the landed archive below.</p>
+            </div>
+          </details>
+        </article>
+        <aside class="task-context" data-span="4" aria-labelledby="order-title">
+          <span class="eyebrow">The order</span>
+          <h3 id="order-title">The master runs,<br>one lane at a time.</h3>
+          <p>The mobile wave closed on 22 September, so the Flower backlog is tracked here. Lanes 20 to 27 share the master file and run one at a time; lane 28 is card-side. The original order was features first, then the two whole-master sweeps, then the hardware pass.</p>
+          <div class="context-rule"></div>
+          <h4>The nine, in order</h4>
+          <ul class="acceptance">
+            <li>Lane 20, Schematics hover inspector and the pattern &mdash; done 22 Sep, record in the landed archive</li>
+            <li>Lane 21, the gesture reference's home &mdash; done 23 Sep, record in the landed archive</li>
+            <li>Lane 22, hover previews the card &mdash; on hold, needs a purpose</li>
+            <li>Lane 23, one step of undo &mdash; done 24 Sep, on main</li>
+            <li>Lane 24, the share link &ndash; done 24 Sep, PR 147 on main</li>            <li>Lane 25, the motion sweep &ndash; done 24 Sep, PR 151 on main</li>
+            <li>Lane 26, the copy sweep &ndash; complete 24 Sep; its brief and record remain below</li>
+            <li>Lane 27, screen reader and iPhone &mdash; needs hardware</li>
+            <li>Lane 28, your readings ruling &ndash; done 23 Sep, on the card side</li>
+          </ul>
+          <h4>Related work</h4>
+          <ul class="acceptance">
+            <li>The Realm card treatment: scrapped 22 Sep, no purpose on record</li>
+            <li>The testbed app's retirement: done 23 September; lane 21's help-overlay pattern already carries the borrowed law, and the keyboard law lives in the master tour</li>
+            <li>Lane 3 is next; confirm access to the live Drive before comparing copy</li>
+          </ul>
+          <a class="text-link" href="flower-work.html">Read the briefs in full<span class="link-mark" aria-hidden="true"></span></a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Instruments (edition v11.2, 25 September 2026): the tools the work is done
+         with, as opposed to the work itself. Folded in on Mark's word, quoted: "This
+         effort looks well worth folding into HQ as feature." One card per instrument;
+         each names what it refuses to do, since that is the part that makes it an
+         instrument rather than a document. -->
+    <section class="work-section" id="instruments" data-sub data-span="12" aria-labelledby="instruments-title">
+      <div class="section-heading">
+        <h2 id="instruments-title">Instruments</h2>
+        <span class="eyebrow">What the work is done with</span>
+      </div>
+      <div class="feature-grid" data-sub data-pair>
+        <article class="task-card featured" aria-labelledby="task-workbench-title">
+          <div class="card-topline"><span class="eyebrow">Now · copy</span><span class="status">Built and checked · 82 lines waiting to be read</span></div>
+          <h3 id="task-workbench-title">The copy workbench reads every line the system shows</h3>
+          <p>All the copy Re.SOURCE and Colour LINGO put in front of a person, in one place, with a verdict required on each line. The deck is generated from the live surfaces rather than written by hand, so it cannot quietly disagree with what ships: the walkthrough's six chapter titles and bodies, the four gloss sets of twelve, the twelve position reads, the legends and announced lines, and the paragraph the whole system is explained by.</p>
+          <p>Two of the 82 are <strong>live</strong>: the chapter-two and chapter-three titles read off the position table, so a Sheet move renames them by itself. The workbench refuses to edit those, in the handler and not only in the markup. That rule survived as prose through four lanes; it took ten lines of code to make it impossible to break.</p>
+          <p class="caption task-note">Every line takes a verdict, the kept ones included, and the note says why &mdash; a sweep that rewrites everything has no judgement in it. A reading survives a re-extraction; an edit whose surface moved underneath it is dropped, the line reopens and says so. The changes handoff names each line's source, before and after, so a verdict can be applied without guessing which string was meant.</p>
+          <div class="actions">
+            <a class="button button-primary" href="../Re.SOURCE%20Website/copywriter-trainer.html">Open the copy workbench</a>
+          </div>
+          <details class="disclosure" id="workbench-details">
+            <summary>What it is, and what it refuses<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <h4>The corpus, 82 lines across 9 surfaces</h4>
+              <ul class="acceptance">
+                <li>The walkthrough's six chapter titles and six bodies &mdash; two titles are live; all six bodies are static, including the width-only chapter-one direction</li>
+                <li>The four gloss sets, twelve lines each: Realm, State, Tags and Arrow Key</li>
+                <li>The twelve position reads</li>
+                <li>The legends, the blank slot's line and the announced status lines</li>
+                <li>&ldquo;What the system is&rdquo;, from the LINGO brief &mdash; anything public is written from it</li>
+              </ul>
+              <h4>What it refuses</h4>
+              <ul class="acceptance">
+                <li>To let a live line be retitled by hand, including against a forced DOM edit</li>
+                <li>To count an untouched line as read &mdash; a verdict is the unit, not an edit</li>
+                <li>To carry an edit onto a line whose surface moved beneath it</li>
+                <li>To invent copy: the deck is generated, and the extractor reproducing it byte for byte is an assertion</li>
+              </ul>
+              <p class="caption">Checks: 20 in node, 14 in a real browser at twelve, six and three columns. Add a surface by adding it to the extractor, never by typing into the deck. Record: <span class="rs-vault-only" title="Vault-only note, not published to the public site">the session note</span>.</p>
+            </div>
+          </details>
+        </article>
+        <aside class="task-context" data-span="4" aria-labelledby="instruments-order-title">
+          <span class="eyebrow">Why it exists</span>
+          <h3 id="instruments-order-title">All the copy,<br>at its best.</h3>
+          <p>Your direction, 25 September: concentrate the next phase on making all the copy the best it can be. The copy had never been read end to end, and a hand-typed list of it would miss a string or mistype one. Generating the list makes the reading possible; enforcing the live law makes it safe.</p>
+          <div class="context-rule"></div>
+          <h4>What it unblocks</h4>
+          <ul class="acceptance">
+            <li>Lane 26 used the generated inventory for its master copy sweep; the source-by-source verdicts are in the W39 session note</li>
+            <li>Any later sweep: a new surface joins the corpus by joining the extractor</li>
+          </ul>
+          <h4>Waiting on you</h4>
+          <ul class="acceptance">
+            <li>Whether 82 lines is the right corpus, or the Design System pages and Re.Brand STYLE go in first</li>
+            <li>Whether it keeps its filename, now its subject is the master and LINGO rather than a website</li>
+            <li>Who reads first &mdash; a session sweeping the 80 static lines into verdicts for your ruling, or you taking the glosses, which are the most yours</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="work-section" id="later" data-sub data-span="12" aria-labelledby="later-title">
+      <div class="section-heading">
+        <h2 id="later-title">Next, later, parked and blocked</h2>
+        <span class="eyebrow">Keep file ownership separate</span>
+      </div>
+      <div class="secondary-grid" data-grid>
+        <article class="task-card secondary" data-span="6" aria-labelledby="task-lane3-title">
+          <div class="card-topline"><span class="eyebrow">Next · lane 3</span><span class="status">Drive check first</span></div>
+          <h3 id="task-lane3-title">Card copy audit</h3>
+          <p>Compare the live Drive copy with the deck data, card by card, core cards included. Audit only: name what has drifted before any rewrite starts.</p>
+          <p class="caption task-note">Confirm access to the live Drive document before starting; without it, record the blocker rather than guess. The three core cards (ZONE, HERE, YOU) are in the live store, all still drafted.</p>
+          <div class="actions">
+            <button class="button" data-copy="lane3" data-press hidden>Copy lane 3 prompt</button>
+            <a class="text-link" href="templates/word-deck/WordDeck.dc.html">View deck<span class="link-mark" aria-hidden="true"></span></a>
+          </div>
+          <details class="disclosure" id="lane3-details">
+            <summary>Prompt &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane3" tabindex="0" aria-label="Card copy audit starting prompt">LANE 3 · COPY AUDIT · Word CARDS · audit only, no rewrite · one branch, stop at PR
+
+Work in Projects/Re.Word CARDS on markshikada/Re.SOURCE.
+
+Read in order: VAULT.md at repo root → Projects/Re.Word CARDS/Agent-Brief.md → the Drive doc at Re.SOURCE / Projects / Re.Word CARDS in Core VAULTS (compare to data/deck-data.js in Projects/Design System/data/).
+
+Before starting: confirm access to the live Drive document. If unavailable, report the blocker; do not infer current copy from repo snapshots.
+
+Task: lane 3 from Projects/HQ/queue.md — audit only, don't rewrite yet. List which card gloss/reading copy is stale vs the live Deck store and the Drive doc. Produce a delta table in notes or as a comment in the brief.
+
+Scope note from the 2026-09-19 scan: the live store on main holds the three core cards (the Abstract REALM one titled ZONE, the Aspect STATE one titled HERE, the Anchor TAG one titled YOU), all still drafted: true. Batch 1 originally lacked them, so the delta covers the core cards and the drafted status, not just the 51 cards from the 2026-09-02 log.
+
+Follow-on: lane 28 ports the Flower master's own stored readings (GLOSS, PAIR, SHAPE, POS.read) onto the card side, ruled by Mark 22 September. If this audit has run, read its delta table first — a port that contradicts a fresh audit wastes both.
+
+Don't-touch: don't edit the Drive doc; don't edit data/deck-data.js.
+
+Done-when: delta table committed, queue row updated, push, Create PR, and merge your own PR (wrap up and merge, Mark's ruling 2026-09-19). The actual rewrite is a follow-on lane with Gemini once direction is set.</pre>
+              <p class="caption">Audit only. Leave the Drive document and deck data unchanged.</p>
+            </div>
+          </details>
+        </article>
+        <article class="task-card secondary" data-span="6" aria-labelledby="task-lane2-title">
+          <div class="card-topline"><span class="eyebrow">Lane 2 · Design System</span><span class="status">Later</span></div>
+          <h3 id="task-lane2-title">Mechanical sweep</h3>
+          <p>Choose one route, not both: the raw grid-column span sweep verifier is free; the LINGO fit rescore takes one small step from its spec once the signal-3 ruling lands.</p>
+          <p class="caption task-note">Option A waits on the signal-3 ask below; option B is mechanical and low risk.</p>
+          <div class="actions">
+            <button class="button" data-copy="lane2" data-press hidden>Copy lane 2 prompt</button>
+            <span class="rs-vault-only" title="Vault-only note, not published to the public site">Open the design queue<span class="link-mark" aria-hidden="true"></span></span>
+          </div>
+          <details class="disclosure" id="lane2-details">
+            <summary>Prompt &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane2" tabindex="0" aria-label="Layout and LINGO starting prompt">LANE 2 · MECHANICAL SWEEP · Design System · closed, do not restart · one branch, stop at PR
+
+Work in Projects/Design System on markshikada/Re.SOURCE.
+
+Task, lane 2 from Projects/HQ/queue.md — closed 2026-09-23, Mark's ruling. Option B (the raw grid-column sweep verifier) landed as tests/span-sweep.cjs (PR 121). Option A (LINGO fit rescore) is dropped with the signal-3 ask. Mechanical work goes to new lanes with their own briefs.</pre>
+              <p class="caption">Agent references: <span class="rs-vault-only" title="Vault-only note, not published to the public site">grid rollout</span> and <span class="rs-vault-only" title="Vault-only note, not published to the public site">fit-rescore spec</span>.</p>
+            </div>
+          </details>
+        </article>
+        <article class="task-card secondary" data-span="6" aria-labelledby="task-parked-title">
+          <div class="card-topline"><span class="eyebrow">Lane 1 · Tweaks drawer rollout</span><span class="status">Parked</span></div>
+          <h3 id="task-parked-title">Parked at Mark's request</h3>
+          <p>Extending the shared Tweaks drawer to the other six masters stays parked. Mark, 19 September: "I don't need tweak drawers rolled out just yet". If it unparks, the landed chrome work decides what counts as a tweak on the flower first.</p>
+          <p class="caption task-note">Lane 4, publishing, is live since 20 September 2026 (Live and lasting, below).</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="publishing" id="publishing" data-span="12" aria-labelledby="publishing-title">
+      <div class="publishing-copy">
+        <span class="eyebrow">Live · 20 Sep 2026 · built</span>
+        <h2 id="publishing-title">Live and lasting</h2>
+        <p>Public sharing is live: <a href="https://markshikada.github.io/Re.SOURCE-Site/">markshikada.github.io/Re.SOURCE-Site/</a> — opens onto HQ, same address forever. In your words: &ldquo;Update HQ and keep going to facilitate public sharing.&rdquo; One click republishes from now on: <code>Re.SOURCE → Actions → Publish site → Run workflow</code>. The vault stays private; the mirror is the 87-file public set, verified in a real browser at desktop and phone.</p>
+        <div class="actions">
+          <a class="button button-primary" href="https://markshikada.github.io/Re.SOURCE-Site/">Open the live site</a>
+          <a class="text-link" href="research/publishing-setup.html">How publishing works<span class="link-mark" aria-hidden="true"></span></a>
+        </div>
+      </div>
+      <details class="disclosure publishing-details">
+        <summary>What was decided, and how it lands<span class="chevron" aria-hidden="true"></span></summary>
+        <div class="disclosure-body">
+          <ul class="acceptance">
+            <li>The ruling landed 20 Sep 2026: a Re.SOURCE page may be readable by anyone who has the link. Route 1, a public site repo fed from the vault, is the way; the vault itself stays private.</li>
+            <li>Built and tested in the vault: the copy list (<code>Projects/Publish/manifest.txt</code>, pages and runtime only, no notes), the publish script (<code>Projects/Publish/publish.sh</code>: stage, check, push), the link checker (a missing asset fails the publish; 87 files, 101 references resolving; 26 dead .md on the mirror by design) and the dispatch workflow (<code>.github/workflows/publish-site.yml</code>).</li>
+            <li>Live 20 Sep 2026: deploy key + Actions (smart path, no expiry) — Pages <code>built</code> on <code>main / (root)</code>, commit <code>70c3971</code> (vault <code>6ce58a2</code>). The one-rope Arena limit was proven both ways (vault sessions see only Re.SOURCE, site sessions see only Re.SOURCE-Site); the key path replaces the reconnect idea. Setup is one local run of <code>Projects/Publish/setup-auto.sh</code>.</li>
+            <li>The fixed link is <a href="https://markshikada.github.io/Re.SOURCE-Site/">markshikada.github.io/Re.SOURCE-Site/</a> → root redirect → HQ. The Arena preview keeps doing what it always did: review only, inside Arena’s viewer. The “Preview Unavailable” wall your phone met on 20 Sep is that viewer refusing a raw browser, not a fault.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="disclosure">
+        <summary>Also waiting on you<span class="chevron" aria-hidden="true"></span></summary>
+        <div class="disclosure-body">
+          <ul class="acceptance">
+            <li>Near-synonyms on <a href="templates/colour-lingo/ColourLingo.dc.html">Colour LINGO</a>: FLUX and FLOW sit two positions apart in one set, WANT and NEED likewise, and PATH and WAY hold the same position in two registers.</li>
+            <li>A cold-feeling strand at position 10, on <a href="templates/colour-lingo/ColourLingo.dc.html">Colour LINGO</a>: unclaimed by all four of the original sets.</li>
+            <li>iOS Safari: the 22 Sep hardware pass (Mark: "Style is fine", "phone looks much improved overall") did not name its browser. One fresh look on an iPhone closes this.</li>
+            <li>Parked until Mark asks: the Feedback.md phone test and the gesture-home placement. The LINGO content asks above stay open.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="disclosure">
+        <summary>Where your work goes, and who may see it<span class="chevron" aria-hidden="true"></span></summary>
+        <div class="disclosure-body">
+          <ul class="acceptance">
+            <li><b>The public site</b> &mdash; <a href="https://markshikada.github.io/Re.SOURCE-Site/">markshikada.github.io/Re.SOURCE-Site/</a>. Only what <code>Projects/Publish/manifest.txt</code> lists, which is pages and runtime. No notes, no session records, no prompts. The vault stays private; this mirror is the 87-file public set.</li>
+            <li><b>Finished builds and captures</b> &mdash; this week's <code>_output/</code> in the vault. Reports, charts and screenshots land there the moment they are made. This week's live pages: the model chart, the agents and models page, the commanders and craft specimens, the model setup and the three-agents decision page.</li>
+            <li><b>Thinking and session records</b> &mdash; this week's <code>_notes/</code>, and the session note every lane leaves behind. These are for sessions to pass to each other, never a place a decision hides.</li>
+            <li><b>Handover</b> &mdash; <code>HANDOVER.md</code> and this week's <code>CARRYOVER.md</code>, rewritten at every wrap so the next session starts one step along.</li>
+            <li><b>Agent and model setup</b> &mdash; <code>opencode.jsonc</code> and <code>.opencode/</code>. The three commanders (Intel, Ops, Design), the model ladder, and the company safety list all live here.</li>
+            <li><b>Usage and safety</b> &mdash; <code>Projects/HQ/quota-watch.cjs</code>. Run it any time for actual spend as a percentage of each model's rolling window, and for the company safety board.</li>
+          </ul>
+          <p class="caption">A decision recorded only in a note has not been communicated. Anything that needs you goes into the chat and onto a page here, at the moment it is produced.</p>
+        </div>
+      </details>
+    </section>
+
+    <section class="work-section" id="landed" data-sub data-span="12" aria-labelledby="landed-title">
+      <div class="section-heading">
+        <h2 id="landed-title">Landed, folded away</h2>
+        <span class="eyebrow">Weeks 38 and 39 · all merged to main</span>
+      </div>
+      <p class="landed-lede">Completed work keeps its record and gives back its space. Open a row for the recap, the evidence and the prompt as it ran.</p>
+      <div class="landed-list">
+<details class="disclosure landed-record" id="landed-lane20">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 20 · 22 Sep</span><h3>The Schematics hover inspector, and the pattern written down</h3><span class="status">Done</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>The Schematics corner card read the sets; now a position answers for itself. While the pointer rests on a position's circles in the construction view, the card carries that position's own read above the set rows &mdash; its angle, the circles that meet there, the crossing values that place it, the focused set's slot &mdash; and the read goes when the pointer goes. Hover is desktop only, so touch and keyboard carry the same read from a held pick, labelled as held; a hover is never a selection, and the all-hidden scene keeps its honest empty state. The pattern is written in all three registers with the instruction quoted, and the judgement in <code>notes/reasoning.md</code>.</p>
+            <p class="caption">Record in this week's notes: <code>session-2026-09-22-schematics-hover-lane20.md</code>. New alignment checks at 12/6/3, in the folded narrow state and against a held pick; captures in the week's _output/.</p>
+            <div>
+              <p class="caption">Read-only record. prompts.md folds finished prompts away with their work.</p>
+              <pre class="prompt" id="prompt-lane20" tabindex="0" aria-label="Lane 20, Schematics hover inspector, the prompt as it ran">LANE 20 · HOVER READ · Master FLOWER · one fact, three registers · one branch, stop at PR
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 20 from Projects/HQ/queue.md, the Schematics hover inspector on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md ("One HUD language across every master", where the corner inspector card is law) → notes/flower-alignment-review.md (the Schematics and rendering separation, and the shared facts) → notes/components-inventory.md ("Shared chrome") → notes/reasoning.md ("One HUD language and the Schematics corner card", "Schematics is a construction view, not a second page") → the master: templates/colour-flower/ColourFlower.dc.html with measurements.css and geometry.js.
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip. Read the cluster numbers off lib/tweaks-drawer.js and templates/colour-flower/measurements.css, never off an older record: compact law v11.1 puts the nav at 20, Tweaks at 60, Schematics at 100, Walkthrough at 140, Render at 180, on 40px steps, with a sheet opening below the cluster. Run node tests/flower-geometry.cjs and node tests/flower-parity.cjs. tests/flower-alignment.cjs needs a real browser; the offline recipe is in github.md, and if no browser exists say so plainly rather than reporting it green.
+
+Task, lane 20: the Schematics hover inspector, and the pattern written down. In order: (1) hovering a position in the Schematics construction view adds that position's own read to the corner inspector card — its angle, which circles meet there, the crossing values that place it, and its set's radius and centre distance for that slot — as a block that sits above the set rows while hovered and leaves no permanent change when the pointer goes; (2) it never steals a click: the existing picks, hit targets and set selection behave exactly as before, and a hovered read is not a selection; (3) hover is desktop-only, so touch and keyboard get the same read from a held pick, and the read says which of the two produced it; (4) the all-hidden scene keeps its honest empty state — no fake geometry, no invented read; (5) write the pattern up so the next master adopts it: the corner-inspector-card clause in AGENTS.md gains the hover read, notes/components-inventory.md names it under "Shared chrome", notes/session-playbook.md §7 carries the mechanics, and notes/reasoning.md records the judgement. One fact, three registers, nothing restated.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; the geometry solver's values; the parked Tweaks rollout (DS queue item 8); other masters' files; the walkthroughMode law already landed. No other flower lane runs in parallel — the master is one file.
+
+Done-when: geometry and parity green in node, alignment green in a browser if one exists and honestly reported if not; new checks covering the hover read at 12/6/3, in the folded narrow state, and against a held pick; captures in this week's _output/ if a browser exists; the pattern written in all three registers with your instruction quoted; session note in this week's _notes/ ending with efficiency suggestions for the next agent; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+            </div>
+          </div>
+        </details>
+<details class="disclosure landed-record" id="landed-lane21">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 21 · 23 Sep</span><h3>The gesture reference gets a home</h3><span class="status">Done</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>One sheet listing every gesture and every key the surface answers, read off the same tables as the binder. Opened from the tour header, the intro slot or ?, closed by its button, ? again or Esc, with the tour chapter's slot laws throughout. No fifth cluster button; adopted as a system element in all three registers.</p>
+            <p class="caption">Record in this week's notes: <code>session-2026-09-23-lane21-gesture-home.md</code>. Node drift checks green; browser checks written, not run here — no browser in the session.</p>
+            <div>
+              <p class="caption">Read-only record. prompts.md folds finished prompts away with their work.</p>
+              <pre class="prompt" id="prompt-lane21" tabindex="0" aria-label="Lane 21, the gesture reference home, the prompt as it ran">LANE 21 · GESTURE SHEET · Master FLOWER · no fifth cluster button · one branch, stop at PR
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 21 from Projects/HQ/queue.md, the gesture reference's home on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md (the HUD law and the mobile layout rules) → notes/reasoning.md ("Input, touch first", "Why the interaction patterns stand", "What stands in for icons", and the compact law v11.1 entry) → notes/components-inventory.md ("Shared chrome") → the master's own key handling in templates/colour-flower/ColourFlower.dc.html (the onKey branch, the tour's keyboard law, the first-visit hint) → Projects/Re.Colour FLOWER/walkthrough/src/lib/keys.ts, the candidate pattern, read only (path retired 2026-09-23 to _Trash/walkthrough-retired-2026-09-23/; lane done, brief kept as ran).
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip; read the cluster numbers off lib/tweaks-drawer.js and templates/colour-flower/measurements.css (compact law v11.1: nav 20, Tweaks 60, Schematics 100, Walkthrough 140, Render 180, 40px steps, a sheet opens below the cluster); run node tests/flower-geometry.cjs and node tests/flower-parity.cjs; tests/flower-alignment.cjs needs a browser, and if there is none say so rather than claiming it green.
+
+Task, lane 21: the gesture reference's home. In order: (1) build the master's own gesture and key reference as one sheet, listing every gesture and every key the surface actually answers, touch-first on a touch device and keyboard-first on a desktop; (2) make it one source — the sheet reads from the same table that binds the keys, so what is bound and what is documented cannot drift, which is the whole point of the candidate pattern; (3) place it without growing the cluster: the recommendation is a 44px control inside the tour panel's header and inside the intro's slot, not a fifth fixed button on the stack, because the v11.1 stack is honest at four and a phone already carries a fold — argue the placement in the session note and, if you disagree, say why before you build it; (4) follow the sheet law — a sheet opened from the cluster opens below it, and on a narrow frame it is a bottom sheet at most half the frame with a scrolling body and its controls in reach; (5) it must be reachable from the artwork view as well as the tour, since most of the gestures belong to the artwork; (6) adopt it as a system element: AGENTS.md's HUD clause names it, notes/components-inventory.md lists it under "Shared chrome", notes/reasoning.md records the placement judgement with Mark's ruling quoted ("the reference gets a home, it does not stay off the surface").
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; the key bindings themselves (this lane documents them, it does not rebind them — a collision is a finding for the session note, not a change); the parked Tweaks rollout; other masters' files; the testbed app. No other flower lane runs in parallel.
+
+Done-when: geometry and parity green in node, alignment green in a browser if one exists and honestly reported if not; new checks for the sheet opening and closing by pointer, keyboard and tap, at 12/6/3 and in the folded state, with its body scrolling and its controls in reach; captures in this week's _output/ if a browser exists; the element adopted in all three registers; session note in this week's _notes/ ending with efficiency suggestions; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+            </div>
+          </div>
+        </details>
+
+
+
+<details class="disclosure landed-record" id="landed-v111">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Compact law v11.1 · 22 Sep</span><h3>The right-side menus fix</h3><span class="status">Recorded after the fact</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>The whole right side went compact and safe-area aware: the nav pill, the Tweaks trigger, both view toggles and the Render drawer share one treatment &mdash; 32px rows, 6px 10px padding, 11px mono at 0.02em, <code>surface-card</code> on <code>surface-border</code>, 8px radius, a subtle shadow rather than a glow, and safe-area insets on every fixed edge. The stack tightened from 44px steps to 40: nav 20, Tweaks 60, Schematics 100, Walkthrough 140, Render 180. The blend dots' shadow went off, so the two shadows no longer fight. Desktop and phone are identical in density; only the fold differs.</p>
+            <p class="caption">This lane reached main with no queue row, no session note and no card here, and the queues still cited the old 68 / 112 / 156 / 200 numbers. Recorded and corrected on 22 September, reconstructed from the code and the merge message rather than invented. The law is in <code>AGENTS.md</code> and <code>notes/reasoning.md</code>.</p>
+          </div>
+        </details>
+<details class="disclosure landed-record" id="landed-lane19">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 19 · 22 Sep</span><h3>The testbed app and the live site</h3><span class="status">Done</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>The mobile wave's last surface. The Re.Colour FLOWER walkthrough app took the master's phone layout &mdash; the fold, the clear band, the card sheet, the chapter sheet, the triptych &mdash; with the parity lock extended to its layout constants, then the public site was republished and looked at on the live address at five frames. The wave is complete; what remains of it is a physical-phone pass, and the one iOS Safari look below.</p>
+            <p class="caption">Record in this week's notes: <code>session-2026-09-22-walkthrough-mobile-lane19.md</code>. Its app-side retirement is approved and waiting, named on the Flower page rather than briefed there.</p>
+            <div>
+              <p class="caption">Read-only record. prompts.md folds finished prompts away with their work.</p>
+              <pre class="prompt" id="prompt-lane19" tabindex="0" aria-label="Mobile rules, walkthrough and site, the prompt as it ran">Work in Projects/Design System on markshikada/Re.SOURCE.
+
+Read in order: VAULT.md at repo root → HANDOVER.md (the browser recipe and the constants; do not re-derive them) → Projects/Design System/AGENTS.md, section "Mobile layout rules for the masters" (Mark, 2026-09-21: "Re.Source HQ site looks good on desktop but responsive design needs more considered layout rules for mobile. Work through masters starting with Flower and Cards.") → the Brand STYLE master, section 07 Responsive, where the eight rules are published as rule and reason → notes/reasoning.md, the two entries of 21 September 2026 ("Mobile layout rules for the masters" and "Brand STYLE on a phone", the second names this master's defects already) → Weekly 2026/Y26 W39 September 21/_notes/session-2026-09-21-mobile-layout-rules.md, whose last section is efficiency advice written for you.
+
+Before starting: playbook §8 preflight (git ls-remote origin; confirm main carries the mobile rules from arena/01a0c3ab-re-source); build the browser per the HANDOVER recipe (about 90 seconds; never NSPR/NSS from source); serve the vault root on :8080; write a small capture harness that shoots this master at 320 × 568, 390 × 844, 844 × 390, 820 × 1180 and 1440 × 900 in every state it has, plus an errors probe for logic-class failures. Capture before you touch anything and keep those PNGs.
+
+Task, lane 19: the last surfaces. The Re.Colour FLOWER walkthrough app (Projects/Re.Colour FLOWER) takes the master's phone layout (fold, band, card sheet, chapter sheet, triptych) so the two live flowers match on a phone as they already do on a desktop (flower-parity.cjs is the lock; extend it to the layout constants); then republish the public site (Actions → Publish site → Run workflow) and look at HQ, Masters, Brand STYLE and the Flower on the live address at the five frames, since the site copies the vault's files and any path that differs will show there first. Record what the live site shows in the session note; a physical-phone pass remains Mark's eye, so name what still wants it.
+
+The law, in one breath: read the frame off the field (720 / 1080 in tokens/grid.css) and the artefact, never a device; no breakpoint of the surface's own; mobile-first (base = narrow, min-width adds); chrome folds on narrow and short frames and the instrument is drawn to its clear band; a printed card zooms to its column and never reflows; reading text scrolls inside its sheet with the buttons in reach; a row that cannot wrap is a bug even without overflow (data-bleed for a bleed, the field's pair for a split, label above value at three columns); type only on the 12 / 18 / 24 / 36 / 48 / 72 scale, no letter-spacing, colour as stroke never behind text, whole numbers.
+
+Don't-touch: generated support.js runtimes, _ds_bundle.js and lib/aspect-render.js, the masters already done (Colour FLOWER, Word CARD, Word DECK, Brand STYLE), the parked Tweaks rollout (do not add a drawer to a master that lacks one), other sessions' branches.
+
+Done-when: the master looked at and captured at all five frames, before and after PNGs under 500 KB in the week's _output/ (Mobile-before-&lt;Master&gt;-*.png, Mobile-after-&lt;Master&gt;-*.png); 1440 pixel-diffed against before and every difference named; suites green (flower-alignment.cjs, flower-geometry.cjs, flower-parity.cjs, deck-grid.cjs, hq-responsive.cjs); anything new written into AGENTS.md and Brand STYLE section 07 with Mark's instruction quoted; session note in this week's _notes/ ending with your own efficiency suggestions for the next agent (Mark's standing ask); HANDOVER.md rewritten; the HQ queue row for this lane set to done and prompts.md re-led with the next lane; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+            </div>
+          </div>
+        </details>
+        <details class="disclosure landed-record" id="landed-lane11">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 11 · vault</span><h3>Session load audit</h3><span class="status">Done · 21 Sep</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>A typical session's instruction load was measured, not guessed. Design System instructions are 10,020 tokens when auto-discovered, 18,336 with the handover and the vault, 19,128 with the role file. Four named hub files cost 67,828 tokens read whole, against 10,498 in the measured ranges, on the warm-cache model. The report proposes a tighter tool-output cap and conditional reads. Protected files were not changed.</p>
+            <p class="caption">Report in this week's notes. Proposed edits stay in the report.</p>
+            <div>
+              <p class="caption">Read-only record. prompts.md folds finished prompts away with their work.</p>
+              <pre class="prompt" id="prompt-lane11" tabindex="0" aria-label="Session load audit starting prompt">Work at the vault root of markshikada/Re.SOURCE.
+
+Read in order: VAULT.md → HANDOVER.md → AGENTS.md → opencode.jsonc → Weekly 2026/Y26 W39 September 21/_notes/opencode-quota-playbook.md.
+
+Task: lane 11 from Projects/HQ/queue.md — a repo audit for agentic session load efficiency. Measure, do not guess. Four questions:
+
+(1) Instruction load — list every AGENTS.md / VAULT.md / HANDOVER.md / AGENT.md / SKILL.md that lands in context on a typical Design System lane, with byte size and ≈token count (÷3.8). Mark each as auto-loaded by OpenCode's upward discovery (workspace dir towards home, plus nested files discovered as the agent explores) or pulled because another file instructs the read. Name which of those a routine lane could skip.
+
+(2) Re-read cost — from the week's session notes and Projects/Design System/notes/, find the evidence of wholesale reads of the large files (github.md 66 KB, Projects/HQ/queue.md 60 KB, Notes.html 55 KB, HQ.html 38 KB, the .dc.html masters) versus ranged reads. Price both at DeepSeek V4.1 Flash off-peak rates — $0.15/M input, $0.003/M cached read, $0.60/M output — for a 30-call session, and say where the money actually goes.
+
+(3) Config effect — opencode.jsonc now caps tool output at 1,200 lines / 40 KB (defaults 2,000 / 50 KB). List any working file a lane genuinely needs whole that this would truncate, and recommend a cap either way with the reason.
+
+(4) Budget — recommend an always-on token budget for a session in this vault and name what should move out of it, with byte counts.
+
+Deliverable: one report in this week's _notes/ (frontmatter per VAULT.md), the queue row updated, and proposed edits listed but NOT applied. This lane restructures nothing: VAULT.md, AGENT.md and the project AGENTS.md files are Mark's, and around 80 files in this repo reference VAULT.md by name, so it keeps its name and its role.
+
+Don't-touch: VAULT.md, AGENT.md, any project AGENTS.md, opencode.jsonc — recommend changes in the report instead of making them.
+
+Done-when: report committed to this week's _notes/, HQ queue row updated, HANDOVER.md rewritten, push, create the PR and merge your own PR (wrap up and merge, Mark's ruling 2026-09-19). Report the findings to Mark in chat as short numbered points — he does not read markdown notes.</pre>
+            </div>
+          </div>
+        </details>
+        <details class="disclosure landed-record" id="landed-lane18">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 18 · edition v9</span><h3>HQ on a phone</h3><span class="status">Done · 21 Sep</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>This page now meets the mobile law: the featured card and its context aside on the field's pair (stacked at three), the prompt disclosures scrolling inside their own box so the copy button stays in reach, the landed rows label above value at three columns, and the top bar's switcher and links wrapping rather than clipping. Edition v9 re-tiers the week: the wave's last surface is now and next, lane 3's Drive check and lane 11's load audit come after the wave, and the deck's open question waits below.</p>
+            <p class="caption">Before and after captures at 320, 390, 844 × 390, 820 and 1440 in this week's _output/ (Mobile-before-HQ-* and Mobile-after-HQ-*), the 1440 pixel-diffed and every difference named in the session note. tests/hq-responsive.cjs extended and green.</p>
+            <div>
+              <p class="caption">Read-only record. prompts.md folds finished prompts away with their work.</p>
+              <pre class="prompt" id="prompt-lane18" tabindex="0" aria-label="Mobile rules, HQ starting prompt">Work in Projects/Design System on markshikada/Re.SOURCE.
+
+Read in order: VAULT.md at repo root → HANDOVER.md (the browser recipe and the constants; do not re-derive them) → Projects/Design System/AGENTS.md, section &quot;Mobile layout rules for the masters&quot; (Mark, 2026-09-21: &quot;Re.Source HQ site looks good on desktop but responsive design needs more considered layout rules for mobile. Work through masters starting with Flower and Cards.&quot;) → the Brand STYLE master, section 07 Responsive, where the eight rules are published as rule and reason → notes/reasoning.md, the two entries of 21 September 2026 (&quot;Mobile layout rules for the masters&quot; and &quot;Brand STYLE on a phone&quot;, the second names this master&#x27;s defects already) → Weekly 2026/Y26 W39 September 21/_notes/session-2026-09-21-mobile-layout-rules.md, whose last section is efficiency advice written for you.
+
+Before starting: playbook §8 preflight (git ls-remote origin; confirm main carries the mobile rules from arena/01a0c3ab-re-source); build the browser per the HANDOVER recipe (about 90 seconds; never NSPR/NSS from source); serve the vault root on :8080; write a small capture harness that shoots this master at 320 × 568, 390 × 844, 844 × 390, 820 × 1180 and 1440 × 900 in every state it has, plus an errors probe for logic-class failures. Capture before you touch anything and keep those PNGs.
+
+Task, lane 18: HQ.html and lib/hq.css, the page Mark opens on his phone. Capture first at all five frames. Expected: the featured task card and its context aside on the field&#x27;s pair (stacked at three), the prompt disclosures scrolling inside their own box so the copy button stays in reach (the sheet rule applied to a page), the landed archive rows as label-above-value at three columns, the top bar&#x27;s switcher and links wrapping rather than clipping. This lane also does HQ edition v9 (queue row 13) since it is the same file: re-tier the HUD for week 39 (the mobile wave now and next, lane 3&#x27;s Drive check and lane 11&#x27;s load audit after it), restamp the edition, carry the deck&#x27;s open question into Waiting. hq-responsive.cjs must stay green and be extended for anything you change.
+
+The law, in one breath: read the frame off the field (720 / 1080 in tokens/grid.css) and the artefact, never a device; no breakpoint of the surface&#x27;s own; mobile-first (base = narrow, min-width adds); chrome folds on narrow and short frames and the instrument is drawn to its clear band; a printed card zooms to its column and never reflows; reading text scrolls inside its sheet with the buttons in reach; a row that cannot wrap is a bug even without overflow (data-bleed for a bleed, the field&#x27;s pair for a split, label above value at three columns); type only on the 12 / 18 / 24 / 36 / 48 / 72 scale, no letter-spacing, colour as stroke never behind text, whole numbers.
+
+Don&#x27;t-touch: generated support.js runtimes, _ds_bundle.js and lib/aspect-render.js, the masters already done (Colour FLOWER, Word CARD, Word DECK, Brand STYLE), the parked Tweaks rollout (do not add a drawer to a master that lacks one), other sessions&#x27; branches.
+
+Done-when: the master looked at and captured at all five frames, before and after PNGs under 500 KB in the week&#x27;s _output/ (Mobile-before-&lt;Master&gt;-*.png, Mobile-after-&lt;Master&gt;-*.png); 1440 pixel-diffed against before and every difference named; suites green (flower-alignment.cjs, flower-geometry.cjs, flower-parity.cjs, deck-grid.cjs, hq-responsive.cjs); anything new written into AGENTS.md and Brand STYLE section 07 with Mark&#x27;s instruction quoted; session note in this week&#x27;s _notes/ ending with your own efficiency suggestions for the next agent (Mark&#x27;s standing ask); HANDOVER.md rewritten; the HQ queue row for this lane set to done and prompts.md re-led with the next lane; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+            </div>
+          </div>
+        </details>
+        <details class="disclosure landed-item">
+          <summary><span class="landed-line"><span class="eyebrow">Mobile wave · lanes 14–17</span><h3>Masters and hub pages</h3><span class="status">Done</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body"><p>Colour LINGO, Brand LOGO and Colour WHEEL merged in PR 107, recorded in PR 108. Mark confirmed completion. Masters and Notes now use the shared top bar, a one/two/three-card catalogue and narrow reading rows; all nine tested frames pass. WHEEL's direct circle hit target remains a separately recorded follow-up from PR 107, not a reason to restart the completed lanes.</p></div>
+        </details>
+        <details class="disclosure landed-record" id="landed-lane12">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 12 · Word DECK</span><h3>One lattice for the deck</h3><span class="status">Done · PR 103</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>Mark: "Card Deck needs to be a neat grid layout. Address to avoid ugly spaces and alignments." The master rebuilt on one lattice &mdash; one gap, the count divides the deck (6/4/3/2/1), nothing stretches, and a two-card cell fits its row. The card rides a wrapper so a span lands on the cell, and the frame is measured after the field's stylesheet lands.</p>
+            <p class="caption">31,101 headless checks across thirteen widths and every dial; the five suites green. Open for Mark's eye: the twelve-column sheet question, waiting above in the archive's place below.</p>
+          </div>
+        </details>
+        <details class="disclosure landed-record" id="landed-lane9">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 9 · Colour FLOWER</span><h3>Walkthrough into the master</h3><span class="status">Done · PR 100</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>Mark: "I'll want to take some learnings over to a more polished version, integrated into master as new view mode, like other right side tools." The master declares walkthroughMode; the shared drawer generalises view modes as a labelled map &mdash; mutually exclusive, complete payloads, the rf-view-exit handshake &mdash; and six chapters walk the middle ring whatever set it holds.</p>
+            <p class="caption">The artwork view stays the opening state. The walkthrough app remains the input testbed; its polish pass sits in the prompts.</p>
+          </div>
+        </details>
+        <details class="disclosure landed-record" id="landed-lane6">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 6 · Re.Focus FLOWER</span><h3>Base naming fix</h3><span class="status">Done · 20 Sep</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>One set is named Base now. The Design System's positions.js is the tie-breaker — "Base sits at k × 60°, Blend at k × 60 + 30°" — so Base is the LIFE·FLUX·LOVE·FIRE·TIME·FORM hexagon (12·02·04·06·08·10) and Blend is the TONE·FLOW·BOND·PATH·META·TYPE hexagon (01·03·05·07·09·11). The 2026-07-23 learning entry was right all along.</p>
+            <p class="caption">Reconciled in flower-walkthrough.html — its six flower circles now sit on the Base positions, matching the Colour FLOWER master's default six Base circles, and its three polar-pair steps read as Blend positions — and in Flower-Ground-Truth-Diagram.html, which had followed the walkthrough's inverted usage until now. No words, geometry values or Sheet cells changed. Full record: the 2026-09-20 entry in Agent-Learnings.md.</p>
+            <div>
+              <p class="caption">Read-only record. prompts.md folds finished prompts away with their work.</p>
+              <pre class="prompt" id="prompt-lane6" tabindex="0" aria-label="Base naming fix prompt as it ran">Work in Projects/Re.Focus FLOWER on markshikada/Re.SOURCE.
+
+Read: Agent-Learnings.md (2026-07-23 entry) → flower-walkthrough.html (BASE_IDS, BASE_NAMES) → the Design System's templates/colour-flower/components/core/positions.js (the tie-breaker).
+
+Task: lane 6 from Projects/HQ/queue.md — "Base" names two different six-point sets (the 162,45,193,277,70,318 one in the walkthrough vs the 120,300,0,240,60,180 one in the 2026-07-23 note). Let the live master's geometry decide which set is the Base one, and reconcile the other file's language. Log the reconciliation in Agent-Learnings.md.
+
+Don't-touch: the Design System's positions.js (read it, don't edit it).
+
+Done-when: one set is named Base consistently, the log entry is in, push, Create PR, and merge your own PR (wrap up and merge, Mark's ruling 2026-09-19).</pre>
+            </div>
+          </div>
+        </details>
+        <details class="disclosure landed-record" id="landed-lane5">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 5 · Re.Focus FLOWER</span><h3>Flower core gloss, HERE</h3><span class="status">Done · 20 Sep</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>HERE is where you find yourself before deciding where to go.</p>
+            <p class="caption">Verified against the live LINGO Sheet on 20 September. Only the Core state gloss changed in flower-content.json; the session log records the correction. No other copy, geometry or Sheet cells changed.</p>
+          </div>
+        </details>
+        <details class="disclosure landed-record" id="landed-lane10">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 10 · edition v8</span><h3>Universal top bar</h3><span class="status">Done · PR 89</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>Landed 20 September: the bespoke static masthead became one fixed, shared top bar — page markup, <code>lib/topbar.css</code> (tokens only) and the shared nav lib's bar mode. The bar carries the brand, the master switcher (the floating pill absorbed into it; pill mode on the masters verified unchanged), the context slot (this page's section links, wired to the navigator's scroll spy) and the edition/week stamp; content starts below the bar and section anchors land clear of it. The v7 tier system stands untouched underneath, and the adoption pattern for the other hub pages is written into the HUD law in AGENTS.md, not guessed.</p>
+            <p class="caption">The edition/week identity moved from the intro to the bar's stamp; the intro keeps the snapshot timestamp, so nothing is said twice. Tests: <code>tests/hq-responsive.cjs</code> covers the bar at every width (fixed, top edge, content below, stays on scroll, anchors and scroll spy, no-JS offset); edition v8 captures HQ-v8-desktop.png and HQ-v8-phone.png in W38 <code>_output/</code>.</p>
+            <div class="actions"><a class="text-link" href="Masters.html">See the switcher in pill mode<span class="link-mark" aria-hidden="true"></span></a></div>
+            <div>
+              <p class="caption">Read-only record. prompts.md folds finished prompts away with their work.</p>
+              <pre class="prompt" id="prompt-lane10" tabindex="0" aria-label="Universal top bar prompt as it ran">Recovery note: the lane 10 definition was written on `arena/01a0bed1-re-source`, and that workspace did not transfer — this block, the queue row and the Log entry were re-applied from the handover brief, exactly (queue Log, 2026-09-20 afternoon). This is a new build lane, not a finish-up: there is nothing unpushed to chase, and the build starts from the merged v7 baseline.
+
+Work in Projects/Design System (HQ.html + lib/) and Projects/HQ (queue, prompts) on markshikada/Re.SOURCE.
+
+Read: Projects/HQ/queue.md (lane 10 row) → HQ.html's bespoke static masthead → lib/masters-nav.js + lib/hq.css (the floating black pill, HUD law) → tests/hq-responsive.cjs.
+
+Rulings, Mark 2026-09-20: HQ only, with the adoption pattern documented for the other pages later; the bar carries brand + master switcher + context slot (HQ section links) + edition/week stamp; fixed on scroll, page content starts below it.
+
+Task: lane 10 from Projects/HQ/queue.md — rebuild HQ's masthead as the fixed universal top bar: one shared-component pattern (markup, CSS, JS, tokens only) with the rollout pattern written up, not guessed; the floating pill on HQ absorbed into the bar; the v7 tiers untouched; tests/hq-responsive.cjs updated to the new bar and green in a real browser at 12/6/3 on the offline recipe in github.md; edition v8 desktop + phone captures in W38 _output/.
+
+Don't-touch: the v7 tiers and their order; the other prompts.md blocks; tokens; the instrument masters; the playbook mechanics.
+
+Done-when: suite green, captures inspected, queue row flipped to done with a Log entry, the lane 10 prompt block retired per the v7 rule, push, Create PR, and merge your own PR (wrap up and merge, Mark's ruling 2026-09-19).</pre>
+            </div>
+          </div>
+        </details>
+        <details class="disclosure landed-record" id="landed-lane7">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Priority 01 · lane 7</span><h3>Schematic Mode out of Tweaks</h3><span class="status">Done · PR 81/82</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>Landed 19 September: Schematic Mode is its own master-specific view toggle beside Tweaks, which now carries dialable values only. The right side reads as two clusters — the global nav pill and the master's options — and the rollout pattern for the other masters is written in the playbook §7.</p>
+            <div class="actions"><a class="text-link" href="templates/colour-flower/ColourFlower.dc.html">Open Colour FLOWER<span class="link-mark" aria-hidden="true"></span></a></div>
+            <div>
+              <p class="caption">Read-only record. prompts.md folds finished prompts away with their work.</p>
+              <pre class="prompt" id="prompt-lane7" tabindex="0" aria-label="Right side chrome prompt as it ran">Work in Projects/Design System on markshikada/Re.SOURCE.
+
+Read in order: VAULT.md + HANDOVER.md → AGENTS.md → Projects/HQ/queue.md → notes/flower-alignment-review.md (what PR 77 landed) → templates/colour-flower/ColourFlower.dc.html (its data-props, Schematic Mode, the Render drawer, the corner geometry card) → lib/tweaks-drawer.js, lib/masters-nav.js.
+
+Task: lane 7 (PRIORITY) from Projects/HQ/queue.md. Mark's ruling, quoted: "Move schematic mode out of tweaks. Harmonise the accumulating right side tools. I want smart distinction between nav and master-specific options."
+
+Baseline (PR 77, already merged): Schematic Mode is still a Tweaks enum; shadow/glow live in the separate artwork-only Render drawer; the taller corner geometry card carries the schematics view.
+
+1. Schematic Mode moves out of the Tweaks drawer into a master-specific options control: it is a view mode, not a dialable value.
+2. The Tweaks drawer carries dialable values only. The Render drawer and the corner card keep their PR 77 behaviour.
+3. One harmonised right side: global nav (masters nav, every master) visually and positionally distinct from master-specific options (per master; flower first). The distinction must read at a glance, 12/6/3, desktop and phone.
+4. Work the pattern on Colour FLOWER, then write it up for the other masters (playbook or AGENTS.md) so the rollout is documented, not guessed.
+
+Don't-touch: the PR 77 geometry (13 circles sharing the set's radius, shared contacts, Flower Scale) and the corner card's content; the 2026-09-19 gesture rulings (drawer close paths, first-visit hint, scroll zoom) unless a direct conflict forces a change — flag it for Mark, don't change it; the other masters; word data.
+
+Done-when: Schematic Mode is reachable from its own control and gone from Tweaks; the right side reads as nav + options at a glance; the flower still renders at 12/6/3; tests/flower-geometry.cjs and tests/flower-alignment.cjs still pass; queue row updated, commit, push, Create PR, and merge your own PR (wrap up and merge, Mark's ruling 2026-09-19).</pre>
+            </div>
+          </div>
+        </details>
+        <details class="disclosure landed-record" id="landed-lane8">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Priority 02 · lane 8</span><h3>Both flowers, one geometry and one HUD language</h3><span class="status">Done · PR 83</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>Landed 20 September: the shared sizing and positioning facts are named once in the Design System and the walkthrough now matches them — its Core was still the retired 120 shortcut and is now the set's own radius (103.92), its core dots land on the inner crossings, the dashed core ring is gone from the flower, and its typefaces are the system's self-hosted Figtree and JetBrains Mono. The HUD law is written in AGENTS.md with Colour FLOWER as the reference implementation, and the Schematics corner card is formalised in the components inventory. A parity test locks the walkthrough to the master's declared defaults.</p>
+            <p class="caption">Mark, quoted on the queue: "I want both flowers to share the same sizing and positioning. All views and modes to share same UI and consistency too, like a AAA game HUD."</p>
+            <div class="alignment-picture"><img src="../../Weekly%202026/Y26%20W38%20September%2014/_output/Walkthrough-core-before-2026-09-19.png" width="1440" height="900" alt="Walkthrough core before: the core disc is larger than its petals and carries a dashed ring."></div>
+            <div class="alignment-picture"><img src="../../Weekly%202026/Y26%20W38%20September%2014/_output/Walkthrough-core-after-2026-09-19.png" width="1440" height="900" alt="Walkthrough core after: the core is the thirteenth circle at the set's own radius, its dots on the inner crossings, no dashed ring."></div>
+            <p class="caption">Both flowers at the same seed. The before capture renders system-fallback type because this sandbox has no internet and the old build fetched its fonts from a CDN — the change carries the typefaces inside the build, which is also why the after capture shows the real Figtree.</p>
+            <div class="actions"><span class="rs-vault-only" title="Vault-only note, not published to the public site">Read the shared facts<span class="link-mark" aria-hidden="true"></span></span></div>
+          </div>
+        </details>
+        <details class="disclosure landed-record" id="alignment-review">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">PR 77 · Colour FLOWER</span><h3>Geometry, Schematics and Render</h3><span class="status">Done · 19 Sep</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>All 13 circles in a set share the set's radius with shared contacts and a common Flower Scale; the relational Schematics lives in a taller master-style corner card; shadow and glow moved to the artwork-only Render drawer. The HQ responsive redesign landed with it and was welcomed by Mark as "Lovely".</p>
+            <p>The highlighted inner join now meets the corrected core marker. State and Tags also share exact contact coordinates, maintained by the scale relationship.</p>
+            <div data-grid class="alignment-grid">
+              <figure class="alignment-figure" data-span="6">
+                <div class="alignment-picture"><img src="../../Weekly%202026/Y26%20W38%20September%2014/_output/Flower-State-current.png" width="540" height="540" alt="Current State flower with the inner right-hand dot outside the true stroke crossing."><svg viewBox="0 0 540 540" aria-hidden="true"><rect x="342" y="240" width="96" height="60" rx="8"></rect></svg></div>
+                <figcaption><h3>Before</h3><p>Oversized black centre covers the true crossing.</p><p class="caption">Core radius 120 · petal radius about 103.92</p></figcaption>
+              </figure>
+              <figure class="alignment-figure" data-span="6">
+                <div class="alignment-picture"><img src="../../Weekly%202026/Y26%20W38%20September%2014/_output/Flower-State-corrected.png" width="540" height="540" alt="Corrected master: State core and petals share a radius, with its inner dot on the stroke crossing."><svg viewBox="0 0 540 540" aria-hidden="true"><rect x="342" y="240" width="96" height="60" rx="8"></rect></svg></div>
+                <figcaption><h3>Corrected master</h3><p>Dot returns to the shared stroke crossing.</p><p class="caption">All 13 circles share the set's radius. Default State R = √3 × Tags R.</p></figcaption>
+              </figure>
+            </div>
+            <p class="caption">Checked across 320 geometry combinations and 36 rendered set/spacing/scale cases, with phone, tablet and desktop layout checks. State A/D and Tags D have no usable snap target and report that explicitly. Word data is unchanged.</p>
+            <details class="disclosure" id="schematic-review">
+              <summary>Preview the finished Schematics view<span class="chevron" aria-hidden="true"></span></summary>
+              <div class="disclosure-body alignment-picture"><img src="../../Weekly%202026/Y26%20W38%20September%2014/_output/Flower-schematics-desktop.png" width="1440" height="1000" alt="Flower construction with a taller master-style geometry card, descriptive spacing names and no duplicated top-left labels."></div>
+            </details>
+            <details class="disclosure"><summary>Preview the artwork's Render drawer<span class="chevron" aria-hidden="true"></span></summary><div class="disclosure-body alignment-picture"><img src="../../Weekly%202026/Y26%20W38%20September%2014/_output/Flower-rendering-desktop.png" width="1440" height="1000" alt="Artwork with a separate rendering drawer; two large live shadow and glow previews fill its width."></div></details>
+            <details class="disclosure" id="lane1-details">
+              <summary>Context for the completed PR 77 work<span class="chevron" aria-hidden="true"></span></summary>
+              <div class="disclosure-body">
+                <p class="caption">If a session needs the PR 77 context: the work is complete and merged, and the chrome work above has since moved Schematic Mode out of Tweaks.</p>
+                <pre class="prompt" id="prompt-lane1" tabindex="0" aria-label="Flower alignment task context, completed">Work in Projects/Design System on markshikada/Re.SOURCE.
+
+Read VAULT.md and HANDOVER.md, then AGENTS.md and notes/flower-alignment-review.md.
+
+Flower work is complete. Mark requested wrap-up and merge of PR 77; it is merged. Check GitHub for the authoritative merge record rather than treating old visual-review status as a new approval gate. Do not invent a follow-up or start another lane.
+
+Preserve the corrected per-set 13-circle radii, derived State/Tags contact relationship and common Flower Scale. The final Schematics view has a taller master-style corner card, no duplicated top-left information, and descriptive spacing labels: Deep overlap (A), Shallow overlap (B), Touching (C), Stacked (D). Visibility and formulas live in the card. Geometry keys/calculations are unchanged.
+
+Shadow/glow belongs to Render in artwork mode, not Schematics. Its larger live previews share the drawer width and fitted scale. Sliders and explicit Save/Clear still use the existing store. The only shared-library change is optional enum display labels in tweaks-drawer.js; generated runtime and other masters are untouched.
+
+Tests: tests/flower-geometry.cjs, tests/flower-alignment.cjs and tests/hq-responsive.cjs. Physical-device and screen-reader checks remain untested. Word data was neither changed nor live-revalidated. Broader drawer rollout remains parked. Wait for Mark to name any next task.</pre>
+                <p class="caption">Drawer rollout is paused at Mark's request. It would add settings panels elsewhere, not correct Flower's geometry.</p>
+              </div>
+            </details>
+          </div>
+        </details>
+        <details class="disclosure landed-record" id="landed-hq">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">PR 76/78 · HQ</span><h3>The HUD, the scan and the queue</h3><span class="status">Done · 19 Sep</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>This page and its machinery: the vault-wide dispatcher and the starting prompts, week 38 opened, the HUD layout defect fixed at mechanism level, and the responsive redesign. The rulings were recorded the same day: sessions wrap up and merge their own finished work, and new elements land in the masters.</p>
+            <div class="actions">
+              <span class="rs-vault-only" title="Vault-only note, not published to the public site">Open the task queue<span class="link-mark" aria-hidden="true"></span></span>
+              <span class="rs-vault-only" title="Vault-only note, not published to the public site">Open the starting prompts<span class="link-mark" aria-hidden="true"></span></span>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="playbook work-section" id="playbook" data-sub data-span="12" aria-labelledby="playbook-title">
+      <div class="section-heading"><h2 id="playbook-title">A lighter way to work</h2><span class="eyebrow">Session playbook</span></div>
+      <p class="playbook-lede">Copy a prompt into a fresh session. Keep changes focused. Leave the next session a useful handover.</p>
+      <div class="playbook-list">
+        <details class="disclosure">
+          <summary><span class="summary-label"><span class="eyebrow">01</span>Start with context</span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body"><ol class="steps"><li>Open a new Arena session for <code>markshikada/Re.SOURCE</code>.</li><li>Paste the prompt for the task you chose.</li><li>Read the vault rules, handover and task-specific queue before editing.</li></ol></div>
+        </details>
+        <details class="disclosure">
+          <summary><span class="summary-label"><span class="eyebrow">02</span>Keep parallel work separate</span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body"><p>Use at most two or three sessions at once, each with its own task and files, never two lanes on the same file. Arena is the current primary tool; Kimi can take specified mechanical work when credits return. Gemini maintains the live LINGO Sheet.</p></div>
+        </details>
+        <details class="disclosure">
+          <summary><span class="summary-label"><span class="eyebrow">03</span>Wrap up and merge</span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body"><ol class="steps"><li>Test the changed pages and state what remains untested.</li><li>Update the task queue, visual HQ and session handover.</li><li>Commit and push the session's branch.</li><li>Open a pull request, then merge your own PR when the work is wrapped up. Mark's ruling, 2026-09-19: "Wrap up and merge – do I need to keep saying that?" His review stays open, diff included; a session never merges another session's PR, and nothing pushes to main directly.</li></ol></div>
+        </details>
+        <details class="disclosure">
+          <summary><span class="summary-label"><span class="eyebrow">04</span>New elements land in the masters</span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body"><p>When a new element type appears, it is applied to and adopted in the design masters, and the masters are updated to carry it, so the masters stay the complete source. Mark, 2026-09-19: "Apply and update design masters when making new elements, like this new schematics card style and content." Full rule: the session playbook.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <section class="work-section" id="words" data-sub data-span="12" aria-labelledby="words-title">
+      <div class="section-heading">
+        <h2 id="words-title">Words we use</h2>
+        <span class="eyebrow">Glossary</span>
+      </div>
+      <p class="playbook-lede">A term, where it is defined, and the short form. The queue and the rulings moved here. A browser flag is not a decision.</p>
+      <div class="word-find">
+        <label class="eyebrow" for="wordFind">Find a word</label>
+        <input id="wordFind" type="search" autocomplete="off" placeholder="fit, lattice, hole">
+      </div>
+      <div class="word-group" id="words-sheet">
+        <p class="eyebrow">On the sheet</p>
+        <div class="word-list">
+        <details class="disclosure" data-term="fit">
+          <summary><span class="summary-label"><span class="word-name">fit</span><span class="word-gloss">Whether a word deserves its position, rated by hand</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Rated by hand, never computed. Quality checks count what can be counted, and whether a word is the right word is not one of those things. A word is rated inside its set, so the same word can fit one set and not another. Unsettled is the default: the store starts by admitting it has not judged yet rather than claiming everything is fine.</p>
+            <p class="caption"><span class="rs-vault-only" title="Vault-only note, not published to the public site">reasoning.md</span>, "The two ratings", 27 Aug 2026.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="case">
+          <summary><span class="summary-label"><span class="word-name">case</span><span class="word-gloss">The written entry arguing a cell's fit</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Not defined in reasoning.md, only in code comments. A case proposes a fit for the exact word it was written about. If that word is swapped out, the case goes stale rather than silently carrying over.</p>
+            <p class="caption"><a href="templates/colour-lingo/ColourLingo.dc.html">Colour LINGO</a>, near caseHere and fitAt, settled 28 Aug 2026.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="pool">
+          <summary><span class="summary-label"><span class="word-name">pool</span><span class="word-gloss">Unsorted candidates, kept apart from the grid</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>823 unsorted candidates sit below the four settled rows. Loading them into the grid as alternates was tried and reverted the same day. At fifty to seventy words a cell, the grid stopped being an overview. Nothing in the pool is pre-assigned to a set. Length narrows which set could take a word, and does not always decide it.</p>
+            <p class="caption"><span class="rs-vault-only" title="Vault-only note, not published to the public site">reasoning.md</span>, "the pool is a separate file from the seed", 26 Aug 2026.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="drift">
+          <summary><span class="summary-label"><span class="word-name">drift</span><span class="word-gloss">Sheet and deck naming different words at one spot</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>One-directional. LINGO is the source, so a mismatch is reported as the deck being stale, not as a conflict to resolve. The deck is left alone regardless. A new store has to prove itself before it starts overwriting the thing it replaced.</p>
+            <p class="caption"><span class="rs-vault-only" title="Vault-only note, not published to the public site">reasoning.md</span>, "drift is one-directional", 26 Aug 2026.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="fault quality">
+          <summary><span class="summary-label"><span class="word-name">fault / quality</span><span class="word-gloss">What is countable, without judging meaning</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Four checks, all countable, none about meaning: no word, wrong length for the set, used twice anywhere in the sheet, contradicts a printed card. Deliberately does not score whether a word is the right word. That judgement is what the platform exists to support, not replace.</p>
+            <p class="caption"><span class="rs-vault-only" title="Vault-only note, not published to the public site">reasoning.md</span>, "quality marks only what can be checked", 26 Aug 2026. <a href="templates/colour-lingo/ColourLingo.dc.html">Colour LINGO</a>, wordFaults.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="register">
+          <summary><span class="summary-label"><span class="word-name">register</span><span class="word-gloss">Match to a set's name, for example Anchor TAG</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Not a system rule. It appeared only in the rescore spec as a proposed signal, a proposal, not something reasoning.md or the code establishes. The choice is waiting above.</p>
+            <p class="caption"><span class="rs-vault-only" title="Vault-only note, not published to the public site">notes/lingo-fit-rescore-spec.md</span>.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="asks reads">
+          <summary><span class="summary-label"><span class="word-name">asks / reads</span><span class="word-gloss">The two prose fields inside a case</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Not defined as terms in the system's own vocabulary. Asks names the semantic field a position's pool of candidates is about. Reads is the argument for or against the settled word. Both were named while writing lingo-cases.js.</p>
+            <p class="caption"><a href="templates/colour-lingo/lingo-cases.js">templates/colour-lingo/lingo-cases.js</a>.</p>
+          </div>
+        </details>
+        </div>
+      </div>
+      <div class="word-group" id="words-build">
+        <p class="eyebrow">While building</p>
+        <div class="word-list">
+        <details class="disclosure" data-term="hole">
+          <summary><span class="summary-label"><span class="word-name">hole</span><span class="word-gloss">A slot in a template, filled at render</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Written <code>{{ path }}</code> and nothing more: a dotted lookup, never an expression. <code>{{ a + b }}</code> and <code>{{ fn() }}</code> fail silently, so anything computed is worked out in the logic class and exposed by name. A hole renders nothing until the logic lands, which is why a hole in the wrong place stops a design painting.</p>
+            <p class="caption"><span class="rs-vault-only" title="Vault-only note, not published to the public site">reasoning.md</span>, "Retired: the sanctioned style hole", 5 Sep 2026.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="style hole">
+          <summary><span class="summary-label"><span class="word-name">style hole</span><span class="word-gloss">A hole inside a style attribute, almost always wrong</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>A holed CSS property cannot paint until the logic class arrives, so the design streams in half-dressed. Legitimate only when the value cannot exist at parse time and nothing else can carry it. On SVG something always can, which is how the last one in the system was retired.</p>
+            <p class="caption"><span class="rs-vault-only" title="Vault-only note, not published to the public site">reasoning.md</span>, 5 Sep 2026.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="presentation attribute">
+          <summary><span class="summary-label"><span class="word-name">presentation attribute</span><span class="word-gloss">SVG's own attributes, where a live value belongs</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p><code>fill</code>, <code>stroke</code>, <code>opacity</code>, <code>r</code>, <code>cx</code>. SVG styling written as attributes rather than CSS. A hole in one is free of the style-hole problem: the layout stays literal and paints with the markup while the live part rides on the attribute. Colour FLOWER established the technique. Brand STYLE's position strokes now use it.</p>
+            <p class="caption"><a href="templates/colour-flower/ColourFlower.dc.html">Colour FLOWER</a>, the data-fade comment.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="logic class">
+          <summary><span class="summary-label"><span class="word-name">logic class</span><span class="word-gloss">The half of a component that computes</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>A <code>Component extends DCLogic</code> class holding state, handlers and lifecycle. Its <code>renderVals()</code> returns the values the template's holes read by name. Anything that would be a ternary, a map or a comparison in markup belongs here.</p>
+            <p class="caption">A design component's own script.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="mount">
+          <summary><span class="summary-label"><span class="word-name">mount</span><span class="word-gloss">When an element first appears in the page</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>The distinction that decides which kind of motion is available. Keyframes fire on mount, so anything that appears when hovered or selected can animate in. A transition needs an element that persists across the change, so a thing already on screen animates by transition instead. Colour FLOWER's pop uses both: petals mount, the core persists.</p>
+            <p class="caption"><a href="templates/colour-flower/ColourFlower.dc.html">Colour FLOWER</a>.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="dc">
+          <summary><span class="summary-label"><span class="word-name">DC</span><span class="word-gloss">A .dc.html file: template, logic and props in one</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Opens directly in a browser, can be imported by other components, and paints from the first character streamed rather than after the whole file lands. Templates in this system are design components so a consuming project has one file to copy and one line to edit.</p>
+            <p class="caption">The masters under templates/.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="tweak">
+          <summary><span class="summary-label"><span class="word-name">tweak</span><span class="word-gloss">A prop with an editor, surfaced as a control</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Declared in a component's props JSON with an editor kind and a default. Reserved for what in-place editing cannot do: behaviour, alternative treatments, one flag that changes many elements at once. Copy and single colours are edited directly, so they are never tweaks.</p>
+            <p class="caption">A component's data-props.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="overshoot pop">
+          <summary><span class="summary-label"><span class="word-name">overshoot / pop</span><span class="word-gloss">Motion that passes its end value and comes back</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>A bounce. Banned everywhere motion reports position, where the movement is the message and a bounce claims a move that did not happen. Allowed on hover, which reports only the pointer: <code>cubic-bezier(0.34, 1.56, 0.64, 1)</code> at 360ms, the fourth curve. Ruling, 5 Sep 2026.</p>
+            <p class="caption"><a href="templates/brand-style/BrandStyle.dc.html#motion">Brand STYLE</a>, Motion.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="token">
+          <summary><span class="summary-label"><span class="word-name">token</span><span class="word-gloss">A named value in the global stylesheet</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>A CSS custom property in <code>styles.css</code> and what it imports, read by every surface as <code>var(--space-lg)</code>. The compiler counts them, so a value that is a token is a value the whole system can be checked against.</p>
+            <p class="caption"><a href="styles.css">styles.css</a> and <a href="tokens/grid.css">tokens/</a>.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="lattice">
+          <summary><span class="summary-label"><span class="word-name">lattice</span><span class="word-gloss">The deck's grid law: one sheet, one gap, whole rows</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Five rules, stated in the Word DECK master's own header and checked by the deck-grid test: one lattice (every band is a grid on the same tracks, every cell spans whole slots), one gap (the same number inside a cell, between cells and between rows; the seam is an overlap, not a second gap), the count divides the deck (six, four, three, two or one, the widest that fits the measured frame; closed stack uses six, three, two or one, because four cannot hold its six holdings whole), nothing stretches (leftover space is margin, never a gutter), and a two-card cell fits its row.</p>
+            <p class="caption"><span class="rs-vault-only" title="Vault-only note, not published to the public site">reasoning.md</span>, "One lattice for the deck", 21 Sep 2026.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="holding">
+          <summary><span class="summary-label"><span class="word-name">holding</span><span class="word-gloss">One cell of the deck: a card, or two cards read as one</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>The word the deck's law is written in, because the grid counts cells and the deck counts cards. Full pair, a Pair is one holding across two slots. Closed stack, a holding is one slot whatever it holds, and its second card peeks out by the seam. Bands are made of holdings, not cards: twelve Singles pair into six, twelve Pairs are six, and the lead band is four.</p>
+            <p class="caption"><a href="templates/word-deck/WordDeck.dc.html">Word DECK</a>, the header's five rules.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="reduced motion">
+          <summary><span class="summary-label"><span class="word-name">reduced motion</span><span class="word-gloss">The preference that collapses duration, not the change</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Under prefers-reduced-motion every duration holds at 1ms rather than the animation being deleted. A reveal removed outright leaves content that never arrives at its end state, so every reader lands on the same final frame.</p>
+            <p class="caption"><a href="tokens/motion.css">tokens/motion.css</a>.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="5/7 division">
+          <summary><span class="summary-label"><span class="word-name">5/7 division</span><span class="word-gloss">The rule-and-reason atom, on 5 and 7 of twelve</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Brand STYLE states a rule at 24/36 beside its reason at 18/30, and the two sit on 5 and 7 columns of the twelve. The attribute is <code>data-pair</code>. 5 and 7 is a 2:3 ratio landing on whole columns, which is why it was picked over a half split: the reason gets more room than the rule, and the division still lands on a column edge. It is also the division that exposed the halving bug. At six columns, rounding both halves up gave 3 and 4, which is seven columns of six, so the pair wrapped. Now 2 and 4.</p>
+            <p class="caption"><a href="tokens/grid.css">grid.css</a>. <a href="templates/brand-style/BrandStyle.dc.html#responsive">Brand STYLE, Responsive</a>, draws it at all three counts.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="helmet">
+          <summary><span class="summary-label"><span class="word-name">helmet</span><span class="word-gloss">The part of a design component that lands in the page head</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>A helmet block at the top of a component's template. Its children, font links, font-face, keyframes, body resets and script tags, move into the document head and mount as soon as the tag closes, before the rest of the page has streamed. It is the one place a design component may declare CSS rules rather than inline styles, which is why the August audit found the same law copied into nine of them. The field and the motion vocabulary were pulled out into the compiled stylesheet for that reason.</p>
+            <p class="caption">A design component's template.</p>
+          </div>
+        </details>
+        <details class="disclosure" data-term="cascade hazard">
+          <summary><span class="summary-label"><span class="word-name">cascade hazard</span><span class="word-gloss">Two rules of equal weight, and the later one silently wins</span></span><span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>CSS resolves a tie in specificity by document order, so of two rules that are equally specific the one declared later applies. The base script appends the stylesheet link after a component's helmet, so a helmet rule and a stylesheet rule of the same weight go to the stylesheet. Twice in one session: eight greyscale tiles lost their span to a grid-child rule, and every root marked both grid and sub lost its columns to subgrid, which computes to nothing without a grid parent. Neither threw an error. The layout quietly collapsed, which is what makes it a hazard rather than a bug.</p>
+            <p class="caption"><span class="rs-vault-only" title="Vault-only note, not published to the public site">v2-rollout.md</span> records both.</p>
+          </div>
+        </details>
+        </div>
+      </div>
+      <p class="caption" id="wordEmpty" hidden role="status">No word matches.</p>
+    </section>
+
+    <footer class="footer" data-span="12">
+      <p class="caption">Built from the Re.SOURCE design system.</p>
+      <div class="footer-links"><a href="Masters.html">Browse masters</a><a href="#words">Words</a><a href="#main">Back to top</a></div>
+      <details class="disclosure source-details">
+        <summary>Source notes for agents<span class="chevron" aria-hidden="true"></span></summary>
+        <div class="disclosure-body"><p class="caption">Maintained alongside the <span class="rs-vault-only" title="Vault-only note, not published to the public site">task queue</span> and <span class="rs-vault-only" title="Vault-only note, not published to the public site">starting prompts</span>; the page's content hierarchy is written in <span class="rs-vault-only" title="Vault-only note, not published to the public site">notes/hq-content-hierarchy.md</span>. Read <span class="rs-vault-only" title="Vault-only note, not published to the public site">vault rules and agent roles</span>, <span class="rs-vault-only" title="Vault-only note, not published to the public site">handover</span> and the <span class="rs-vault-only" title="Vault-only note, not published to the public site">full playbook</span>. Statuses are edited snapshots, not connected to live session or GitHub activity. What used to be the notes index now starts here: <span class="rs-vault-only" title="Vault-only note, not published to the public site">reasoning</span>, the <span class="rs-vault-only" title="Vault-only note, not published to the public site">restrictions register</span>, the <span class="rs-vault-only" title="Vault-only note, not published to the public site">components inventory</span>, and the <span class="rs-vault-only" title="Vault-only note, not published to the public site">design-system queue</span>. No sub-brand is live. OPEN People was retired 13 Sep 2026.</p></div>
+      </details>
+    </footer>
+  </main>
+  <div class="toast" id="hqToast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p class="noscript-note shell" data-pad>Open a task's prompt and select its text to copy. All task details and links work without JavaScript.</p></noscript>
+</body>
+</html>

@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../../assets/vendor/react.production.min.js"></script>
+<script src="../../assets/vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Colour LINGO" description="Master LINGO, the word store: the source of record for which word sits at which position, editable inline, with duplicate checking, the hand-read fit of every word, the faults the sheet can count, and a wheel reading." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="../../lib/masters-nav.js"></script>
+<script src="./lingo-seed.js"></script>
+<script src="./lingo-pool.js"></script>
+<script src="./lingo-cases.js"></script>
+<style>
+@keyframes lgVeil{from{opacity:0}to{opacity:1}}
+@keyframes lgPanel{from{opacity:0;transform:translateX(64px)}to{opacity:1;transform:translateX(0)}}
+@keyframes lgCard{from{opacity:0;transform:scale(0.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes lgRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:1ms!important;animation-delay:0ms!important;transition-duration:1ms!important}}
+[data-lg-grids]{display:flex;gap:24px;align-items:flex-start}
+[data-lg-scroll]{width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+[data-lg-table]{width:max-content;min-width:100%;border-collapse:collapse}
+[data-lg-table] th:first-child,[data-lg-table] td:first-child{position:sticky;left:0;z-index:2;background:var(--surface-page);background-clip:padding-box}
+[data-lg-table] thead th:first-child{z-index:3;background:#000000}
+@media (max-width:719px){
+  [data-lg-grids]{flex-direction:column;gap:32px}
+  [data-lg-grids] > div{flex:0 1 auto!important;width:100%;max-width:100%}
+  [data-lg-search-row]{width:100%}
+  [data-lg-search]{flex:1 1 180px;width:min(100%,240px)!important;min-width:0}
+  [data-lg-header-actions]{width:100%}
+  [data-lg-header-actions] > div{flex:1 1 180px;min-width:0}
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#000000}
+input,textarea,button{font:inherit;color:inherit;background:transparent;border:0;outline:0;border-radius:0;-webkit-appearance:none}
+textarea{resize:vertical}
+input::placeholder,textarea::placeholder{color:#555555}
+::selection{background:#333333;color:#FFFFFF}
+</style>
+</helmet>
+<div style="min-height:100vh;background:var(--surface-page);color:var(--text-primary);font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:400">
+
+<header data-pad="" style="background:#000000;border-bottom:1px solid var(--surface-border);padding-top:24px;padding-bottom:24px;display:grid;gap:12px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
+<div style="display:grid;gap:8px">
+<p style="margin:0;font-family:var(--font-mono);font-size:12px;line-height:18px;text-transform:uppercase;color:var(--text-dim)">Colour LINGO</p>
+<h1 style="margin:0;font-size:24px;line-height:36px;font-weight:600">Word store</h1>
+<p style="margin:0;max-width:62ch;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">Source of record. A position is an index, an angle and a hex, and holds no word of its own. Words are decided here and written down nowhere else.</p>
+<!-- retired: link to reference/ColourFlowerGroundTruth.html, superseded by Colour FLOWER -->
+</div>
+<div data-lg-header-actions="" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<div style="display:grid;gap:2px;text-align:right;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300">
+<span style="color:var(--text-secondary)">{{ wordCount }} words · {{ setCount }} sets · 13 positions</span>
+<span style="color:var(--text-primary)">{{ dupLabel }}</span>
+</div>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" onClick="{{ onDrawer }}" hint-size="140px,44px">Import · Export</x-import>
+</div>
+</div>
+<div data-lg-search-row="" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<input data-lg-search="" value="{{ q }}" onChange="{{ onQuery }}" placeholder="SEARCH WORDS" style="width:240px;height:44px;padding:0 12px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;text-transform:uppercase;border:1px solid var(--surface-border);border-radius:var(--radius-sm)" style-focus="border-color:#888888">
+</div>
+</header>
+
+<div>
+<main style="min-width:0">
+
+<div data-lg-pad="" data-pad="" style="padding-top:24px;padding-bottom:24px">
+<sc-if value="{{ showFit }}" hint-placeholder-val="{{ true }}">
+<div style="margin-bottom:12px">
+<sc-if value="{{ compareLocked }}" hint-placeholder-val="{{ false }}">
+<span onClick="{{ onCompareClick }}" title="Press again to close Claude's sets" style="display:inline-block;padding:2px 12px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:#FFFFFF;text-transform:uppercase;white-space:nowrap;background:#111111;border:1px solid #FFFFFF;border-radius:var(--radius-sm);cursor:pointer">Claude's sets</span>
+</sc-if>
+<sc-if value="{{ compareOff }}" hint-placeholder-val="{{ true }}">
+<span onClick="{{ onCompareClick }}" title="Open a second grid: Claude's own sets, none of them Mark's" style="display:inline-block;padding:2px 12px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase;white-space:nowrap;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:border-color 180ms cubic-bezier(0.16,1,0.3,1),color 180ms cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:#FFFFFF;color:#FFFFFF">Claude's sets</span>
+</sc-if>
+<span onClick="{{ onOpenAudit }}" title="List every fit rating in plain text, and flag ones to revisit" style="display:inline-block;margin-left:8px;padding:2px 12px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase;white-space:nowrap;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:border-color 180ms cubic-bezier(0.16,1,0.3,1),color 180ms cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:#FFFFFF;color:#FFFFFF">Review ratings{{ auditBadge }}</span>
+</div>
+</sc-if>
+<div data-lg-grids="" style="display:flex;gap:24px;align-items:flex-start">
+<div style="flex:1 1 50%;min-width:0">
+<div data-lg-scroll="">
+<sc-if value="{{ compareLocked }}" hint-placeholder-val="{{ false }}">
+<p style="margin:0 0 8px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Mark</p>
+</sc-if>
+<table data-lg-table="">
+<thead>
+<tr>
+<th style="padding:8px 12px 12px;text-align:left;vertical-align:bottom;font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:600;color:#FFFFFF;white-space:nowrap;border-bottom:1px solid var(--surface-border)">Position</th>
+<sc-for list="{{ setCols }}" as="col" hint-placeholder-count="4">
+<th style="padding:8px 12px 12px;text-align:center;vertical-align:bottom;border-left:1px solid var(--surface-border);border-bottom:1px solid var(--surface-border)">
+<div onClick="{{ col.onOverview }}" onMouseEnter="{{ col.onEnter }}" onMouseLeave="{{ col.onLeave }}" title="Read the set" style="position:relative;display:grid;justify-items:center;padding:4px 8px;margin:-4px -8px;border-radius:var(--radius-sm);cursor:pointer;transition:transform 200ms cubic-bezier(0.16,1,0.3,1),background-color 200ms cubic-bezier(0.16,1,0.3,1)" style-hover="background-color:#111111;transform:translateY(-2px)" style-active="transform:translateY(0) scale(0.98)">
+<span style="font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:600;color:#FFFFFF;white-space:nowrap">{{ col.name1 }}</span>
+<span style="margin-top:-8px;font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:600;color:#FFFFFF;white-space:nowrap">{{ col.name2 }}</span>
+</div>
+</th>
+</sc-for>
+<th style="padding:8px 12px 12px;text-align:center;vertical-align:bottom;border-left:1px solid var(--surface-border);border-bottom:1px solid var(--surface-border)">
+<span onClick="{{ onNewSet }}" onMouseEnter="{{ onNewSetEnter }}" onMouseLeave="{{ onNewSetLeave }}" title="Draft a new set from the pool" style="display:inline-block;padding:2px 12px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase;white-space:nowrap;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:transform 180ms cubic-bezier(0.34,1.4,0.64,1),border-color 180ms cubic-bezier(0.16,1,0.3,1),color 180ms cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:#FFFFFF;color:#FFFFFF;transform:translateY(-2px)" style-active="transform:translateY(0) scale(0.96)">New set</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{ rows }}" as="row" hint-placeholder-count="13">
+<tr>
+<td style="padding:0;border-bottom:1px solid var(--surface-border)">
+<div style="display:flex;align-items:center;gap:8px;padding:4px 12px">
+<span class="{{ row.strokeTint }}" style="width:0;align-self:stretch;min-height:36px;border-left-width:var(--stroke);border-left-style:solid;color:var(--surface-border)"></span>
+<span onClick="{{ row.onOverview }}" title="Read the position" class="{{ row.tint }}" style="font-family:var(--font-mono);font-size:24px;line-height:36px;font-weight:600;padding:0 8px;border-radius:var(--radius-sm);cursor:pointer;transition:transform 200ms cubic-bezier(0.16,1,0.3,1),background-color 200ms cubic-bezier(0.16,1,0.3,1)" style-hover="background-color:#111111;transform:translateX(3px)" style-active="transform:translateX(1px) scale(0.985)">{{ row.pos }}</span>
+</div>
+</td>
+<sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="4">
+<!-- A cell is a target, not a text field. Retired 28 August 2026: the inline input on every lead,
+     which made fifty-two typing surfaces out of a sheet whose whole claim is that a word arrives
+     from the pool by hand and by argument. A word is chosen now, never typed: touch the cell, read
+     the case, take a candidate. The dot is painted in the corner and is not its own control, since
+     the cell it sits in already opens the same panel. -->
+<td onClick="{{ cell.onOpenCell }}" onMouseEnter="{{ cell.onEnter }}" onMouseLeave="{{ cell.onLeave }}" title="{{ cell.fitNote }}" style="padding:4px 12px;text-align:center;white-space:nowrap;position:relative;cursor:pointer;border-left:1px solid var(--surface-border);border-bottom:1px solid var(--surface-border);transition:background-color 200ms cubic-bezier(0.16,1,0.3,1)" style-hover="background-color:#111111">
+<sc-if value="{{ cell.open }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border:1px solid #FFFFFF;pointer-events:none"></span></sc-if>
+<div style="display:flex;align-items:center;justify-content:center;gap:8px">
+<sc-if value="{{ cell.previewOff }}" hint-placeholder-val="{{ true }}">
+<span style="font-family:var(--font-sans);font-size:24px;line-height:36px;font-weight:700;text-transform:uppercase;transition:transform 200ms cubic-bezier(0.16,1,0.3,1)" style-hover="transform:translateY(-1px)">{{ cell.lead }}</span>
+</sc-if>
+<sc-if value="{{ cell.previewOn }}" hint-placeholder-val="{{ false }}">
+<span title="Best case from the sheet" style="font-family:var(--font-sans);font-size:24px;line-height:36px;font-weight:700;text-transform:uppercase;color:var(--text-secondary)">{{ cell.displayWord }}</span>
+</sc-if>
+<sc-if value="{{ showFit }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ cell.f5 }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--cl-12-life);transition:transform 200ms cubic-bezier(0.34,1.4,0.64,1)"></span></sc-if>
+<sc-if value="{{ cell.f4 }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--cl-01-tone);transition:transform 200ms cubic-bezier(0.34,1.4,0.64,1)"></span></sc-if>
+<sc-if value="{{ cell.f3 }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--cl-02-flux);transition:transform 200ms cubic-bezier(0.34,1.4,0.64,1)"></span></sc-if>
+<sc-if value="{{ cell.f2 }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--cl-04-love);transition:transform 200ms cubic-bezier(0.34,1.4,0.64,1)"></span></sc-if>
+<sc-if value="{{ cell.f1 }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--cl-06-fire);transition:transform 200ms cubic-bezier(0.34,1.4,0.64,1)"></span></sc-if>
+<sc-if value="{{ cell.f0 }}" hint-placeholder-val="{{ true }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:transparent;border:1px solid #333333;box-sizing:border-box;transition:transform 200ms cubic-bezier(0.34,1.4,0.64,1)"></span></sc-if>
+</sc-if>
+<sc-if value="{{ cell.pending }}" hint-placeholder-val="{{ false }}"><span title="Flagged for your review" style="position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:1px;background:#E8A33D"></span></sc-if>
+</div>
+</td>
+</sc-for>
+<td style="padding:4px 12px;text-align:center;white-space:nowrap;border-left:1px solid var(--surface-border);border-bottom:1px solid var(--surface-border)">
+<sc-if value="{{ row.newPreviewOn }}" hint-placeholder-val="{{ false }}">
+<span title="What drafting would take from the pool here" style="font-family:var(--font-sans);font-size:24px;line-height:36px;font-weight:700;text-transform:uppercase;color:var(--text-secondary)">{{ row.newPreviewWord }}</span>
+</sc-if>
+</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</div>
+<sc-if value="{{ compareLocked }}" hint-placeholder-val="{{ false }}">
+
+</sc-if>
+</div>
+<div style="flex:1 1 50%;min-width:0">
+<div data-lg-scroll="">
+<p style="margin:0 0 8px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Claude</p>
+<table data-lg-table="">
+<thead>
+<tr>
+<th style="padding:8px 12px 12px;text-align:left;vertical-align:bottom;font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:600;color:#FFFFFF;white-space:nowrap;border-bottom:1px solid var(--surface-border)">Position</th>
+<sc-for list="{{ claudeCols }}" as="col" hint-placeholder-count="4">
+<th style="padding:8px 12px 12px;text-align:center;vertical-align:bottom;border-left:1px solid var(--surface-border);border-bottom:1px solid var(--surface-border)">
+<div title="{{ col.rationale }}" style="position:relative;display:grid;justify-items:center;padding:4px 8px;margin:-4px -8px;border-radius:var(--radius-sm)">
+<span style="font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:600;color:#FFFFFF;white-space:nowrap">{{ col.name1 }}</span>
+<span style="margin-top:-8px;font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:600;color:#FFFFFF;white-space:nowrap">{{ col.name2 }}</span>
+</div>
+</th>
+</sc-for>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{ claudeRows }}" as="row" hint-placeholder-count="13">
+<tr>
+<td style="padding:0;border-bottom:1px solid var(--surface-border)">
+<div style="display:flex;align-items:center;gap:8px;padding:4px 12px">
+<span class="{{ row.strokeTint }}" style="width:0;align-self:stretch;min-height:36px;border-left-width:var(--stroke);border-left-style:solid;color:var(--surface-border)"></span>
+<span class="{{ row.tint }}" style="font-family:var(--font-mono);font-size:24px;line-height:36px;font-weight:600;padding:0 8px">{{ row.pos }}</span>
+</div>
+</td>
+<sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="4">
+<td onClick="{{ cell.onOpenCell }}" title="{{ cell.reads }}" style="padding:4px 12px;text-align:center;white-space:nowrap;position:relative;cursor:pointer;border-left:1px solid var(--surface-border);border-bottom:1px solid var(--surface-border);transition:background-color 200ms cubic-bezier(0.16,1,0.3,1)" style-hover="background-color:#111111">
+<sc-if value="{{ cell.open }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border:1px solid #FFFFFF;pointer-events:none"></span></sc-if>
+<div style="display:flex;align-items:center;justify-content:center;gap:8px">
+<span style="font-family:var(--font-sans);font-size:24px;line-height:36px;font-weight:700;text-transform:uppercase;color:#FFFFFF">{{ cell.w }}</span>
+</div>
+<sc-if value="{{ cell.f5 }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--cl-12-life)"></span></sc-if>
+<sc-if value="{{ cell.f4 }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--cl-01-tone)"></span></sc-if>
+<sc-if value="{{ cell.f3 }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--cl-02-flux)"></span></sc-if>
+<sc-if value="{{ cell.f2 }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--cl-04-love)"></span></sc-if>
+<sc-if value="{{ cell.f1 }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:6px;width:8px;height:8px;border-radius:50%;background:var(--cl-06-fire)"></span></sc-if>
+</td>
+</sc-for>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</div><div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;margin-top:24px;padding-top:12px;border-top:1px solid var(--surface-border)">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Fit is the case. Touch a dot to read it</span>
+<span style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary)"><span style="width:8px;height:8px;border-radius:50%;background:var(--cl-12-life)"></span>only word for the position</span>
+<span style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary)"><span style="width:8px;height:8px;border-radius:50%;background:var(--cl-01-tone)"></span>right, a better word may exist</span>
+<span style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary)"><span style="width:8px;height:8px;border-radius:50%;background:var(--cl-02-flux)"></span>works, does not carry the field</span>
+<span style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary)"><span style="width:8px;height:8px;border-radius:50%;background:var(--cl-04-love)"></span>off, placeholder for a better word</span>
+<span style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary)"><span style="width:8px;height:8px;border-radius:50%;background:var(--cl-06-fire)"></span>wrong</span>
+<span style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary)"><span style="width:8px;height:8px;border-radius:50%;border:1px solid #333333;box-sizing:border-box"></span>unread</span>
+</div>
+</div>
+
+</main>
+
+</div>
+
+<sc-if value="{{ newSet }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ onCloseNewSet }}" style="position:fixed;inset:0;z-index:40;display:flex;justify-content:flex-end;background:rgba(0,0,0,0.82);animation:lgVeil 260ms cubic-bezier(0.16,1,0.3,1) both">
+<div onClick="{{ onStop }}" style="width:560px;max-width:100%;height:100%;overflow-y:auto;background:var(--surface-page);border-left:1px solid var(--surface-border);padding:24px;display:grid;gap:24px;align-content:start;animation:lgPanel 460ms cubic-bezier(0.16,1,0.3,1) both">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px">
+<div style="display:grid;gap:8px">
+<h2 style="margin:0;font-size:24px;line-height:36px;font-weight:600">A new set</h2>
+<p style="margin:0;max-width:52ch;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">Two words, an adjective and a noun, the way the four already here are named: Abstract REALM, Arrow KEY, Anchor TAG, Aspect STATE.</p>
+</div>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" onClick="{{ onCloseNewSet }}" hint-size="90px,44px">Close</x-import>
+</div>
+<div style="display:grid;gap:8px;animation:lgRise 400ms cubic-bezier(0.16,1,0.3,1) 120ms both">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Name</span>
+<input value="{{ nsName }}" onChange="{{ onNsName }}" placeholder="Aspect STATE" style="width:100%;padding:2px 0;font-size:36px;line-height:48px;font-weight:700;border-bottom:1px solid var(--surface-border);transition:border-bottom-color 200ms cubic-bezier(0.16,1,0.3,1)" style-focus="border-bottom-color:#FFFFFF">
+</div>
+<div style="display:grid;gap:12px;animation:lgRise 400ms cubic-bezier(0.16,1,0.3,1) 180ms both">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Character length</span>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ nsLens }}" as="l" hint-placeholder-count="13">
+<span onClick="{{ l.onClick }}" onMouseEnter="{{ l.onEnter }}" onMouseLeave="{{ l.onLeave }}" style="display:grid;gap:2px;justify-items:center;width:56px;padding:8px 0;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:transform 180ms cubic-bezier(0.34,1.4,0.64,1),border-color 180ms cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:#888888;transform:translateY(-2px)" style-active="transform:translateY(0) scale(0.94)">
+<span>{{ l.label }}</span>
+<span style="color:var(--text-dim)">{{ l.note }}</span>
+</span>
+</sc-for>
+</div>
+<!-- The set's words, previewed before it exists. Reads the same freeAt call makeSet drafts from,
+     so what is shown here is what committing actually takes, not a separate guess at it. -->
+<div style="display:grid;gap:8px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Preview at {{ nsPreviewLen }}L, from the pool</span>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ nsPreview }}" as="pw" hint-placeholder-count="13">
+<span style="display:flex;align-items:baseline;gap:8px;padding:2px 12px;border:1px solid var(--surface-border);border-radius:var(--radius-sm)">
+<span class="{{ pw.tint }}" style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:600">{{ pw.pos }}</span>
+<span style="font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:700;color:var(--text-secondary);text-transform:uppercase">{{ pw.w }}</span>
+</span>
+</sc-for>
+</div>
+</div>
+<p style="margin:0;max-width:52ch;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">{{ nsNote }}</p>
+</div>
+<sc-if value="{{ nsReady }}" hint-placeholder-val="{{ false }}">
+<div style="animation:lgRise 400ms cubic-bezier(0.16,1,0.3,1) 240ms both">
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" onClick="{{ onMakeSet }}" hint-size="200px,44px">Draft it from the pool</x-import>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<!-- A plain, flat audit: every position × set case as written text, in one scroll, so a reading can be
+     checked without opening one cell at a time. No editing here — only a flag, held in the browser,
+     marking a case as pending your own review. The flag never changes the fit itself. -->
+<sc-if value="{{ auditOn }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ onCloseAudit }}" style="position:fixed;inset:0;z-index:40;display:flex;justify-content:flex-end;background:rgba(0,0,0,0.82);animation:lgVeil 260ms cubic-bezier(0.16,1,0.3,1) both">
+<div onClick="{{ onStop }}" style="width:720px;max-width:100%;height:100%;overflow-y:auto;background:var(--surface-page);border-left:1px solid var(--surface-border);padding:24px;display:grid;gap:16px;align-content:start;animation:lgPanel 460ms cubic-bezier(0.16,1,0.3,1) both">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;position:sticky;top:0;background:var(--surface-page);padding-bottom:12px;border-bottom:1px solid var(--surface-border)">
+<div style="display:grid;gap:8px">
+<h2 style="margin:0;font-size:24px;line-height:36px;font-weight:600">Every rating, plain</h2>
+<p style="margin:0;max-width:52ch;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">One row per position × set. Asks names the field a word is being read against; reads is the argument for or against the settled word; fit is that argument's number. Flag any row to mark it pending your own review — the flag changes nothing else.</p>
+</div>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" onClick="{{ onCloseAudit }}" hint-size="90px,44px">Close</x-import>
+</div>
+<sc-for list="{{ ratingRows }}" as="ar" hint-placeholder-count="13">
+<div style="display:grid;gap:6px;padding:12px 0;border-bottom:1px solid var(--surface-border)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:600;color:var(--text-secondary);text-transform:uppercase">{{ ar.pos }} · {{ ar.setName }}</span>
+<span onClick="{{ ar.onFlag }}" title="Flag for your own review" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+<span style="font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:700;color:#FFFFFF">{{ ar.word }}</span>
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;color:var(--text-dim)">{{ ar.fitLabel }}</span>
+<sc-if value="{{ ar.flagged }}" hint-placeholder-val="{{ false }}"><span style="width:10px;height:10px;border-radius:1px;background:#E8A33D;border:1px solid var(--surface-border)"></span></sc-if>
+<sc-if value="{{ ar.unflagged }}" hint-placeholder-val="{{ true }}"><span style="width:10px;height:10px;border-radius:1px;background:transparent;border:1px solid var(--surface-border)"></span></sc-if>
+</span>
+</div>
+<sc-if value="{{ ar.hasCase }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty"><span style="color:var(--text-dim);text-transform:uppercase">Asks · </span>{{ ar.asks }}</p>
+<p style="margin:0;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty"><span style="color:var(--text-dim);text-transform:uppercase">Reads · </span>{{ ar.reads }}</p>
+</sc-if>
+<sc-if value="{{ ar.hasCase }}" hint-placeholder-val="{{ false }}">
+<p style="margin:0;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim)">No case written for this word yet.</p>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- One overview, two headers. A column asks what a set holds, a row asks what a position holds
+     across the sets, and the answer has the same shape both ways: a mark, the faults that can be
+     counted, and the words the pool still offers. Retired 28 August 2026: the set-only quality
+     drawer, whose four fault lists were written out four times in the template and had no row
+     equivalent, so a position could be read down a column but never across one. -->
+<sc-if value="{{ ovOn }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ onCloseQ }}" style="position:fixed;inset:0;z-index:40;display:flex;justify-content:flex-end;animation:lgVeil 260ms cubic-bezier(0.16,1,0.3,1) both">
+<div onClick="{{ onStop }}" style="width:560px;max-width:100%;height:100%;overflow-y:auto;background:var(--surface-page);border-left:1px solid var(--surface-border);padding:24px;display:grid;gap:24px;align-content:start;animation:lgPanel 460ms cubic-bezier(0.16,1,0.3,1) both">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px">
+<div style="display:grid;gap:8px">
+<h2 class="{{ ovTint }}" style="margin:0;font-size:24px;line-height:36px;font-weight:600">{{ ovName }}</h2>
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary)">{{ qMark }}</span>
+</div>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" onClick="{{ onCloseQ }}" hint-size="90px,44px">Close</x-import>
+</div>
+<sc-if value="{{ ovIsSet }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;max-width:52ch;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">Only what can be checked from the sheet: whether every position holds a word, whether the set keeps to one character length, whether any word collides with another word anywhere, and whether the printed deck reads the same. Whether a word is the right word is not a thing a platform can mark.</p>
+</sc-if>
+<sc-if value="{{ ovIsPos }}" hint-placeholder-val="{{ false }}">
+<p style="margin:0;max-width:52ch;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">Read across the sheet rather than down it: every set's word at this angle, what the sheet can count against each, and what the pool still holds here. The hex belongs to the position and no word changes it.</p>
+</sc-if>
+<sc-if value="{{ qClean }}" hint-placeholder-val="{{ false }}">
+<p style="margin:0;font-size:24px;line-height:36px;font-weight:600">Nothing to fix.</p>
+</sc-if>
+<sc-for list="{{ ovGroups }}" as="g" hint-placeholder-count="2">
+<div style="display:grid;gap:8px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">{{ g.label }}</span>
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim)">{{ g.n }}</span>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ g.items }}" as="x" hint-placeholder-count="3">
+<span onClick="{{ x.onOpen }}" title="{{ x.title }}" style="display:flex;align-items:baseline;gap:8px;padding:2px 12px;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:transform 180ms cubic-bezier(0.34,1.4,0.64,1),border-color 180ms cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:#FFFFFF;transform:translateY(-2px)" style-active="transform:translateY(0) scale(0.96)">
+<span class="{{ x.tint }}" style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:600">{{ x.tag }}</span>
+<span style="font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:700;text-transform:uppercase">{{ x.w }}</span>
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim)">{{ x.note }}</span>
+</span>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- The detail panel. Retired 28 August 2026: the 960px sheet-wide drawer behind a dark veil, which
+     covered the grid it was explaining, so a word and its neighbours could not be read at once. It
+     is 456 wide now, the card's own width plus the margin, and the veil is clear: the sheet stays
+     readable beside it and a touch on the sheet closes it.
+
+     Retired with it: the two counts written out in words. A fit read "2 · Off, and holding the place
+     of a better word · this is the dot the sheet shows", which said in fourteen words what the dot
+     beside it already said in one colour. Both counts are numerals now, on the same line, and the
+     prose under them is the case, which is the only part that cannot be a number. -->
+<!-- Detail panel. The card leads, because the card is the artefact and everything under it is
+     evidence about the word the card prints. Retired 28 August 2026: the lead input at the top, so
+     the panel no longer offers a second way to type a word the grid has stopped offering; the Turn
+     control, which restated a polar the card already prints and flips on its own; and the word
+     Case, which named the same thing the card calls a reading. Field is what the position gathers,
+     Verdict is whether the settled word delivers it. -->
+<sc-if value="{{ anyDetail }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:40;display:flex;justify-content:flex-end;pointer-events:none;animation:lgVeil 260ms cubic-bezier(0.16,1,0.3,1) both">
+<div onClick="{{ onStop }}" style="width:456px;max-width:100%;height:100%;overflow-y:auto;background:var(--surface-page);border-left:1px solid var(--surface-border);box-shadow:-24px 0 48px rgba(0,0,0,0.72);padding:24px;display:grid;gap:24px;align-content:start;pointer-events:auto;animation:lgPanel 460ms cubic-bezier(0.16,1,0.3,1) both">
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+<span class="{{ uTint }}" style="width:24px;height:24px;border-radius:12px;border-width:var(--stroke);border-style:solid"></span>
+<span onClick="{{ onCloseAny }}" title="Close" style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);cursor:pointer;padding:12px;margin:-12px;transition:color 200ms cubic-bezier(0.16,1,0.3,1)" style-hover="color:#FFFFFF">CLOSE</span>
+</div>
+
+<sc-if value="{{ cOn }}" hint-placeholder-val="{{ false }}">
+<div style="animation:lgCard 520ms cubic-bezier(0.34,1.4,0.64,1) 80ms both">
+<sc-if value="{{ cdHasCard }}" hint-placeholder-val="{{ true }}">
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.AspectCard" entry="{{ cdEntry }}" flipped="{{ false }}" show-grid="{{ true }}" base-words="{{ cdBase }}" blend-words="{{ cdBlend }}" fit="{{ cdFit }}" hint-size="360px,504px"></x-import>
+</sc-if>
+<sc-if value="{{ cdNoCard }}" hint-placeholder-val="{{ false }}">
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.AspectCardBlank" positions="{{ cdPos }}" line="{{ cdNoCardLine }}" hint-size="360px,504px"></x-import>
+</sc-if>
+</div>
+<div style="display:grid;gap:24px">
+<div style="display:flex;align-items:baseline;gap:24px;flex-wrap:wrap">
+<span title="Fit this word earns against the position's own brief, out of five" style="display:flex;align-items:baseline;gap:8px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Fit</span>
+<span class="{{ cdCaseTint }}" style="font-family:var(--font-mono);font-size:24px;line-height:36px;font-weight:600">{{ cdFitCount }}</span>
+</span>
+<span style="display:flex;align-items:baseline;gap:8px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Position</span>
+<span style="font-family:var(--font-mono);font-size:24px;line-height:36px;font-weight:600;color:var(--text-secondary)">{{ cdPos }} · {{ cdSetName }} · {{ cdWord }}</span>
+</span>
+</div>
+<div style="display:grid;gap:12px">
+<div style="display:grid;gap:2px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Field</span>
+<span style="font-size:18px;line-height:30px;font-weight:400;text-wrap:pretty">{{ cdAsks }}</span>
+</div>
+<div style="display:grid;gap:2px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Verdict</span>
+<span style="font-size:18px;line-height:30px;font-weight:400;text-wrap:pretty">{{ cdNote }}</span>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ dOn }}" hint-placeholder-val="{{ false }}">
+<div style="animation:lgCard 520ms cubic-bezier(0.34,1.4,0.64,1) 80ms both">
+<sc-if value="{{ dHasCard }}" hint-placeholder-val="{{ true }}">
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.AspectCard" entry="{{ dEntry }}" flipped="{{ dFlipped }}" on-flip="{{ dOnFlip }}" show-grid="{{ dShowGrid }}" base-words="{{ dBase }}" blend-words="{{ dBlend }}" fit="{{ dFit }}" hint-size="360px,504px"></x-import>
+</sc-if>
+<sc-if value="{{ dNoCard }}" hint-placeholder-val="{{ false }}">
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.AspectCardBlank" positions="{{ dPos }}" line="{{ dNoCardLine }}" hint-size="360px,504px"></x-import>
+</sc-if>
+</div>
+
+<sc-if value="{{ showFit }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;gap:24px">
+<div style="display:flex;align-items:baseline;gap:24px;flex-wrap:wrap">
+<span title="Fit the analysis proposes, out of five" style="display:flex;align-items:baseline;gap:8px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Fit</span>
+<span class="{{ dCaseTint }}" style="font-family:var(--font-mono);font-size:24px;line-height:36px;font-weight:600">{{ dFitCount }}</span>
+</span>
+<span title="Faults the sheet can count, summed" style="display:flex;align-items:baseline;gap:8px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Faults</span>
+<span style="font-family:var(--font-mono);font-size:24px;line-height:36px;font-weight:600;color:var(--text-secondary)">{{ dFaultN }}</span>
+</span>
+</div>
+
+<sc-if value="{{ dCaseOn }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;gap:12px;animation:lgRise 400ms cubic-bezier(0.16,1,0.3,1) 200ms both">
+<div style="display:grid;gap:2px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Field</span>
+<span style="font-size:18px;line-height:30px;font-weight:400;text-wrap:pretty">{{ dCaseAsks }}</span>
+</div>
+<div style="display:grid;gap:2px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Verdict</span>
+<span style="font-size:18px;line-height:30px;font-weight:400;text-wrap:pretty">{{ dCaseReads }}</span>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ dStaleOn }}" hint-placeholder-val="{{ false }}">
+<p style="margin:0;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">{{ dStaleNote }}</p>
+</sc-if>
+<sc-if value="{{ dCaseOff }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">No analysis written for this word yet. A position with none says so rather than guessing.</p>
+</sc-if>
+
+<sc-if value="{{ dAnyFaults }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;gap:8px">
+<sc-for list="{{ dFaults }}" as="s" hint-placeholder-count="0">
+<div style="display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline;padding-top:8px;border-top:1px solid var(--surface-border)">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:400">{{ s.n }}</span>
+<div style="display:grid;gap:2px">
+<span style="font-size:18px;line-height:30px;font-weight:400">{{ s.label }}</span>
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">{{ s.why }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+</sc-if>
+
+<!-- Reviewing a candidate. A word never changes on one touch: the first opens this, which says what
+     the candidate is, what it displaces, and where the displaced word goes. Swapping returns the
+     settled word to the pool at its position, because the pool is the unsorted remainder and a word
+     that stops being settled is unsorted again. Holding keeps the candidate beside the lead instead,
+     which changes nothing the sheet prints. -->
+<sc-if value="{{ dOn }}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{ rvOn }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;gap:12px;padding:12px;border:1px solid #FFFFFF;border-radius:var(--radius-sm);animation:lgRise 300ms cubic-bezier(0.16,1,0.3,1) both">
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+<span style="font-size:36px;line-height:48px;font-weight:700;text-transform:uppercase">{{ rvWord }}</span>
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary)">{{ rvStanding }}</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">{{ rvNote }}</span>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span onClick="{{ rvOnSwap }}" style="padding:2px 12px;font-size:18px;line-height:30px;font-weight:400;text-transform:uppercase;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:transform 180ms cubic-bezier(0.34,1.4,0.64,1),border-color 180ms cubic-bezier(0.16,1,0.3,1);border-color:#FFFFFF" style-hover="transform:translateY(-2px)" style-active="transform:translateY(0) scale(0.96)">Swap</span>
+<span onClick="{{ rvOnHold }}" style="padding:2px 12px;font-size:18px;line-height:30px;font-weight:400;text-transform:uppercase;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:transform 180ms cubic-bezier(0.34,1.4,0.64,1),border-color 180ms cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:#FFFFFF;transform:translateY(-2px)" style-active="transform:translateY(0) scale(0.96)">Hold</span>
+<span onClick="{{ rvOnCancel }}" style="padding:2px 12px;font-size:18px;line-height:30px;font-weight:400;text-transform:uppercase;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:transform 180ms cubic-bezier(0.34,1.4,0.64,1),border-color 180ms cubic-bezier(0.16,1,0.3,1);border-color:transparent;color:var(--text-dim)" style-hover="color:#FFFFFF">Cancel</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ dCaseAltsOn }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;gap:8px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Candidates</span>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ dCaseAlts }}" as="a" hint-placeholder-count="0">
+<span onClick="{{ a.onReview }}" title="Review it against the settled word" style="padding:2px 12px;font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:700;text-transform:uppercase;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:transform 180ms cubic-bezier(0.34,1.4,0.64,1),border-color 180ms cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:#FFFFFF;transform:translateY(-2px)" style-active="transform:translateY(0) scale(0.96)">{{ a.w }}</span>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ dHeld }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;gap:8px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Held</span>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ dAlts }}" as="a" hint-placeholder-count="0">
+<span onClick="{{ a.onReview }}" title="Review it against the settled word" style="padding:2px 12px;font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:700;text-transform:uppercase;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:transform 180ms cubic-bezier(0.34,1.4,0.64,1),border-color 180ms cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:#FFFFFF;transform:translateY(-2px)" style-active="transform:translateY(0) scale(0.96)">{{ a.w }}</span>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<div style="display:grid;gap:8px;padding-top:12px;border-top:1px solid var(--surface-border)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim);text-transform:uppercase">Pool</span>
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-dim)">{{ dPoolCount }}</span>
+</div>
+<sc-for list="{{ dBands }}" as="band" hint-placeholder-count="1">
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ band.words }}" as="w" hint-placeholder-count="12">
+<span onClick="{{ w.onReview }}" title="Review it against the settled word" style="padding:0 8px;font-family:var(--font-sans);font-size:18px;line-height:30px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;transition:transform 180ms cubic-bezier(0.34,1.4,0.64,1),border-color 180ms cubic-bezier(0.16,1,0.3,1),color 180ms cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:#FFFFFF;color:#FFFFFF;transform:translateY(-2px)">{{ w.w }}</span>
+</sc-for>
+</div>
+</sc-for>
+</div>
+
+</sc-if>
+
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ drawer }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:30;background:rgba(0,0,0,0.72);display:flex;justify-content:flex-end">
+<div style="width:520px;max-width:100%;height:100%;overflow-y:auto;background:var(--surface-card);border-left:1px solid var(--surface-border);padding:24px;display:grid;gap:24px;align-content:start">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+<div style="display:grid;gap:8px">
+<h2 style="margin:0;font-size:24px;line-height:36px;font-weight:600">Import · Export</h2>
+<p style="margin:0;max-width:52ch;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary);text-wrap:pretty">Paste the source as JSON, or as TSV or CSV with the columns position, set, lead, alternates. Alternates separate on a pipe. Import replaces every cell it names and leaves the rest alone.</p>
+</div>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" onClick="{{ onCloseDrawer }}" hint-size="90px,44px">Close</x-import>
+</div>
+<textarea value="{{ text }}" onChange="{{ onText }}" rows="14" placeholder="position	set	lead	alternates" style="width:100%;padding:12px;font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;background:var(--surface-page);border:1px solid var(--surface-border);border-radius:var(--radius-sm)" style-focus="border-color:#888888"></textarea>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" onClick="{{ onImport }}" hint-size="100px,44px">Import</x-import>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" onClick="{{ onLoadTsv }}" hint-size="150px,44px">Load current TSV</x-import>
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" onClick="{{ onLoadJson }}" hint-size="150px,44px">Load current JSON</x-import>
+</div>
+<span style="font-family:var(--font-mono);font-size:12px;line-height:18px;font-weight:300;color:var(--text-secondary)">{{ flash }}</span>
+</div>
+</div>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;reword&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Reword&quot;}}">
+class Component extends DCLogic {
+  state = { data: null, sel: null, view: null, setKey: 'r', q: '', drawer: false, text: '', flash: '', drafts: {}, detail: null, cDetail: null, dFlip: false, cardSel: ['04'], holding: 'SINGLE', anchor: '04', compareLocked: true, cFlip: false, newSet: false, nsName: '', nsLen: 4, nsHoverLen: null, qSet: null, qPos: null, review: null, hoverCell: null, hoverSetPreview: null, hoverNewSet: false, hoverBestCol: null };
+
+  /* The two rings the card draws its word grid from, in the k order aspect-render expects.
+     Filled from this sheet rather than from deck-data, so the card previews the words as they
+     stand here: LINGO is the store, and a card that disagreed with it would be the thing wrong. */
+  static BASE_POS = ['12', '02', '04', '06', '08', '10'];
+  static BLEND_POS = ['01', '03', '05', '07', '09', '11'];
+  /* Arrow KEY has no printed cards, so its detail shows the blank rather than a nearest match. */
+  static CARDED = { r: 1, s: 1, t: 1 };
+  /* Angle order, which is the order every pattern below steps through. 00 is not on the clock:
+     it is the centre, and the only holding that names it is CORE. */
+  static CLOCK = ['12', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11'];
+  /* The six patterns the deck is built on, as offsets round the clock from an anchor. A GROUP is
+     the whole ring the anchor belongs to, so it has no offset list and is handled by kind. */
+  static HOLDINGS = { CORE: [], SINGLE: [0], PAIR: [0, 6], TRIAD: [0, 4, 8], GROUP: null, SET: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] };
+
+  /* A holding is a pattern anchored at one position, so picking a holding and stepping the anchor
+     walks that pattern round the wheel. Touching positions instead builds a selection freehand,
+     which is what 'free' records: no pattern claimed, just the positions chosen. */
+  patternFor(h, anchor) {
+    const C = this.constructor, K = C.CLOCK;
+    if (h === 'CORE') return ['00'];
+    if (h === 'GROUP') {
+      const base = K.indexOf(anchor) % 2 === 0;
+      return K.filter((p, i) => (i % 2 === 0) === base);
+    }
+    const at = K.indexOf(anchor);
+    if (at < 0) return [anchor];
+    return (C.HOLDINGS[h] || [0]).map((o) => K[(at + o) % 12]);
+  }
+  pickHolding(h) {
+    const a = this.state.anchor;
+    this.setState({ holding: h, cardSel: this.patternFor(h, a) });
+  }
+  stepAnchor(n) {
+    const K = this.constructor.CLOCK;
+    const at = K.indexOf(this.state.anchor);
+    const next = K[((at < 0 ? 0 : at) + n + 12) % 12];
+    const h = this.state.holding === 'free' ? 'SINGLE' : this.state.holding;
+    this.setState({ anchor: next, holding: h, cardSel: this.patternFor(h, next) });
+  }
+  togglePos(p) {
+    this.setState((s) => {
+      const has = s.cardSel.indexOf(p) >= 0;
+      const next = has ? s.cardSel.filter((x) => x !== p) : s.cardSel.concat([p]);
+      return { cardSel: next, holding: 'free', anchor: has ? s.anchor : p };
+    });
+  }
+  /* The card is drawn from a synthesised entry rather than looked up, so every selection draws
+     something: the deck only holds ninety of the possible patterns. Where a real entry matches the
+     same positions its copy is borrowed, so a card that exists in print reads as it prints. */
+  entryFor(sel, setKey) {
+    const C = this.constructor, K = C.CLOCK;
+    const d = this.state.data;
+    if (!d) return null;
+    const name = this.setName(setKey);
+    const on = K.filter((p) => sel.indexOf(p) >= 0);
+    const picks = [], blendPicks = [];
+    on.forEach((p) => {
+      const i = K.indexOf(p);
+      if (i % 2 === 0) picks.push(i / 2); else blendPicks.push((i - 1) / 2);
+    });
+    const titles = (sel.indexOf('00') >= 0 ? ['00'] : on).map((p) => {
+      const c = this.cellAt(d, p, setKey);
+      return (c && c.lead) || '–';
+    });
+    const holds = sel.indexOf('00') >= 0 ? 0 : picks.length + blendPicks.length;
+    const ROW = { 0: 'CORE', 1: 'SINGLE', 2: 'PAIR', 3: 'TRIAD', 6: 'GROUP', 12: 'SET' };
+    const deck = (typeof window !== 'undefined' && window.DECK_CARDS) || [];
+    const same = (a, b) => a.length === b.length && a.every((x) => b.indexOf(x) >= 0);
+    const match = deck.find((x) => x.set === name
+      && same((x.picks || []).map((i) => K[i * 2]).concat((x.blendPicks || []).map((i) => K[i * 2 + 1])), on)
+      && (holds !== 0 || x.row === 'CORE'));
+    return {
+      set: name, setKey: setKey, ring: 'outer',
+      id: 'lingo-' + setKey + '-' + (on.join('') || '00'),
+      holds: holds, row: ROW[holds] || 'SELECTION', type: ROW[holds] ? ROW[holds][0] + ROW[holds].slice(1).toLowerCase() : holds + ' positions',
+      titles: titles.length ? titles : ['–'],
+      picks: picks, blendPicks: blendPicks,
+      gloss: match ? match.gloss : '',
+      reading: match ? match.reading : '',
+      question: match ? match.question : '',
+      lastLabel: match ? match.lastLabel : '', last: match ? match.last : '',
+      drafted: true, _match: !!match,
+    };
+  }
+
+  componentDidMount() {
+    this.grab(0);
+    try { this.pending = JSON.parse(localStorage.getItem('lingoPending') || '{}'); } catch (e) { this.pending = {}; }
+    /* Studio bridge: see Colour FLOWER. */
+    window.addEventListener('message', (e) => {
+      const m = e && e.data;
+      if (!m || m.type !== 'rs-tweak-restore' || !m.stores) return;
+      const v = m.stores.lingoPending;
+      if (!v || typeof v !== 'object' || Object.keys(this.pending).length) return;
+      this.pending = v;
+      this.forceUpdate();
+    });
+    try { parent.postMessage({ type: 'rs-tweak-request' }, '*'); } catch (err) {}
+    this.onKey = (e) => { if (e.key === 'Escape') this.setState({ detail: null, cDetail: null, drawer: false, newSet: false, audit: false, qSet: null, qPos: null }); };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); }
+
+  openDetail(pos, set) {
+    this.setState({ detail: { pos: pos, set: set }, cDetail: null, dFlip: false, sel: { pos: pos, set: set, role: 'lead', idx: -1 } });
+  }
+  /* The comparison grid's own detail surface. CLAUDE_SETS is static prose, not a mutable cell, so
+     this reads it rather than opening the editable drawer \u2014 same trigger, same panel shape,
+     no swap controls because there is nothing here to swap. */
+  claudeCellAt(pos, key) {
+    const s = this.constructor.CLAUDE_SETS.find((x) => x.key === key);
+    const w = s && s.words[pos];
+    return w ? { setName: s.name, w: w[0], note: w[1], fit: w[2] } : { setName: s ? s.name : '', w: '\u2013', note: 'No word at this length carries the position.', fit: 0 };
+  }
+  /* Which real, printed set a Claude-side key stands in for \u2014 k2/t2/r2/st each check
+     themselves against Arrow KEY, Anchor TAG, Abstract REALM and Aspect STATE respectively. The
+     printed card is only borrowed when the word actually matches what's printed there; a
+     proposed alternative gets the blank card, same as an uncarded position does on Mark's side. */
+  claudeMarkKey(key) { return { k2: 'k', t2: 't', r2: 'r', st: 's' }[key] || null; }
+  openClaudeDetail(pos, key) { this.setState({ cDetail: { pos: pos, set: key }, detail: null }); }
+  closeClaudeDetail() { this.setState({ cDetail: null }); }
+  closeAnyDetail() { this.setState({ detail: null, cDetail: null }); }
+  /* Taking a pool word in never overwrites a lead: it lands as an alternate, and promoting it is
+     a second, deliberate touch. */
+  adopt(pos, set, w) {
+    this.mutate((d) => {
+      const c = this.cellAt(d, pos, set);
+      if (!c) return;
+      const k = this.norm(w);
+      if (!k || this.norm(c.lead) === k || (c.alts || []).some((a) => this.norm(a) === k)) return;
+      if (!c.alts) c.alts = [];
+      c.alts.push(k);
+    });
+  }
+  /* One touch reviews, a second commits. A candidate can arrive from three places — the analysis,
+     the words held beside the lead, or the pool — and all three route through the same review, so
+     there is one place where a swap is explained and one place where it happens.
+
+     Swapping returns the displaced word to the pool at its own position. The pool is the unsorted
+     remainder, every settled word was taken out of it when it was settled, so a word that stops
+     being settled belongs back in it. Session only: the pool file is not written from here. */
+  review(pos, set, w) { this.setState({ review: { pos: pos, set: set, w: this.norm(w) } }); }
+  /* Hover swaps the word in place rather than opening anything; the click a cell already answers
+     to is still what opens the drawer where a swap is actually made. */
+  enterCell(pos, set) { this.setState({ hoverCell: { pos: pos, set: set } }); }
+  leaveCell(pos, set) {
+    this.setState((s) => (s.hoverCell && s.hoverCell.pos === pos && s.hoverCell.set === set) ? { hoverCell: null } : s);
+  }
+  closeReview() { this.setState({ review: null }); }
+  poolReturn(pos, w) {
+    const src2 = typeof window !== 'undefined' ? window.LINGO_POOL : null;
+    if (!src2 || !w) return;
+    const r = src2.rows.find((x) => x.pos === pos);
+    if (!r || !r.cells || !r.cells.length) return;
+    const c = r.cells[0];
+    if (!c.alts) c.alts = [];
+    if (!c.alts.some((x) => this.norm(x) === this.norm(w))) c.alts.push(this.norm(w));
+  }
+  poolTake(pos, w) {
+    const src2 = typeof window !== 'undefined' ? window.LINGO_POOL : null;
+    if (!src2) return;
+    const r = src2.rows.find((x) => x.pos === pos);
+    if (!r) return;
+    (r.cells || []).forEach((c) => {
+      if (!c.alts) return;
+      const i = c.alts.findIndex((x) => this.norm(x) === this.norm(w));
+      if (i > -1) c.alts.splice(i, 1);
+    });
+  }
+  swapLead(pos, set, w) {
+    const k = this.norm(w);
+    let was = '';
+    this.mutate((d) => {
+      const c = this.cellAt(d, pos, set);
+      if (!c) return;
+      was = c.lead || '';
+      c.lead = k;
+      c.alts = (c.alts || []).filter((a) => this.norm(a) !== k);
+    });
+    this.poolTake(pos, k);
+    if (this.norm(was)) this.poolReturn(pos, was);
+    this.setState({ review: null });
+  }
+  hold(pos, set, w) {
+    this.adopt(pos, set, w);
+    this.poolTake(pos, w);
+    this.setState({ review: null });
+  }
+  leadFromAlt(pos, set, i) {
+    this.mutate((d) => {
+      const c = this.cellAt(d, pos, set);
+      const was = c.lead;
+      c.lead = c.alts[i];
+      c.alts.splice(i, 1);
+      if (this.norm(was)) c.alts.unshift(was);
+    });
+  }
+  /* Quality is only ever the checks that can actually be computed from the sheet, so the mark
+     never claims to judge whether a word is the right word. Four things it can say: whether every
+     position is filled, whether the set holds one character length as the sheet's own grouping
+     asks, whether any word collides with another word anywhere, and whether the printed deck agrees.
+     Retired 28 August 2026: the glossed count. A gloss is written on the printed card, not here, so
+     the sheet was counting a field it does not own and nobody can fill from this page. */
+  qualityOf(setKey) {
+    const d = this.state.data;
+    if (!d) return null;
+    const idx = this.index();
+    const cells = d.rows.map((r) => ({ pos: r.pos, c: this.cellAt(d, r.pos, setKey) })).filter((x) => x.c);
+    const filled = cells.filter((x) => this.norm(x.c.lead));
+    const lens = {};
+    filled.forEach((x) => { lens[this.norm(x.c.lead).length] = (lens[this.norm(x.c.lead).length] || 0) + 1; });
+    const keys = Object.keys(lens).map(Number).sort((a, b) => lens[b] - lens[a]);
+    const main = keys.length ? keys[0] : 0;
+    return {
+      total: cells.length,
+      filled: filled.length,
+      empty: cells.filter((x) => !this.norm(x.c.lead)).map((x) => x.pos),
+      len: main,
+      uniform: keys.length <= 1,
+      offLength: filled.filter((x) => this.norm(x.c.lead).length !== main).map((x) => ({ pos: x.pos, w: x.c.lead, n: this.norm(x.c.lead).length })),
+      clashes: filled.filter((x) => (idx[this.norm(x.c.lead)] || []).length > 1).map((x) => ({ pos: x.pos, w: x.c.lead })),
+      /* Drift belongs here and not only on the cells. The header counted three of the four things a
+         cell can be marked for, so a set could read clean above a column holding a ≠ mark. Same
+         deckLeadAt as the cells use, so the count and the mark cannot part company. Empty for Arrow
+         KEY, which has no printed cards, and that column reads clean on this axis truthfully. */
+      drift: filled.filter((x) => {
+        const w = this.deckLeadAt(x.pos, setKey);
+        return w && this.norm(w) !== this.norm(x.c.lead);
+      }).map((x) => ({ pos: x.pos, w: x.c.lead, deck: this.deckLeadAt(x.pos, setKey) })),
+    };
+  }
+  /* One cell's quality, for the sheet. qualityOf reads a whole set and answers in totals; this
+     answers for a single word, so the sheet can mark the cell that is actually wrong instead of
+     telling you the column has three problems somewhere in it.
+
+     Six verdicts, worst first, and only ever one shown: a cell with no word cannot also be the
+     wrong length, and a cell that contradicts the printed deck has a bigger problem than a missing
+     gloss. Hard verdicts take a white border, soft ones grey, clean shows nothing at all — an
+     empty sheet cell is the system saying it has no complaint, which is what you want to be able
+     to see at a glance down a column.
+
+     The hand-read fit is deliberately not folded in. It is a separate judgement with its own mark,
+     and averaging a person's reading together with a character count would make both unreadable. */
+  static CELL_HARD = ['empty', 'clash', 'drift'];
+  /* Four verdicts, and the same four the column headers count, so a header calling a set clean and
+     a cell in it carrying a mark can no longer both be true.
+
+     The printed word at a position, by the deck's own id. One method, called by both the sheet's
+     drift verdict and the Audit view's drift list, because a second hand-rolled lookup over the
+     same ninety rows is how the two come to disagree — and the first attempt did, matching on
+     pos, set and holding, none of which the deck records under those names. It reads nothing for
+     Arrow KEY: CARDED lists the three sets that are printed, so the drift verdict can only ever
+     apply to three of the sheet's four columns. */
+  deckLeadAt(pos, setKey) {
+    if (!this.constructor.CARDED[setKey]) return null;
+    const all = (typeof window !== 'undefined' && window.DECK_CARDS) || [];
+    const e = all.find((x) => x.id === setKey + (pos === '00' ? '-core' : '-single-' + pos));
+    return (e && (e.titles || [])[0]) || null;
+  }
+  cellQuality(pos, setKey, idx, deckLead, mainLen) {
+    const d = this.state.data;
+    const c = d ? this.cellAt(d, pos, setKey) : null;
+    if (!c) return null;
+    const w = this.norm(c.lead);
+    let code = 'clean', text = '', note = '';
+    if (!w) {
+      code = 'empty'; text = '–'; note = 'No word at this position';
+    } else if (idx[w] && idx[w].length > 1) {
+      code = 'clash'; text = '×' + idx[w].length;
+      note = 'This word is used at ' + idx[w].length + ' places in the sheet';
+    } else if (deckLead && this.norm(deckLead) !== w) {
+      code = 'drift'; text = '≠';
+      note = 'The printed deck reads ' + deckLead + ' here';
+    } else if (mainLen && w.length !== mainLen) {
+      code = 'length'; text = String(w.length);
+      note = w.length + ' characters where this set mostly holds ' + mainLen;
+    }
+    /* Retired: a fifth verdict for an unwritten gloss. It fired on every cell in the sheet, so the
+       marks stopped meaning anything and the four verdicts worth seeing were buried under 52
+       identical dots — and it contradicted the column headers, which call a set clean on a count
+       that never included gloss. A missing gloss is a note nobody has written, not a fault in the
+       word. Gloss coverage is reported per set by qualityOf, which is the right grain for it. */
+    return {
+      code, text, note,
+      flagged: code !== 'clean',
+      hard: this.constructor.CELL_HARD.indexOf(code) >= 0,
+      border: code === 'clean' ? 'transparent'
+        : (this.constructor.CELL_HARD.indexOf(code) >= 0 ? '#FFFFFF' : '#555555'),
+    };
+  }
+
+  /* FIT and FAULT. Neither is the other: qualityOf counts what can be counted, and fit is the
+     part only a person can give. A word is read in the set it sits in, so the same word can fit
+     one set and not another. A colour is never read at all, since the position holds
+     the hex whatever word is written there, so a colour marked weak reads weak in every set. */
+  /* Two words for two things, and no others. FIT is the considered verdict on meaning: does this
+     word mean the right thing at this position, in this set. FAULT is what the sheet can count.
+     A word can carry no faults and still be off, and carry a fault and still be the right word.
+
+     Retired 28 August 2026: quality, rating, doubt, signal, verdict, flagged, and strong/weak/
+     unsettled. Seven words for two ideas, which is how a reader ends up unsure whether a mark is
+     a measurement or an opinion. */
+  /* Fit is a number, one to five, and unread is no number at all. Three states were too coarse for
+     a considered reading: they forced a word that mostly works into the same bucket as one that is
+     plainly right, and the middle of the range is where most of these words actually sit.
+
+     The five colours are five real positions on the wheel, read round the arc from 12 to 06, which
+     runs green, yellow-green, yellow, orange, red in the spectrum itself. So the scale borrows a
+     progression the system already owns rather than adding five semantic colours to a palette that
+     has never had any. Retired 28 August 2026: the fits/off/unread diamond, one day old — a mark
+     that carried no degree, and a shape the brand does not use for anything else. */
+  /* Mark's grid shows only the four sets settled on the sheet. Claude's holds those four plus the
+     drafted extras, ordered short to long, so the two sides can differ in which sets they carry
+     without differing in how any one cell is read. */
+  static MARK_SETS = ['r', 'k', 't', 's'];
+  static POS_ORDER = ['00', '12', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11'];
+  static CLAUDE_SETS = [
+    { key: 'k2', name: 'Arrow KEY', rationale: "Built independently against each position's own sense, then checked against the settled Arrow KEY, then re-run against the pool's own two-letter band once a flat match/disagree pass turned out to be hiding weaker picks. Ten of thirteen land on the same word, and carry the same fit Mark's own case gives that word \u2014 the number rates the word against the position, not against whether the two sides agree. Three cells differ, each argued on its own terms.", words: {
+      '00': ['IS', "Same word, same argument as settled: names emptiness but not the watching \u2014 half the brief, hence the middling read.", 3],
+      '12': ['GO', "Same word as settled. Names the motion of growth, not the living field itself \u2014 half the brief.", 2],
+      '01': ['AH', "A caught breath is a sound that is a feeling at once, closer to the brief's refusal to split the two than BE, which is pure existence with no sound in it \u2014 proposed over BE.", 4],
+      '02': ['UP', "The brief asks for the spike and the charge, and UP is the direction a surge itself moves in \u2014 closer to that than ON, which only names a state having switched, not the rise. Proposed over ON.", 4],
+      '03': ['BY', "Same word as settled. Passing by is motion without friction, adjacent to ease rather than naming it.", 3],
+      '04': ['OF', "Same word as settled. Belonging, not yet the warmth turned outward the brief asks for.", 3],
+      '05': ['US', "Same word as settled. The pronoun doubles as the tie it names \u2014 as close as two letters gets.", 4],
+      '06': ['DO', "Same word as settled. Force as verb, short of the heat the brief also asks for.", 3],
+      '07': ['TO', "Same word as settled. Direction stated cleanly, short only of the going itself.", 4],
+      '08': ['IN', "Same word as settled. Holds information inside; says nothing of the machinery around it.", 2],
+      '09': ['SO', "The brief's rules half is a chain of consequence \u2014 if this, so that \u2014 and SO names the link directly, where MY is bare possession with nothing systemic in it. Proposed over MY.", 3],
+      '10': ['ME', "Same word as settled. The self pronoun, short only of the shape half of the brief.", 4],
+      '11': ['AS', "Same word as settled. A comparison that assigns a type without quite copying it.", 3],
+    } },
+    { key: 't2', name: 'Anchor TAG', rationale: "The register that names each position most directly \u2014 built the same way, independently, then checked against the settled Anchor TAG, then checked again against the pool itself once a flat match/disagree pass turned out to be hiding weaker picks. Ten of thirteen land on the settled word, at Mark's own fit for it; three are argued differently, at positions 01, 03 and 06 \u2014 all three swapped for a stronger pool word once actually read against the brief rather than assumed.", words: {
+      '00': ['YOU', "Same word as settled. Extent and watching both at once, as fully as three letters can hold them.", 5],
+      '12': ['ECO', "Same word as settled. Names the living field itself, short of the eating-and-tending half of the brief.", 4],
+      '01': ['HUM', "The brief is sound and feeling refusing to separate, and HUM is both at once \u2014 stronger than FUN, which takes the feeling half and drops the sound. Found back in the pool once FUN's score exposed the gap.", 5],
+      '02': ['JOY', "Same word as settled. The surge read as play, close to the brief's own drift at this length.", 4],
+      '03': ['ZEN', "Names the unforced state directly, closer to the brief's ease-half than ART, which points at the moment something lands rather than the state around it \u2014 proposed over ART.", 4],
+      '04': ['GOD', "Same word as settled. Warmth's source named, short of warmth itself.", 4],
+      '05': ['SEX', "Same word as settled. The approach and the body it's made with, together.", 4],
+      '06': ['WAR', "The brief names force AND its damage; MAX only carries the threshold half. WAR is force doing the damage the brief actually asks about \u2014 proposed over MAX.", 5],
+      '07': ['WAY', "Same word as settled. Turns navigational at this length, short of the going itself.", 3],
+      '08': ['WIT', "Same word as settled. Knowing, short of the machinery behind it.", 4],
+      '09': ['AIM', "Same word as settled. Names direction, not the rule or the standing-in-for the brief actually asks about.", 2],
+      '10': ['EGO', "Same word as settled. Self named exactly; the cold-feeling strand under it stays unnamed.", 3],
+      '11': ['POP', "Same word as settled. Covers appearance, imitation and the wanting of both in one syllable.", 5],
+    } },
+    { key: 'r2', name: 'Abstract REALM', rationale: "The abstract register, one noun-length step up from the concrete anchor \u2014 built independently, then checked against the settled Abstract REALM, then checked again against the pool once a low fit on a matching word turned out to mean a better one was sitting unused. Ten of thirteen land on the same word, at Mark's own fit for it; three are argued differently, at positions 00, 02 and 08.", words: {
+      '00': ['VOID', "The brief is emptiness and the eye that sits in it; VOID names the emptiness itself rather than an area around it, closer to the absence half than ZONE gets \u2014 proposed over ZONE. Still doesn't touch the watching half, hence the middling fit.", 3],
+      '12': ['LIFE', "Same word as settled. The abstract noun growth serves, held fully.", 5],
+      '01': ['TONE', "Same word as settled. Sound and feeling refused to separate, held in one register word.", 5],
+      '02': ['RUSH', "The brief asks for the spike and the charge directly; RUSH is that surge itself, where FLUX is change in general with no spike in it \u2014 proposed over FLUX.", 4],
+      '03': ['FLOW', "Same word as settled. The unforced state, named as itself.", 4],
+      '04': ['LOVE', "Same word as settled. Care and giving, plainly.", 5],
+      '05': ['BOND', "Same word as settled. The tie and the strain on it, both.", 5],
+      '06': ['FIRE', "Same word as settled. Force and its heat, short only of naming will directly.", 5],
+      '07': ['PATH', "Same word as settled. Direction with a heading, short of the going itself.", 3],
+      '08': ['DATA', "Names the information half of the brief directly, where TIME barely touches it \u2014 which is exactly why TIME reads so weak even settled \u2014 proposed over TIME.", 4],
+      '09': ['META', "Same word as settled. The model and the fold of representing representation, together.", 4],
+      '10': ['FORM', "Same word as settled. Shape named cleanly; the cold-feeling strand stays outside it.", 4],
+      '11': ['TYPE', "Same word as settled. Category named plainly, short only of the copy-of-it half.", 4],
+    } },
+    { key: 'st', name: 'Aspect STATE', rationale: "Built independently, word by word, then checked against Mark's own Aspect STATE rather than in reaction to it. Fit now follows Mark's own case for each matching word, not a blanket 5 for agreement \u2014 a settled word can still be a middling fit. Ten of thirteen land on the exact same word \u2014 each the most apt title available at four letters, nothing to better. Two differ, each argued in its own cell.", words: {
+      '00': ['HERE', "Same word as settled. Presence stated plainly, short only of the eye that sits in it.", 4],
+      '12': ['BODY', "Same word as settled. The living vessel doing the growing, held fully.", 5],
+      '01': ['MOOD', "Same word as settled. The clinical term for tone-as-feeling, held fully.", 5],
+      '02': ['HIGH', "Same word as settled. The surge named directly, short of the spike's mechanics.", 4],
+      '03': ['CALM', "Names the unforced state directly, where TRUE reads as authenticity rather than ease \u2014 proposed over TRUE.", 5],
+      '04': ['SOUL', "Same word as settled, and not an independent pick \u2014 a third of a mind/body/soul triad across 08, 12 and 04. Warmth turned outward, held fully once seen as part of the triad.", 4],
+      '05': ['NEED', "Same word as settled. The pull toward someone, held fully.", 4],
+      '06': ['WILL', "Same word as settled. Drive and its heat, named directly.", 5],
+      '07': ['GOAL', "Names the heading itself, where WANT names the motive behind it \u2014 proposed over WANT.", 4],
+      '08': ['MIND', "Same word as settled. The machinery of knowing, held fully.", 5],
+      '09': ['VIEW', "Same word as settled. A held model, short of the rules governing it.", 4],
+      '10': ['SELF', "Same word as settled. Self named, short of the shape half of the brief.", 3],
+      '11': ['MODE', "Same word as settled. Covers type and manner together, short of the copying itself.", 4],
+    } },
+  ];
+  static FIT_MIN = 1;
+  static FIT_MAX = 5;
+  static FIT_COLOUR = { 5: 'var(--cl-12-life)', 4: 'var(--cl-01-tone)', 3: 'var(--cl-02-flux)', 2: 'var(--cl-04-love)', 1: 'var(--cl-06-fire)' };
+  static FIT_NOTE = {
+    5: 'The only word for this position',
+    4: 'Right, with a better one perhaps unfound',
+    3: 'Works, and does not carry the position',
+    2: 'Off, and holding the place of a better word',
+    1: 'Wrong at this position',
+  };
+  /* Held in their own flat map rather than on the cells, because a fit is not one of the words:
+     an import replaces cells wholesale, and a reading should not be carried off by a paste that
+     was only ever about words. The key names the set, because a word is read in the set it sits
+     in and the same word can fit one set and not another.
+
+     One reading, on the word. The colour is not read: the position fixes it by its place in the
+     spectrum, so there is nothing to judge, and a control there would invite someone to mark a hex
+     wrong when the hex is the one thing on the sheet that was never a choice. */
+  /* 0 is unread, and unread is not a low score. A word nobody has read yet is not a bad word, so it
+     carries no number and no colour rather than a 1. */
+  /* The fit is the one the written case proposes, and there is no second, hand-set copy of it. A
+     position with no case reads as 0, which is unread rather than bad. Settled 28 August 2026: a
+     judgement belongs with the argument that supports it, so the store of fits is lingo-cases.js
+     and the sheet only displays what is written there. Retired the same day: the fits map in state,
+     the five-way chip control, and the one-touch cycle. */
+  caseAt(pos, set) {
+    const all = (typeof window !== 'undefined' && window.LINGO_CASES) || {};
+    return (all[set] || {})[pos] || null;
+  }
+  /* An argument is about a word, not about a slot. Swap the lead and the case written for the old
+     word stops applying: it is not shown as this word's verdict, and the fit goes back to unread.
+     Settled 28 August 2026, the day swapping arrived — before it, a fit could only ever describe the
+     word it was written for, so nothing had to check. */
+  caseHere(pos, set) {
+    const c = this.caseAt(pos, set);
+    if (!c) return null;
+    const d = this.state.data;
+    const cell = d ? this.cellAt(d, pos, set) : null;
+    const lead = cell ? this.norm(cell.lead) : '';
+    return c.word && this.norm(c.word) !== lead ? null : c;
+  }
+  /* Named so the panel can say what happened rather than going quiet: a case exists here, it was
+     written about the word that used to sit here, and it is waiting on a new reading. */
+  caseStale(pos, set) {
+    const c = this.caseAt(pos, set);
+    return c && !this.caseHere(pos, set) ? c.word : '';
+  }
+  fitAt(pos, set) {
+    const c = this.caseHere(pos, set);
+    return c && c.fit ? c.fit : 0;
+  }
+  /* The best word this sheet can currently name for a position: the settled word itself when its
+     case already reads 4 or 5, the case's own top alternate when one is written and the word falls
+     short of that, or the first free pool word when neither exists. Never invented, and never
+     better than the evidence actually on file. */
+  bestWordAt(pos, setKey, idx) {
+    const d = this.state.data;
+    const cell = d ? this.cellAt(d, pos, setKey) : null;
+    const lead = cell ? this.norm(cell.lead) : '';
+    const c = this.caseHere(pos, setKey);
+    if (c && c.fit >= 4) return lead;
+    if (c && c.alts && c.alts.length) return this.norm(c.alts[0]);
+    if (!lead) {
+      const len = (this.qualityOf(setKey) || {}).len || 0;
+      const free = this.freeAt(pos, len, idx);
+      return free[0] || '';
+    }
+    return lead;
+  }
+
+  /* ── What the sheet can tell about a word ──────────────────────────────────────────────────────
+
+     Four faults, each a named reason with a weight. They rank attention; they do not decide.
+     Whether a word is the RIGHT word is not in here, because it is not a thing a platform can
+     count — that is the fit, and it is read by hand.
+
+     Faults only. The word is missing, the wrong length, used twice, or contradicted by a printed
+     card. Every one is true whatever anyone thinks of the word, and none of them is a reading of what the word means. Meaning is FIT, it
+     is read rather than counted, and it lives in the case.
+
+     Rejected: scoring meaning from a part-of-speech guess or a sentiment read. Both would have
+     produced a confident number out of a lexicon this project does not have, and the number would
+     have been believed. */
+  static HARD = { empty: 1, length: 1, clash: 1, drift: 1 };
+  wordFaults(pos, setKey) {
+    const d = this.state.data;
+    if (!d) return [];
+    const cell = this.cellAt(d, pos, setKey);
+    const w = ((cell && cell.lead) || '').trim();
+    if (!w) return [{ code: 'empty', weight: 100, label: 'No word', why: 'The position holds nothing, so there is nothing to judge.' }];
+
+    const out = [];
+    const held = d.rows
+      .map((r) => ({ pos: r.pos, w: (((this.cellAt(d, r.pos, setKey) || {}).lead) || '').trim() }))
+      .filter((x) => x.w);
+    const lens = {};
+    held.forEach((x) => { lens[x.w.length] = (lens[x.w.length] || 0) + 1; });
+    const mainLen = Number(Object.keys(lens).sort((a, b) => lens[b] - lens[a])[0]) || w.length;
+
+    if (w.length !== mainLen) {
+      out.push({ code: 'length', weight: 40, label: w.length + ' letters, not ' + mainLen, why: 'Every other word in this set is ' + mainLen + ', and the length is what makes a set read as one.' });
+    }
+    const hits = this.index()[this.norm(w)] || [];
+    if (hits.length > 1) {
+      out.push({ code: 'clash', weight: 60, label: 'Used ' + hits.length + ' times', why: 'The same word is doing duty somewhere else in the sheet, so neither place owns it.' });
+    }
+    const deck = this.deckLeadAt(pos, setKey);
+    if (deck && this.norm(deck) !== this.norm(w)) {
+      out.push({ code: 'drift', weight: 50, label: 'Deck prints ' + deck, why: 'A card already went out reading ' + deck + '. One of the two is wrong.' });
+    }
+
+    /* Retired 28 August 2026: the sound faults, which marked a word for opening or closing like
+       another word in its set. They were the last of the six-signal form-and-sound detector this
+       project retired the same day for measuring the wrong thing, and at weight 25 they were the
+       loudest number in the drawer — the system's loudest signal was the one it had stopped
+       believing. Where two words genuinely get misread for each other, the case says so in prose:
+       FLUX and FLOW is written as an argument, not counted as a fault. */
+
+    /* Retired 28 August 2026, tested and dropped the same day: a fault for a word the pool does not
+       hold. The pool is the unsorted remainder — every settled word was taken out of it when it was
+       settled — so the check fired on all fifty-two and distinguished nothing. Also retired: a
+       weight for how many candidates the pool still holds at a position. A large field is a reason
+       to look, not a fault, and it now belongs to the case rather than to this list.
+
+       What is left is four faults, all of them countable and none of them about meaning. */
+    return out.sort((a, b) => b.weight - a.weight);
+  }
+  faultsOf(pos, setKey) {
+    return this.wordFaults(pos, setKey).reduce((n, s) => n + s.weight, 0);
+  }
+
+  /* A suggestion is only ever a word the pool already holds at that position and that nothing in
+     the sheet has taken. The platform never invents a word. */
+  freeAt(pos, len, idx) {
+    const map = idx || this.index();
+    return this.poolAt(pos).filter((w) => w.length === len && !map[this.norm(w)]);
+  }
+  makeSet(name, len) {
+    const clean = (name || '').trim();
+    if (!clean) return;
+    this.mutate((d) => {
+      const used = {}; d.sets.forEach((s) => { used[s.key] = 1; });
+      const from = (clean.split(/\s+/)[1] || clean).toLowerCase();
+      let key = '';
+      for (const ch of (from + 'abcdefghijklmnopqrstuvwxyz')) { if (/[a-z]/.test(ch) && !used[ch]) { key = ch; break; } }
+      if (!key) return;
+      d.sets.push({ key: key, name: clean, ring: 'core' });
+      const taken = {};
+      d.rows.forEach((r) => {
+        const pick = len ? this.freeAt(r.pos, len).find((w) => !taken[w]) : '';
+        if (pick) taken[pick] = 1;
+        r.cells.push({ set: key, lead: pick || '', alts: [], gloss: '', q: '', status: 'draft' });
+      });
+    });
+    this.setState({ newSet: false, nsName: '' });
+  }
+  poolAt(pos) {
+    const src = typeof window !== 'undefined' ? window.LINGO_POOL : null;
+    if (!src) return [];
+    const r = src.rows.find((x) => x.pos === pos);
+    const c = r && r.cells.find((x) => x.set === 'p');
+    return (c && c.alts) || [];
+  }
+  grab(n) {
+    if (window.LINGO_SEED) { this.setState({ data: JSON.parse(JSON.stringify(window.LINGO_SEED)) }); return; }
+    if (n < 80) setTimeout(() => this.grab(n + 1), 50);
+  }
+
+  P() { return window.RESOURCE_POSITIONS || []; }
+  posOf(i) {
+    if (i === '00') return { i: '00', a: null, hex: '' };
+    return this.P().find((p) => p.i === i) || { i: i, a: null, hex: '' };
+  }
+  polarOf(i) {
+    const P = this.P();
+    const k = P.findIndex((p) => p.i === i);
+    return k < 0 ? null : P[(k + 6) % 12].i;
+  }
+  tintOf(i) { return i === '00' ? '' : 'cl-' + i; }
+
+  mutate(fn) {
+    const d = JSON.parse(JSON.stringify(this.state.data));
+    fn(d);
+    this.setState({ data: d });
+  }
+  togglePending(pos, set) {
+    const k = pos + set;
+    this.pending = Object.assign({}, this.pending);
+    if (this.pending[k]) delete this.pending[k]; else this.pending[k] = true;
+    try { localStorage.setItem('lingoPending', JSON.stringify(this.pending)); } catch (e) {}
+    try { parent.postMessage({ type: 'rs-tweak-save', store: 'lingoPending', data: this.pending }, '*'); } catch (err) {}
+    this.forceUpdate();
+  }
+  cellAt(d, pos, set) {
+    const r = d.rows.find((x) => x.pos === pos);
+    return r && r.cells.find((c) => c.set === set);
+  }
+  norm(w) { return String(w || '').trim().toUpperCase(); }
+
+  /* Every word in the store, with where it sits. One pass, reused by the
+     duplicate marks, the header count and the inspector's report. */
+  index() {
+    const d = this.state.data;
+    const map = {};
+    if (!d) return map;
+    d.rows.forEach((r) => r.cells.forEach((c) => {
+      const push = (w, role) => {
+        const k = this.norm(w);
+        if (!k) return;
+        (map[k] = map[k] || []).push({ pos: r.pos, set: c.set, role: role });
+      };
+      push(c.lead, 'lead');
+      (c.alts || []).forEach((a) => push(a, 'alternate'));
+    }));
+    return map;
+  }
+  setName(key) {
+    const d = this.state.data;
+    const s = d && d.sets.find((x) => x.key === key);
+    return s ? s.name : key;
+  }
+
+  view() { return this.state.view || this.props.view || 'sheet'; }
+  select(pos, set, role, idx) { this.setState({ sel: { pos: pos, set: set, role: role, idx: idx } }); }
+
+  setLead(pos, set, v) { this.mutate((d) => { this.cellAt(d, pos, set).lead = v.toUpperCase(); }); }
+  setAlt(pos, set, i, v) {
+    this.mutate((d) => {
+      const c = this.cellAt(d, pos, set);
+      if (v.trim() === '') c.alts.splice(i, 1); else c.alts[i] = v.toUpperCase();
+    });
+  }
+  addAlt(pos, set, v) {
+    const w = this.norm(v);
+    if (!w) return;
+    this.mutate((d) => { this.cellAt(d, pos, set).alts.push(w); });
+    this.setState((s) => ({ drafts: Object.assign({}, s.drafts, { [pos + set]: '' }) }));
+  }
+  promote() {
+    const s = this.state.sel;
+    if (!s || s.role !== 'alternate') return;
+    this.mutate((d) => {
+      const c = this.cellAt(d, s.pos, s.set);
+      const was = c.lead;
+      c.lead = c.alts[s.idx];
+      c.alts.splice(s.idx, 1);
+      if (this.norm(was)) c.alts.unshift(was);
+    });
+    this.setState({ sel: { pos: s.pos, set: s.set, role: 'lead', idx: -1 } });
+  }
+  remove() {
+    const s = this.state.sel;
+    if (!s) return;
+    this.mutate((d) => {
+      const c = this.cellAt(d, s.pos, s.set);
+      if (s.role === 'lead') { c.lead = c.alts.length ? c.alts.shift() : ''; }
+      else c.alts.splice(s.idx, 1);
+    });
+    this.setState({ sel: { pos: s.pos, set: s.set, role: 'lead', idx: -1 } });
+  }
+
+  toTsv() {
+    const d = this.state.data;
+    const out = ['position\tset\tlead\talternates'];
+    d.rows.forEach((r) => r.cells.forEach((c) => {
+      out.push([r.pos, this.setName(c.set), c.lead, (c.alts || []).join('|')].join('\t'));
+    }));
+    return out.join('\n');
+  }
+
+  /* Import is additive by cell: a row names a position and a set, and only
+     that cell changes. Anything the paste does not mention is left alone. */
+  doImport() {
+    const raw = this.state.text.trim();
+    if (!raw) { this.setState({ flash: 'Nothing to import' }); return; }
+    let n = 0;
+    try {
+      if (raw[0] === '{' || raw[0] === '[') {
+        const j = JSON.parse(raw);
+        const rows = Array.isArray(j) ? j : j.rows;
+        this.mutate((d) => {
+          rows.forEach((r) => {
+            if (r.cells) {
+              r.cells.forEach((c) => {
+                const t = this.cellAt(d, r.pos, c.set);
+                if (!t) return;
+                if (c.lead !== undefined) t.lead = this.norm(c.lead);
+                if (c.alts) t.alts = c.alts.map((a) => this.norm(a)).filter(Boolean);
+                if (c.gloss !== undefined) t.gloss = c.gloss;
+                if (c.q !== undefined) t.q = c.q;
+                n += 1;
+              });
+            }
+          });
+        });
+      } else {
+        const lines = raw.split(/\r?\n/).filter((l) => l.trim());
+        const delim = lines[0].indexOf('\t') > -1 ? '\t' : ',';
+        if (/position/i.test(lines[0])) lines.shift();
+        this.mutate((d) => {
+          lines.forEach((l) => {
+            const f = l.split(delim).map((x) => x.trim());
+            const pos = f[0].length === 1 ? '0' + f[0] : f[0];
+            const set = d.sets.find((s) => s.key === f[1] || s.name.toLowerCase() === String(f[1]).toLowerCase());
+            const t = set && this.cellAt(d, pos, set.key);
+            if (!t) return;
+            t.lead = this.norm(f[2]);
+            t.alts = String(f[3] || '').split('|').map((a) => this.norm(a)).filter(Boolean);
+            n += 1;
+          });
+        });
+      }
+      this.setState({ flash: n ? n + ' cells imported' : 'No rows matched a position and a set' });
+    } catch (e) {
+      this.setState({ flash: 'Could not read that: ' + e.message });
+    }
+  }
+
+  copy(t) {
+    if (navigator.clipboard) navigator.clipboard.writeText(t);
+    this.setState({ flash: 'Copied' });
+  }
+
+  renderVals() {
+    /* First line, and it stays first. This was declared halfway down, below the cells map that
+       reads it, which is a temporal dead zone rather than a hoisted undefined: renderVals threw on
+       every load and the whole word grid failed to render. Declaring it at the top means the next
+       reference from anywhere in this function is safe. */
+    const C = this.constructor;
+    const d = this.state.data;
+    const idx = this.index();
+    const dupKeys = Object.keys(idx).filter((k) => idx[k].length > 1);
+    const mark = this.props.markDuplicates !== false;
+    const view = this.view();
+    const q = this.norm(this.state.q);
+    const sel = this.state.sel;
+    /* Reword mode: the one flag every fit-aware surface, and the best-case grid, reads off. */
+    const smart = this.props.reword !== false;
+
+    const where = (w, skip) => idx[this.norm(w)]
+      .filter((h) => !(skip && h.pos === skip.pos && h.set === skip.set && h.role === skip.role))
+      .map((h) => this.setName(h.set) + ' ' + h.pos)
+      .join(' · ');
+
+    /* The set's dominant word length and the deck's printed lead, worked out once per set and per
+       position rather than per cell, so the sheet's ninety-odd cells do not each re-scan the sheet. */
+    /* One quality read per set, held for the header, the overview panel and the cell marks alike,
+       so a header cannot call a set clean while the panel behind it lists four faults. */
+    const qual = {}, mainLenOf = {}, spareOf = {};
+    if (d) d.sets.forEach((s) => {
+      const qq = this.qualityOf(s.key);
+      qual[s.key] = qq;
+      mainLenOf[s.key] = qq ? qq.len : 0;
+      spareOf[s.key] = qq ? d.rows.reduce((n, r) => n + this.freeAt(r.pos, qq.len, idx).length, 0) : 0;
+    });
+    const faultsIn = (qq) => !qq ? 0 : qq.empty.length + qq.drift.length + qq.offLength.length + qq.clashes.length;
+    const hc = this.state.hoverCell;
+    const rows = !d ? [] : d.rows.map((r) => {
+      const p = this.posOf(r.pos);
+      const cells = r.cells.filter((c) => this.constructor.MARK_SETS.indexOf(c.set) > -1).map((c) => {
+        const key = r.pos + c.set;
+        const lk = this.norm(c.lead);
+        const cq = this.cellQuality(r.pos, c.set, idx, this.deckLeadAt(r.pos, c.set), mainLenOf[c.set]) || {};
+        const cr = this.fitAt(r.pos, c.set);
+        /* A single cell or its column's name swaps the word in place on hover, a quick glance at
+           one candidate. Comparing every column at once is a different kind of reading and gets
+           its own duplicate grid instead, further down. */
+        const isHover = !!(hc && hc.pos === r.pos && hc.set === c.set);
+        const colHover = smart && this.state.hoverSetPreview === c.set;
+        const rawHover = smart && (isHover || colHover);
+        const bestW = rawHover ? (this.bestWordAt(r.pos, c.set, idx) || lk) : '';
+        /* Only a cell that actually differs swaps. An unchanged one hovered along with its column
+           has nothing to show, and showing it anyway would read as a second, wordless kind of
+           doubt about a word the sheet already agrees with. */
+        const showPreview = rawHover && this.norm(bestW) !== lk;
+        /* Read once and shared by the meter and its note. wordSignals walks every other word in
+           the set, so calling it per segment would be thirteen walks a cell. */
+        const cSig = this.wordFaults(r.pos, c.set);
+        return {
+          lead: c.lead,
+          pending: !!(this.pending && this.pending[r.pos + c.set]),
+          /* Retired: the standalone duplicate badge. A duplicate is one of six things that can be
+             wrong with a cell, and six separate badges in a cell this size is unreadable, so it is
+             now the clash verdict inside the one quality mark. */
+          qFlagged: !!cq.flagged,
+          qText: cq.text || '',
+          qNote: cq.note || '',
+          /* Two flags rather than a border colour, because a colour passed through a hole cannot
+             paint until the logic lands. The choice is binary, so the template carries both literal
+             variants and shows one. */
+          qHard: !!cq.flagged && !!cq.hard,
+          qSoft: !!cq.flagged && !cq.hard,
+          /* The marker is the meaning verdict and nothing else: green fits, red does not, hollow has
+             not been read yet. It reports the fit the written case proposes, so the dot and the
+             argument behind it cannot disagree, and touching the dot opens the argument.
+
+             Retired 28 August 2026, the same day it shipped: the six-step doubt meter above each
+             word, which drew the eye to every cell at once. Retired with it, hours later: the
+             one-touch cycle and the hand-set ruling behind it. A fit that is argued in prose should
+             not also be settable by a click that carries no argument. */
+          f5: cr === 5, f4: cr === 4, f3: cr === 3, f2: cr === 2, f1: cr === 1, f0: !cr,
+          fitNote: (cr ? cr + ' of 5 · ' + this.constructor.FIT_NOTE[cr] : 'No case written yet')
+            + (cSig.length ? ' · ' + cSig.length + ' note' + (cSig.length === 1 ? '' : 's') + ' on the sheet' : '')
+            + ' · touch to read it',
+          leadDup: mark && lk && idx[lk] && idx[lk].length > 1,
+          leadDupN: '×' + (idx[lk] ? idx[lk].length : 1),
+          alts: (c.alts || []).map((a, i) => {
+            const ak = this.norm(a);
+            return {
+              w: a,
+              dup: mark && ak && idx[ak] && idx[ak].length > 1,
+              dupN: '×' + (idx[ak] ? idx[ak].length : 1),
+              onChange: (e) => this.setAlt(r.pos, c.set, i, e.target.value),
+              onSelect: () => this.select(r.pos, c.set, 'alternate', i),
+            };
+          }),
+          onOpenCell: () => this.openDetail(r.pos, c.set),
+          onEnter: () => this.enterCell(r.pos, c.set),
+          onLeave: () => this.leaveCell(r.pos, c.set),
+          previewOn: showPreview,
+          previewOff: !showPreview,
+          displayWord: showPreview ? (bestW || '\u2013') : c.lead,
+          open: !!(this.state.detail && this.state.detail.pos === r.pos && this.state.detail.set === c.set),
+          /* A cell opens its own set, never the view's. The alternates chip was the only always-on
+             route into the drawer and every cell holds none, so a written case for a set other than
+             the one in front was unreachable from the sheet, which is where the reading is done. */
+          hasCase: !!(((typeof window !== 'undefined' && window.LINGO_CASES) || {})[c.set] || {})[r.pos],
+          hasAlts: (c.alts || []).length > 0,
+          altN: '+' + (c.alts || []).length,
+          draft: this.state.drafts[key] || '',
+          onDraft: (e) => this.setState((s) => ({ drafts: Object.assign({}, s.drafts, { [key]: e.target.value }) })),
+          onDraftKey: (e) => { if (e.key === 'Enter') this.addAlt(r.pos, c.set, e.target.value); },
+        };
+      });
+      const words = [].concat.apply([], r.cells.map((c) => [c.lead].concat(c.alts || [])));
+      /* The same swap, aimed at a set that does not exist yet. Hovering New set previews the
+         column drafting would actually produce, at whichever length the chip row last touched, so
+         a set can be judged by its words before it is created rather than by its letter count alone. */
+      const newHover = smart && this.state.hoverNewSet;
+      const newWord = newHover ? (this.freeAt(r.pos, this.state.nsHoverLen || this.state.nsLen, idx)[0] || '') : '';
+      return {
+        onOpen: () => this.openDetail(r.pos, this.state.setKey),
+        onOverview: () => this.setState({ qPos: r.pos, qSet: null }),
+        pos: r.pos,
+        tint: this.tintOf(r.pos),
+        strokeTint: r.pos === '00' ? '' : 'cl-' + r.pos + '-stroke',
+        meta: r.pos === '00' ? 'CORE · VOID' : p.a + '° · ' + p.hex,
+        cells: cells,
+        newPreviewOn: newHover && !!newWord,
+        newPreviewWord: newWord,
+        _match: !q || words.some((w) => this.norm(w).indexOf(q) > -1) || r.pos.indexOf(q) > -1,
+      };
+    /* Retired 28 August 2026, with the cell fault marks: Duplicates only, Flagged only and Worst
+       first. All three narrowed or reordered the sheet on faults the sheet no longer shows, so a
+       surviving row gave no clue which cell had earned it. The faults are read in the set header
+       and in the drawer, where they are named. Search stays: it matches a word you can see. */
+    }).filter((r) => r._match);
+    /* Clock order always: the sheet is a wheel written flat, and shuffling it costs the reader the
+       one thing the order tells them. */
+
+    /* The twelve nodes are placed literally in the template, because the angles
+       are a constant. Each one reads its word, and whether it is lit: a node is
+       lit when it is selected or when it is the selected node's polar pair, the
+       two being the test of whether a set hangs together. */
+    const nodes = {};
+    this.P().forEach((p) => {
+      const c = d ? this.cellAt(d, p.i, this.state.setKey) : null;
+      nodes['n' + p.i] = {
+        w: (c && c.lead) || '–',
+        on: !!(sel && sel.set === this.state.setKey && (sel.pos === p.i || this.polarOf(sel.pos) === p.i)),
+        onClick: () => this.select(p.i, this.state.setKey, 'lead', -1),
+      };
+    });
+
+    const det = this.state.detail;
+    const dCell = det && d ? this.cellAt(d, det.pos, det.set) : null;
+    const cDet = this.state.cDetail;
+    const uTint = det ? this.tintOf(det.pos) : (cDet ? this.tintOf(cDet.pos) : '');
+    const cCell = cDet ? this.claudeCellAt(cDet.pos, cDet.set) : { setName: '', w: '', note: '', fit: 0 };
+    const cMarkKey = cDet ? this.claudeMarkKey(cDet.set) : null;
+    const cRealCell = cDet && cMarkKey && d ? this.cellAt(d, cDet.pos, cMarkKey) : null;
+    const cMatchesPrinted = !!(cRealCell && this.norm(cRealCell.lead) === this.norm(cCell.w));
+    const ccEntry = cDet && cMarkKey && cMatchesPrinted && C.CARDED[cMarkKey] ? this.entryFor([cDet.pos], cMarkKey) : null;
+    const ccLeadAt = (pos) => { const c = d && cMarkKey ? this.cellAt(d, pos, cMarkKey) : null; return (c && c.lead) || ''; };
+    const ccBase = cMarkKey ? C.BASE_POS.map(ccLeadAt) : [];
+    const ccBlend = cMarkKey ? C.BLEND_POS.map(ccLeadAt) : [];
+    const dPolar = det ? this.polarOf(det.pos) : null;
+    const dPolarCell = dPolar && d ? this.cellAt(d, dPolar, det.set) : null;
+    /* Built by the same route the Card view uses, so the card's headline is this sheet's lead and
+       cannot disagree with its own word grid. Reading, gloss and question are still borrowed from
+       the printed row when one matches; the word never is. */
+    const dEntry = det && C.CARDED[det.set] ? this.entryFor([det.pos], det.set) : null;
+    /* The card's twelve-word grid follows whichever set is in front: the drawer's set when the
+       drawer is open, the view's set otherwise. Both read this sheet, never deck-data. */
+    const gridSet = det ? det.set : this.state.setKey;
+    const leadAt = (pos) => { const c = d ? this.cellAt(d, pos, gridSet) : null; return (c && c.lead) || ''; };
+    const dBase = C.BASE_POS.map(leadAt);
+    const dBlend = C.BLEND_POS.map(leadAt);
+    /* The pool arrives banded by length because that is the sheet's own grouping, and a band is
+       the unit a word gets judged in: four-letter candidates compete with each other, not with
+       the sixes. */
+    /* One band, the set's own. A set IS a length — Arrow KEY is the two-letter reading of the
+       twelve, Anchor TAG the three — so a candidate of any other length cannot join it, and the
+       twelve other bands were twelve lists of words this card could never take. They made the
+       drawer long enough to hide the one list that mattered.
+
+       Retired 28 August 2026: every band at the position, banded one to thirteen. */
+    const rv = this.state.review;
+    const rvCell = rv && d ? this.cellAt(d, rv.pos, rv.set) : null;
+    const rvLead = rvCell ? this.norm(rvCell.lead) : '';
+    const rvHits = rv ? (idx[rv.w] || []) : [];
+    const cases = (typeof window !== 'undefined' && window.LINGO_CASES) || {};
+    const dCase = det ? this.caseHere(det.pos, det.set) : null;
+    const dStale = det ? this.caseStale(det.pos, det.set) : '';
+    const dLen = det ? (this.qualityOf(det.set) || {}).len || 0 : 0;
+    const dPool = det ? this.poolAt(det.pos).filter((w) => w.length === dLen) : [];
+    const NAMES = { 1: 'One letter', 2: 'Two letters', 3: 'Three letters', 4: 'Four letters', 5: 'Five letters', 6: 'Six letters' };
+    const bandMap = {};
+    dPool.forEach((w) => { (bandMap[w.length] = bandMap[w.length] || []).push(w); });
+    const dBands = Object.keys(bandMap).map(Number).sort((a, b) => a - b).map((n) => ({
+      label: (NAMES[n] || n + ' letters') + ' · ' + bandMap[n].length,
+      words: bandMap[n].map((w) => ({ w: w, onReview: () => this.review(det.pos, det.set, w) })),
+    }));
+
+    /* ── The overview, read either way ────────────────────────────────────────────────────────
+       A column and a row ask the same three questions of different slices: what is held, what can
+       be counted against it, and what the pool still offers. One chip shape and one group shape
+       answer both, so the row header is not a second panel written from scratch. */
+    const q2 = this.state.qSet ? qual[this.state.qSet] : null;
+    const ovPos = this.state.qPos;
+    const chip = (tag, tint, w, note, onOpen, title) => ({ tag: tag, tint: tint || '', w: w || '', note: note || '', onOpen: onOpen, title: title || '' });
+    const ovGroups = [];
+    if (q2 && d) {
+      const sk = this.state.qSet;
+      const go = (p) => () => this.openDetail(p, sk);
+      if (q2.empty.length) ovGroups.push({ label: 'No word', n: String(q2.empty.length), items: q2.empty.map((p) => chip(p, this.tintOf(p), '', '', go(p))) });
+      if (q2.drift.length) ovGroups.push({ label: 'Printed deck disagrees', n: String(q2.drift.length), items: q2.drift.map((x) => chip(x.pos, this.tintOf(x.pos), x.w, 'deck says ' + x.deck, go(x.pos))) });
+      if (q2.offLength.length) ovGroups.push({ label: "Off the set's length", n: String(q2.offLength.length), items: q2.offLength.map((x) => chip(x.pos, this.tintOf(x.pos), x.w, x.n + 'L', go(x.pos))) });
+      if (q2.clashes.length) ovGroups.push({ label: 'Written twice in the sheet', n: String(q2.clashes.length), items: q2.clashes.map((x) => chip(x.pos, this.tintOf(x.pos), x.w, '×' + (idx[this.norm(x.w)] || []).length, go(x.pos))) });
+      /* Suggestions, and only where they are wanted: a position with no word, or one whose written
+         case reads three or under. Offering the pool at a position already settled at five would be
+         the sheet arguing with a reading it just printed. */
+      const sugg = [];
+      d.rows.forEach((r) => {
+        const c = this.cellAt(d, r.pos, sk);
+        if (!c) return;
+        const fit = this.fitAt(r.pos, sk);
+        if (this.norm(c.lead) && !(fit && fit <= 3)) return;
+        this.freeAt(r.pos, q2.len, idx).slice(0, 2).forEach((w) => sugg.push(chip(r.pos, this.tintOf(r.pos), w, fit ? fit + '/5' : '', go(r.pos), 'Open ' + r.pos + ' to review it')));
+      });
+      if (sugg.length) ovGroups.push({ label: 'The pool offers', n: String(sugg.length), items: sugg.slice(0, 12) });
+    }
+    if (ovPos && d) {
+      const held = d.sets.map((s) => {
+        const c = this.cellAt(d, ovPos, s.key);
+        const fit = this.fitAt(ovPos, s.key);
+        return chip(s.name, '', (c && c.lead) || '–', fit ? fit + '/5' : 'unread', () => this.openDetail(ovPos, s.key), 'Open the card');
+      });
+      ovGroups.push({ label: 'Word by set', n: String(held.length), items: held });
+      const fl = [];
+      d.sets.forEach((s) => this.wordFaults(ovPos, s.key).forEach((x) => fl.push(chip(s.name, '', x.label, '', () => this.openDetail(ovPos, s.key), x.why))));
+      if (fl.length) ovGroups.push({ label: 'Faults', n: String(fl.length), items: fl });
+      const atLen = {};
+      d.sets.forEach((s) => { if (mainLenOf[s.key]) atLen[mainLenOf[s.key]] = s.key; });
+      const free = this.poolAt(ovPos).filter((w) => !idx[this.norm(w)]);
+      if (free.length) ovGroups.push({ label: 'In the pool here', n: String(free.length), items: free.map((w) => chip(w.length + 'L', '', w, '', atLen[w.length] ? () => this.openDetail(ovPos, atLen[w.length]) : undefined, atLen[w.length] ? 'Fits ' + this.setName(atLen[w.length]) : 'No set holds this length')) });
+    }
+    const cSel = this.state.cardSel;
+    const cEntry = this.entryFor(cSel, this.state.setKey);
+
+    /* The audit lists a word once with every place it is written, rather than listing each cell
+       that happens to be duplicated: the thing being judged is the word, not the cell. */
+    const auditRows = dupKeys.map((k) => ({
+      w: k,
+      at: idx[k].map((h) => ({
+        pos: h.pos,
+        tint: this.tintOf(h.pos),
+        label: this.setName(h.set) + ' · ' + h.role,
+        onOpen: () => this.openDetail(h.pos, h.set),
+      })),
+    }));
+
+    /* Drift is one-directional by ruling: this sheet is the source, so a disagreement is the deck
+       being stale. Only the sets the deck actually prints can drift, and only where both name a
+       word, since an empty cell here is undecided rather than a contradiction. */
+    const driftRows = [];
+    if (d) {
+      d.rows.forEach((r) => r.cells.forEach((c) => {
+        if (!this.norm(c.lead)) return;
+        const w = this.deckLeadAt(r.pos, c.set);
+        if (!w || this.norm(w) === this.norm(c.lead)) return;
+        driftRows.push({ pos: r.pos, tint: this.tintOf(r.pos), set: this.setName(c.set), here: c.lead, deck: w });
+      }));
+    }
+
+    const selCell = sel && d ? this.cellAt(d, sel.pos, sel.set) : null;
+    const selWord = !selCell ? '' : sel.role === 'lead' ? selCell.lead : selCell.alts[sel.idx];
+    const selK = this.norm(selWord);
+    const polarPos = sel ? this.polarOf(sel.pos) : null;
+    const polarCell = polarPos && d ? this.cellAt(d, polarPos, sel.set) : null;
+
+    return Object.assign(nodes, {
+      wordCount: Object.keys(idx).reduce((n, k) => n + idx[k].length, 0),
+      setCount: d ? d.sets.length : 0,
+      dupLabel: dupKeys.length ? dupKeys.length + ' duplicated ' + (dupKeys.length === 1 ? 'word' : 'words') : 'No duplicates',
+      /* Just the name. The header carried a second line counting filled positions, character length
+         and faults, which read as an audit above every column and told nobody anything they came to
+         the sheet for. The counts still exist, one click away in the quality panel, where they are
+         explained rather than abbreviated. */
+      /* Three lines, stacked: the set, what it holds, and where it stands. The header retired in
+         August abbreviated an audit above every column; this one carries the two numbers a reader
+         is actually deciding on — is the column complete and to one length, and is there anything
+         to fix or take — and the panel behind it names them. */
+      /* Hovering the name arms the whole column: every cell in it reads colHover and swaps to its
+         own best word, so a set is judged as a set rather than one position at a time. */
+      setCols: d ? d.sets.filter((s) => this.constructor.MARK_SETS.indexOf(s.key) > -1).map((s) => {
+        const parts = s.name.split(' ');
+        return {
+          name1: parts[0] || s.name,
+          name2: parts.slice(1).join(' '),
+          onOverview: () => this.setState({ qSet: s.key, qPos: null }),
+          onEnter: smart ? () => this.setState({ hoverSetPreview: s.key }) : undefined,
+          onLeave: smart ? () => this.setState((st) => (st.hoverSetPreview === s.key ? { hoverSetPreview: null } : st)) : undefined,
+        };
+      }) : [],
+      onNewSet: () => this.setState({ newSet: true }),
+      /* A press, not a hover: comparing thirteen positions across four sets is reading, not a
+         glance, and a hover that can be missed on the way out is the wrong control for something
+         meant to stay in view while the grid underneath is still being worked. */
+      onCompareClick: smart ? () => this.setState((st) => ({ compareLocked: !st.compareLocked })) : undefined,
+      compareLocked: this.state.compareLocked,
+      compareOff: !this.state.compareLocked,
+      onOpenAudit: () => this.setState({ audit: true }),
+      onCloseAudit: () => this.setState({ audit: false }),
+      auditOn: !!this.state.audit,
+      auditBadge: (() => {
+        const n = Object.keys(this.pending || {}).length;
+        return n ? ' \u00b7 ' + n + ' flagged' : '';
+      })(),
+      ratingRows: (this.state.audit && d) ? (() => {
+        const out = [];
+        d.rows.forEach((r) => {
+          d.sets.forEach((s) => {
+            const cell = this.cellAt(d, r.pos, s.key);
+            const cs = this.caseHere(r.pos, s.key);
+            const fit = this.fitAt(r.pos, s.key);
+            const flagged = !!(this.pending && this.pending[r.pos + s.key]);
+            out.push({
+              pos: r.pos,
+              setName: s.name,
+              word: (cell && cell.lead) || '\u2013',
+              fitLabel: fit ? fit + '/5' : 'unread',
+              hasCase: !!cs,
+              asks: cs ? cs.asks : '',
+              reads: cs ? cs.reads : '',
+              flagged: flagged,
+              unflagged: !flagged,
+              onFlag: () => this.togglePending(r.pos, s.key),
+            });
+          });
+        });
+        return out;
+      })() : [],
+      /* The duplicate grid: the same rows and columns, every cell reading its best word instead of
+         its settled one, so the two can sit side by side rather than trading places in the one
+         grid a hover would have to leave intact. Read-only on the changed word itself; clicking a
+         cell still opens the real drawer, on the real position, where a swap actually happens. */
+      /* Claude's own versions of Mark's four core masters \u2014 Arrow KEY, Anchor TAG, Abstract
+         REALM, Aspect STATE \u2014 each built independently, position by position, against the
+         same sense Mark's own sets read from, then checked against his settled words rather than
+         built in reaction to them. Replaced 1 September 2026: an earlier attempt at wholly
+         separate categories (function words, interjections, animals, weather; then reverence,
+         threshold, myth) read as arbitrary either way \u2014 either too plain or too invented
+         against a system built on GOD, EGO, WIT. Comparing like for like, on Mark's own titles,
+         is the only version of this exercise that is actually useful: it shows where independent
+         judgement agrees with the settled word and where it doesn't, rather than showing two
+         unrelated vocabularies side by side. */
+      claudeRows: this.state.compareLocked ? this.constructor.POS_ORDER.map((pos) => ({
+        pos: pos,
+        tint: this.tintOf(pos),
+        strokeTint: pos === '00' ? '' : 'cl-' + pos + '-stroke',
+        cells: this.constructor.CLAUDE_SETS.map((s) => {
+          const w = s.words[pos] || ['\u2013', 'No word at this length carries the position.', 0];
+          const fit = w[2];
+          const cOpen = !!(this.state.cDetail && this.state.cDetail.pos === pos && this.state.cDetail.set === s.key);
+          return { w: w[0], reads: fit ? fit + ' of 5 \u00b7 ' + w[1] : w[1], f5: fit === 5, f4: fit === 4, f3: fit === 3, f2: fit === 2, f1: fit === 1, open: cOpen, onOpenCell: () => this.openClaudeDetail(pos, s.key) };
+        }),
+      })) : [],
+      cDet: !!cDet,
+      onCloseCDetail: () => this.closeClaudeDetail(),
+      cdPos: cDet ? cDet.pos : '',
+      cdTint: cDet ? this.tintOf(cDet.pos) : '',
+      cdMeta: cDet ? (cDet.pos === '00' ? 'core \u00b7 void' : this.posOf(cDet.pos).a + '\u00b0 \u00b7 ' + this.posOf(cDet.pos).hex) : '',
+      anyDetail: !!(det || cDet),
+      dOn: !!det,
+      cOn: !det && !!cDet,
+      uTint: uTint,
+      onCloseAny: () => this.closeAnyDetail(),
+      cdSetName: cCell.setName,
+      cdWord: cCell.w,
+      cdNote: cCell.note,
+      cdHasCard: !!ccEntry,
+      cdNoCard: !!cDet && !ccEntry,
+      cdEntry: ccEntry,
+      cdNoCardLine: cDet ? (cMatchesPrinted ? cCell.setName + ' has no printed card at this position.' : 'Proposed over the printed word \u2014 no card for a word that never went to print.') : '',
+      cdBase: ccBase,
+      cdBlend: ccBlend,
+      cdFit: cCell.fit,
+      cdFitCount: cCell.fit ? cCell.fit + '/5' : '\u2013',
+      cdCaseTint: cCell.fit ? ({ 5: 'cl-12', 4: 'cl-01', 3: 'cl-02', 2: 'cl-04', 1: 'cl-06' })[cCell.fit] || '' : '',
+      cdAsks: cDet && cMarkKey ? ((this.caseAt(cDet.pos, cMarkKey) || {}).asks || '') : '',
+      claudeCols: this.constructor.CLAUDE_SETS.map((s) => {
+        const parts = s.name.split(' ');
+        return { name1: parts[0], name2: parts.slice(1).join(' '), rationale: s.rationale };
+      }),
+      onNewSetEnter: smart ? () => this.setState({ hoverNewSet: true }) : undefined,
+      onNewSetLeave: smart ? () => this.setState({ hoverNewSet: false }) : undefined,
+
+      newSet: this.state.newSet,
+      onCloseNewSet: () => this.setState({ newSet: false }),
+      nsName: this.state.nsName,
+      onNsName: (e) => this.setState({ nsName: e.target.value }),
+      nsLens: Array.from({ length: 13 }, (_, i) => i + 1).map((n) => ({
+        label: n + 'L',
+        note: (d ? d.rows.filter((r) => this.freeAt(r.pos, n, idx).length).length : 0) + '/13',
+        active: this.state.nsLen === n,
+        onClick: () => this.setState({ nsLen: n }),
+        onEnter: () => this.setState({ nsHoverLen: n }),
+        onLeave: () => this.setState((s) => (s.nsHoverLen === n ? { nsHoverLen: null } : s)),
+      })),
+      nsReady: !!this.state.nsName.trim(),
+      onMakeSet: () => this.makeSet(this.state.nsName, this.state.nsLen),
+      /* The preview reads whichever length is under the pointer, falling back to the one actually
+         picked, so a length can be judged by its words rather than by its count alone before it is
+         drafted. One word per position, the same one drafting would take, so nothing shown here can
+         disagree with what committing produces. */
+      nsPreviewLen: this.state.nsHoverLen || this.state.nsLen,
+      nsPreview: d ? d.rows.map((r) => {
+        const w = this.freeAt(r.pos, this.state.nsHoverLen || this.state.nsLen, idx)[0];
+        return { pos: r.pos, tint: this.tintOf(r.pos), w: w || '\u2013', empty: !w };
+      }) : [],
+      nsNote: 'At ' + (this.state.nsHoverLen || this.state.nsLen) + ' letters the pool can fill '
+        + (d ? d.rows.filter((r) => this.freeAt(r.pos, this.state.nsHoverLen || this.state.nsLen, idx).length).length : 0)
+        + ' of 13 positions with a word nothing in the sheet has taken. Every suggestion comes from the pool; the platform never invents one.',
+
+      ovOn: !!(q2 || ovPos),
+      ovIsSet: !!q2,
+      ovIsPos: !!ovPos,
+      onCloseQ: () => this.setState({ qSet: null, qPos: null }),
+      ovName: q2 ? this.setName(this.state.qSet) : (ovPos || ''),
+      ovTint: ovPos ? this.tintOf(ovPos) : '',
+      qMark: q2
+        ? q2.filled + ' of ' + q2.total + ' positions filled · ' + (q2.uniform ? 'one length, ' + q2.len + ' letters' : 'mixed lengths')
+        : (ovPos ? (ovPos === '00' ? 'core · void' : this.posOf(ovPos).a + '° · ' + this.posOf(ovPos).hex) : ''),
+      ovGroups: ovGroups,
+      qClean: !!(q2 && !faultsIn(q2)),
+
+      rows: rows,
+      q: this.state.q,
+      onQuery: (e) => this.setState({ q: e.target.value }),
+
+      cEntry: cEntry,
+      /* A selection can hold twelve positions, and the mark reads one. It reads the position the
+         pattern is anchored at, which is the position the card leads with. */
+      cFit: cSel.length ? this.fitAt(cSel[0], this.state.setKey) : undefined,
+      
+      cFlipped: this.state.cFlip,
+      cOnFlip: cEntry && cEntry.titles.length === 2 ? () => this.setState((s) => ({ cFlip: !s.cFlip })) : undefined,
+      cShowGrid: cSel.length >= 3,
+      cTitle: cEntry ? cEntry.titles.join(' · ') : '',
+      cCount: cSel.length,
+      cReading: cEntry ? (cEntry._match
+        ? 'A printed card. ' + cEntry.type + ', ' + this.setName(this.state.setKey) + '.'
+        : 'No printed card holds this selection, so the card draws the shape and the words and leaves the reading empty.') : '',
+      holdChips: ['CORE', 'SINGLE', 'PAIR', 'TRIAD', 'GROUP', 'SET'].map((h) => ({
+        label: h, active: this.state.holding === h, onClick: () => this.pickHolding(h),
+      })),
+      onStepBack: () => this.stepAnchor(-1),
+      onStepOn: () => this.stepAnchor(1),
+      posToggles: ['00'].concat(this.constructor.CLOCK).map((p) => {
+        const on = cSel.indexOf(p) >= 0;
+        return { pos: p, on: on, off: !on, tint: this.tintOf(p), stroke: 'cl-' + p + '-stroke', onClick: () => this.togglePos(p) };
+      }),
+
+      auditClean: !auditRows.length,
+      auditRows: auditRows,
+      driftClean: !driftRows.length,
+      driftRows: driftRows,
+      /* The fit numerals, off in one switch. A sheet being read for words rather than for fit is
+         a sheet with fifty-two numbers on it that nobody is looking at, and the numerals sit where
+         the eye lands first. Replaced the gloss switch on 28 August 2026: the gloss field is one
+         block in one drawer, which is not worth a control, and hiding it hid the place a reading
+         gets written down. */
+      showFit: smart,
+
+      coreWord: d ? (this.cellAt(d, '00', this.state.setKey) || {}).lead || '–' : '',
+      setChips: d ? d.sets.map((s) => ({
+        name: s.name,
+        active: s.key === this.state.setKey,
+        onClick: () => this.setState({ setKey: s.key }),
+      })) : [],
+
+      /* Retired 28 August 2026: the right-hand selection panel and every key it read. It was a
+         second, smaller copy of the drawer — the same word, polar, duplicate and fit, in less
+         room — plus the only two hand-written fields on the sheet, gloss and question, which the
+         printed card already holds. One detail surface, opened from the cell. */
+
+      detail: !!det,
+      onStop: (e) => e.stopPropagation(),
+      onCloseDetail: () => this.setState({ detail: null }),
+      dSet: det ? this.setName(det.set) : '',
+      dPos: det ? det.pos : '',
+      dTint: det ? this.tintOf(det.pos) : '',
+      dMeta: det ? (det.pos === '00' ? 'core · void' : this.posOf(det.pos).a + '° · ' + this.posOf(det.pos).hex) : '',
+      dHasCard: !!dEntry,
+      dNoCard: !!det && !dEntry,
+      dNoCardLine: det ? this.setName(det.set) + ' has no printed card at this position.' : '',
+      dEntry: dEntry,
+      dFlipped: false,
+      dOnFlip: () => { if (det) this.openDetail(this.polarOf(det.pos) || det.pos, det.set); },
+      dShowGrid: true,
+      dBase: dBase,
+      dBlend: dBlend,
+      dLead: dCell ? dCell.lead || '' : '',
+      dPolarPos: det ? this.polarOf(det.pos) || '–' : '',
+      dPolarTint: det && this.polarOf(det.pos) ? this.tintOf(this.polarOf(det.pos)) : '',
+      dPolarWord: dPolarCell ? dPolarCell.lead || '–' : '–',
+      dHeld: !!(dCell && (dCell.alts || []).length),
+      dAlts: dCell ? (dCell.alts || []).map((a) => ({ w: a, onReview: () => this.review(det.pos, det.set, a) })) : [],
+      /* One toggle, both places. The card's own dot and the numerals under it are the same reading
+         as the sheet's dot, so reword mode turns all three off together rather than leaving the
+         panel arguing a fit the grid has stopped showing. */
+      dFit: det && smart ? this.fitAt(det.pos, det.set) : undefined,
+      /* The case is read, never written to. A proposed fit is shown as a proposal and is not applied
+         to the cell: the platform can put a reading in front of a person, and that is the whole of
+         its business here. */
+      dCaseOn: !!dCase,
+      dStaleOn: !!dStale,
+      dStaleNote: dStale ? 'Written about ' + dStale + ', which no longer sits here. This word has not been read yet.' : '',
+      dCaseOff: !dCase && !dStale,
+      dCaseAsks: dCase ? dCase.asks : '',
+      dCaseReads: dCase ? dCase.reads : '',
+      dCaseTint: dCase ? ({ 5: 'cl-12', 4: 'cl-01', 3: 'cl-02', 2: 'cl-04', 1: 'cl-06' })[dCase.fit] || '' : '',
+      dCaseAltsOn: !!(dCase && dCase.alts && dCase.alts.length),
+      dCaseAlts: dCase && dCase.alts ? dCase.alts.map((w) => ({ w: w, onReview: () => this.review(det.pos, det.set, w) })) : [],
+      dFaults: det ? this.wordFaults(det.pos, det.set).map((s) => ({
+        label: s.label, why: s.why, n: String(s.weight),
+        hard: !!C.HARD[s.code], soft: !C.HARD[s.code],
+      })) : [],
+      /* Two numerals, and no sentence restating either. The fit reads n/5 because the scale needs
+         its ceiling to mean anything; the faults read as their summed weight, which is already a
+         count. Both are unitless on purpose: the words that used to follow them are in FIT_NOTE for
+         the dot's own tooltip and in the case for the argument. */
+      dFitCount: det ? (this.fitAt(det.pos, det.set) ? this.fitAt(det.pos, det.set) + '/5' : '–') : '–',
+      dFaultN: det ? String(this.faultsOf(det.pos, det.set)) : '0',
+      dAnyFaults: det ? !!this.wordFaults(det.pos, det.set).length : false,
+      dPoolCount: dPool.length + ' at ' + dLen + ' letters',
+      rvOn: !!rv,
+      rvWord: rv ? rv.w : '',
+      rvStanding: rv ? (rvHits.length ? 'held at ' + rvHits.map((h) => h.pos + ' ' + this.setName(h.set)).join(', ') : 'unwritten anywhere in the sheet') : '',
+      rvNote: rv ? (rvLead ? rvLead + ' goes back to the pool at ' + rv.pos + ', where it can be taken again.' : 'Nothing is displaced: the position holds no word.') : '',
+      rvOnSwap: rv ? () => this.swapLead(rv.pos, rv.set, rv.w) : null,
+      rvOnHold: rv ? () => this.hold(rv.pos, rv.set, rv.w) : null,
+      rvOnCancel: () => this.closeReview(),
+      dBands: dBands,
+
+      drawer: this.state.drawer,
+      onDrawer: () => this.setState({ drawer: true, flash: '' }),
+      onCloseDrawer: () => this.setState({ drawer: false }),
+      text: this.state.text,
+      onText: (e) => this.setState({ text: e.target.value }),
+      onImport: () => this.doImport(),
+      onLoadTsv: () => this.setState({ text: this.toTsv(), flash: 'Current store as TSV' }),
+      onLoadJson: () => this.setState({ text: JSON.stringify(this.state.data, null, 2), flash: 'Current store as JSON' }),
+      flash: this.state.flash,
+    });
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+/* A corner inspector, not a second page beside the Flower. All values use system tokens.
+   Narrow first (2026-09-21, Mark: "responsive design needs more considered layout rules for
+   mobile"): below the field's 720 the card is a sheet on the foot, edge to edge, its head
+   always in reach and its body no more than the lower half; the construction stage owns the
+   band above it. From 720 it is the corner card. */
+[data-rf-measurements] {
+  position: absolute; z-index: 6; left: max(0px, env(safe-area-inset-left,0px)); right: max(0px, env(safe-area-inset-right,0px)); bottom: max(0px, env(safe-area-inset-bottom,0px));
+  width: auto;
+  max-height: 50%;
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--surface-card); color: var(--text-primary);
+  border: 0; border-top: calc(var(--u) / 4) solid var(--g66); border-radius: var(--radius-md) var(--radius-md) 0 0;
+  box-shadow: 0 calc(var(--space-lg) * -1) var(--space-xl) var(--black);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  font-family: var(--font-sans); font-size: var(--fs-caption); line-height: var(--lh-caption);
+  user-select: text; touch-action: pan-y;
+}
+@media (min-width: 720px) {
+  [data-rf-measurements] {
+    left: max(var(--space-lg), env(safe-area-inset-left,0px)); right: auto;
+    bottom: max(var(--space-lg), env(safe-area-inset-bottom));
+    width: min(calc(var(--space-2xl) * 4), calc(100% - var(--space-xl)));
+    border: calc(var(--u) / 4) solid var(--surface-border); border-radius: var(--radius-md);
+    box-shadow: 0 var(--space-lg) var(--space-xl) var(--black);
+    padding-bottom: 0;
+  }
+}
+[data-rf-measurements] h2, [data-rf-measurements] h3, [data-rf-measurements] p { margin: 0; }
+[data-rf-measurements] h2, [data-rf-measurements] h3 { font-size: var(--fs-body); line-height: var(--lh-body); font-weight: var(--fw-h2); }
+[data-rf-measurements] p { color: var(--text-secondary); }
+[data-rf-measure-head] { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); padding: var(--space-lg) var(--space-lg) var(--space-md); }
+[data-rf-measure-body] { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 0 var(--space-lg) var(--space-lg); scrollbar-width: thin; scrollbar-color: var(--g48) transparent; }
+:is([data-rf-measurements], [data-rf-render-panel]) button { color: var(--text-secondary); background: transparent; border: calc(var(--u) / 4) solid var(--surface-border); border-radius: var(--radius-sm); min-height: var(--space-xl); padding: var(--space-sm); cursor: pointer; touch-action: manipulation; font: var(--fs-caption)/var(--lh-caption) var(--font-mono); }
+:is([data-rf-measurements], [data-rf-render-panel]) button[aria-pressed="true"] { border-color: var(--g88); color: var(--text-primary); }
+[data-rf-measurements] [data-rf-measure-toggle] { border-color: transparent; padding-inline: var(--space-sm); }
+[data-rf-set-picker] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-sm); padding-block: var(--space-sm) var(--space-md); }
+[data-rf-set-picker] button { display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); }
+[data-rf-set-picker] button > :first-child { text-transform: uppercase; }
+[data-rf-measure-meta], [data-rf-measurements] dl, [data-rf-measure-summary], [data-rf-measure-help] { font: var(--fs-caption)/var(--lh-caption) var(--font-mono); }
+[data-rf-measure-meta] { color: var(--text-secondary); }
+[data-rf-measure-summary] { display: flex; flex-direction: column; gap: var(--space-sm); padding-bottom: var(--space-md); }
+[data-rf-measure-summary] strong { font-weight: var(--fw-h2); }
+[data-rf-measure-set] { padding-block: var(--space-md); border-top: calc(var(--u) / 4) solid var(--surface-border); }
+[data-rf-measure-heading] { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: var(--space-sm); }
+[data-rf-measure-set][data-focused="false"] h3 { color: var(--text-secondary); }
+[data-rf-measurements] dl { display: flex; flex-direction: column; gap: var(--space-sm); margin: var(--space-md) 0 0; }
+[data-rf-measurements] dl > div { display: grid; grid-template-columns: calc(var(--space-lg) * 3) minmax(0, 1fr); gap: var(--space-sm); }
+[data-rf-measurements] dt { color: var(--text-secondary); }
+[data-rf-measurements] dd { margin: 0; overflow-wrap: anywhere; }
+[data-rf-measure-details] { border-top: calc(var(--u) / 4) solid var(--surface-border); }
+[data-rf-measure-details] > summary { min-height: var(--space-xl); padding-block: var(--space-md); cursor: pointer; font: var(--fs-caption)/var(--lh-caption) var(--font-mono); }
+[data-rf-measure-help], [data-rf-shadow-settings] { display: flex; flex-direction: column; gap: var(--space-md); padding-bottom: var(--space-md); }
+:is([data-rf-measurements], [data-rf-render-panel]) :is(button, input, summary, [data-rf-measure-body], [data-rf-render-body]):focus-visible { outline: 2px solid var(--g88,#cccccc); outline-offset: 2px; }
+[data-rf-blend-choice] { display: flex; align-items: center; gap: var(--space-sm); min-height: var(--space-xl); cursor: pointer; }
+[data-rf-blend-choice] input { accent-color: var(--white); }
+/* Live previews share the drawer width equally, rather than leaving unused space. */
+[data-rf-depth-previews] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); }
+[data-rf-depth-previews] figure { margin: 0; min-width: 0; }
+[data-rf-depth-previews] svg { display: block; width: 100%; height: auto; border-radius: var(--radius-sm); background: var(--g66); }
+[data-rf-depth-previews] figcaption { margin-top: var(--space-xs); color: var(--text-secondary); font-family: var(--font-mono); }
+[data-rf-depth-controls] { padding: 0; margin: 0; border: 0; min-width: 0; }
+[data-rf-depth-controls] legend { padding: 0; margin-bottom: var(--space-sm); font: var(--fs-caption)/var(--lh-caption) var(--font-mono); }
+[data-rf-depth-toggles], [data-rf-depth-store] { display: flex; gap: var(--space-sm); }
+[data-rf-depth-toggles] button, [data-rf-depth-store] button { flex: 1; }
+[data-rf-depth-row] { display: grid; grid-template-columns: max-content minmax(0, 1fr) 48px; align-items: center; gap: var(--space-sm); min-height: 32px; font-family: var(--font-mono); color: var(--text-secondary); }
+[data-rf-depth-row] > :last-child { text-align: right; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+[data-rf-depth-row] input { min-width: 0; }
+/* Dedicated upright construction. Main canvas never changes size or its gesture coordinates. */
+[data-rf-shell][data-rf-measuring="true"] main { cursor: default !important; }
+/* The stage sits in the band between the top chrome (nav and the one Options chip on a
+   narrow frame end at 100) and the sheet: the sheet's head when the card is collapsed,
+   half the frame when it is open. */
+[data-rf-construction-stage] { position: absolute; top: calc(var(--space-2xl) + var(--space-md) + env(safe-area-inset-top,0px)); left: max(var(--space-md), env(safe-area-inset-left,0px)); right: max(var(--space-md), env(safe-area-inset-right,0px)); bottom: calc(50% + var(--space-md)); margin: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
+[data-rf-shell][data-rf-card-open="false"] [data-rf-construction-stage] { bottom: calc(var(--space-2xl) + var(--space-md)); }
+@media (min-width: 720px) {
+  [data-rf-construction-stage] { top: calc(var(--space-2xl) + var(--space-md)); left: var(--space-lg); right: var(--space-lg); bottom: calc(50% + var(--space-xl)); }
+  [data-rf-shell][data-rf-card-open="false"] [data-rf-construction-stage] { bottom: calc(var(--space-2xl) + var(--space-xl)); }
+}
+[data-rf-construction] { flex: 1; width: 100%; min-height: 0; overflow: visible; }
+[data-rf-construction] circle, [data-rf-construction] line, [data-rf-construction] path { fill: none; stroke: var(--g48); stroke-width: calc(var(--u) / 4); vector-effect: non-scaling-stroke; }
+[data-rf-construction-set][data-focused="true"] { --rf-construction-stroke: var(--g88); }
+[data-rf-construction-set][data-focused="true"] circle { stroke: var(--rf-construction-stroke); }
+[data-rf-construction-circle="blend"] { stroke-dasharray: var(--space-xs) var(--space-sm); }
+[data-rf-construction-set][data-focused="true"] [data-rf-construction-circle="core"], [data-rf-construction] [data-rf-specimen] { stroke: var(--white); stroke-width: calc(var(--u) / 2); }
+[data-rf-construction] [data-rf-radius], [data-rf-construction] [data-rf-centre] { stroke: var(--white); }
+[data-rf-construction] [data-rf-distance] { stroke: var(--white); stroke-dasharray: var(--space-xs) var(--space-sm); }
+[data-rf-construction] [data-rf-guide-ring] { stroke: var(--g66); stroke-dasharray: var(--space-xs) var(--space-sm); }
+[data-rf-construction] [data-rf-guide-point] { fill: var(--black); stroke: var(--white); stroke-width: calc(var(--u) / 2); }
+[data-rf-construction-legend] { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-md); color: var(--text-secondary); font: var(--fs-caption)/var(--lh-caption) var(--font-mono); }
+[data-rf-construction-legend] span { display: flex; align-items: center; gap: var(--space-sm); }
+[data-rf-construction-legend] i { width: var(--space-md); height: 0; border-top: calc(var(--u) / 4) solid var(--g88); }
+[data-rf-construction-legend] [data-key="distance"] { border-top-style: dashed; }
+[data-rf-construction-legend] [data-key="contact"] { width: var(--space-sm); height: var(--space-sm); border: calc(var(--u) / 4) solid var(--g88); border-radius: 50%; }
+/* The position's own read (lane 20, 2026-09-22): above the set rows while a position is
+   hovered in the construction view, or carried by a held pick on touch and keyboard; the
+   label says which of the two produced it. It is never a selection and leaves nothing
+   behind, so it is plain card content on the same rows as the rest of the readout. */
+[data-rf-con-read] { padding-block: var(--space-md); border-top: calc(var(--u) / 4) solid var(--surface-border); }
+[data-rf-con-read-head] { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-sm); padding-bottom: var(--space-xs); }
+[data-rf-con-read-head] strong { font: var(--fw-h2) var(--fs-body)/var(--lh-body) var(--font-mono); text-transform: uppercase; }
+[data-rf-con-read] dl { display: flex; flex-direction: column; gap: var(--space-xs); margin: 0; }
+[data-rf-con-read] dl > div { display: grid; grid-template-columns: calc(var(--space-lg) * 3) minmax(0, 1fr); gap: var(--space-sm); }
+[data-rf-con-read] dt { color: var(--text-secondary); }
+[data-rf-con-read] dd { margin: 0; overflow-wrap: anywhere; }
+/* A position read is a reading, not a control: the crosshair says "this answers with a
+   read" where the rest of the construction is quiet ground. The construction's own
+   fill:none/stroke rule would make these circles invisible to hit-testing and draw stray
+   grey rings, so the hit group states its own paint and events explicitly. */
+[data-rf-con-hits] circle { fill: transparent; stroke: none; pointer-events: all; cursor: crosshair; }
+[data-rf-snap-warning] { position: absolute; left: max(var(--space-lg), env(safe-area-inset-left,0px)); bottom: max(var(--space-lg), env(safe-area-inset-bottom,0px)); max-width: calc(100% - var(--space-xl) - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)); margin: 0; padding: var(--space-md); border: calc(var(--u) / 4) solid var(--g66); border-radius: var(--radius-sm); background: var(--surface-page); color: var(--text-primary); font: var(--fs-caption)/var(--lh-caption) var(--font-mono); }
+@media (min-width: 1081px) {
+  [data-rf-measurements] { max-height: min(calc(100% - var(--space-xl)), calc(var(--space-2xl) * 8)); }
+  [data-rf-construction-stage] { top: calc(var(--space-2xl) + var(--space-lg)); left: calc(var(--space-2xl) * 4 + var(--space-xl)); bottom: var(--space-lg); }
+  [data-rf-shell][data-rf-card-open="false"] [data-rf-construction-stage] { left: var(--space-lg); bottom: var(--space-lg); }
+}
+@media (hover: hover) {
+  :is([data-rf-measurements], [data-rf-render-panel]) button:hover, [data-rf-measure-details] > summary:hover { color: var(--text-primary); }
+  :is([data-rf-measurements], [data-rf-render-panel]) button:hover { border-color: var(--g88); background: var(--g12,#1a1a1a); }
+}
+@media (prefers-reduced-motion: reduce) { #rsMastersNav { opacity: 1; transform: none; } [data-rf-render-drawer] > summary, [data-rf-render-drawer] > summary::after { transition-duration: 1ms !important; transition-delay: 0ms !important; } }
+
+[data-rf-construction] [data-rf-radius] { stroke-width: calc(var(--u) / 2); }
+/* Short, wide screens put the same corner card beside the drawing, on the shared field boundary. */
+@media (orientation: landscape) and (max-width: 1080px) {
+  [data-rf-measurements] { left: var(--space-lg); right: auto; bottom: max(var(--space-lg), env(safe-area-inset-bottom)); width: min(calc(var(--space-2xl) * 4), calc(50% - var(--space-lg))); max-height: min(calc(100% - var(--space-xl)), calc(var(--space-2xl) * 8)); border: calc(var(--u) / 4) solid var(--surface-border); border-radius: var(--radius-md); box-shadow: 0 var(--space-lg) var(--space-xl) var(--black); padding-bottom: 0; }
+  [data-rf-construction-stage] { top: calc(var(--space-2xl) + var(--space-lg)); left: calc(min(var(--space-2xl) * 4, 50% - var(--space-lg)) + var(--space-xl)); bottom: var(--space-lg); }
+  [data-rf-shell][data-rf-card-open="false"] [data-rf-construction-stage] { left: calc(min(var(--space-2xl) * 4, 50% - var(--space-lg)) + var(--space-xl)); bottom: var(--space-lg); }
+}
+
+/* Master-card hierarchy: inset rule, corner label, generous padding and a clear title. */
+[data-rf-measurements]::before { content: ""; position: absolute; inset: var(--space-md); border: calc(var(--u) / 4) solid var(--surface-border); border-radius: var(--space-xs); pointer-events: none; }
+[data-rf-card-kicker] { position: absolute; top: var(--space-xs); left: var(--space-lg); padding-inline: var(--space-sm); background: var(--surface-card); color: var(--text-secondary); font: var(--fs-caption)/var(--lh-caption) var(--font-mono); text-transform: uppercase; }
+[data-rf-measurements] h2 { font: var(--fw-h1) var(--fs-h2)/var(--lh-h2) var(--font-sans); }
+[data-rf-measurements] [data-rf-intro] { font: var(--fs-body)/var(--lh-body) var(--font-sans); padding-bottom: var(--space-md); color: var(--text-primary); }
+[data-rf-empty] { margin-bottom: var(--space-md) !important; }
+[data-rf-visibility] { padding: 0; margin: 0; border: 0; display: flex; flex-wrap: wrap; gap: var(--space-md); }
+[data-rf-visibility] legend { margin-bottom: var(--space-sm); }
+[data-rf-visibility] label { display: flex; align-items: center; gap: var(--space-sm); min-height: var(--space-xl); }
+[data-rf-visibility] input { accent-color: var(--white); }
+/* Rendering is a separate, non-modal drawer in artwork mode only.
+   Compact modern law v11.1 (2026-09-22, safe-area + touch targets): shares the master-specific options cluster with Tweaks,
+   Schematics and Walkthrough — same 32px rows, 6px 10px padding, 11px mono, 0.02em tracking,
+   surface-card / surface-border, 8px radius, subtle shadow, so the four read as one options
+   set. Global nav (masters-nav) stays distinct via its pill treatment. */
+[data-rf-render-drawer] { position: fixed; inset: 0; z-index: 99990; pointer-events: none; font-family: var(--font-mono, \"JetBrains Mono\", ui-monospace, monospace); }
+[data-rf-render-drawer] > summary { position: absolute; top: calc(180px + env(safe-area-inset-top,0px)); /* 200→180 2026-09-22: compact modern law v11, 40px steps: Masters 20, Tweaks 60, Schematics 100, Walkthrough 140, Render 180 */ right: max(20px, env(safe-area-inset-right,0px)); z-index: 2; pointer-events: auto; cursor: pointer; min-height: 32px; padding: 6px 10px; display: flex; align-items: center; gap: 6px; list-style: none; background: var(--surface-card,#111111); color: var(--text-secondary,#888888); border: 1px solid var(--surface-border,#2a2a2a); border-radius: var(--radius-sm,8px); font-family: var(--font-mono, \"JetBrains Mono\", ui-monospace, monospace); font-size: 11px; line-height: 16px; letter-spacing: 0.02em; text-transform: uppercase; transition: color var(--dur-sm) var(--ease-arrive), border-color var(--dur-sm) var(--ease-arrive), background var(--dur-sm) var(--ease-arrive); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+[data-rf-render-drawer] > summary::-webkit-details-marker { display: none; }
+[data-rf-render-drawer] > summary::after { content: '▾'; font-size: 10px; opacity: 0.7; transition: transform var(--dur-md) var(--ease-arrive); }
+[data-rf-render-drawer][open] > summary::after { transform: rotate(180deg); opacity: 1; }
+[data-rf-render-drawer] > summary:hover { color: var(--text-primary,#ffffff); border-color: var(--g66,#666666); background: var(--surface-raised,#1a1a1a); }
+[data-rf-render-drawer][open] > summary { color: var(--text-primary,#ffffff); border-color: var(--text-secondary,#888888); background: var(--surface-raised,#1a1a1a); }
+[data-rf-render-drawer] > summary:focus-visible { outline: 2px solid var(--g88,#cccccc); outline-offset: 2px; }
+[data-rf-render-panel] { position: absolute; right: max(20px, env(safe-area-inset-right,0px)); top: calc(220px + env(safe-area-inset-top,0px)); /* 200→220 2026-09-22: 40px below Render trigger at 180, same gap as Tweaks cluster */ bottom: max(20px, env(safe-area-inset-bottom)); width: min(300px, calc(100% - 40px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px))); max-height: none; display: flex; flex-direction: column; background: var(--surface-card,#111111); border: 1px solid var(--surface-border,#2a2a2a); border-radius: var(--radius-sm,8px); box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04) inset; color: var(--text-primary); pointer-events: auto; overflow: hidden; }
+[data-rf-render-head] { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); padding: var(--space-md) var(--space-lg); border-bottom: calc(var(--u) / 4) solid var(--surface-border); flex: none; }
+[data-rf-render-head] h2 { margin: 0; font: var(--fw-h2) var(--fs-h2)/var(--lh-h2) var(--font-sans); }
+[data-rf-render-body] { padding: var(--space-lg); overflow: auto; overscroll-behavior: contain; min-height: 0; touch-action: pan-y; }
+[data-rf-render-panel] p { margin: 0; }
+[data-rf-render-panel] { font: var(--fs-caption)/var(--lh-caption) var(--font-sans); }
+@media (min-width: 721px) {
+  [data-rf-measurements] h2 { font-size: var(--fs-h1); line-height: var(--lh-h1); }
+}
+@media (min-width: 1081px) {
+  [data-rf-render-panel] { top: calc(220px + env(safe-area-inset-top,0px)); max-height: calc(100% - 244px - env(safe-area-inset-bottom,0px)); } /* 244→220 2026-09-22: compact law, 40px below Render at 180 */
+}
+
+[data-rf-render-drawer][open] { z-index: 99990; }
+
+/* Descriptive spacing labels should remain readable before selection. Flower-local only. */
+[data-rf-drawer] .tk-enum .tk-btn { color: var(--text-secondary); }
+[data-rf-drawer] .tk-enum .tk-btn[aria-pressed="true"] { color: var(--text-primary); }

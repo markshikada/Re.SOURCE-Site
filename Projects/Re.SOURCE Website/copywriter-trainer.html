@@ -1,0 +1,1350 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copy workbench — Re.SOURCE and Colour LINGO</title>
+<!--
+  The copywriting and directed training interface for Re.SOURCE and Colour LINGO.
+  Scope corrected by Mark, 25 September 2026: Open People is an idea not yet briefed,
+  and nothing here is written for it.
+
+  The deck is not written in this file. It is generated from the surfaces that already
+  show the copy, by tools/extract-copy.cjs, so every line carries where it came from
+  and can be traced back. Re-run the extractor and re-import when a surface changes.
+
+  The law this turns on: a line marked LIVE reads off the position table, and a word
+  move in the Sheet renames it by itself. The workbench refuses to edit one.
+
+  One self-contained file. Verdicts and edits persist to localStorage; Export JSON is
+  the handoff, and the repo copy sits beside this file as copy-deck.json.
+-->
+<style>
+:root{
+  --bg-page:#000000;
+  --bg-surface:#111111;
+  --bg-card:#1a1a1a;
+  --bg-field:#0d0d0d;
+  --white:#ffffff;
+  --grey-1:#999999;
+  --grey-2:#666666;
+  --grey-3:#333333;
+  --accent:#ffb000;
+  --good:#00d460;
+  --warn:#ff5500;
+  --bad:#ff0000;
+  --live:#00bbdd;
+  --radius:8px;
+  --font:"Figtree","Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg-page);color:var(--grey-1);
+  font-family:var(--font);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.top{
+  position:sticky;top:0;z-index:10;
+  background:rgba(0,0,0,.92);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--grey-3);
+}
+.top-inner{
+  max-width:940px;margin:0 auto;padding:14px 20px;
+  display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline;
+}
+.top h1{margin:0;font-size:20px;font-weight:800;color:var(--white)}
+.top .sub{font-size:12px;color:var(--grey-2)}
+.progress{display:flex;gap:8px;margin-left:auto;align-items:center;flex-wrap:wrap}
+.pill{
+  font-family:var(--mono);font-size:11px;color:var(--grey-2);
+  background:var(--bg-surface);border:1px solid var(--grey-3);
+  border-radius:99px;padding:4px 10px;
+}
+.pill b{font-weight:800}
+.pill.read b{color:var(--good)}
+.pill.left b{color:var(--warn)}
+.pill.changed b{color:var(--accent)}
+.bar{
+  max-width:940px;margin:0 auto;padding:0 20px;
+}
+.bar-track{height:4px;background:var(--grey-3);border-radius:99px;overflow:hidden;margin-top:2px}
+.bar-fill{height:100%;background:var(--good);width:0;transition:width .2s}
+.actions{
+  max-width:940px;margin:0 auto;padding:14px 20px 4px;
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+}
+button,.file-label{
+  font-family:var(--font);font-size:13px;font-weight:600;
+  background:var(--bg-surface);color:var(--grey-1);
+  border:1px solid var(--grey-3);border-radius:var(--radius);
+  padding:9px 14px;cursor:pointer;min-height:44px;
+}
+button:hover,.file-label:hover{color:var(--white);border-color:var(--grey-2)}
+button.primary{background:var(--accent);color:#000;border-color:var(--accent)}
+button.danger:hover{color:var(--bad);border-color:var(--bad)}
+.jump{
+  max-width:940px;margin:0 auto;padding:10px 20px 0;
+  display:flex;gap:6px;flex-wrap:wrap;
+}
+.jump a{
+  display:inline-flex;gap:7px;align-items:center;
+  font-size:12px;text-decoration:none;color:var(--grey-2);
+  background:var(--bg-surface);border:1px solid var(--grey-3);
+  border-radius:99px;padding:7px 12px;min-height:38px;
+}
+.jump a:hover{color:var(--white);border-color:var(--grey-2)}
+.jump .left{font-family:var(--mono);font-size:10px;color:var(--warn);
+  border:1px solid #4a2413;border-radius:4px;padding:0 5px}
+.jump .done{font-family:var(--mono);font-size:10px;color:var(--good);
+  border:1px solid #1d3a2a;border-radius:4px;padding:0 5px}
+.intro{max-width:940px;margin:0 auto;padding:14px 20px 0}
+.intro-box{
+  background:var(--bg-surface);border:1px solid var(--grey-3);
+  border-radius:var(--radius);padding:14px 16px;
+}
+.intro-box summary{cursor:pointer;font-weight:700;color:var(--white);font-size:14px}
+.intro-box p{margin:10px 0 0;font-size:13px;line-height:1.6}
+.intro-box .rules{margin:10px 0 0;padding:0;list-style:none;font-size:13px}
+.intro-box .rules li{margin:5px 0;padding-left:16px;position:relative}
+.intro-box .rules li::before{content:"\2013";position:absolute;left:0;color:var(--grey-2)}
+.intro-box code{font-family:var(--mono);font-size:12px;color:var(--grey-1)}
+.queue{max-width:940px;margin:0 auto;padding:14px 20px 0}
+.queue-box{
+  background:var(--bg-surface);border:1px solid var(--grey-3);
+  border-radius:var(--radius);padding:12px 16px;
+}
+.queue-box summary{cursor:pointer;font-weight:700;color:var(--white);font-size:14px;
+  display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.queue-list{margin:10px 0 0;padding:0;list-style:none;max-height:330px;overflow:auto}
+.queue-list li{border-top:1px solid var(--grey-3)}
+.queue-list a{
+  display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;
+  padding:9px 0;text-decoration:none;color:var(--grey-1);font-size:13px;line-height:1.5;
+  min-height:44px;
+}
+.queue-list a:hover{color:var(--white)}
+.q-card{font-weight:700;color:var(--grey-2);flex:none;font-size:12px}
+.q-text{flex:1 1 260px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.queue-foot{margin:10px 0 0;font-size:12px;color:var(--grey-2);line-height:1.5}
+main{max-width:940px;margin:0 auto;padding:8px 20px 60px}
+.card{
+  background:var(--bg-card);border:1px solid var(--grey-3);
+  border-radius:var(--radius);margin-top:18px;overflow:hidden;
+  scroll-margin-top:130px;
+}
+.card.swept{border-color:#1d3a2a}
+.card-head{padding:13px 16px;border-bottom:1px solid var(--grey-3);background:var(--bg-surface)}
+.card-head h2{margin:0;font-size:17px;font-weight:800;color:var(--white);
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.surface{font-family:var(--mono);font-size:11px;color:var(--grey-2);font-weight:400}
+.card-head .about{margin:8px 0 0;font-size:13px;color:var(--grey-2);line-height:1.6}
+.card-head .src{
+  margin:8px 0 0;font-family:var(--mono);font-size:11px;color:var(--grey-3);
+  word-break:break-all;
+}
+.lines{margin:0;padding:0;list-style:none}
+.line{border-top:1px solid var(--grey-3);padding:13px 16px}
+.line:first-child{border-top:none}
+.line.change{background:rgba(255,176,0,.04)}
+.line.keep{background:rgba(0,212,96,.03)}
+.line-head{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.line-label{
+  font-family:var(--mono);font-size:11px;color:#111;background:var(--grey-1);
+  border-radius:4px;padding:2px 7px;flex:none;
+}
+.tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+  border:1px solid var(--grey-3);border-radius:4px;padding:2px 7px;color:var(--grey-2);
+}
+.tag.live{color:var(--live);border-color:#12414c}
+.tag.static{color:var(--grey-2)}
+.verdict{
+  font-family:var(--font);font-size:12px;font-weight:600;margin-left:auto;
+  background:var(--bg-field);color:var(--grey-1);
+  border:1px solid var(--grey-3);border-radius:99px;padding:8px 12px;cursor:pointer;
+  min-height:44px;
+}
+.verdict.set{border-color:var(--grey-2);color:var(--white)}
+.line textarea{
+  width:100%;overflow:hidden;background:var(--bg-field);color:var(--grey-1);
+  border:1px solid var(--grey-3);border-radius:var(--radius);
+  font-family:var(--font);font-size:14px;line-height:1.6;padding:10px 12px;resize:vertical;
+}
+.line textarea:focus{outline:none;border-color:var(--grey-2);color:var(--white)}
+.line textarea[readonly]{color:var(--live);border-style:dashed;cursor:not-allowed}
+.why{
+  margin:7px 0 0;font-size:12px;line-height:1.55;color:var(--live);
+  display:flex;gap:7px;
+}
+.why::before{content:"\25C6";flex:none;font-size:9px;padding-top:4px}
+.note{
+  width:100%;margin-top:8px;background:var(--bg-field);color:var(--grey-1);
+  border:1px solid var(--grey-3);border-radius:var(--radius);
+  font-family:var(--font);font-size:13px;padding:9px 11px;min-height:44px;
+}
+.note:focus{outline:none;border-color:var(--grey-2);color:var(--white)}
+.line-foot{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.flag{
+  font-family:var(--mono);font-size:11px;
+  border:1px solid var(--grey-3);border-radius:4px;padding:2px 8px;color:var(--grey-2);
+}
+.flag.clean{color:var(--good);border-color:#1d3a2a}
+.flag.hit{color:var(--warn);border-color:#4a2413}
+.flag.bad{color:var(--bad);border-color:#4a1313}
+.metrics{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--grey-3)}
+.edited{font-family:var(--mono);font-size:10px;color:var(--accent);
+  border:1px solid #4a3a13;border-radius:4px;padding:2px 7px}
+footer.site{
+  border-top:1px solid var(--grey-3);padding:20px;
+  text-align:center;font-size:12px;color:var(--grey-2);
+}
+footer.site code{font-family:var(--mono);font-size:11px}
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--bg-surface);color:var(--white);font-size:13px;font-weight:600;
+  border:1px solid var(--grey-2);border-radius:99px;padding:11px 20px;
+  opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
+  max-width:92vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (max-width:640px){
+  .top-inner{padding:12px 14px}
+  .actions,.jump,.intro,.queue,.bar,main{padding-left:14px;padding-right:14px}
+  .verdict{margin-left:0;width:100%}
+}
+@media print{
+  .top,.actions,.jump,.intro,.queue,.toast,footer.site{display:none}
+  body{background:#fff;color:#000}
+  .card{border-color:#ccc;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <h1>Copy workbench</h1>
+    <span class="sub">Re.SOURCE and Colour LINGO · every line, read once</span>
+    <div class="progress" id="progress"></div>
+  </div>
+  <div class="bar"><div class="bar-track"><div class="bar-fill" id="bar"></div></div></div>
+</header>
+
+<div class="actions">
+  <button class="primary" id="btn-export" type="button">Export JSON</button>
+  <button id="btn-copy" type="button">Copy JSON</button>
+  <button id="btn-changes" type="button">Copy the changes only</button>
+  <label class="file-label" for="file-import">Import JSON</label>
+  <input type="file" id="file-import" accept="application/json,.json" hidden>
+  <button id="btn-next" type="button">Next unread</button>
+  <button id="btn-reset" class="danger" type="button">Reset to the extracted deck</button>
+</div>
+
+<nav class="jump" id="jump" aria-label="Surfaces"></nav>
+
+<section class="intro">
+  <div class="intro-box">
+    <details open>
+      <summary>How this works, and the one law</summary>
+      <p id="scope-note"></p>
+      <ul class="rules">
+        <li><b>Every line gets a verdict.</b> <code>keep</code> means read and better left
+          alone, and the note says why, because a sweep that rewrites everything has no
+          judgement in it. <code>change</code> means the edit above is the replacement.
+          <code>unsure</code> parks it for Mark.</li>
+        <li><b>A <span style="color:var(--live)">LIVE</span> line is never retitled by hand.</b>
+          It reads off the position table, so a word move in the Sheet renames it by itself.
+          The workbench makes those read-only rather than trusting anyone to remember.</li>
+        <li><b>Voice:</b> a fellow traveller, never an authority. Sentences rather than
+          fragments. Real words. Nothing that leans on a word that could move.</li>
+        <li><b>No em dashes, no first-person plural, UK English</b>, and no transformation
+          language. Each line flags its own hits live.</li>
+        <li><b>The deck is generated, not written here.</b> Re-run the extractor when a
+          surface changes; verdicts survive by line id.</li>
+      </ul>
+    </details>
+  </div>
+</section>
+
+<section class="queue" id="queue" aria-label="Unread lines"></section>
+
+<main id="cards"></main>
+
+<footer class="site">
+  Deck generated by <code>tools/extract-copy.cjs</code> from the live surfaces.
+  Verdicts persist to this browser. <code>Export JSON</code> is the handoff.
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script id="deck-json" type="application/json">{
+  "meta": {
+    "project": "Re.SOURCE and Colour LINGO copy",
+    "tool": "copywriter-trainer.html",
+    "scope": "Re.SOURCE and Colour LINGO. Open People is not briefed and is not in this deck (Mark, 25 September 2026).",
+    "generated": "2026-09-24",
+    "generator": "Projects/Re.SOURCE Website/tools/extract-copy.cjs",
+    "voice": "Fellow traveller, never authority. UK English, sentence case, present and declarative. Real words. Nothing that leans on a word that could move.",
+    "law": "A line marked live reads off the position table: a word move in the Sheet renames it by itself, so it is never retitled by hand. The workbench refuses to edit one.",
+    "verdicts": {
+      "": "Not read yet.",
+      "keep": "Read and better left alone. Say why.",
+      "change": "Drifts from the voice. The replacement is the edit itself.",
+      "unsure": "Needs Mark."
+    }
+  },
+  "cards": [
+    {
+      "id": "tour-titles",
+      "title": "Walkthrough chapter titles",
+      "surface": "Master FLOWER, the tour",
+      "source": "Projects/Design System/templates/colour-flower/ColourFlower.dc.html · TOUR_TITLES",
+      "about": "Six chapter titles. Two and three are titled by their live words in telling order when the position table supplies them, so the static titles below are the fallback that shows when it does not.",
+      "lines": [
+        {
+          "text": "The Core",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 1",
+          "why": ""
+        },
+        {
+          "text": "The Part Triad",
+          "live": true,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 2",
+          "why": "Titled live off the position table when it supplies the words. Never retitle by hand."
+        },
+        {
+          "text": "The Prime Triad",
+          "live": true,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 3",
+          "why": "Titled live off the position table when it supplies the words. Never retitle by hand."
+        },
+        {
+          "text": "Counterpoints",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 4",
+          "why": ""
+        },
+        {
+          "text": "The In-Between",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 5",
+          "why": ""
+        },
+        {
+          "text": "The Whole Flower",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 6",
+          "why": ""
+        }
+      ]
+    },
+    {
+      "id": "tour-bodies",
+      "title": "Walkthrough chapter bodies",
+      "surface": "Master FLOWER, the tour",
+      "source": "Projects/Design System/templates/colour-flower/ColourFlower.dc.html · TOUR_BODIES",
+      "about": "The chapter prose. A body marked live splices words read off the position table into the sentence, shown here as an ellipsis: the sentence around the splice is yours to write, the word inside it is not.",
+      "lines": [
+        {
+          "text": "Each set has a centre with no position or colour of its own. Every position is read in relation to it.  … Use the Card button below to open its reading. … Its card stays open in the corner.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 1",
+          "why": ""
+        },
+        {
+          "text": "Three positions, four places apart, divide the wheel evenly. None answers for the others; each stands alongside the other two. Which feels most present right now?",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 2",
+          "why": ""
+        },
+        {
+          "text": "A second triangle interlocks with the first, point for point. Together, they complete the six Base positions every other word is read against. What stands out in the way they meet?",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 3",
+          "why": ""
+        },
+        {
+          "text": "Opposite positions face each other across the wheel. Each pair forms one axis through the centre.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 4",
+          "why": ""
+        },
+        {
+          "text": "A Blend sits one step from a Base, where two circles cross. It has its own place on the wheel, not a weaker mix of its neighbours.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 5",
+          "why": ""
+        },
+        {
+          "text": "All twelve positions sit around one centre. Choose Finish when you are ready to leave the walkthrough.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Chapter 6",
+          "why": ""
+        }
+      ]
+    },
+    {
+      "id": "gloss-r",
+      "title": "Realm glosses",
+      "surface": "Colour LINGO, the word glosses",
+      "source": "Projects/Design System/templates/colour-flower/ColourFlower.dc.html · GLOSS.r",
+      "about": "The abstract register, the domain named as a concept. One line per word, written against the word itself: no shared opener and no set framing, because the set is explained once in the guide. The line is static, the word it sits under is live.",
+      "lines": [
+        {
+          "text": "Growth and decay taken as one movement, with nothing exempt from either.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 01"
+        },
+        {
+          "text": "Atmosphere before anything is said, the colouring a thing already has.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 02"
+        },
+        {
+          "text": "Nothing holds still long enough to be named.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 03"
+        },
+        {
+          "text": "Movement carrying itself, effort dropping away.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 04"
+        },
+        {
+          "text": "What pulls things toward each other, and keeps them there.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 05"
+        },
+        {
+          "text": "A tie that holds and constrains in the same act.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 06"
+        },
+        {
+          "text": "Heat that consumes and remakes at once.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 07"
+        },
+        {
+          "text": "Terrain that permits one way and refuses another.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 08"
+        },
+        {
+          "text": "Everything arriving in order, and nothing arriving twice.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 09"
+        },
+        {
+          "text": "Structure seen from outside itself, rather than content.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 10"
+        },
+        {
+          "text": "A boundary a thing takes, and then keeps.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 11"
+        },
+        {
+          "text": "What kind of thing this is among others of its kind.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 12"
+        }
+      ]
+    },
+    {
+      "id": "gloss-s",
+      "title": "State glosses",
+      "surface": "Colour LINGO, the word glosses",
+      "source": "Projects/Design System/templates/colour-flower/ColourFlower.dc.html · GLOSS.s",
+      "about": "The aspect register, the domain as something felt. One line per word, written against the word itself: no shared opener and no set framing, because the set is explained once in the guide. The line is static, the word it sits under is live.",
+      "lines": [
+        {
+          "text": "Felt directly, before thought gets to it.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 01"
+        },
+        {
+          "text": "Weather that changes without asking permission.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 02"
+        },
+        {
+          "text": "More energy than the moment needs.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 03"
+        },
+        {
+          "text": "Level with what is actually held, nothing dressed.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 04"
+        },
+        {
+          "text": "The part that outlasts a mood.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 05"
+        },
+        {
+          "text": "A lack that cannot be gone without.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 06"
+        },
+        {
+          "text": "Force pointed somewhere, and kept there.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 07"
+        },
+        {
+          "text": "Reaching for what is not here yet.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 08"
+        },
+        {
+          "text": "Attention working on something, turning it over.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 09"
+        },
+        {
+          "text": "Where a person happens to be standing.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 10"
+        },
+        {
+          "text": "Who a person takes themselves to be.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 11"
+        },
+        {
+          "text": "The way a person is running right now.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 12"
+        }
+      ]
+    },
+    {
+      "id": "gloss-t",
+      "title": "Tags glosses",
+      "surface": "Colour LINGO, the word glosses",
+      "source": "Projects/Design System/templates/colour-flower/ColourFlower.dc.html · GLOSS.t",
+      "about": "The applied register, the domain as something lived. One line per word, written against the word itself: no shared opener and no set framing, because the set is explained once in the guide. The line is static, the word it sits under is live.",
+      "lines": [
+        {
+          "text": "The living, its systems, and the cost of keeping them.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 01"
+        },
+        {
+          "text": "Play with nothing riding on it.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 02"
+        },
+        {
+          "text": "Gladness with no reason attached.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 03"
+        },
+        {
+          "text": "Made for its own sake and no other.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 04"
+        },
+        {
+          "text": "Whatever is treated as above question.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 05"
+        },
+        {
+          "text": "Charge between bodies, wanting made physical.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 06"
+        },
+        {
+          "text": "Everything turned up, nothing spared.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 07"
+        },
+        {
+          "text": "Method and route, how a thing gets done.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 08"
+        },
+        {
+          "text": "Quickness that finds the short way through.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 09"
+        },
+        {
+          "text": "What is being pointed at.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 10"
+        },
+        {
+          "text": "The claim of being someone in particular.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 11"
+        },
+        {
+          "text": "Common currency, widely shared.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 12"
+        }
+      ]
+    },
+    {
+      "id": "gloss-k",
+      "title": "Arrow Key glosses",
+      "surface": "Colour LINGO, the word glosses",
+      "source": "Projects/Design System/templates/colour-flower/ColourFlower.dc.html · GLOSS.k",
+      "about": "Arrow Key’s own twelve, plain-worded to the field each position asks for. One line per word, written against the word itself: no shared opener and no set framing, because the set is explained once in the guide. The line is static, the word it sits under is live.",
+      "lines": [
+        {
+          "text": "The living world taken whole, growth and its upkeep together.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 01"
+        },
+        {
+          "text": "Sound and feeling, held as one and the same.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 02"
+        },
+        {
+          "text": "A surge of energy, the spike before it settles.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 03"
+        },
+        {
+          "text": "Calm where nothing is being forced.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 04"
+        },
+        {
+          "text": "Warmth turned outward, given rather than kept.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 05"
+        },
+        {
+          "text": "A tie, and the strain it puts on what it holds.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 06"
+        },
+        {
+          "text": "Drive, and the heat that comes with it.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 07"
+        },
+        {
+          "text": "Movement with a heading, going somewhere in particular.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 08"
+        },
+        {
+          "text": "Knowing, and the machinery that produces it.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 09"
+        },
+        {
+          "text": "A model standing in for the real thing, and its rules.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 10"
+        },
+        {
+          "text": "Self and shape, with a coolness running under both.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 11"
+        },
+        {
+          "text": "Appearance, and the copy that passes for it.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Position 12"
+        }
+      ]
+    },
+    {
+      "id": "pos-reads",
+      "title": "Position reads",
+      "surface": "Master FLOWER, the position table",
+      "source": "Projects/Design System/templates/colour-flower/ColourFlower.dc.html · POS[].read",
+      "about": "One read per position, shown where a position is explained rather than named.",
+      "lines": [
+        {
+          "text": "Ground. What is already alive, and what everything else is read against, since nothing is read from a thing that is not living yet.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "GO"
+        },
+        {
+          "text": "Colouring, and the archetype of it. A thing carries this before anything has been decided about it.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "BE"
+        },
+        {
+          "text": "Ascent. Heat on the way up, change that has not settled, and gladness in the not settling.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "ON"
+        },
+        {
+          "text": "Making is the archetype here. Movement that holds its line long enough to become a thing.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "BY"
+        },
+        {
+          "text": "Warmth at its fullest. What is held past reason, and treated as beyond question.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "OF"
+        },
+        {
+          "text": "Pull. Two things charged toward each other, neither willing to stay apart.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "US"
+        },
+        {
+          "text": "Full heat, and the archetype of drive. Everything given at once, nothing kept in reserve.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "DO"
+        },
+        {
+          "text": "Direction. One line chosen out of all the others, then walked.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "TO"
+        },
+        {
+          "text": "Thought is the archetype here. Turning a thing over until the short way through appears.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "IN"
+        },
+        {
+          "text": "Vantage. Standing outside the thing to see it whole, and naming what it is for.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "MY"
+        },
+        {
+          "text": "Shape, and the archetype of it. A boundary drawn, held, and answered for.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "ME"
+        },
+        {
+          "text": "Manner. Not what a thing is, but the way it is done and how widely.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "AS"
+        }
+      ]
+    },
+    {
+      "id": "chrome",
+      "title": "Schematics, legends, blank slot and announcements",
+      "surface": "Master FLOWER, shared chrome",
+      "source": "Projects/Design System/templates/colour-flower/ColourFlower.dc.html · the legends, the blank slot, the status region",
+      "about": "The short lines, read most often and revised least. What is spoken and what is seen must say the same thing, and neither should read out markup or a number without its unit.",
+      "lines": [
+        {
+          "text": "Tap a word on the flower. Its card opens below.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Tour legend, touch"
+        },
+        {
+          "text": "← → step · 1–9 hold · Enter pair · F flip · Z undo · W exit",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Tour legend, keyboard"
+        },
+        {
+          "text": "A highlighted petal shares its radius with the Core.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Schematics intro"
+        },
+        {
+          "text": "This combination has no card.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Blank slot"
+        },
+        {
+          "text": "Nothing to undo.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Undo, nothing held"
+        },
+        {
+          "text": "Nothing held.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Status, nothing held"
+        },
+        {
+          "text": "Link copied.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Share, copied"
+        },
+        {
+          "text": "Copy denied.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Share, refused"
+        }
+      ]
+    },
+    {
+      "id": "lingo-what",
+      "title": "What the system is",
+      "surface": "Colour LINGO, the brief",
+      "source": "Projects/Re.Colour LINGO/Agent-Brief.md · What the system is",
+      "about": "The description the whole project is explained by. It is written for agents today; anything public is written from here, so it is the first copy to get right.",
+      "lines": [
+        {
+          "text": "An attempt to collate and evolve a subjective and collective framework for understanding human language and experience. It maps words across 12 frequency domains and multiple row registers, organising rich and complex language into suitable sets.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Paragraph 1"
+        },
+        {
+          "text": "It is one person's mind reaching toward something that will eventually need collective input. It is currently private because the underlying logic is still becoming visible - even to its creator.",
+          "live": false,
+          "verdict": "",
+          "note": "",
+          "label": "Paragraph 2"
+        }
+      ]
+    }
+  ]
+}</script>
+<script>
+"use strict";
+
+var SEED = JSON.parse(document.getElementById("deck-json").textContent);
+var STORE_KEY = "copy-workbench-v1";
+
+var BANNED = ["seamless","elevate","elevates","elevated","tailored","bespoke","stunning","leverage","ensure","comprehensive","robust","holistic","transformative","delve"];
+var TRANSFORM = ["transform","transforms","unlock","unlocks","empower","empowers","unleash","supercharge","best self","true self","new you"];
+var US_SPELL = ["color","colors","organize","organized","organizing","recognize","recognized","center","behavior","favor","flavor","labor","neighbor","theater"];
+
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function words(s){ s = String(s||"").trim(); return s ? s.split(/\s+/).length : 0; }
+
+/* A line is identified by its card and its label, not its position, so re-running
+   the extractor after a surface changes does not shuffle the verdicts. */
+function lineKey(card, line){ return card.id + "::" + line.label; }
+
+/* Any deck that arrives is merged onto the freshly extracted one: the extractor owns
+   the text as it stands on the surface, the browser owns the verdicts and the edits.
+   That way a re-extraction never silently discards a reading, and never resurrects a
+   line that has left the surface. */
+function normalise(deck, prior){
+  var was = {};
+  if(prior && Array.isArray(prior.cards)){
+    prior.cards.forEach(function(c){
+      (c.lines || []).forEach(function(l){ was[lineKey(c, l)] = l; });
+    });
+  }
+  deck.cards.forEach(function(card){
+    card.lines.forEach(function(line){
+      var prev = was[lineKey(card, line)];
+      if(line.original === undefined) line.original = line.text;
+      if(prev){
+        line.verdict = ["keep","change","unsure"].indexOf(prev.verdict) !== -1 ? prev.verdict : "";
+        line.note = typeof prev.note === "string" ? prev.note : "";
+        /* An edit is kept only against the same original. If the surface moved under
+           it, the edit is stale and the line goes back to unread with its note intact. */
+        if(prev.original === line.original && typeof prev.text === "string"){
+          line.text = prev.text;
+        }else if(prev.original !== undefined && prev.original !== line.original){
+          line.verdict = "";
+          line.note = (line.note ? line.note + " " : "") +
+            "[The surface changed under this line, so its reading was reset.]";
+        }
+      }
+      if(line.live) line.text = line.original;
+    });
+  });
+  return deck;
+}
+
+var state = load();
+
+function load(){
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return normalise(clone(SEED), null);
+    return normalise(clone(SEED), JSON.parse(raw));
+  }catch(e){ return normalise(clone(SEED), null); }
+}
+var saveTimer = null;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  }, 300);
+}
+
+function scanList(text, list){
+  var found = [], low = " " + String(text||"").toLowerCase() + " ";
+  for(var i=0;i<list.length;i++){
+    var w = list[i].toLowerCase();
+    if(low.indexOf(w) === -1) continue;
+    var re = new RegExp("(^|[^a-z])" + w.replace(/ /g,"\\s+") + "([^a-z]|$)");
+    if(re.test(low)) found.push(list[i]);
+  }
+  return found;
+}
+function checkLine(line){
+  var text = line.text || "", flags = [];
+  var banned = scanList(text, BANNED);
+  if(banned.length) flags.push({ level:"bad", text:"banned: " + banned.join(", ") });
+  var trans = scanList(text, TRANSFORM);
+  if(trans.length) flags.push({ level:"bad", text:"transformation talk: " + trans.join(", ") });
+  if(text.indexOf("\u2014") !== -1) flags.push({ level:"hit", text:"em dash" });
+  if(/(^|[^a-z])(we|our|ours)([^a-z]|$)/i.test(" " + text + " ")) flags.push({ level:"hit", text:"first-person plural" });
+  var us = scanList(text, US_SPELL);
+  if(us.length) flags.push({ level:"hit", text:"US spelling? " + us.join(", ") });
+  if(!flags.length) flags.push({ level:"clean", text:"voice clean" });
+  return flags;
+}
+
+var cardsEl = document.getElementById("cards");
+var jumpEl = document.getElementById("jump");
+var progressEl = document.getElementById("progress");
+var barEl = document.getElementById("bar");
+var toastEl = document.getElementById("toast");
+var toastTimer = null;
+
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 2400);
+}
+
+function allLines(){
+  var out = [];
+  state.cards.forEach(function(c){ c.lines.forEach(function(l){ out.push({ card:c, line:l }); }); });
+  return out;
+}
+function unread(card){ return card.lines.filter(function(l){ return !l.verdict; }); }
+function isEdited(line){ return !line.live && line.text !== line.original; }
+
+function counts(){
+  var all = allLines();
+  return {
+    total: all.length,
+    read: all.filter(function(x){ return !!x.line.verdict; }).length,
+    changed: all.filter(function(x){ return isEdited(x.line); }).length,
+    live: all.filter(function(x){ return x.line.live; }).length
+  };
+}
+
+function renderProgress(){
+  var c = counts();
+  progressEl.innerHTML =
+    '<span class="pill read"><b>' + c.read + '</b> read</span>' +
+    '<span class="pill left"><b>' + (c.total - c.read) + '</b> to read</span>' +
+    '<span class="pill changed"><b>' + c.changed + '</b> changed</span>' +
+    '<span class="pill"><b>' + c.live + '</b> live, locked</span>';
+  barEl.style.width = c.total ? Math.round(c.read / c.total * 100) + "%" : "0";
+}
+
+function renderJump(){
+  jumpEl.innerHTML = state.cards.map(function(card){
+    var left = unread(card).length;
+    return '<a href="#card-' + esc(card.id) + '">' + esc(card.title) +
+      (left ? '<span class="left">' + left + "</span>" : '<span class="done">\u2713</span>') + "</a>";
+  }).join("");
+}
+
+function renderQueue(){
+  var rows = [];
+  state.cards.forEach(function(card){
+    unread(card).forEach(function(line){
+      rows.push('<li><a href="#card-' + esc(card.id) + '">' +
+        '<span class="q-card">' + esc(card.title) + " \u00b7 " + esc(line.label) + "</span>" +
+        '<span class="q-text">' + esc((line.text || "").slice(0, 110)) + "</span></a></li>");
+    });
+  });
+  var c = counts();
+  document.getElementById("queue").innerHTML = rows.length
+    ? '<details class="queue-box" open><summary>Still to read ' +
+        '<span class="pill left"><b>' + rows.length + "</b> of " + c.total + "</span></summary>" +
+        '<ul class="queue-list">' + rows.join("") + "</ul>" +
+        '<p class="queue-foot">Every line gets a verdict, including the ones you keep. ' +
+        "A kept line with a reason is a reading; an untouched line is just an untouched line.</p></details>"
+    : '<details class="queue-box"><summary>Still to read ' +
+        '<span class="pill read"><b>nothing</b></span></summary>' +
+        '<p class="queue-foot">Every line on every surface has been read. ' +
+        "Export the deck and the changes can be applied at the source.</p></details>";
+}
+
+function lineHTML(card, line, li){
+  var flags = checkLine(line).map(function(f){
+    return '<span class="flag ' + f.level + '">' + esc(f.text) + "</span>";
+  }).join("");
+  var chars = (line.text || "").length;
+  return '<li class="line ' + esc(line.verdict) + '" data-li="' + li + '">' +
+    '<div class="line-head">' +
+      '<span class="line-label">' + esc(line.label) + "</span>" +
+      (line.live ? '<span class="tag live">LIVE, LOCKED</span>' : '<span class="tag static">static</span>') +
+      (isEdited(line) ? '<span class="edited">edited</span>' : "") +
+      '<select class="verdict' + (line.verdict ? " set" : "") + '" data-verdict="' + li + '" aria-label="Verdict for ' + esc(line.label) + '">' +
+        '<option value=""' + (line.verdict===""?" selected":"") + '>\u2014 not read</option>' +
+        '<option value="keep"' + (line.verdict==="keep"?" selected":"") + '>keep</option>' +
+        '<option value="change"' + (line.verdict==="change"?" selected":"") + '>change</option>' +
+        '<option value="unsure"' + (line.verdict==="unsure"?" selected":"") + '>unsure, ask Mark</option>' +
+      "</select>" +
+    "</div>" +
+    '<textarea rows="2" data-text="' + li + '"' +
+      (line.live ? " readonly" : "") + ' aria-label="' + esc(line.label) + '">' + esc(line.text) + "</textarea>" +
+    (line.why ? '<p class="why">' + esc(line.why) + "</p>" : "") +
+    '<input class="note" type="text" data-note="' + li + '" value="' + esc(line.note || "") + '" ' +
+      'maxlength="300" placeholder="' + (line.verdict === "keep" ? "Why is it better left alone?" : "Reasoning, or what the change is for") + '" ' +
+      'aria-label="Note on ' + esc(line.label) + '">' +
+    '<div class="line-foot">' + flags +
+      '<span class="metrics">' + words(line.text) + "w \u00b7 " + chars + "c</span></div>" +
+    "</li>";
+}
+
+function cardHTML(card, ci){
+  var left = unread(card).length;
+  return '<article class="card' + (left ? "" : " swept") + '" id="card-' + esc(card.id) + '" data-ci="' + ci + '">' +
+    '<div class="card-head">' +
+      "<h2>" + esc(card.title) +
+        '<span class="surface">' + esc(card.surface) + "</span>" +
+        (left ? '<span class="pill left" style="margin-left:auto"><b>' + left + "</b> to read</span>"
+              : '<span class="pill read" style="margin-left:auto"><b>read</b></span>') +
+      "</h2>" +
+      '<p class="about">' + esc(card.about) + "</p>" +
+      '<p class="src">' + esc(card.source) + "</p>" +
+    "</div>" +
+    '<ul class="lines">' + card.lines.map(function(l, li){ return lineHTML(card, l, li); }).join("") + "</ul>" +
+  "</article>";
+}
+
+function renderCards(){
+  cardsEl.innerHTML = state.cards.map(cardHTML).join("");
+  autosizeAll();
+}
+/* A row count guessed from the character count holds at one width and clips at
+   another, so the field is measured instead: a line of copy is never scrolled out
+   of sight on a phone, which is where the overflow defects actually live. */
+function autosize(ta){
+  ta.style.height = "auto";
+  ta.style.height = (ta.scrollHeight + 2) + "px";
+}
+function autosizeAll(){
+  var list = cardsEl.querySelectorAll(".line textarea");
+  for(var i=0;i<list.length;i++) autosize(list[i]);
+}
+var resizeTimer = null;
+window.addEventListener("resize", function(){
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(autosizeAll, 120);
+});
+
+function refreshCard(ci){
+  var art = cardsEl.querySelector('[data-ci="' + ci + '"]');
+  if(!art) return;
+  var scroll = window.scrollY;
+  art.outerHTML = cardHTML(state.cards[ci], ci);
+  autosizeAll();
+  window.scrollTo(0, scroll);
+  renderProgress(); renderJump(); renderQueue();
+}
+
+/* Text and notes update in place: re-rendering under a typing hand would move the
+   caret, so only the counts that can change without the markup are touched. */
+cardsEl.addEventListener("input", function(ev){
+  var t = ev.target, art = t.closest("[data-ci]");
+  if(!art) return;
+  var ci = parseInt(art.getAttribute("data-ci"), 10);
+  var ti = t.getAttribute("data-text"), ni = t.getAttribute("data-note");
+  if(ti !== null){
+    var line = state.cards[ci].lines[parseInt(ti, 10)];
+    if(line.live){ t.value = line.original; return; }
+    line.text = t.value;
+    autosize(t);
+    var li = t.closest(".line");
+    li.querySelector(".metrics").textContent = words(line.text) + "w \u00b7 " + line.text.length + "c";
+    li.querySelector(".line-foot").innerHTML = checkLine(line).map(function(f){
+      return '<span class="flag ' + f.level + '">' + esc(f.text) + "</span>";
+    }).join("") + '<span class="metrics">' + words(line.text) + "w \u00b7 " + line.text.length + "c</span>";
+    save();
+    return;
+  }
+  if(ni !== null){
+    state.cards[ci].lines[parseInt(ni, 10)].note = t.value;
+    save();
+  }
+});
+
+cardsEl.addEventListener("change", function(ev){
+  var vi = ev.target.getAttribute && ev.target.getAttribute("data-verdict");
+  if(vi === null || vi === undefined) return;
+  var art = ev.target.closest("[data-ci]");
+  var ci = parseInt(art.getAttribute("data-ci"), 10);
+  var card = state.cards[ci];
+  var line = card.lines[parseInt(vi, 10)];
+  line.verdict = ev.target.value;
+  refreshCard(ci);
+  save();
+  var left = unread(card).length;
+  toast(left ? left + " line" + (left === 1 ? "" : "s") + " left on " + card.title
+             : card.title + " is read through");
+});
+
+document.getElementById("btn-next").addEventListener("click", function(){
+  for(var i=0;i<state.cards.length;i++){
+    var u = unread(state.cards[i]);
+    if(u.length){
+      var li = state.cards[i].lines.indexOf(u[0]);
+      var el = cardsEl.querySelector('[data-ci="' + i + '"] [data-li="' + li + '"]');
+      if(el){ el.scrollIntoView({ block:"center" }); var ta = el.querySelector("textarea"); if(ta && !ta.readOnly) ta.focus(); }
+      return;
+    }
+  }
+  toast("Every line has been read");
+});
+
+function exportObject(){
+  var c = counts();
+  var meta = JSON.parse(JSON.stringify(state.meta));
+  meta.read = c.read; meta.total = c.total; meta.changed = c.changed;
+  meta.exported = new Date().toISOString().slice(0,10);
+  return { meta: meta, cards: state.cards };
+}
+function changesOnly(){
+  var out = [];
+  state.cards.forEach(function(card){
+    card.lines.forEach(function(line){
+      if(line.verdict === "change" || isEdited(line) || line.verdict === "unsure"){
+        out.push({
+          source: card.source, surface: card.surface, label: line.label,
+          verdict: line.verdict, live: !!line.live,
+          from: line.original, to: line.text, note: line.note || ""
+        });
+      }
+    });
+  });
+  return { meta: { generated: new Date().toISOString().slice(0,10),
+    note: "Only the lines that changed or need Mark. Apply at the source named on each.",
+    count: out.length }, changes: out };
+}
+function download(name, text){
+  var blob = new Blob([text], { type: "application/json" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 400);
+}
+function toClipboard(text, msg){
+  function done(){ toast(msg); }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, fallback);
+  }else fallback();
+  function fallback(){
+    var ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); done(); }catch(e){ toast("Copy failed, use Export"); }
+    document.body.removeChild(ta);
+  }
+}
+document.getElementById("btn-export").addEventListener("click", function(){
+  var stamp = new Date().toISOString().slice(0,10);
+  download("copy-deck-" + stamp + ".json", JSON.stringify(exportObject(), null, 2));
+  toast("Exported " + counts().total + " lines");
+});
+document.getElementById("btn-copy").addEventListener("click", function(){
+  toClipboard(JSON.stringify(exportObject(), null, 2), "Whole deck copied");
+});
+document.getElementById("btn-changes").addEventListener("click", function(){
+  var c = changesOnly();
+  if(!c.changes.length){ toast("Nothing is marked change or unsure yet"); return; }
+  toClipboard(JSON.stringify(c, null, 2), c.changes.length + " changes copied");
+});
+document.getElementById("file-import").addEventListener("change", function(ev){
+  var file = ev.target.files && ev.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(){
+    try{
+      var parsed = JSON.parse(reader.result);
+      if(!parsed || !Array.isArray(parsed.cards)) throw new Error("shape");
+      state = normalise(clone(SEED), parsed);
+      save(); renderAll();
+      toast("Imported, merged onto the extracted deck");
+    }catch(e){ toast("Import failed: not a copy deck"); }
+    ev.target.value = "";
+  };
+  reader.readAsText(file);
+});
+document.getElementById("btn-reset").addEventListener("click", function(){
+  if(!window.confirm("Drop every verdict and edit, and go back to the extracted deck?")) return;
+  state = normalise(clone(SEED), null);
+  try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  renderAll();
+  toast("Back to the extracted deck");
+});
+
+function renderAll(){
+  document.getElementById("scope-note").textContent = state.meta.scope + " " + state.meta.law;
+  renderProgress(); renderJump(); renderQueue(); renderCards();
+}
+renderAll();
+</script>
+</body>
+</html>

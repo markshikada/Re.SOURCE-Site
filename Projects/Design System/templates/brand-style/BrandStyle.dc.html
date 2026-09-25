@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../../assets/vendor/react.production.min.js"></script>
+<script src="../../assets/vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="../../lib/masters-nav.js"></script>
+<style>[data-sl]{-webkit-appearance:none;appearance:none;width:100%;height:3px;margin:8px 0;border-radius:2px;background:#555555;accent-color:#FFFFFF;cursor:pointer}[data-sl]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:#FFFFFF;border:0;cursor:pointer}[data-sl]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#FFFFFF;border:0;cursor:pointer}[data-preset][data-active=true]{border-color:#FFFFFF !important;color:#FFFFFF !important}*{box-sizing:border-box}body{margin:0;background:#000000}h1,h2{text-wrap:balance}p{text-wrap:pretty}a{color:#FFFFFF}a:hover{color:#CCCCCC}/* The page's own row shapes, mobile-first on the field (21 September 2026, Mark: "responsive design needs more considered layout rules for mobile"). Where the field draws three — portrait below 1081, since 24 September 2026, when orientation picked the count (Mark, quoted: "orientation picks 3 vs 6") — the three-column count cannot hold a 2 / 10 label column or a 2 / 2 / 4 caption row, so each row is one column: label above, value below, the caption row's three cells stacked. Where it draws six — landscape below 1081 — the label column is one column of six and the caption row is 1 / 1 / 2 of four; at 1081 and up the desktop shapes, whatever the orientation. */[data-spec]>*,[data-conf]>*,[data-row]>*{grid-column:1/-1}@media (orientation:landscape){[data-spec]>*:first-child,[data-conf]>*:first-child{grid-column:span 1}[data-spec]>*:last-child,[data-conf]>*:last-child{grid-column:span 5}[data-row]>*:nth-child(1){grid-column:span 1}[data-row]>*:nth-child(2){grid-column:span 1}[data-row]>*:nth-child(3){grid-column:span 2}}@media (min-width:1081px){[data-spec]>*:first-child,[data-conf]>*:first-child{grid-column:span 2}[data-spec]>*:last-child,[data-conf]>*:last-child{grid-column:span 10}[data-row]>*:nth-child(1){grid-column:span 2}[data-row]>*:nth-child(2){grid-column:span 2}[data-row]>*:nth-child(3){grid-column:span 4}}[data-row]{row-gap:0}@media (max-width:1080px) and (orientation:portrait){[data-row]{padding-top:6px;padding-bottom:6px}[data-row]>*:nth-child(1){margin-bottom:0}}[data-spec]{row-gap:12px}/* The responsive preview row (23 September 2026). One surface at three counts, live, at a single scale, with the field's own division drawn beneath each case: twelve columns, six, three. The row bleeds to the page edge and stacks where the field draws three — portrait below 1081 — so a row that cannot fit wraps rather than shrinking to a thumbnail. */[data-resp-row]{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--space-lg)}[data-resp-cell]{display:flex;flex-direction:column;gap:12px;min-width:0}[data-resp-stage]{display:flex;align-items:flex-start;justify-content:center}[data-resp-case]{position:relative;margin:0 auto;background:#0D0D0D;border:1px solid #333333;overflow:hidden}[data-resp-screen]{position:relative;overflow:hidden;width:100%;height:100%;background:#000000}[data-resp-cap]{display:flex;flex-direction:column;gap:2px;text-align:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888}[data-resp-cap-a]{color:#FFFFFF}[data-resp-field]{display:grid;height:36px;border:1px solid #222222}[data-resp-field]>span{border:1px solid #555555;background:#000000}[data-resp-field]>span[data-a]{border-color:#FFFFFF;background:#1A1A1A}@media (max-width:1080px){[data-resp-row]{column-gap:var(--space-md)}}@media (max-width:1080px) and (orientation:portrait){[data-resp-row]{grid-template-columns:minmax(0,1fr);row-gap:var(--space-xl)}}/* The motion track. Its three dots never had a rule, so the rail was 0px wide and the specimen read as a caption. */[data-track]{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:18px;line-height:30px}[data-tl]{flex:0 0 auto}[data-rail]{position:relative;flex:1 1 auto;height:30px;min-width:120px;container-type:inline-size}[data-dot]{position:absolute;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#FFFFFF}[data-track]:hover [data-dot]{transform:translateX(calc(100cqw - 60px))}[data-tn]{flex:0 0 auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888}/* The halo specimen: the 41px line is the hover state, drawn over the 36px line by design; the two must never both show. */[data-halo] [data-h2]{opacity:0;transition:opacity 180ms cubic-bezier(0,0,0.5,1)}[data-halo] [data-h1]{transition:opacity 180ms cubic-bezier(0,0,0.5,1)}[data-halo]:hover [data-h2]{opacity:1}[data-halo]:hover [data-h1]{opacity:0}body[data-schematic] [data-src]{position:relative;outline:1px dashed #333333;outline-offset:4px}body[data-schematic] [data-src]:hover{outline:1px solid #FFFFFF;outline-offset:4px}body[data-schematic] [data-src]:hover::after{content:attr(data-src);position:absolute;left:0;bottom:calc(100% + 8px);z-index:99998;white-space:pre;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF;text-shadow:0 0 2px #000000,0 0 6px #000000,0 0 14px #000000,0 0 24px #000000;pointer-events:none}body[data-schematic] [data-src][data-gapkind]:hover::before{content:"";position:absolute;left:0;right:0;height:var(--rsg,0px);background:rgba(255,255,255,.1);border-top:1px dashed #FFFFFF;border-bottom:1px dashed #FFFFFF;pointer-events:none;z-index:1}body[data-schematic] [data-src][data-gapkind="margin"]:hover::before{top:calc(-1 * var(--rsg,0px))}body[data-schematic] [data-src][data-gapkind="padding"]:hover::before{top:0}[data-ctl]{position:fixed;left:24px;bottom:24px;z-index:99999;display:flex;gap:8px}</style>
+</helmet>
+<div data-pad="" style="min-height:100vh;background:#000000;color:#FFFFFF;font-family:Figtree,sans-serif;padding-top:78px;padding-bottom:96px">
+<div style="position:relative;max-width:1080px;margin:0 auto;isolation:isolate">
+<div data-ov="" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+<main data-grid="" style="min-width:0">
+
+<header data-reveal="" data-sub="" style="padding-bottom:48px;border-bottom:1px solid #333333">
+<h1 data-src="Display · 48 / 54 · 800 · #FFFFFF" data-span="9" style="margin:0;font-size:48px;line-height:54px;font-weight:800">Every rule, and the reason beside it</h1>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" data-gapkind="margin" data-span="7" style="--rsg:15px;margin:15px 0 0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">A rule states what must hold. Its reason states what it was measured against. Values live here once, the layout they sit on is Frame GRID's, and the word at a position is Colour LINGO's. Turn on schematic mode to read the source value behind anything on the page, and the column overlay to check it lands on the grid.</p>
+</header>
+
+<section id="greyscale" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">01 · Greyscale</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">Eight greys, and depth is which one you used</h2>
+<div data-reveal="" data-sub="" data-src="Specimen · depth read from the ramp · radius 24 / 12 / 8 · gap 48px" data-gapkind="margin" style="--rsg:24px;margin-top:24px">
+<div data-span="6" style="padding:24px;background:#000000;border:1px solid #333333;border-radius:24px">
+<p style="margin:0 0 12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">BLACK · PAGE</p>
+<div style="padding:24px;background:#0D0D0D;border:1px solid #333333;border-radius:12px">
+<p style="margin:0 0 12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">G06 · CARD</p>
+<div style="padding:24px;background:#1A1A1A;border:1px solid #333333;border-radius:8px">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">G12 · RAISED, AND HOVER</p>
+</div>
+</div>
+</div>
+<div data-span="6" style="display:flex;flex-direction:column;justify-content:flex-end;gap:12px">
+<p style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Three planes, depth in the greys. The same figure survives a screenshot and a print.</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">RADIUS 24 · 12 · 8 &nbsp; PADDING 24 &nbsp; BORDER 1PX G24</p>
+</div>
+</div>
+<div data-reveal="" data-sub="" data-src="Specimen · eight tiles, each doing its own job · row gap 24px" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:12px">
+<div data-tile="" data-span="3" data-sel="{{ greySel.black }}" onClick="{{ greyPick.black }}"><div style="height:78px;background:#000000;border:1px solid #333333;border-radius:8px"></div><p style="margin:8px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">BLACK · #000000</p><p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">page fill, halo</p></div>
+<div data-tile="" data-span="3" data-sel="{{ greySel.g06 }}" onClick="{{ greyPick.g06 }}"><div style="height:78px;background:#0D0D0D;border:1px solid #333333;border-radius:8px"></div><p style="margin:8px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">G06 · #0D0D0D</p><p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">card fill</p></div>
+<div data-tile="" data-span="3" data-sel="{{ greySel.g12 }}" onClick="{{ greyPick.g12 }}"><div style="height:78px;background:#1A1A1A;border:1px solid #333333;border-radius:8px"></div><p style="margin:8px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">G12 · #1A1A1A</p><p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">raised plane, hover</p></div>
+<div data-tile="" data-span="3" data-sel="{{ greySel.g24 }}" onClick="{{ greyPick.g24 }}"><div style="height:78px;background:#333333;border-radius:8px"></div><p style="margin:8px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">G24 · #333333</p><p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">borders, dividers</p></div>
+<div data-tile="" data-span="3" data-sel="{{ greySel.g48 }}" onClick="{{ greyPick.g48 }}"><div style="height:78px;background:#555555;border-radius:8px;display:flex;align-items:flex-end;padding:8px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#000000">Aa</span></div><p style="margin:8px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">G48 · #555555</p><p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">disabled label</p></div>
+<div data-tile="" data-span="3" data-sel="{{ greySel.g66 }}" onClick="{{ greyPick.g66 }}"><div style="height:78px;background:#888888;border-radius:8px;display:flex;align-items:flex-end;padding:8px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#000000">Aa</span></div><p style="margin:8px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">G66 · #888888</p><p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">rest label, metadata</p></div>
+<div data-tile="" data-span="3" data-sel="{{ greySel.g88 }}" onClick="{{ greyPick.g88 }}"><div style="height:78px;background:#000000;border:1px solid #333333;border-radius:8px;outline:2px solid #CCCCCC;outline-offset:-8px"></div><p style="margin:8px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">G88 · #CCCCCC</p><p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">focus ring</p></div>
+<div data-tile="" data-span="3" data-sel="{{ greySel.white }}" onClick="{{ greyPick.white }}"><div style="height:78px;background:#FFFFFF;border-radius:8px;display:flex;align-items:flex-end;padding:8px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#000000">Aa</span></div><p style="margin:8px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">WHITE · #FFFFFF</p><p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">body text, mark</p></div>
+</div>
+<div data-reveal="" data-sub="" data-narrow="" data-src="Caption rows · the picked grey, measured live" style="margin-top:24px;row-gap:0">
+<sc-for list="{{ greyRows }}" as="r" hint-placeholder-count="4">
+<div data-sub="" data-row="" data-src="Caption row · 2 / 2 / 4 of 8 columns">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">{{ r.a }}</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF;font-variant-numeric:tabular-nums">{{ r.b }}</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">{{ r.c }}</p>
+</div>
+</sc-for>
+</div>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A card must be g06 fill, one 1px g24 border and 12px radius.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Shadow is established practice on artwork surfaces; a raised plane is read from which grey it is made of as well as its shadow. Two surfaces that differ by a shadow alone still merge in print; two that differ by a ramp step do not.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Nothing carrying meaning may be drawn below 12px.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">12px is the smallest size on the scale and the floor for a label, a stroke or a node that a reader has to identify. Below it the mono digits stop being distinguishable at arm's length on a laptop panel.</p>
+</div>
+</section>
+
+<section id="type" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">02 · Type</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">Six sizes, alternating 2:3 and 3:4</h2>
+<div data-reveal="" data-sub="" data-src="List gap · 48px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:48px">
+<div data-sub="" data-spec="" data-src="Wordmark · 72 / 78 · 800 · one word in a diagram">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">Wordmark<br>72 / 78 · 800<br>halo 12</p>
+<p style="margin:0;font-size:72px;line-height:78px;font-weight:800;color:#FFFFFF">Position</p>
+</div>
+<div data-sub="" data-spec="" data-src="Display · 48 / 54 · 800 · page titles">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">Display<br>48 / 54 · 800<br>halo 8</p>
+<p style="margin:0;font-size:48px;line-height:54px;font-weight:800;color:#FFFFFF">Every rule, and the reason beside it</p>
+</div>
+<div data-sub="" data-spec="" data-src="Heading 1 · 36 / 48 · 700 · section titles">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">Heading 1<br>36 / 48 · 700<br>halo 6</p>
+<p style="margin:0;font-size:36px;line-height:48px;font-weight:700;color:#FFFFFF">Six sizes, alternating 2:3 and 3:4</p>
+</div>
+<div data-sub="" data-spec="" data-src="Heading 2 · 24 / 36 · 600 · rule lines">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">Heading 2<br>24 / 36 · 600<br>halo 4</p>
+<p style="margin:0;font-size:24px;line-height:36px;font-weight:600;color:#FFFFFF">Leading must be whole pixels on the six unit.</p>
+</div>
+<div data-sub="" data-spec="" data-src="Body · 18 / 30 · 400 · reasons, running text">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">Body<br>18 / 30 · 400<br>halo 3</p>
+<p style="margin:0;font-size:18px;line-height:30px;font-weight:400;color:#FFFFFF">A ratio produces fractional line boxes, so each size is paired to one whole number instead. Six sizes carry every surface in the system, and a seventh has never been needed.</p>
+</div>
+<div data-sub="" data-spec="" data-src="Caption · 12 / 18 · 300 · mono labels, indices, hexes">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">Caption<br>12 / 18 · 300<br>halo 2</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;font-weight:300;color:#FFFFFF">01 · GREYSCALE &nbsp; G24 &nbsp; #333333 &nbsp; RADIUS 12 &nbsp; 180MS</p>
+</div>
+</div>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Leading must be whole pixels on the six unit.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">A ratio produces fractional line boxes: 18px at 1.6 is 28.8, which rounds one way on screen and another in print, and never lands twice the same. Each size is paired to one whole number instead.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Letter spacing must not be declared.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Figtree and JetBrains Mono both ship optical spacing tuned per weight. Overriding it replaces a type designer's measurement with a guess, and the guess then has to be maintained at every size and weight in use.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Mono carries data, and italic carries quotation.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">JetBrains Mono takes code, coordinates, indices, hexes and every small uppercase label, so a figure reads as measured rather than written. Italic marks a quoted voice, as in <em>the surface is wrong, not the system</em>, and never labels a control, where it would only mean emphasis.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Leading and line spacing are not the same distance.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Leading is the line-height set on one block, so it repeats between every wrapped line inside that block automatically. Line spacing is the gap between two separate blocks (a header and the body copy under it, one paragraph and the next), set once at the join, not repeated. This system draws the join from the same leading numbers rather than inventing a margin, which is why the two are easy to mistake for one thing: leading lives in the type style, spacing lives in the gap between elements.</p>
+</div>
+</section>
+
+<section id="halo" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">03 · Halo</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">A word crossing colour takes a stroke of its size over six</h2>
+<div data-reveal="" data-halo="" data-src="Specimen · drawn 1:1 where the column holds it, scaled as one drawing below · hover runs the progression · g48 field · radius 8" data-span="8" style="margin-top:48px;background:#555555;border-radius:8px;overflow:hidden">
+<svg viewBox="0 0 524 96" preserveAspectRatio="xMinYMid meet" width="100%" style="display:block;max-height:96px">
+<text data-h1="" x="24" y="62" font-family="Figtree,sans-serif" font-size="36" font-weight="800" fill="#FFFFFF" stroke="#000000" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" paint-order="stroke fill">36px takes a 6px halo</text>
+<text data-h2="" x="24" y="64" font-family="Figtree,sans-serif" font-size="41" font-weight="900" fill="#FFFFFF" stroke="#000000" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" paint-order="stroke fill">41px takes a 7px halo</text>
+</svg>
+</div>
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888" data-span="8" style="margin:18px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">HOVER THE FIELD · 36 / 800 HALO 6 → 41 / 900 HALO 7 · 180MS ARRIVING</p>
+<div data-reveal="" data-sub="" data-narrow="" style="margin-top:24px;row-gap:0">
+<sc-for list="{{ haloRows }}" as="h" hint-placeholder-count="6">
+<div data-sub="" data-row="" data-src="Caption row · 2 / 2 / 4 of 8 columns">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">{{ h.size }}</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">{{ h.halo }}</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">{{ h.note }}</p>
+</div>
+</sc-for>
+</div>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">The halo must be black, with round joins.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Black is the ground everywhere else, so a haloed word reads as sitting on the page rather than as outlined lettering. Round joins keep the stroke off the letterforms at the corners, where a mitre would spike.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A word that grows must recompute its halo at the new size.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">The hover progression is plus 5px and 800 to 900, which takes a 36px word's halo from 6 to 7. Leaving the halo at its old value thins it against the larger letterforms, and the ratio is the whole rule.</p>
+</div>
+</section>
+
+<section id="colour" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">04 · Colour</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">Twelve positions, held as an index, an angle and a hex</h2>
+<div data-reveal="" data-sub="" data-src="Specimen · the wheel Colour FLOWER runs on · click a position for its detail" style="margin-top:48px;align-items:center">
+<div data-span="5" style="display:flex;justify-content:center">
+<x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.ColourWheel" unit="{{ wheelUnit }}" selected="{{ selPosI }}" onSelect="{{ onPosSelect }}" hint-size="280px,280px"></x-import>
+</div>
+<div data-span="7" style="display:flex;flex-direction:column;gap:15px">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">Position {{ selPosI }}</p>
+<div style="display:flex;align-items:baseline;gap:18px">
+<span style="font-size:48px;line-height:54px;font-weight:800;color:#FFFFFF">{{ selPosHex }}</span>
+<span style="width:24px;height:24px;border-radius:50%;background:{{ selPosHex }};border:1px solid #333333"></span>
+</div>
+<div data-sub="" data-pair="" style="row-gap:6px">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">Angle</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">{{ selPosAngle }}°, clockwise from position 12</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">Index</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">{{ selPosI }} of 12, the only stable handle</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">Word</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">Read from Colour LINGO by index — never held here</p>
+</div>
+</div>
+</div>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Colour must sit on a stroke, never behind a word.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Twelve hues at one lightness give twelve different contrast ratios against white text. Holding the ground at black makes text contrast a single fixed value, and the hue then reads as position rather than as emphasis.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A word must be read from Colour LINGO, not from a token name.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Token stems are labels left from an earlier sheet, so a build that takes its vocabulary from one shows the wrong word as soon as the sheet moves. The index is the only stable handle.</p>
+</div>
+</section>
+
+<section id="space" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">05 · Space</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">A 2:3:6 harmonic, and radius reuses its three numbers</h2>
+<div data-reveal="" data-src="radius 8 / 12 / 24 · g12 fill · 1px g24 border · gap 24px" data-gapkind="margin" style="--rsg:24px;display:flex;gap:24px;flex-wrap:wrap;margin-top:24px">
+<figure style="margin:0;display:flex;flex-direction:column;gap:8px;align-items:center"><div style="width:72px;height:72px;background:#1A1A1A;border:1px solid #333333;border-radius:8px"></div><figcaption style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">sm · 8</figcaption></figure>
+<figure style="margin:0;display:flex;flex-direction:column;gap:8px;align-items:center"><div style="width:72px;height:72px;background:#1A1A1A;border:1px solid #333333;border-radius:12px"></div><figcaption style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">md · 12</figcaption></figure>
+<figure style="margin:0;display:flex;flex-direction:column;gap:8px;align-items:center"><div style="width:72px;height:72px;background:#1A1A1A;border:1px solid #333333;border-radius:24px"></div><figcaption style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">lg · 24</figcaption></figure>
+</div>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Radius must be 8, 12 or 24, matching space sm, md and lg.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Both scales run on the same harmonic, so a corner set at the step of the padding beside it curves at the rate the layout already moves. A fourth radius would need a fourth spacing step to stay paired with, and the ladder has none.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A pill is the one exception, at half its own height.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Height is 6 units and width is the set's longest word times 3 units, so four characters give 72 by 36, exactly 2:1. Every pill in a set is cut to the same width, because a ragged set reads as data rather than as one vocabulary.</p>
+</div>
+</section>
+
+<section id="grid" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">06 · Grid</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">Twelve columns, and the gutter is space lg</h2>
+<div data-reveal="" data-sub="" data-src="Specimen · drawn on this page's own tracks" style="margin-top:48px">
+<sc-for list="{{ gridColumns }}" as="c" hint-placeholder-count="12">
+<span style="grid-column:span 1;height:108px;border:1px solid #222222"></span>
+</sc-for>
+</div>
+<div data-reveal="" data-sub="" data-src="Specimen · the picked ratio, in whole columns" style="margin-top:12px">
+<span data-span="{{ gridSpanA }}" style="height:36px;border:1px solid #FFFFFF"></span>
+<span data-span="{{ gridSpanB }}" style="height:36px;border:1px solid #555555"></span>
+</div>
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888" data-span="8" style="margin:18px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">{{ gridReadout }}</p>
+<div data-reveal="" data-src="hit target 44px · radius 8 · gap 8px" data-span="8" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:24px">
+<sc-for list="{{ gridPicks }}" as="g" hint-placeholder-count="3">
+<sc-if value="{{ g.on }}" hint-placeholder-val="{{ false }}"><span onClick="{{ g.pick }}" style="min-width:60px;height:44px;display:inline-flex;align-items:center;justify-content:center;background:#1A1A1A;border:1px solid #333333;border-radius:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFFFFF;cursor:pointer">{{ g.label }}</span></sc-if>
+<sc-if value="{{ g.off }}" hint-placeholder-val="{{ true }}"><span onClick="{{ g.pick }}" style="min-width:60px;height:44px;display:inline-flex;align-items:center;justify-content:center;background:#000000;border:1px solid #333333;border-radius:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#888888;cursor:pointer;transition:color 120ms cubic-bezier(0.33,0,0.5,1),background 120ms cubic-bezier(0.33,0,0.5,1)" style-hover="background:#1A1A1A;color:#FFFFFF">{{ g.label }}</span></sc-if>
+</sc-for>
+</div>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A division must land on a column edge of the twelve.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">The ratio picks how many columns the first field takes, and the field measures out to that edge. 3:6 and 1:1 sit exactly on 4 and 6; 2:3 resolves to 5 of 12, and the readout says so rather than burying the rounding in a percentage.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Vertical rhythm must come from leading.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Every gap down this page is a line-height value: 18, 30, 36, 48, 54, 78. Text then sets its own rhythm, and a block moved between sizes keeps landing on the baseline it left.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Measure must come from the span, not from a character cap.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">A seven-column field at 18px holds roughly 60 characters at this field width, so a ch cap on top of it only fights the grid at other widths. One constraint decides the line length.</p>
+</div>
+</section>
+
+<section id="responsive" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">07 · Responsive</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">One surface, three widths, live</h2>
+<p data-reveal="" data-src="Body · 18 / 30 · 400 · #FFFFFF" data-span="9" style="margin:18px 0 0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">The breakpoints and the halving rule are declared once, in tokens/grid.css — not restated here. This is where they get checked against real content rather than trusted by eye: pick a surface and the three counts sit together, so every division can be seen landing on a column edge at twelve, six and three. Folded in from Frame GRID's own width demo, which previewed too small to judge anything by. Build mobile-first and check here before calling a layout done. The rules beneath the demo are the mobile law, written 21 September 2026 after the Flower, Card and Deck masters were rendered at every count and looked at.</p>
+<div data-reveal="" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:24px">
+<sc-for list="{{ respPagePicks }}" as="rp" hint-placeholder-count="4">
+<sc-if value="{{ rp.on }}" hint-placeholder-val="{{ false }}"><span onClick="{{ rp.pick }}" style="height:40px;padding:0 16px;display:inline-flex;align-items:center;background:#1A1A1A;border:1px solid #333333;border-radius:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFFFFF;cursor:pointer">{{ rp.label }}</span></sc-if>
+<sc-if value="{{ rp.off }}" hint-placeholder-val="{{ true }}"><span onClick="{{ rp.pick }}" style="height:40px;padding:0 16px;display:inline-flex;align-items:center;background:#000000;border:1px solid #333333;border-radius:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#888888;cursor:pointer;transition:color 120ms cubic-bezier(0.33,0,0.5,1),background 120ms cubic-bezier(0.33,0,0.5,1)" style-hover="background:#1A1A1A;color:#FFFFFF">{{ rp.label }}</span></sc-if>
+</sc-for>
+</div>
+<!-- The preview row (23 September 2026): one surface at three counts, live, at a single scale,
+     with the field's own division drawn beneath each case. Mark: "Apply similar schematic
+     breakdown approach, built around a large live previews". The row bleeds to the page edge and
+     stacks where the field draws three — portrait below 1081 — so it never shrinks to a thumbnail. -->
+<div data-reveal="" data-bleed="" data-resp-row="" ref="{{ respRowRef }}" style="margin-top:24px">
+<sc-for list="{{ respCases }}" as="rc" hint-placeholder-count="3">
+<figure data-resp-cell="" data-src="Preview · one surface at this count, live" style="margin:0">
+<div data-resp-stage="">
+<div data-resp-case="" style="position:relative;background:#0D0D0D;border:1px solid #333333;box-sizing:border-box;overflow:hidden">
+<sc-if value="{{ rc.isPhone }}" hint-placeholder-val="{{ true }}">
+<span style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:50px;height:5px;border-radius:3px;background:#333333;z-index:2"></span>
+<span style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:90px;height:4px;border-radius:2px;background:#555555;z-index:2"></span>
+</sc-if>
+<sc-if value="{{ rc.isTablet }}" hint-placeholder-val="{{ false }}">
+<span style="position:absolute;top:5px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:#333333;z-index:2"></span>
+</sc-if>
+<sc-if value="{{ rc.isDesktop }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:0;left:0;width:100%;height:26px;display:flex;align-items:center;gap:6px;padding-left:12px;border-bottom:1px solid #222222;box-sizing:border-box;z-index:2">
+<span style="width:8px;height:8px;border-radius:50%;background:#333333"></span>
+<span style="width:8px;height:8px;border-radius:50%;background:#333333"></span>
+<span style="width:8px;height:8px;border-radius:50%;background:#333333"></span>
+</div>
+</sc-if>
+<div data-resp-screen="" style="position:relative;overflow:hidden;width:100%;height:100%;background:#000000">
+<iframe loading="lazy" title="{{ rc.title }}" style="position:absolute;top:0;left:0;border:0;transform-origin:top left"></iframe>
+</div>
+</div>
+</div>
+<figcaption data-resp-cap=""><span data-resp-cap-a="">{{ rc.captionA }}</span><span data-resp-cap-b="">{{ rc.captionB }}</span></figcaption>
+<div data-resp-field="" data-count="{{ rc.count }}" data-src="Field · the division at this count" style="grid-template-columns:repeat({{ rc.count }},minmax(0,1fr));column-gap:{{ rc.gap }}">
+<sc-for list="{{ rc.cells }}" as="c" hint-placeholder-count="12">
+<sc-if value="{{ c.a }}" hint-placeholder-val="{{ true }}"><span data-a=""></span></sc-if>
+<sc-if value="{{ c.b }}" hint-placeholder-val="{{ false }}"><span></span></sc-if>
+</sc-for>
+</div>
+</figure>
+</sc-for>
+</div>
+<div data-reveal="" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:24px">
+<sc-for list="{{ respSplitPicks }}" as="rs" hint-placeholder-count="3">
+<sc-if value="{{ rs.on }}" hint-placeholder-val="{{ false }}"><span onClick="{{ rs.pick }}" style="min-width:60px;height:44px;display:inline-flex;align-items:center;justify-content:center;background:#1A1A1A;border:1px solid #333333;border-radius:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFFFFF;cursor:pointer">{{ rs.label }}</span></sc-if>
+<sc-if value="{{ rs.off }}" hint-placeholder-val="{{ true }}"><span onClick="{{ rs.pick }}" style="min-width:60px;height:44px;display:inline-flex;align-items:center;justify-content:center;background:#000000;border:1px solid #333333;border-radius:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#888888;cursor:pointer;transition:color 120ms cubic-bezier(0.33,0,0.5,1),background 120ms cubic-bezier(0.33,0,0.5,1)" style-hover="background:#1A1A1A;color:#FFFFFF">{{ rs.label }}</span></sc-if>
+</sc-for>
+</div>
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888" style="margin:18px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">{{ respMapReadout }}</p>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:48px;margin-top:48px;row-gap:15px">
+<!-- The mobile law, 21 September 2026 (Mark: "Re.Source HQ site looks good on desktop but responsive design needs more considered layout rules for mobile. Work through masters starting with Flower and Cards."). Written after the Flower, Card and Deck masters were rendered at every count and looked at; the reasoning is in notes/reasoning.md and the agent-facing form in AGENTS.md. -->
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A frame is read off the field and the artefact, never off a device.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Narrow is the field's own 720, where the margin steps down; 720 no longer picks the count, which below 1081 comes from the frame's orientation instead — Mark, 24 September 2026, quoted: "Mobile vertical = 1–3 columns / Mobile horizontal = 4–6 columns / Desktop = 6–12 columns", and asked which rule should pick the count, he ruled "orientation picks 3 vs 6". Short is a frame the printed card cannot stand in with its margin, under 576. A surface declares no breakpoint of its own: a private 840 or 400 is a second field, and it drifts the moment the tokens move.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Every layout is authored narrow first.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">The base styles are the phone's; width adds by min-width. Written the other way round, a phone inherits a desktop's fixed widths and clips, and the widest case is the one nobody tests on the way in.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Chrome leaves the stage; the instrument keeps it.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">On a narrow or short frame the options cluster folds to one chip under the nav and its panels open beneath, so the top of the frame returns to the artwork. A flower, a wheel or a mark is drawn to the clear band between the chrome above and any sheet at the foot, and a zoom is capped by that band. A surface with a nav row of its own ends its band and its columns above that row, so nothing sits on top of anything else.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A controls sheet on a phone is a sheet at the foot, half the frame at most.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Below the field's 720 the options cluster folds to one chip and its panel becomes a sheet at the foot, capped at half the frame: its head and its foot stay pinned and its body is the one part that scrolls, so the close control and the reset stay in reach. The surface behind it reads the sheet's own published height, --rf-drawer-h, and draws its instrument to the band above, so a set is never tuned blind. A short, wide frame keeps the corner card instead, starting below the folded chip and taking the room the chip frees. Mark's instruction, 23 September 2026, quoted before the rule it adds: "Delegate responsive design decisions like modular mobile interface as part of universal brand style." Colour FLOWER's Tweaks drawer is the reference.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A printed card on a phone is a sheet, not a corner.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">It rises from the foot at a peek, lifts to the whole card on its handle, and drops on a tap of the artwork. The card is never reflowed: it zooms to the column it is in, min(360px, 100%), so it is one component at a scale on every surface.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Reading text scrolls inside its sheet; the buttons stay in reach.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">A chapter or a spec sheet on the foot is at most half the frame, and its body is the only part allowed to scroll, so Continue, Exit and Save never leave the screen. Mark's mobile instruction, 21 September 2026, quoted before the rule it adds: \"make it so it looks good and you can read everything and nothing gets hidden or scrunched up or hidden in a drop down, so all the text is shown and the buttons are visible.\" The sheet reaches a page's reading boxes too: a long prompt on a page like the HQ scrolls inside its own box at most half the frame, so its copy button stays in reach. A legend names the hand the frame has: keys on a keyboard frame, tap and hold where the pointer is coarse.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A row that cannot wrap is a mobile bug, with or without overflow.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Chips, pills, picks and label columns wrap or stack below 720. A three-cell caption row is a stack; a two-column label and value is label above value. A bleed reaches the edge by cancelling the field's own margin, data-bleed, never by a number of its own.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Type stays on the scale on a phone too.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">A smaller frame is never a reason for a size below 12 / 18. A specimen drawn at 1:1 that the column cannot hold scales as one drawing, the way the halo above does, rather than clipping or dropping a size.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Look at it at every count, then write the rule.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">A probe reports overflow; it does not report a chapter hidden behind a card or a chip stack drawn over a title. Render 320, 390, a phone on its side, 820 and 1440, look at each as a viewer would, and only then commit the rule. The demo above is where a surface is checked; the captures in the week's output are where the check is kept.</p>
+</div>
+</section>
+
+<section id="states" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">08 · States</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">Three states, three border widths</h2>
+<div data-reveal="" data-src="44px targets · radius 8 · 1px g24 border · gap 12px" data-gapkind="margin" style="--rsg:24px;display:flex;gap:12px;flex-wrap:wrap;margin-top:24px">
+<figure style="margin:0;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;justify-content:center;width:96px;height:44px;background:#000000;border:1px solid #333333;border-radius:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#888888;text-transform:uppercase">Rest</div><figcaption style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">Page fill, g66 label</figcaption></figure>
+<figure style="margin:0;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;justify-content:center;width:96px;height:44px;background:#1A1A1A;border:1px solid #333333;border-radius:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFFFFF;text-transform:uppercase">Hover</div><figcaption style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">One step up the ramp</figcaption></figure>
+<figure style="margin:0;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;justify-content:center;width:96px;height:44px;background:#1A1A1A;border:1px solid #333333;border-radius:8px;outline:2px solid #CCCCCC;outline-offset:3px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#FFFFFF;text-transform:uppercase">Focus</div><figcaption style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">2px g88 at 3px offset</figcaption></figure>
+</div>
+<div data-reveal="" data-sub="" data-narrow="" style="margin-top:48px;row-gap:0">
+<sc-for list="{{ borderRows }}" as="b" hint-placeholder-count="3">
+<div data-sub="" data-row="" data-src="Caption row · 2 / 2 / 4 of 8 columns">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">{{ b.width }}</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">{{ b.colour }}</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">{{ b.use }}</p>
+</div>
+</sc-for>
+</div>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A state must lift grey to white, or a fill one step up the ramp.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Press is that same lift, held. A coloured stroke never changes hue on interaction, because the hue is carrying position and would be reporting a move that did not happen. Opacity dimming, scale transforms and colour flashes are all out for the same reason.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A fourth border width means a decision was made twice.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Structure, annotation and position each already have a width. Anything a fifth width would express is either structure or position, and picking a new number only hides which.</p>
+</div>
+</section>
+
+<section id="shadow" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">09 · Shadow</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">Drop shadow and void glow, as dialled in on Colour FLOWER</h2>
+<div data-reveal="" data-sub="" data-src="Specimen · Colour FLOWER's schematic panel · on g66 · gap 24px" data-gapkind="margin" style="--rsg:15px;margin-top:15px;column-gap:var(--space-lg);align-items:start">
+<div data-span="5" style="display:flex;flex-direction:column;gap:12px">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<filter id="rs-edge-spec" x="-120%" y="-120%" width="340%" height="340%"><feGaussianBlur stdDeviation="{{ specShadowBlur }}"></feGaussianBlur></filter>
+<radialGradient id="rs-void-glow">
+<stop offset="0%" stop-color="#000000" stop-opacity="{{ glowOp1 }}"></stop>
+<stop offset="{{ glowMidOffset }}" stop-color="#000000" stop-opacity="{{ glowOp2 }}"></stop>
+<stop offset="100%" stop-color="#000000" stop-opacity="0"></stop>
+</radialGradient>
+</defs></svg>
+<div style="display:flex;gap:12px;align-items:center;padding:12px 16px;background:#0D0D0D;border:1px solid #888888;border-radius:8px">
+<div style="position:relative;flex:0 0 128px;width:128px;height:128px">
+<svg viewBox="-160 -160 320 320" style="display:block;width:100%;height:100%;border-radius:8px;background:#888888">
+<circle cx="0" cy="0" r="{{ specDisc }}" fill="none" stroke="#000000" stroke-width="{{ specShadowW }}" stroke-opacity="{{ specEdgeOp }}" filter="url(#rs-edge-spec)"></circle>
+<circle cx="0" cy="0" r="{{ specDisc }}" fill="none" stroke="{{ specHue }}" stroke-width="12"></circle>
+</svg>
+<span style="position:absolute;top:6px;left:6px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;text-transform:uppercase;color:#FFFFFF">Shadow</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;min-width:0;flex:1 1 auto">
+<sc-for list="{{ shadowSliders }}" as="s" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:2px">
+<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px"><span style="text-transform:uppercase;color:#888888">{{ s.label }}</span><span style="color:#FFFFFF;font-variant-numeric:tabular-nums">{{ s.display }}</span></div>
+<input data-sl="" type="range" min="{{ s.min }}" max="{{ s.max }}" step="{{ s.step }}" value="{{ s.value }}" onChange="{{ s.onInput }}">
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;gap:12px;align-items:center;padding:12px 16px;background:#0D0D0D;border:1px solid #888888;border-radius:8px">
+<div style="position:relative;flex:0 0 128px;width:128px;height:128px">
+<svg viewBox="-200 -200 400 400" style="display:block;width:100%;height:100%;border-radius:8px;background:#888888">
+<circle cx="0" cy="0" r="{{ specGlowOuter }}" fill="url(#rs-void-glow)"></circle>
+<circle cx="0" cy="0" r="{{ specDisc }}" fill="#000000"></circle>
+</svg>
+<span style="position:absolute;top:6px;left:6px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;text-transform:uppercase;color:#FFFFFF">Void glow</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;min-width:0;flex:1 1 auto">
+<sc-for list="{{ glowSliders }}" as="s" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:2px">
+<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px"><span style="text-transform:uppercase;color:#888888">{{ s.label }}</span><span style="color:#FFFFFF;font-variant-numeric:tabular-nums">{{ s.display }}</span></div>
+<input data-sl="" type="range" min="{{ s.min }}" max="{{ s.max }}" step="{{ s.step }}" value="{{ s.value }}" onChange="{{ s.onInput }}">
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;padding-top:8px;border-top:1px solid #333333">
+<div style="display:flex;gap:6px">
+<sc-for list="{{ shadowStore }}" as="b" hint-placeholder-count="2">
+<button data-preset="" onClick="{{ b.onClick }}" style="flex:1 1 0;min-height:32px;padding:4px 10px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;text-transform:uppercase;border:1px solid #333333;border-radius:8px;background:transparent;color:#888888;cursor:pointer">{{ b.label }}</button>
+</sc-for>
+</div>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">{{ shadowSavedNote }}</span>
+</div>
+</div>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" data-span="7" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Shadow is wanted in three places: Colour FLOWER's petal ramp, Brand LOGO's mark, and floating UI such as the nav. A black cast does nothing on a black page anywhere else. Both are dialled on one formula and three knobs, read as percentages: Size is reach, Depth is darkness, Spread is softness. The panel and the store are Colour FLOWER's, so what was set there is what shows here, and a change made here is a change there.</p>
+</div>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Shadow belongs to three things, and depth everywhere else is a grey.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">The petal ramp, the mark, and anything floating over the page. A card, a panel or a divider reports its plane by which grey it is made of, so it needs no cast and gets none.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A depth type gets three knobs, and they are the same three.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Size, Depth, Spread, each a percentage, so two techniques that draw nothing alike are still dialled the same way and compared on the same numbers. A fourth knob means the formula was not universal: Drop was cut on 7 September for having no counterpart on the other type.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A depth specimen is shown on g66.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Black on black cannot be judged, so a cast is shown on mid-grey. The values are arrived at by eye and held in one store, which both masters read: there is no second set of numbers to keep in step.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A halo and a focus ring are not shadows.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Both are drawn with the same CSS property and neither reports elevation: a halo carries a word across a busy ground, a ring reports focus. They stay on the greyscale and outside this section.</p>
+</div>
+</section>
+
+<section id="motion" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">10 · Motion</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">Duration runs on the same harmonic as space</h2>
+<div data-reveal="" data-sub="" data-src="Specimen · hover a row to run it · transform only" style="margin-top:48px;column-gap:var(--space-lg);align-items:start">
+<div data-span="4" style="display:flex;flex-direction:column;gap:24px">
+<div data-track=""><span data-tl="">Duration</span><span data-rail=""><span data-dot="" style="left:0;transition:transform 120ms cubic-bezier(0.33,0,0.5,1)"></span><span data-dot="" style="left:24px;transition:transform 180ms cubic-bezier(0.33,0,0.5,1)"></span><span data-dot="" style="left:48px;transition:transform 360ms cubic-bezier(0.33,0,0.5,1)"></span></span><span data-tn="">120 · 180 · 360ms</span></div>
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888" style="margin:18px 0 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">HOVER · SM/MD/LG MOVE TOGETHER, EACH ITS OWN DURATION</p>
+</div>
+<div data-reveal="" data-sub="" data-span="8" style="row-gap:0">
+<sc-for list="{{ motionRows }}" as="m" hint-placeholder-count="7">
+<div data-sub="" data-row="" data-src="Caption row · 2 / 2 / 4 of 8 columns">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#FFFFFF">{{ m.a }}</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">{{ m.b }}</p>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">{{ m.c }}</p>
+</div>
+</sc-for>
+</div>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Duration must be the 60ms unit taken through 2:3:6.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">120, 180 and 360 pair with space sm, md and lg and with radius 8, 12 and 24, so a build that knows which spacing step it is on already knows which duration to use. A fourth duration would need a fourth spacing step standing behind it.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Easing must be built from the same two fractions.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Handles sit at 2/6 and 3/6, which makes in place, arriving and leaving one family rather than three curves with separate origins. None of the three overshoots, because motion that reports position is the message and a bounce there reports a move that did not happen.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A hover may overshoot, and nothing else may.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">The pop is a fourth curve, cubic-bezier(0.34, 1.56, 0.64, 1) at 360ms, and it is allowed exactly where the motion reports the pointer rather than a position. A mark that answers a pointer with nothing reads dead, and a mark that bounces while reporting a move claims one that did not happen.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Motion must animate transform and opacity, and colour only where a state changes.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Transform and opacity composite off the main thread, so a diagram carrying twelve strokes holds frame rate. Animating width, top or a filter re-lays the page out every frame, and the drop shows first on the slowest device in the room. Colour is the one addition: a state change moves one step up the greyscale, and the ramp is how a surface says it heard the pointer. Background, border and text colour at 120ms, nothing else.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Reduced motion must collapse duration, not remove the change.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">A reveal deleted under the preference leaves content that never arrives at its end state. Holding the transition at 1ms gives every reader the same final frame.</p>
+</div>
+<div data-reveal="" data-sub="" data-src="Specimen · the reactions, hover or press each · gap 24px" data-gapkind="margin" style="--rsg:39px;margin-top:39px;row-gap:12px">
+<div data-span="4" style="display:flex;flex-direction:column;gap:12px">
+<div data-lift="" style="display:flex;align-items:center;justify-content:center;height:72px;background:#111111;border:1px solid #333333;border-radius:8px;color:#888888;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px">Lift</div>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">data-lift · 120ms in place · one step up the ramp and 2px</p>
+</div>
+<div data-span="4" style="display:flex;flex-direction:column;gap:12px">
+<div data-pop="" style="display:flex;align-items:center;justify-content:center;height:72px;background:#111111;border:1px solid #333333;border-radius:8px;color:#888888;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px">Pop</div>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">data-pop · 360ms · the one overshoot, hover only</p>
+</div>
+<div data-span="4" style="display:flex;flex-direction:column;gap:12px">
+<div data-press="" style="display:flex;align-items:center;justify-content:center;height:72px;background:#111111;border:1px solid #333333;border-radius:8px;color:#888888;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px">Press</div>
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888">data-press · 120ms in place · the lift, held</p>
+</div>
+</div>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">An effect is applied, never declared.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Six keyframes, three reactions and a twelve-step stagger live in the compiled stylesheet: arrive, rise, draw, pop, veil, panel. A surface adds the attribute. Before this, nine files each named their own: five easing families where the system declares four, and seven durations off the harmonic.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">An entrance waits for the reader.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Animation sits on <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px">[data-in]</span>, added when a block arrives in view, because an animation declared on the element runs at load and is finished before anything below the fold is looked at. Reduced motion collapses duration to 1ms and never removes the change: a reveal deleted leaves content that never reaches its end state.</p>
+</div>
+
+</section>
+
+<section id="geometry" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">11 · Geometry</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">Three ring slots, and one number that decides the rest</h2>
+<div data-reveal="" data-sub="" data-pair="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">The slots are fixed geometry, and which set fills one is a tweak.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Outer, middle and inner sit on the same twelve positions. Any set in the catalogue can take any slot, so a diagram still shows three at once after a fourth set is added. Fixing the sets instead would make every addition a redraw.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">A set must expose one control, and that is Size.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Everything else follows the ratio the Flower of Life implies, so a spread control could only move nodes off their crossings. A control that can produce a wrong drawing is not worth having.</p>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">Every node must be a whole radius rotated through a whole angle.</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Placement stays reproducible from two integers, which is what lets Colour FLOWER redraw the same figure at any size without a stored coordinate list. Colour FLOWER draws it live.</p>
+</div>
+</section>
+
+<section id="governance" data-sec="" data-sub="" data-src="Section gap · 78px · Vertical rhythm" data-gapkind="padding" style="--rsg:39px;padding-top:39px">
+<p data-reveal="" data-src="Caption · 12 / 18 · 300 · #888888 · uppercase" style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:18px;color:#888888;text-transform:uppercase">12 · Governance</p>
+<h2 data-reveal="" data-src="Heading 1 · 36 / 48 · 700 · #FFFFFF" style="margin:18px 0 0;font-size:36px;line-height:48px;font-weight:700">Must, should and may, so a departure can be named</h2>
+<div data-reveal="" data-sub="" data-src="Pair gap · block 48px · rows 30px · Vertical rhythm" data-gapkind="margin" style="--rsg:24px;margin-top:24px;row-gap:15px">
+<sc-for list="{{ conformance }}" as="c" hint-placeholder-count="3">
+<div data-sub="" data-conf="" style="align-items:baseline">
+<p style="margin:0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:36px;color:#888888;text-transform:uppercase">{{ c.word }}</p>
+<div>
+<p data-src="Heading 2 · 24 / 36 · 600 · #FFFFFF" style="margin:0;font-size:24px;line-height:36px;font-weight:600;text-wrap:pretty">{{ c.rule }}</p>
+<p data-src="Body · 18 / 30 · 400 · #FFFFFF" style="margin:12px 0 0;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">{{ c.reason }}</p>
+</div>
+</div>
+</sc-for>
+</div>
+<p data-reveal="" data-src="Body · 18 / 30 · 400 · #FFFFFF · 1px g24 rule" data-span="7" style="margin:78px 0 0;padding-top:24px;border-top:1px solid #333333;font-size:18px;line-height:30px;color:#FFFFFF;text-wrap:pretty">Where a surface disagrees with this page, the surface is wrong. A value changes here first, and then flows outward.</p>
+</section>
+
+</main>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;gridlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Review modes&quot;},&quot;schematic&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Review modes&quot;}}">
+/* Master STYLE, folded onto Frame GRID's derived rules: a twelve column field with the gutter at
+   space lg, sections as subgrids, and the atom a rule line at 24/36 paired with its reason at
+   18/30. This absorbs BrandStyleV2.dc.html, retired 8 September 2026 per Mark's instruction —
+   the field version is now the only Brand STYLE file.
+   Two review modes: a column overlay, and a schematic mode that surfaces each element's source
+   value from its data-src. Both are body attributes poked from componentDidUpdate, so the
+   template holds literal styles only.
+   Known gap from the pre-fold v1 (flagged, not silently dropped): the interactive colour wheel,
+   the twelve live interaction-pattern demos, and the geometry Mark specimens/wordmark weights row
+   existed in the old flex-layout master and have no equivalent here — see notes/v2-rollout.md. */
+class Component extends DCLogic {
+  static SIZES = [
+    { size: 12, lead: 18, weight: 300, name: 'Caption', role: 'mono labels, indices, hexes', step: '2:3 from 18' },
+    { size: 18, lead: 30, weight: 400, name: 'Body', role: 'reasons, running text', step: '3:4 from 24' },
+    { size: 24, lead: 36, weight: 600, name: 'Heading 2', role: 'rule lines, subsections', step: '2:3 from 36' },
+    { size: 36, lead: 48, weight: 700, name: 'Heading 1', role: 'section titles', step: '3:4 from 48' },
+    { size: 48, lead: 54, weight: 800, name: 'Display', role: 'page titles', step: '2:3 from 72' },
+    { size: 72, lead: 78, weight: 800, name: 'Wordmark', role: 'one word inside a diagram', step: 'mark size' }
+  ];
+  static GREYS = [
+    ['black', '#000000', 'page fill, halo'], ['g06', '#0D0D0D', 'card fill'],
+    ['g12', '#1A1A1A', 'raised plane, hover'], ['g24', '#333333', 'borders, dividers'],
+    ['g48', '#555555', 'disabled label'], ['g66', '#888888', 'rest label, metadata'],
+    ['g88', '#CCCCCC', 'focus ring'], ['white', '#FFFFFF', 'body text, mark']
+  ];
+  static BORDERS = [
+    ['1px', 'g24', 'every structural border and divider'],
+    ['2px', 'g24', 'the note rule, and nothing else'],
+    ['3px', 'position colour', 'a stroke on a shape']
+  ];
+  static MOTION = [
+    ['unit', '60ms', 'six units to the second, as 6 is the unit everywhere'],
+    ['2u · sm', '120ms', 'a state change in place, paired with radius 8'],
+    ['3u · md', '180ms', 'something arriving or leaving, paired with radius 12'],
+    ['6u · lg', '360ms', 'a change that reports position, paired with radius 24'],
+    ['in place', 'cubic-bezier(0.33, 0, 0.5, 1)', 'out on 2/6, in on 3/6'],
+    ['arriving', 'cubic-bezier(0, 0, 0.5, 1)', 'starts at once, settles on 3/6'],
+    ['leaving', 'cubic-bezier(0.33, 0, 1, 1)', 'goes on 2/6, no settle']
+  ];
+  static GREYS_TILE = [
+    ['black', 'BLACK', '#000000', 'page fill, halo', 'the ground everywhere'],
+    ['g06', 'G06', '#0D0D0D', 'card fill', 'a card, at 1px g24 and radius 12'],
+    ['g12', 'G12', '#1A1A1A', 'raised plane, hover', 'a plane, and the hover lift'],
+    ['g24', 'G24', '#333333', 'borders, dividers', 'a border, never a fill'],
+    ['g48', 'G48', '#555555', 'disabled label', 'a disabled label only'],
+    ['g66', 'G66', '#888888', 'rest label, metadata', 'a label at rest, never a fill'],
+    ['g88', 'G88', '#CCCCCC', 'focus ring', 'the focus ring only, at 2px'],
+    ['white', 'WHITE', '#FFFFFF', 'body text, mark', 'ink, and never a ground']
+  ];
+  static SPLITS = [
+    { label: '2:3', a: 2, b: 3 }, { label: '3:6', a: 3, b: 6 }, { label: '1:1', a: 1, b: 1 }
+  ];
+  static RAIL = [
+    ['01', 'Greyscale', '#greyscale'], ['02', 'Type', '#type'], ['03', 'Halo', '#halo'],
+    ['04', 'Colour', '#colour'], ['05', 'Space', '#space'], ['06', 'Grid', '#grid'],
+    ['07', 'Responsive', '#responsive'], ['08', 'States', '#states'], ['09', 'Shadow', '#shadow'],
+    ['10', 'Motion', '#motion'], ['11', 'Geometry', '#geometry'], ['12', 'Governance', '#governance']
+  ];
+  static RESP_PAGES = [
+    { label: 'Masters', href: '../../Masters.html' },
+    { label: 'HQ', href: '../../HQ.html' },
+    { label: 'Word CARD', href: '../word-card/WordCard.dc.html' },
+    { label: 'Colour LINGO', href: '../colour-lingo/ColourLingo.dc.html' }
+  ];
+  /* The tablet case is landscape, 1024 × 768 (24 September 2026): below 1081 orientation picks the
+     count — Mark, quoted: "orientation picks 3 vs 6" — so the portrait tablet this used to show
+     would draw three columns and the row would lose the six it exists to show. */
+  static RESP_WIDTHS = [
+    { label: 'Phone', w: 390, h: 844, cols: 3, gutter: 'space-sm', pad: [28, 10, 24, 10], caseR: 36, screenR: 22 },
+    { label: 'Tablet', w: 1024, h: 768, cols: 6, gutter: 'space-md', pad: [14, 14, 14, 14], caseR: 20, screenR: 10 },
+    { label: 'Desktop', w: 1440, h: 900, cols: 12, gutter: 'space-lg', pad: [26, 0, 0, 0], caseR: 10, screenR: 0 }
+  ];
+  static CONFORMANCE = [
+    ['Must', 'A must is checkable, and a build that breaks one is broken.', 'Sizes, leading, radius, border width, the black fill and the absent letter spacing all reduce to a value a scan can read. Nothing here is met approximately.'],
+    ['Should', 'A should holds unless a stated reason overrides it.', 'The reason goes beside the departure, in the file that departs. An unexplained departure counts as a must failure, because nothing distinguishes it from one.'],
+    ['May', 'A may is a choice the system leaves open.', 'Which of the twelve positions a surface uses, and which set fills which ring slot, change nothing another artefact reads.']
+  ];
+  state = { gridIdx: 0, field: 0, vw: 0, shadowSavedAt: null, respPage: 0, respSplit: 0, selPos: '01' };
+  /* Same six keys, one shared set (see Colour FLOWER): Mark's 24 September settings stamped in as
+     defaults. Also corrects this line's shadowSize, which read 50 -- outside the 0.02-2 domain both
+     files declare, and against this file's own slider def of 0.5 below; it only ever reached a save,
+     where the store's own >1 migration papered over it. */
+  static SHADOW_DEFS = [['shadowSize', 0.5], ['shadowDepth', 0.5], ['shadowBlur', 0.25], ['glowBand', 1], ['glowDepth', 1], ['glowSpread', 0.5]];
+  static SHADOW_STORE = 'resource.flower.shadow';
+  savedVars = (() => {
+    let v = {};
+    try { v = JSON.parse(localStorage.getItem('resource.flower.shadow') || '{}') || {}; } catch (e) {}
+    ['shadowSize', 'shadowBlur'].forEach((k) => { if (v[k] > 1) v[k] = v[k] / 100; });
+    delete v.shadowDrop;
+    return v;
+  })();
+  componentDidMount() {
+    /* Studio bridge: see Colour FLOWER. */
+    window.addEventListener('message', (e) => {
+      const m = e && e.data;
+      if (!m || m.type !== 'rs-tweak-restore' || !m.stores) return;
+      const v = m.stores[this.constructor.SHADOW_STORE];
+      if (!v || typeof v !== 'object' || Object.keys(this.savedVars).length) return;
+      this.savedVars = v;
+      this.forceUpdate();
+    });
+    try { parent.postMessage({ type: 'rs-tweak-request' }, '*'); } catch (err) {}
+    this._io = new IntersectionObserver((es) => {
+      es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.setAttribute('data-in', '');
+        this._io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -10% 0px' });
+    this._watch = () => {
+      document.querySelectorAll('[data-reveal]:not([data-in])').forEach((el) => this._io.observe(el));
+    };
+    this._watch();
+    this._tick = setInterval(this._watch, 400);
+    this._syncModes();
+    this._measure = () => {
+      const el = document.querySelector('main[data-grid]');
+      if (!el) return;
+      const w = Math.round(el.getBoundingClientRect().width), vw = window.innerWidth;
+      if (w !== this.state.field || vw !== this.state.vw) this.setState({ field: w, vw });
+    };
+    this._measure();
+    window.addEventListener('resize', this._measure);
+    this._awaitPositions();
+    /* The responsive preview row (23 September 2026): one surface at three counts, live, at a
+       single scale so the three read together like the Render drawer's equal-scale specimens.
+       Every case shares one scale factor on a wide frame; where the field draws three — portrait
+       below 1081, since 24 September, when orientation picked the count — the row stacks and
+       each case is fitted to its own column, so a preview never shrinks to a thumbnail. The field
+       beneath each case draws the same division at that count. */
+    this._respFitRow = () => {
+      const row = this._respRow, C = this.constructor;
+      if (!row) return;
+      const cells = Array.from(row.querySelectorAll('[data-resp-cell]'));
+      if (!cells.length) return;
+      const widths = C.RESP_WIDTHS;
+      const maxW = Math.max.apply(null, widths.map((w) => w.w));
+      const narrow = window.matchMedia('(max-width:1080px) and (orientation:portrait)').matches;
+      const shared = Math.min.apply(null, cells.map((c) => Math.max(0, c.clientWidth - 24))) / maxW;
+      const src = C.RESP_PAGES[this.state.respPage].href;
+      let tallest = 0;
+      const fitted = cells.map((cell, i) => {
+        const w = widths[i];
+        if (!w) return null;
+        const kase = cell.querySelector('[data-resp-case]');
+        const inner = cell.querySelector('[data-resp-screen]');
+        const frame = cell.querySelector('iframe');
+        const field = cell.querySelector('[data-resp-field]');
+        if (!kase || !inner || !frame) return null;
+        const pt = w.pad[0], ps = w.pad[1], pb = w.pad[2];
+        /* Fitted to its own column, never past life size: the case holds a live iframe, and
+           scaling one past 1:1 is the same defect as shrinking it to a thumbnail, only softer.
+           Stacked columns are wider than a phone from 443px up, so without the cap a portrait
+           tablet drew the phone case at 1.9x and 1619px tall. */
+        const s = narrow ? Math.min(1, Math.max(0, (cell.clientWidth - 24 - ps * 2) / w.w)) : shared;
+        const caseH = s * w.h + pt + pb;
+        kase.style.width = (s * w.w + ps * 2) + 'px';
+        kase.style.height = caseH + 'px';
+        kase.style.padding = pt + 'px ' + ps + 'px ' + pb + 'px ' + ps + 'px';
+        kase.style.borderRadius = w.caseR + 'px';
+        inner.style.borderRadius = w.screenR + 'px';
+        frame.style.width = w.w + 'px';
+        frame.style.height = w.h + 'px';
+        frame.style.transform = 'scale(' + s + ')';
+        if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
+        /* The field under each case is the device's own content width, so a column is as wide as
+           the column it describes rather than an unrelated diagram width. */
+        if (field) {
+          field.style.width = (s * w.w) + 'px';
+          field.style.margin = '0 auto';
+        }
+        if (caseH > tallest) tallest = caseH;
+        return { cell, caseH };
+      });
+      /* On a wide frame the cases share a stage height so the captions and the fields line up as
+         one comparison; stacked on a phone each takes its own height and leaves no dead space. */
+      fitted.forEach((m) => {
+        if (!m) return;
+        const stage = m.cell.querySelector('[data-resp-stage]');
+        if (stage) stage.style.height = narrow ? 'auto' : tallest + 'px';
+      });
+    };
+    window.addEventListener('resize', this._respFitRow);
+    this._respFitRow();
+    if (window.rsNavAddSection) {
+      window.rsNavAddSection('This page', this.constructor.RAIL.map((r) => ({ label: r[0] + ' ' + r[1], href: r[2] })));
+    }
+  }
+  componentDidUpdate() {
+    if (this._watch) this._watch();
+    if (this._respFitRow) this._respFitRow();
+    this._syncModes();
+  }
+  _syncModes() {
+    const b = document.body;
+    if (this.props.schematic) b.setAttribute('data-schematic', ''); else b.removeAttribute('data-schematic');
+    if (this.props.gridlines) b.setAttribute('data-gridlines', ''); else b.removeAttribute('data-gridlines');
+    b.removeAttribute('data-reduce-motion');
+  }
+  _awaitPositions() {
+    if ((window.RESOURCE_POSITIONS || []).length) return;
+    this._pos = setInterval(() => {
+      if (!(window.RESOURCE_POSITIONS || []).length) return;
+      clearInterval(this._pos);
+      this._pos = null;
+      this.forceUpdate();
+    }, 60);
+  }
+  shadowVar(k, d) { return this.state[k] != null ? this.state[k] : (this.savedVars[k] != null ? this.savedVars[k] : d); }
+  setVar(k, v) { this.setState({ [k]: v }); }
+  saveShadow() {
+    const out = {};
+    for (const [k, d] of this.constructor.SHADOW_DEFS) out[k] = this.shadowVar(k, d);
+    this.savedVars = out;
+    try { localStorage.setItem(this.constructor.SHADOW_STORE, JSON.stringify(out)); } catch (e) {}
+    try { parent.postMessage({ type: 'rs-tweak-save', store: this.constructor.SHADOW_STORE, data: out }, '*'); } catch (err) {}
+    this.setState({ shadowSavedAt: Date.now() });
+  }
+  clearShadow() {
+    this.savedVars = {};
+    try { localStorage.removeItem(this.constructor.SHADOW_STORE); } catch (e) {}
+    try { parent.postMessage({ type: 'rs-tweak-save', store: this.constructor.SHADOW_STORE, data: null }, '*'); } catch (err) {}
+    const cleared = { shadowSavedAt: null };
+    for (const [k] of this.constructor.SHADOW_DEFS) cleared[k] = null;
+    this.setState(cleared);
+  }
+  componentWillUnmount() {
+    if (this._io) this._io.disconnect();
+    if (this._tick) clearInterval(this._tick);
+    if (this._pos) clearInterval(this._pos);
+    if (this._measure) window.removeEventListener('resize', this._measure);
+    if (this._respFitRow) window.removeEventListener('resize', this._respFitRow);
+  }
+  renderVals() {
+    const C = this.constructor, s = this.state;
+    const POS = (typeof window !== 'undefined' && window.RESOURCE_POSITIONS) || [];
+    /* The grid readout counts the way tokens/grid.css counts: twelve at 1081 and up whatever the
+       orientation, and below that the orientation picks the count — landscape six, portrait three
+       (Mark, 24 September 2026, quoted: "orientation picks 3 vs 6"). It reads the same media
+       feature the stylesheet reads rather than a width of its own, so the numbers it prints are
+       the ones the bars above it are drawn on. It used to print twelve columns and a 24 gutter at
+       every width, and after the count moved to orientation it still keyed off width alone. */
+    const vw = s.vw || 1440, count = vw >= 1081 ? 12 : (window.matchMedia('(orientation:landscape)').matches ? 6 : 3);
+    const gGutter = count === 12 ? 24 : count === 6 ? 12 : 8, field = s.field || 1080, col = (field - gGutter * (count - 1)) / count;
+    const g = C.SPLITS[s.gridIdx];
+    const gSpan = Math.round(12 * g.a / (g.a + g.b));
+    const halve = (n) => (n < 6 ? Math.floor(n / 2) : Math.ceil(n / 2));
+    const shown = count === 12 ? [gSpan, 12 - gSpan] : count === 6 ? [halve(gSpan), halve(12 - gSpan)] : [3, 3];
+    const lum = (hex) => {
+      const ch = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+        .map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+      return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2];
+    };
+    const ratio = (a, b) => {
+      const x = lum(a), y = lum(b), hi = Math.max(x, y), lo = Math.min(x, y);
+      return Math.round(((hi + 0.05) / (lo + 0.05)) * 10) / 10;
+    };
+    const greyKey = s.greyKey || 'g12';
+    const gt = C.GREYS_TILE.find((x) => x[0] === greyKey) || C.GREYS_TILE[2];
+    const isPlane = ['black', 'g06', 'g12'].indexOf(gt[0]) > -1;
+    const rWhite = ratio(gt[2], '#FFFFFF'), rDim = ratio(gt[2], '#888888');
+    const verdict = (r) => (r >= 4.5 ? 'passes at every size' : r >= 3 ? 'headline scale only' : 'fails, do not set text here');
+    const greySel = {};
+    const greyPickers = {};
+    C.GREYS_TILE.forEach((x) => {
+      greySel[x[0]] = x[0] === greyKey ? 'true' : 'false';
+      greyPickers[x[0]] = () => this.setState({ greyKey: x[0] });
+    });
+    const rv = (k, d) => this.shadowVar(k, d);
+    const rnd = (n) => Math.round(n * 100) / 100;
+    const edgeSizePct = rv('shadowSize', 0.5);
+    const edgeDepthRaw = rv('shadowDepth', 0.5);
+    const edgeDepth = Math.min(1, edgeDepthRaw);
+    const edgeDepthGrow = 1 + Math.max(0, edgeDepthRaw - 1);
+    const shadowSpread = rv('shadowBlur', 0.25);
+    const glowBand = rv('glowBand', 1);
+    const glowDepthRaw = rv('glowDepth', 1);
+    const voidGlowDepth = Math.min(1, glowDepthRaw);
+    const glowGrow = 1 + Math.max(0, glowDepthRaw - 1);
+    const glowSpread = rv('glowSpread', 0.5);
+    const SPEC = 60;
+    const specShadowW = rnd(SPEC * edgeSizePct * edgeDepthGrow);
+    const mkSliders = (defs) => defs.map((x) => ({
+      label: x.label, min: x.min, max: x.max, step: x.step, value: rv(x.key, x.def),
+      display: Math.round(rv(x.key, x.def) * 100) + '%',
+      onInput: (e) => this.setVar(x.key, parseFloat(e.target.value))
+    }));
+    const hasSaved = Object.keys(this.savedVars).length > 0;
+    return {
+      greySel,
+      greyPick: greyPickers,
+      greyRows: [
+        { a: gt[1] + ' · ' + gt[2], b: gt[3], c: 'what this grey is for' },
+        { a: 'WHITE ON IT', b: rWhite.toFixed(1) + ':1', c: verdict(rWhite) },
+        { a: 'G66 ON IT', b: rDim.toFixed(1) + ':1', c: verdict(rDim) },
+        { a: 'AS A SURFACE', b: isPlane ? 'legal' : 'not a surface', c: gt[4] }
+      ],
+      haloRows: C.SIZES.map((x) => ({
+        size: x.size + 'px', halo: x.size + ' ÷ 6 = ' + Math.round(x.size / 6),
+        note: x.size === 72 ? 'the mark word, haloed at 12' : 'round joins, black'
+      })),
+      posStrokes: POS.map((p) => ({ hex: p.hex })),
+      posRows: POS.map((p) => ({ i: p.i, angle: p.a + '°', hex: p.hex })),
+      wheelUnit: 18,
+      selPosI: s.selPos,
+      selPosHex: (POS.find((p) => p.i === s.selPos) || {}).hex || '#888888',
+      selPosAngle: (POS.find((p) => p.i === s.selPos) || {}).a ?? 0,
+      onPosSelect: (p) => this.setState({ selPos: p.i }),
+      respPagePicks: C.RESP_PAGES.map((pg, i) => ({
+        label: pg.label, on: i === s.respPage, off: i !== s.respPage,
+        pick: () => this.setState({ respPage: i })
+      })),
+      respRowRef: (el) => { this._respRow = el; if (this._respFitRow) this._respFitRow(); },
+      respCases: C.RESP_WIDTHS.map((w, i) => {
+        const count = w.cols;
+        const g = C.SPLITS[s.respSplit];
+        const gSpan = Math.round(12 * g.a / (g.a + g.b));
+        const halve = (n) => (n < 6 ? Math.floor(n / 2) : Math.ceil(n / 2));
+        const a = count === 12 ? gSpan : count === 6 ? halve(gSpan) : 3;
+        return {
+          title: w.label + ' preview',
+          captionA: w.label + ' \u00b7 ' + w.w + 'px',
+          captionB: count + ' columns \u00b7 gutter ' + w.gutter,
+          count,
+          gap: count === 12 ? 'var(--space-lg)' : count === 6 ? 'var(--space-md)' : 'var(--space-sm)',
+          cells: Array.from({ length: count }, (_, k) => ({ a: k < a, b: k >= a })),
+          isPhone: i === 0, isTablet: i === 1, isDesktop: i === 2
+        };
+      }),
+      respSplitPicks: C.SPLITS.map((x, i) => ({
+        label: x.label, on: i === s.respSplit, off: i !== s.respSplit,
+        pick: () => this.setState({ respSplit: i })
+      })),
+      respMapReadout: (() => {
+        const g = C.SPLITS[s.respSplit];
+        const gSpan = Math.round(12 * g.a / (g.a + g.b));
+        const halve = (n) => (n < 6 ? Math.floor(n / 2) : Math.ceil(n / 2));
+        const six = [halve(gSpan), halve(12 - gSpan)];
+        return g.label + ' \u2192 ' + gSpan + ' / ' + (12 - gSpan) + ' at twelve \u00b7 ' + six[0] + ' / ' + six[1] + ' at six \u00b7 stacked at three';
+      })(),
+      gridColumns: Array.from({ length: 12 }, (_, i) => ({ n: i })),
+      gridSpanA: gSpan,
+      gridSpanB: 12 - gSpan,
+      gridReadout: 'FIELD ' + Math.round(field) + ' · ' + count + ' COLUMNS · COLUMN ' + col.toFixed(1) + ' · GUTTER ' + gGutter + ' · ' + g.label + ' → ' + (count === 3 ? 'STACKED, 3 / 3' : shown[0] + ' / ' + shown[1] + ' = ' + Math.round(shown[0] * col + (shown[0] - 1) * gGutter) + ' / ' + Math.round(shown[1] * col + (shown[1] - 1) * gGutter)),
+      gridPicks: C.SPLITS.map((x, i) => ({
+        label: x.label, on: i === s.gridIdx, off: i !== s.gridIdx,
+        pick: () => this.setState({ gridIdx: i })
+      })),
+      borderRows: C.BORDERS.map((b) => ({ width: b[0], colour: b[1], use: b[2] })),
+      motionRows: C.MOTION.map((m) => ({ a: m[0], b: m[1], c: m[2] })),
+      conformance: C.CONFORMANCE.map((c) => ({ word: c[0], rule: c[1], reason: c[2] })),
+      specDisc: SPEC, specShadowW, specEdgeOp: edgeDepth,
+      specShadowBlur: rnd(specShadowW * shadowSpread),
+      specGlowOuter: rnd(SPEC + SPEC * glowBand * glowGrow),
+      specHue: (POS[4] && POS[4].hex) || '#FFFFFF',
+      glowOp1: rnd(Math.min(1, voidGlowDepth + 0.35)),
+      glowOp2: rnd(Math.min(1, voidGlowDepth)),
+      glowMidOffset: Math.round(100 - glowSpread * 100) + '%',
+      shadowSliders: mkSliders([
+        { key: 'shadowSize', label: 'Size', min: 0.02, max: 2, step: 0.01, def: 0.5 },
+        { key: 'shadowDepth', label: 'Depth', min: 0, max: 2, step: 0.05, def: 0.5 },
+        { key: 'shadowBlur', label: 'Spread', min: 0, max: 1, step: 0.01, def: 0.25 }
+      ]),
+      glowSliders: mkSliders([
+        { key: 'glowBand', label: 'Size', min: 0.02, max: 2, step: 0.01, def: 1 },
+        { key: 'glowDepth', label: 'Depth', min: 0, max: 2, step: 0.05, def: 1 },
+        { key: 'glowSpread', label: 'Spread', min: 0, max: 1, step: 0.01, def: 0.5 }
+      ]),
+      shadowStore: [
+        { label: 'Save', onClick: () => this.saveShadow() },
+        { label: hasSaved ? 'Clear saved' : 'Reset', onClick: () => this.clearShadow() }
+      ],
+      shadowSavedNote: s.shadowSavedAt
+        ? 'Saved ' + new Date(s.shadowSavedAt).toTimeString().slice(0, 5) + ' \u00b7 kept on reload'
+        : (hasSaved ? 'Saved settings in use' : 'Unsaved \u00b7 reload returns to the default'),
+      onGrid: () => this.setState((p) => ({ gridlines: !p.gridlines })),
+      onSchematic: () => this.setState((p) => ({ schematic: !p.schematic }))
+    };
+  }
+}
+</script>
+</body>
+</html>

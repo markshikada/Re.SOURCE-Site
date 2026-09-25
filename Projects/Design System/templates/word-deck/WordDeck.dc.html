@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../../assets/vendor/react.production.min.js"></script>
+<script src="../../assets/vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Word DECK" description="Master DECK. All ninety cards, two reads: the reader's focus with its strip, and the lattice sheet." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="../../lib/masters-nav.js"></script>
+<style>html,body{margin:0;padding:0;background:#000000}
+/* Two reads, one field (25 September 2026). Base rules are the narrow frame; width adds.
+   A pair whose mate the map is not drawing takes the whole row — the field's own pair rule
+   maps two children, and one child is not a division. */
+[data-wd-body][data-pair]>*:only-child{grid-column:1/-1}
+[data-wd-focus]{min-width:0}
+[data-wd-strip]{display:flex;gap:var(--space-md);overflow-x:auto;padding:2px 2px 8px;scrollbar-width:thin}
+[data-wd-thumb]{flex:0 0 auto;position:relative;border:1px solid var(--surface-border);border-radius:var(--radius-sm);background:var(--surface-page);cursor:pointer;touch-action:manipulation}
+/* At 1081 and up the focus column stays put while the map scrolls — the word-card column's
+   own rule, sticky at the field's 24. */
+@media (min-width:1081px){[data-wd-focus]{position:sticky;top:24px;align-self:start}}
+</style>
+</helmet>
+<!-- Outer element carries only the computed custom properties, so every painting
+     property below stays literal and renders before the logic class lands. -->
+<div ref="{{ varsRef }}">
+<!-- The frame. The sheet is measured against this, never against the viewport, so the master
+     behaves the same inside a preview iframe and at full page width. -->
+<div ref="{{ frameRef }}" data-pad="" data-grid="" style="padding-top:24px;padding-bottom:24px;min-height:100vh;background:var(--surface-page);color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-caption);line-height:var(--lh-caption)">
+  <!-- One centred column. The sheet is the deck's own width inside it; the column keeps the prose
+       measure when the sheet is narrower than the prose (a phone, one card a row), so the page
+       still reads as one column rather than three. -->
+  <div style="width:100%;max-width:max(var(--rs-sheet,1200px),62ch);margin:0 auto">
+  <p style="margin:0 0 12px;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);text-transform:uppercase;color:var(--text-dim)">Word DECK</p>
+  <h1 style="margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1)">One deck, two reads</h1>
+  <p style="margin:12px 0 0;max-width:62ch;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Ninety cards in three sets &mdash; one word a card (TONE, BLEND, PATH), with its question, its reading, and a ring for how much it holds. READER is one card large with the set's thirty as its strip beneath; SHEET lays the whole deck out. Grid settings live in Tweaks.</p>
+
+  <!-- The picks: the read at every width, and in the reader the set. Control, the system's only
+       button — the same pick row Word CARD uses for Set and Holding. -->
+  <div style="margin:24px 0 0;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+    <sc-for list="{{ readPicks }}" as="b" hint-placeholder-count="2">
+      <x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" active="{{ b.on }}" aria-pressed="{{ b.aria }}" onClick="{{ b.pick }}" hint-size="96px,44px">{{ b.label }}</x-import>
+    </sc-for>
+    <sc-if value="{{ readerOn }}" hint-placeholder-val="{{ true }}">
+      <span aria-hidden="true" style="width:1px;height:24px;background:var(--surface-border)"></span>
+      <sc-for list="{{ setPicks }}" as="b" hint-placeholder-count="3">
+        <x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.Control" active="{{ b.on }}" aria-pressed="{{ b.aria }}" onClick="{{ b.pick }}" hint-size="132px,44px">{{ b.label }}</x-import>
+      </sc-for>
+    </sc-if>
+  </div>
+
+  <!-- Where the sheet is the read, say what the wall is before it scrolls away. -->
+  <sc-if value="{{ !readerOn }}" hint-placeholder-val="{{ false }}">
+    <p style="margin:12px 0 0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-dim)">The whole deck, laid out. Tap any card to open it large in the reader.</p>
+  </sc-if>
+
+  <!-- The body: the field's own pair. The focus takes the odd five and the map the even seven
+       at twelve columns; the field halves the pair and stacks it at three. One region draws the
+       lattice sheet in both reads — the whole wall, or the current set's map. -->
+  <div data-wd-body="" data-grid="" data-pair="" style="margin-top:24px;row-gap:24px">
+    <sc-if value="{{ readerOn }}" hint-placeholder-val="{{ true }}">
+      <div ref="{{ focusRef }}" data-wd-focus="" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px">
+        <!-- The preview: the printed card at the column's zoom, min(360px, 100%) — zoomed, never
+             reflowed. A swipe steps; the card's own control still flips. -->
+        <div data-wd-preview="" style="{{ preview.box }}" onTouchStart="{{ onSwipeStart }}" onTouchEnd="{{ onSwipeEnd }}">
+          <x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.AspectCard" entry="{{ preview.entry }}" scale="{{ preview.scale }}" flipped="{{ preview.flipped }}" on-flip="{{ preview.onFlip }}" show-grid="{{ preview.showGrid }}" base-words="{{ preview.bw }}" blend-words="{{ preview.lw }}" hint-size="360px,504px"></x-import>
+        </div>
+        <p aria-live="polite" style="margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ reader.at }}</p>
+        <!-- The legend names every hand the reader answers before any of them is bound (the key
+             law) — flip, swipe, keys, and the door a card's body is. -->
+        <p style="margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-dim);text-align:center">The card's own control turns it over. Swipe the card or press &larr; &rarr; to step; tap a thumb, or any card on the sheet or map, to jump.</p>
+        <!-- The strip: the set's own cards at a quarter, the deck's material as its map. One
+             navigator — dots were refused: at thirty cards a dot carries no identity, and a
+             second navigator says position twice. -->
+        <div data-wd-strip="" ref="{{ stripRef }}" role="group" aria-label="Card strip" onKeyDown="{{ onThumbKey }}" style="width:100%">
+          <sc-for list="{{ thumbs }}" as="t" hint-placeholder-count="30">
+            <div data-wd-thumb="" data-lift="" data-press="" data-id="{{ t.id }}" role="button" tabindex="0" aria-label="{{ t.aria }}" aria-current="{{ t.ariaCurrent }}" onClick="{{ t.pick }}" style-focus="outline:2px solid var(--g88);outline-offset:3px" style="{{ t.box }}">
+              <div style="position:relative;width:90px;height:126px">
+                <x-import component-from-global-scope="ReSOURCEDesignSystem_36d802.AspectCard" entry="{{ t.entry }}" scale="0.25" flipped="{{ t.flipped }}" show-grid="{{ t.showGrid }}" base-words="{{ t.bw }}" blend-words="{{ t.lw }}" hint-size="90px,126px"></x-import>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+      </div>
+    </sc-if>
+    <sc-if value="{{ sheetOn }}" hint-placeholder-val="{{ true }}">
+      <!-- The map's own module sits inside the sheet's, so the lattice it draws is its own at
+           its own frame; with no map vars of its own the region reads the sheet's. -->
+      <div ref="{{ mapVarsRef }}" style="min-width:0">
+      <sc-for list="{{ activeSets }}" as="s" hint-placeholder-count="3">
+        <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--surface-border);display:grid;gap:var(--rs-gap,24px)">
+          <div style="position:sticky;top:0;z-index:4;display:flex;align-items:baseline;gap:24px;padding:12px 0;background:var(--surface-page);border-bottom:1px solid var(--g48)">
+            <h2 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2)">{{ s.name }}</h2>
+            <span style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ s.count }} cards</span>
+          </div>
+          <p style="margin:0;max-width:62ch;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ s.note }}</p>
+
+          <!-- The sheet: the deck's own width, centred in the measure. Every band below is a grid on
+               the same tracks, so a card's left edge lands on a column in all of them. A cell is
+               placed by a wrapper of its own — the imported card's host element is what the band's
+               grid receives, so a span written on the cell inside it would never reach the tracks.
+               A card's body is a door: on the sheet it opens the reader at that card, on the map it
+               moves the focus. The door sits on the cell's own box; the card's flip control keeps
+               the flip, and a click on a control never falls through to the card beneath it. -->
+          <div data-sheet="" style="width:var(--rs-sheet,1200px);max-width:100%;margin:0 auto;display:grid;gap:var(--rs-gap,24px)">
+
+            <!-- The lead band: Set, Core, Triad, Group — six cards in four holdings, packed whole. -->
+            <div data-band="" style="display:grid;grid-template-columns:repeat(var(--rs-cols,6),var(--rs-slot,180px));align-items:start;gap:var(--rs-gap,24px)">
+              <sc-for list="{{ s.short }}" as="g" hint-placeholder-count="4">
+                <div style="{{ g.style }}">
+                  <h3 style="grid-column:1/-1;display:flex;align-items:center;gap:12px;margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;text-transform:uppercase;color:var(--text-primary)">{{ g.label }}<span style="color:var(--text-secondary)">{{ g.count }}</span><span style="flex:1 1 auto;height:1px;background:var(--surface-border)"></span></h3>
+                  <dc-import name="DeckCell" box-style="{{ g.cell.boxStyle }}" cards="{{ g.cell.cards }}" has-tie="{{ g.cell.hasTie }}" d1="{{ g.cell.d1 }}" d2="{{ g.cell.d2 }}" on-tie="{{ g.cell.onTie }}" on-pick="{{ g.cell.pick }}" hint-size="366px,252px"></dc-import>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display:grid;gap:12px">
+              <h3 style="display:flex;align-items:center;gap:12px;margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;text-transform:uppercase;color:var(--text-primary)">Single<span style="color:var(--text-secondary)">{{ s.singleCount }}</span><span style="flex:1 1 auto;height:1px;background:var(--surface-border)"></span></h3>
+              <div data-band="" style="display:grid;grid-template-columns:repeat(var(--rs-cols,6),var(--rs-slot,180px));align-items:start;gap:var(--rs-gap,24px)">
+                <sc-for list="{{ s.singles }}" as="c" hint-placeholder-count="6">
+                  <div style="{{ c.style }}">
+                    <dc-import name="DeckCell" box-style="{{ c.boxStyle }}" cards="{{ c.cards }}" has-tie="{{ c.hasTie }}" d1="{{ c.d1 }}" d2="{{ c.d2 }}" on-tie="{{ c.onTie }}" on-pick="{{ c.pick }}" hint-size="180px,510px"></dc-import>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="display:grid;gap:12px">
+              <h3 style="display:flex;align-items:center;gap:12px;margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;text-transform:uppercase;color:var(--text-primary)">Pair<span style="color:var(--text-secondary)">{{ s.pairCount }}</span><span style="flex:1 1 auto;height:1px;background:var(--surface-border)"></span></h3>
+              <div data-band="" style="display:grid;grid-template-columns:repeat(var(--rs-cols,6),var(--rs-slot,180px));align-items:start;gap:var(--rs-gap,24px)">
+                <sc-for list="{{ s.pairs }}" as="c" hint-placeholder-count="6">
+                  <div style="{{ c.style }}">
+                    <dc-import name="DeckCell" box-style="{{ c.boxStyle }}" cards="{{ c.cards }}" has-tie="{{ c.hasTie }}" d1="{{ c.d1 }}" d2="{{ c.d2 }}" on-tie="{{ c.onTie }}" on-pick="{{ c.pick }}" hint-size="366px,252px"></dc-import>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ waiting }}" hint-placeholder-val="{{ false }}">
+    <p style="margin:24px 0 0;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary)">Loading the deck &mdash; one card large, the set's strip beneath. A moment.</p>
+  </sc-if>
+  </div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Full pair&quot;,&quot;Closed stack&quot;],&quot;default&quot;:&quot;Full pair&quot;,&quot;tsType&quot;:&quot;'Full pair' | 'Closed stack'&quot;,&quot;section&quot;:&quot;Grid&quot;},&quot;cols&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Auto&quot;,&quot;6&quot;,&quot;4&quot;,&quot;3&quot;,&quot;2&quot;,&quot;1&quot;],&quot;default&quot;:&quot;Auto&quot;,&quot;tsType&quot;:&quot;'Auto' | '6' | '4' | '3' | '2' | '1'&quot;,&quot;section&quot;:&quot;Grid&quot;},&quot;cardSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.5,&quot;min&quot;:0.3,&quot;max&quot;:0.8,&quot;step&quot;:0.05,&quot;unit&quot;:&quot;× printed&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Grid&quot;},&quot;gap&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:24,&quot;min&quot;:6,&quot;max&quot;:48,&quot;step&quot;:6,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Grid&quot;},&quot;seam&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:6,&quot;min&quot;:0,&quot;max&quot;:24,&quot;step&quot;:2,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Grid&quot;},&quot;stackSingles&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Grid&quot;},&quot;wordGrid&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Always&quot;,&quot;From Triad&quot;,&quot;Never&quot;],&quot;default&quot;:&quot;From Triad&quot;,&quot;tsType&quot;:&quot;'Always' | 'From Triad' | 'Never'&quot;,&quot;section&quot;:&quot;Card&quot;}}">
+/* The whole deck, ninety cards, drawn by the master AspectCard at a scale. Nothing about the
+   card is decided here — the component owns its edge, its frame accent, its labels and its
+   flip. This file owns the layout the cards sit on: one lattice and two reads.
+
+   THE LATTICE, five rules:
+
+   1. ONE LATTICE. The sheet is `cols` slots wide, every band is a grid on exactly those tracks,
+      and every cell spans whole slots. A card's left edge lands on a column in every band, so
+      the page lines up top to bottom instead of drifting a few pixels per row.
+   2. ONE GAP. Between the two cards in a cell, between two cells, between two rows: the same
+      value. Nothing is spaced by a second, private number. The seam dial is the closed stack's
+      tuck alone, an overlap rather than a gap.
+   3. THE COUNT DIVIDES THE DECK. Six, four, three, two or one — the widest that fits the 
+      measured frame. Twelve Singles and twelve Pairs fill whole rows at every one of them, so no
+      band ever ends on a ragged row. Closed, a holding is one slot whatever it holds, so the
+      count divides six holdings and four is not among them: the closed read uses six, three, two
+      or one. Forcing a count that does not fit the frame, or that leaves a ragged row, is
+      ignored, not obeyed.
+   4. NOTHING STRETCHES. A band never distributes leftover space between its cards. Leftover
+      space is margin. `space-between` on a fixed track count was what made the old sheet read
+      as three different measures with fat, uneven gutters.
+   5. A TWO-CARD CELL FITS ITS ROW. Two cards sit side by side across two slots when the row
+      holds a whole number of them (an even count, so 6/4/2), and stack in one slot when it does
+      not, so the row is full either way and no cell is left hanging.
+
+   THE READER, five more, ruled 25 September 2026 on Mark's instruction, quoted: "Upgrade Card
+   Deck to a modern mobile-first layout. I suggest a large main preview with a few as thumbnail
+   strip or dots underneath... A single column is poor design layout. Suggest how mobile
+   influences desktop design."
+
+   6. ONE DECK, TWO READS. The reader is the read wherever the wall would draw a single column:
+      one large card, its set's strip beneath. The sheet stays the overview. The pick follows the
+      frame's own measure — two printed cards side by side — never a device name, and either read
+      is one tap away at every width.
+   7. ONE ORDER. Strip, map and sheet walk the same sequence: the lead holdings, then the
+      Singles, then the Pairs, in the sheet's own rows. A card's body is a door — on the sheet it
+      opens the reader at that card, on the map it moves the focus — and the flip control keeps
+      the flip. A click on a control never falls through to the card beneath it.
+   8. THE STRIP IS THE DECK'S OWN MATERIAL. Thumbnails are cards at a quarter, never glyphs. One
+      navigator, not two: dots were considered and refused, since at thirty cards a dot carries
+      no identity and a second navigator says position twice. The mark for "you are here" is the
+      same on the strip and the map: the states law's lift to white, on the structure width.
+   9. EVERY STEP HAS THREE HANDS. Tap a thumbnail, swipe the preview, or step with the arrow
+      keys; the legend names them on the surface. A key is bound only because it is listed there.
+  10. THE MAP JOINS THE FOCUS WHERE THE FIELD IS WIDE. At twelve columns the reader is the
+      field's own pair — focus on five, the current set's map on seven — and the focus stays put
+      while the map scrolls. Where the map would itself draw a single column it is the strip's
+      job and the map stands down.
+
+   Ruled 21 September 2026 on the lattice, Mark's instruction: "Card Deck needs to be a neat
+   grid layout. Address to avoid ugly spaces and alignments." Reasoning recorded in
+   Projects/Design System/notes/reasoning.md. */
+class Component extends DCLogic {
+  static SETS = ['Abstract REALM', 'Aspect STATE', 'Anchor TAG'];
+  /* A set is a depth of reading, in the flower's own words, so the two surfaces say the same thing
+     about the same three sets. */
+  static NOTES = {
+    'Abstract REALM': 'The outer set, and it reads general. It names the field a thing is happening in, the world side rather than the person.',
+    'Aspect STATE': 'The middle set, and it reads personal. It names how someone is at the moment, the person side rather than the world.',
+    'Anchor TAG': 'The inner set, closest to the core, and it reads typical. It names the flavour, the word you would hand someone in passing.'
+  };
+  /* Base and Blend are two rows in the data and one holding on the card, GROUP, so the way the
+     master card reads them. Set and Core are one card apiece, Triad and Group two, so the lead
+     band is six slots across: one full row at six columns, three at two. */
+  static SHORT = [['Set', ['SET']], ['Core', ['CORE']], ['Triad', ['TRIAD']], ['Group', ['BASE', 'BLEND']]];
+  /* Widest first. Full pair, a holding takes two slots when the count is even, so every one of
+     these fills the rows of the Singles and the Pairs. Closed stack, a holding is one slot
+     whatever it holds, so the count divides six holdings and four is not among them. */
+  static COUNTS = [6, 4, 3, 2, 1];
+  static COUNTS_CLOSED = [6, 3, 2, 1];
+  /* The strip's thumbnail: the printed card at a quarter, 90 × 126. */
+  static THUMB = 0.25;
+
+  /* The reader's sequence: one set's thirty in the sheet's own order — the lead holdings, the
+     Singles, the Pairs. A closed cell renders its counter first so it tucks behind; the sequence
+     reads lead first, so that one cell is read back to front here and nowhere else. */
+  static seqOf(setBuild) {
+    const out = [];
+    const take = (cell) => {
+      let cs = ((cell && cell.cards) || []).slice();
+      if (cs.length === 2 && /-back$/.test(String((cs[0] && cs[0].key) || ''))) cs = [cs[1], cs[0]];
+      for (let i = 0; i < cs.length; i++) {
+        const id = String((cs[i] && cs[i].cid) || '');
+        if (id && out.indexOf(id) < 0) out.push(id);
+      }
+    };
+    ((setBuild && setBuild.short) || []).forEach((g) => take(g.cell));
+    ((setBuild && setBuild.singles) || []).forEach(take);
+    ((setBuild && setBuild.pairs) || []).forEach(take);
+    return out;
+  }
+
+  state = {
+    ready: typeof window !== 'undefined' && !!(window.DECK_CARDS && window.AspectRender),
+    shown: {}, flipped: {}, swapped: {}, frame: 0, mapFrame: 0, focusW: 0,
+    readOv: null, setOv: null, cardOv: null
+  };
+
+  /* The sheet's measurements are the only live values on the page: they change as the Tweaks
+     sliders move and as the frame resizes. They are written to the carrier element after render
+     rather than through a style hole, so nothing in the template waits on this class to paint.
+     The map carrier sits inside the sheet region: with map vars of its own the region draws the
+     map's lattice, with none it reads the sheet's. */
+  varsRef = React.createRef();
+  mapVarsRef = React.createRef();
+  frameRef = React.createRef();
+  focusRef = React.createRef();
+  stripRef = React.createRef();
+  applyVars() {
+    const el = this.varsRef.current;
+    if (el) el.style.cssText = this._vars || '';
+    /* cssText replaces, so the module keeps its min-width floor through every recompute. */
+    const ml = this.mapVarsRef.current;
+    if (ml) ml.style.cssText = 'min-width:0;' + (this._mapVars || '');
+  }
+  componentDidUpdate() { this.applyVars(); this.measure(); this.centerStrip(); }
+
+  componentDidMount() {
+    this.applyVars();
+    this.measure();
+    this.centerStrip();
+    this.onResize = () => this.measure();
+    window.addEventListener('resize', this.onResize);
+    /* The frame's padding arrives with the field's stylesheet, which lands after the first
+       render: measured once, the count came off the bare viewport, so the sheet crossed the
+       page's own margin at 1280 and 390 (found by looking, 21 September 2026). The observer
+       watches the frame's content box, so the count follows the room the deck actually has. */
+    if (typeof ResizeObserver === 'function' && this.frameRef.current) {
+      this.ro = new ResizeObserver(() => this.measure());
+      this.ro.observe(this.frameRef.current);
+      if (this.focusRef.current) this.ro.observe(this.focusRef.current);
+      if (this.mapVarsRef.current) this.ro.observe(this.mapVarsRef.current);
+    }
+    if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => this.measure()).catch(() => {});
+    }
+    /* Arrow keys step the reader — listed in the legend on the surface before they were bound,
+       the key law's first step. Inputs keep their own arrows. */
+    this.onKey = (e) => {
+      if (!this._ctx || !this._ctx.reader) return;
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+      if (e.key === 'ArrowLeft') { this.stepBy(-1); if (e.preventDefault) e.preventDefault(); }
+      else if (e.key === 'ArrowRight') { this.stepBy(1); if (e.preventDefault) e.preventDefault(); }
+    };
+    if (typeof document !== 'undefined') document.addEventListener('keydown', this.onKey);
+    if (this.state.ready) return;
+    this.timer = setInterval(() => {
+      if (window.DECK_CARDS && window.AspectRender) {
+        clearInterval(this.timer); this.timer = null; this.setState({ ready: true });
+      }
+    }, 60);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+    if (this.ro) this.ro.disconnect();
+    if (this.timer) clearInterval(this.timer);
+    if (typeof document !== 'undefined' && this.onKey) document.removeEventListener('keydown', this.onKey);
+  }
+
+  /* The frame is the space the sheet has to sit in, read off the page's own padded box rather
+     than off the viewport, so the count follows the room the deck actually has. The map reads
+     its own region and the focus its own column — the map's lattice is measured against the map,
+     never guessed from the page. */
+  measure() {
+    const next = {};
+    const el = this.frameRef.current;
+    if (el) {
+      const cs = window.getComputedStyle(el);
+      const width = Math.round(el.clientWidth
+        - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0));
+      if (width > 0) next.frame = width;
+    }
+    const ml = this.mapVarsRef.current;
+    if (ml) {
+      const w = Math.round(ml.clientWidth);
+      if (w > 0) next.mapFrame = w;
+    }
+    const fc = this.focusRef.current;
+    if (fc) {
+      const w = Math.round(fc.clientWidth);
+      if (w > 0) next.focusW = w;
+    }
+    let changed = false;
+    for (const k in next) if (next[k] !== this.state[k]) { changed = true; break; }
+    if (changed) this.setState(next);
+  }
+
+  /* The strip keeps the current card centred: the neighbourhood is what stays in view, and the
+     rest of the set is one drag away. */
+  centerStrip() {
+    const strip = this.stripRef.current;
+    const ctx = this._ctx;
+    if (!strip || !ctx || !ctx.reader) return;
+    const el = strip.children && strip.children[ctx.index];
+    if (!el) return;
+    const target = Math.max(0, el.offsetLeft - (strip.clientWidth - el.offsetWidth) / 2);
+    if (Math.abs(strip.scrollLeft - target) > 1) strip.scrollLeft = target;
+  }
+
+  /* A Pair swaps which of its two words leads; every other card with a counter turns over to
+     that card. The rule lives in the shared lib/aspect-render.js, so this page and the master
+     card cannot disagree. */
+  flip(key, entry) {
+    if (entry.titles.length > 1) {
+      this.setState(s => ({ flipped: { ...s.flipped, [key]: !s.flipped[key] } }));
+      return;
+    }
+    const counter = window.AspectRender.counterOf(entry, window.DECK_CARDS);
+    if (counter) this.setState(s => ({ shown: { ...s.shown, [key]: counter.id } }));
+  }
+
+  /* The door and the focus share one move: land the reader on a named card. */
+  focusCard(setName, id) {
+    if (!setName || !id) return;
+    this.setState({ setOv: setName, cardOv: id, readOv: 'Reader' });
+  }
+  /* A cell's body moves the reader; its controls — the flip, the tie — keep their own clicks,
+     so a press on a control never falls through to the card beneath it. A two-card cell says
+     which of its cards was hit by the slot the click landed in; its gap between cards is dead
+     rather than a guess at one of them. */
+  pickInCell(e, setName, cards) {
+    const t = e && e.target;
+    if (t && typeof t.closest === 'function' && t.closest('button')) return;
+    if (!cards || !cards.length) return;
+    let card = cards.length === 1 ? cards[0] : null;
+    if (t && typeof t.closest === 'function' && cards.length > 1) {
+      const slot = t.closest('[data-slot]');
+      if (slot && slot.parentElement) {
+        const kids = slot.parentElement.children;
+        for (let i = 0; i < kids.length; i++) {
+          if (kids[i] === slot && cards[i]) { card = cards[i]; break; }
+        }
+      }
+    }
+    const id = String((card && card.cid) || '').replace(/-back$/, '');
+    if (id) this.focusCard(setName, id);
+  }
+  /* Stepping clamps at the ends: the deck is a sequence, not a loop. */
+  stepBy(dir) {
+    const ctx = this._ctx;
+    if (!ctx || !ctx.reader || !ctx.seq || !ctx.seq.length) return;
+    const next = Math.min(Math.max(ctx.index + dir, 0), ctx.seq.length - 1);
+    if (ctx.seq[next] !== ctx.id) this.setState({ cardOv: ctx.seq[next] });
+  }
+  /* A left or right swipe on the preview steps the same way the arrow keys do. Tracked on the
+     instance, not state, so the drag itself never triggers a re-render. */
+  onSwipeStart(e) { this._tx = e.touches[0].clientX; }
+  onSwipeEnd(e) {
+    if (this._tx == null) return;
+    const dx = e.changedTouches[0].clientX - this._tx;
+    this._tx = null;
+    if (Math.abs(dx) < 40) return;
+    this.stepBy(dx < 0 ? 1 : -1);
+  }
+  /* Enter or Space on a focused thumbnail picks it — the strip's buttons speak through one
+     handler rather than thirty. */
+  onThumbKey(e) {
+    if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    const t = e.target;
+    const tile = t && typeof t.closest === 'function' ? t.closest('[data-wd-thumb]') : null;
+    if (!tile) return;
+    if (e.preventDefault) e.preventDefault();
+    const id = tile.getAttribute('data-id');
+    if (id && this._ctx) this.focusCard(this._ctx.set, id);
+  }
+
+  /* One lattice at one measured width: the sheet's whole geometry and the sets built on it.
+     Called twice — once for the page's sheet, once for the reader's map at the map's own frame.
+     Every style string below is the sheet's law; the map inherits it by being this function
+     rather than a second one. */
+  sheetAt(width, share) {
+    const p = this.props, C = Component;
+    const gap = share.gap, tuck = share.tuck, closed = share.closed;
+    const stackSingles = share.stackSingles, wordGrid = share.wordGrid, wanted = share.wanted;
+    const showGridFor = share.showGridFor, shownOf = share.shownOf, wordsFor = share.wordsFor;
+    const currentId = share.currentId;
+    const deck = (typeof window !== 'undefined' && window.DECK_CARDS) || [];
+
+    /* ——— the lattice, measured before anything is built from it ———
+       One slot is one column of the sheet: the printed card at the dialled scale, and closed, the
+       tuck the counter card peeks out by. */
+    let cardW = Math.round(360 * (p.cardSize ?? 0.5));
+    let slot = closed ? cardW + tuck : cardW;
+    const fits = (n) => n * slot + (n - 1) * gap <= width;
+    const counts = closed ? C.COUNTS_CLOSED : C.COUNTS;
+    /* A count that does not fit the frame, or that cannot fill whole rows in this read, is not
+       used: the dial is ignored in the same way a count too wide for the frame is. */
+    const cols = wanted && fits(wanted) && counts.includes(wanted) ? wanted : (counts.find(fits) || 1);
+    /* A frame narrower than a single card: the card comes down to the frame, so the sheet lands
+       flush instead of crossing it. 24u is the floor — below that a card is not a card. */
+    if (!fits(1)) { cardW = Math.max(96, Math.round(width - (closed ? tuck : 0))); slot = closed ? cardW + tuck : cardW; }
+    const cardH = Math.round(cardW * 504 / 360);
+    const cellH = closed ? cardH + tuck : cardH;
+    const scale = cardW / 360;
+    const even = cols % 2 === 0;
+    const sheet = cols * slot + (cols - 1) * gap;
+    const varsString = '--rs-gap:' + gap + 'px'
+      + ';--rs-slot:' + slot + 'px'
+      + ';--rs-cols:' + cols
+      + ';--rs-sheet:' + sheet + 'px';
+
+    const at = (w, h) => 'width:' + w + 'px;height:' + h + 'px';
+    /* A card's body is the door to the reader (rule 7), so every cell carries the cursor a
+       pointer should show; the span and the tracks stay exactly the lattice's. */
+    const PICK = ';cursor:pointer';
+    /* The "you are here" mark, rule 8: the states law's lift to white on the structure width,
+       the same on a strip thumbnail and on the map's current card. */
+    const HERE = ';outline:1px solid var(--white);outline-offset:2px';
+    const card = (key, entry, slotStyle, sc) => {
+      const cid = String(key).replace(/-back$/, '');
+      const marked = cid === currentId ? HERE : '';
+      return {
+        key, cid, entry, scale: sc != null ? sc : scale,
+        slotStyle: (slotStyle || at(cardW, cardH)) + marked,
+        bw: wordsFor(entry.set).base, lw: wordsFor(entry.set).blend,
+        flipped: !!this.state.flipped[cid],
+        showGrid: showGridFor(entry.holds),
+        onFlip: () => this.flip(cid, entry)
+      };
+    };
+
+    /* A cell's span is written on the wrapper the band's grid actually receives, not only on the
+       cell inside it: the imported card's host element is the grid item. */
+    const place = (span) => 'grid-column:span ' + span;
+
+    /* One card, one slot, nothing beside it. */
+    const lone = (name, entry) => {
+      const cards = [card(entry.id, shownOf(entry))];
+      return {
+        key: entry.id, hasTie: false, d1: '', d2: '', onTie: undefined,
+        span: 1, style: place(1) + PICK,
+        boxStyle: 'position:relative;grid-column:span 1;justify-self:start;display:grid;'
+          + 'grid-template-columns:' + slot + 'px;gap:' + gap + 'px',
+        cards,
+        pick: (e) => this.pickInCell(e, name, cards)
+      };
+    };
+
+    /* Two cards that trade places. Side by side they take two slots and the gap between them, so
+       the cell is exactly its span; stacked they take one slot and the gap between two rows, so
+       their two cards land on the band's own rows either way. The control floats on the seam. */
+    const pair = (name, a, b, stack) => {
+      const key = a.id;
+      const order = this.state.swapped[key] ? [b, a] : [a, b];
+      const cards = order.map(c => card(c.id, shownOf(c)));
+      return {
+        key, hasTie: true, span: stack ? 1 : 2, style: place(stack ? 1 : 2) + PICK,
+        d1: stack ? 'M 13,1 L 18.2,10 L 7.8,10 Z' : 'M 1,13 L 10,7.8 L 10,18.2 Z',
+        d2: stack ? 'M 13,25 L 7.8,16 L 18.2,16 Z' : 'M 25,13 L 16,18.2 L 16,7.8 Z',
+        onTie: () => this.setState(s => ({ swapped: { ...s.swapped, [key]: !s.swapped[key] } })),
+        boxStyle: 'position:relative;justify-self:start;display:grid;'
+          + (stack
+            ? 'grid-column:span 1;grid-template-columns:' + slot + 'px;grid-template-rows:repeat(2,' + cardH + 'px)'
+            : 'grid-column:span 2;grid-template-columns:repeat(2,' + slot + 'px);align-content:start')
+          + ';gap:' + gap + 'px',
+        cards,
+        pick: (e) => this.pickInCell(e, name, cards)
+      };
+    };
+
+    /* Closed, a holding is one card with its counter tucked behind it, and the cell carries the
+       tuck in its own box so the row still measures whole slots. */
+    const closedCell = (name, front, back) => {
+      const box = at(cardW, cardH);
+      const behind = back ? [Object.assign(
+        card(back.id + '-back', back, 'position:absolute;left:' + tuck + 'px;top:' + tuck + 'px;pointer-events:none;' + box),
+        { onFlip: undefined })] : [];
+      const cards = behind.concat([card(front.id, shownOf(front), 'position:absolute;left:0;top:0;' + box)]);
+      return {
+        key: front.id, hasTie: false, d1: '', d2: '', onTie: undefined,
+        span: 1, style: place(1) + PICK,
+        boxStyle: 'position:relative;grid-column:span 1;justify-self:start;' + at(slot, cellH),
+        cards,
+        pick: (e) => this.pickInCell(e, name, cards)
+      };
+    };
+
+    /* Closed there is one card per cell; open, a cell is a lone card or a flip pair. */
+    const cellFor = (name, held, stack) => {
+      if (closed) return closedCell(name, held[0], held[1]);
+      if (held.length < 2) return lone(name, held[0]);
+      return pair(name, held[0], held[1], stack);
+    };
+
+    /* A band fills whole rows when the count divides its cells: one slot apiece stacked, two
+       side by side, which needs an even count as well. Six holdings read side by side at four
+       columns would leave two slots hanging, and stacked at six they fill one row — so the
+       holding, not the dial alone, decides, and the dial is honoured wherever it fills. */
+    const places = (n, span) => span === 1 ? n % cols === 0 : even && n % (cols / 2) === 0;
+
+    /* The twelve Singles pair by opposite position, the twelve Pairs by the counter the deck
+       data names; Triad and Group are two cards under one heading already. */
+    const pairUp = (cards) => {
+      const out = [], taken = {};
+      cards.forEach(c => {
+        if (taken[c.id]) return;
+        const counter = window.AspectRender.counterOf(c, deck);
+        const mate = counter && cards.find(x => x.id === counter.id && !taken[x.id]);
+        taken[c.id] = true;
+        if (mate) taken[mate.id] = true;
+        out.push(mate ? [c, mate] : [c]);
+      });
+      return out;
+    };
+
+    const sets = C.SETS.map(name => {
+      const inSet = deck.filter(c => c.set === name);
+      const rowOf = (rows) => inSet.filter(c => rows.includes(c.row));
+      const singles = rowOf(['SINGLE']), pairs = rowOf(['PAIR']);
+      const singlesCells = pairUp(singles), pairCells = pairUp(pairs);
+      /* The Singles stack when the dial says so and the sheet holds whole rows of them; where it
+         does not — four columns, six holdings — they read side by side instead, which fills. */
+      const singlesStack = stackSingles
+        ? (places(singlesCells.length, 1) || !places(singlesCells.length, 2))
+        : !places(singlesCells.length, 2);
+      const pairsStack = !places(pairCells.length, 2);
+      return {
+        name, count: inSet.length, note: C.NOTES[name] || '',
+        singleCount: singles.length, pairCount: pairs.length,
+        short: C.SHORT.map(([label, rows]) => {
+          const cards = rowOf(rows);
+          if (!cards.length) return null;
+          /* Closed, every holding is one card wide, so the group takes one slot; open, a group of
+             two takes two and sits side by side at every count rather than leaving a hole under
+             the lone cards beside it. One column is the exception: two slots cannot span a row
+             that has one, so there the group stacks. */
+          const span = closed || cards.length < 2 || cols < 2 ? 1 : 2;
+          return {
+            label, count: cards.length, span,
+            style: place(span) + ';display:grid;align-content:start;gap:12px' + PICK,
+            cell: closed ? closedCell(name, cards[0], cards[1])
+              : cards.length < 2 ? lone(name, cards[0])
+                : pair(name, cards[0], cards[1], span === 1)
+          };
+        }).filter(Boolean),
+        singles: singlesCells.map(held => cellFor(name, held, singlesStack)),
+        pairs: pairCells.map(held => cellFor(name, held, pairsStack))
+      };
+    });
+
+    return { cols, slot, sheet, cardW, cardH, cellH, scale, sets, varsString };
+  }
+
+  renderVals() {
+    const p = this.props, C = Component;
+    const deck = (typeof window !== 'undefined' && window.DECK_CARDS) || [];
+    const R = typeof window !== 'undefined' ? window.AspectRender : null;
+    const refs = {
+      varsRef: this.varsRef, mapVarsRef: this.mapVarsRef,
+      frameRef: this.frameRef, focusRef: this.focusRef, stripRef: this.stripRef
+    };
+    if (!this.state.ready || !deck.length || !R) {
+      this._vars = '';
+      this._mapVars = '';
+      this._ctx = null;
+      return {
+        sets: [], activeSets: [], waiting: true,
+        readerOn: false, sheetOn: false, readPicks: [], setPicks: [], thumbs: [],
+        preview: { box: '', entry: null, scale: 1, flipped: false, showGrid: false, bw: [], lw: [], onFlip: undefined },
+        reader: { at: '' },
+        onSwipeStart: () => {}, onSwipeEnd: () => {}, onThumbKey: () => {},
+        ...refs
+      };
+    }
+
+    const gap = p.gap ?? 24;
+    const tuck = p.seam ?? 6;
+    const closed = (p.view ?? 'Full pair') === 'Closed stack';
+    const stackSingles = (p.stackSingles ?? true) && !closed;
+    const wordGrid = p.wordGrid ?? 'From Triad';
+    const frame = this.state.frame || (typeof window !== 'undefined' ? window.innerWidth : 1440);
+
+    const showGridFor = (holds) => wordGrid === 'Always' ? true : wordGrid === 'Never' ? false : holds >= 3;
+    const byId = {};
+    deck.forEach(c => { byId[c.id] = c; });
+    const shownOf = (c) => byId[this.state.shown[c.id]] || c;
+    const wordCache = {};
+    const wordsFor = (set) => (wordCache[set] = wordCache[set] || R.wordsFor(set, deck));
+
+    const set = this.state.setOv || C.SETS[0];
+    /* You-are-here is known before anything is built from it: the card the reader holds, or the
+       set's own Set card where the reader has not chosen yet — which is the sequence's first. */
+    const setCard = deck.find(c => c.set === set && c.row === 'SET');
+    const currentId = this.state.cardOv || (setCard ? setCard.id : '');
+
+    const wanted = p.cols && p.cols !== 'Auto' ? parseInt(p.cols, 10) : 0;
+    const share = { gap, tuck, closed, stackSingles, wordGrid, wanted, showGridFor, byId, shownOf, wordsFor, currentId };
+
+    /* The sheet's build runs at every width and every read: it is the law's own evidence, and
+       the template draws it whole when the sheet is the read. */
+    const S = this.sheetAt(frame, share);
+    this._vars = S.varsString;
+
+    /* The read follows the frame's own measure (rule 6): where the wall would draw fewer than
+       three columns, the reader leads. One column is the thin wall Mark named; two columns of
+       half-print cards in a narrow panel fail the same way (found by looking, 25 September).
+       The pick overrides the measure either way, at every width. */
+    const readerOn = (this.state.readOv ?? (S.cols < 3 ? 'Reader' : 'Sheet')) === 'Reader';
+
+    /* The map is the sheet at the map's own frame (rule 10), and it stands down wherever it
+       would itself draw a single column — there the strip is the map. */
+    const mapFrame = this.state.mapFrame > 0 ? this.state.mapFrame : frame;
+    const M = readerOn ? this.sheetAt(mapFrame, share) : null;
+    const mapOn = !!(M && M.cols >= 2);
+    const sheetOn = !readerOn || mapOn;
+    this._mapVars = mapOn ? M.varsString : '';
+
+    const activeSets = readerOn ? (mapOn ? M.sets.filter(s => s.name === set) : []) : S.sets;
+
+    /* The reader: one large card at the column's zoom (rule: zoomed, never reflowed), the set's
+       thirty beneath it as the strip, and the position said once. */
+    const focusW = this.state.focusW > 0 ? this.state.focusW : Math.min(360, frame);
+    const pvW = Math.max(96, Math.min(360, focusW));
+    const pvH = Math.round(pvW * 504 / 360);
+    const pvScale = pvW / 360;
+
+    const setIdx = Math.max(C.SETS.indexOf(set), 0);
+    const seq = C.seqOf(S.sets[setIdx]);
+    const id = seq.indexOf(currentId) >= 0 ? currentId : (seq[0] || '');
+    const index = Math.max(seq.indexOf(id), 0);
+    const base = byId[id] || null;
+
+    let preview = { box: '', entry: null, scale: 1, flipped: false, showGrid: false, bw: [], lw: [], onFlip: undefined };
+    let thumbs = [];
+    if (readerOn && base) {
+      const shown = shownOf(base);
+      const words = wordsFor(base.set);
+      preview = {
+        box: 'width:' + pvW + 'px;height:' + pvH + 'px;position:relative;touch-action:pan-y',
+        entry: shown,
+        scale: pvScale,
+        flipped: !!this.state.flipped[id],
+        showGrid: showGridFor(base.holds),
+        bw: words.base, lw: words.blend,
+        onFlip: () => this.flip(id, shown)
+      };
+      thumbs = seq.map((cid, i) => {
+        const b = byId[cid];
+        const sh = shownOf(b);
+        const cur = cid === id;
+        const w = wordsFor(b.set);
+        return {
+          id: cid,
+          entry: sh,
+          flipped: !!this.state.flipped[cid],
+          showGrid: showGridFor(b.holds),
+          bw: w.base, lw: w.blend,
+          box: 'width:92px;height:128px' + (cur ? ';outline:1px solid var(--white);outline-offset:2px' : ''),
+          aria: sh.titles.join(' \u00b7 ') + ' \u00b7 ' + (i + 1) + ' of ' + seq.length,
+          ariaCurrent: cur ? 'true' : 'false',
+          pick: () => this.focusCard(set, cid)
+        };
+      });
+    }
+
+    const readPicks = ['Reader', 'Sheet'].map(label => {
+      const on = (label === 'Reader') === readerOn;
+      return { label, on, aria: on ? 'true' : 'false', pick: () => this.setState({ readOv: label }) };
+    });
+    const setPicks = C.SETS.map(name => {
+      const on = name === set;
+      return {
+        label: name, on, aria: on ? 'true' : 'false',
+        pick: () => this.setState({ setOv: name, cardOv: null })
+      };
+    });
+
+    const n = index + 1;
+    const reader = { at: (n < 10 ? '0' + n : String(n)) + ' / ' + seq.length };
+    this._ctx = readerOn ? { set, seq, id, index, reader: true } : { set, seq, id, index, reader: false };
+
+    return {
+      waiting: false, sets: S.sets, activeSets,
+      readerOn, sheetOn, readPicks, setPicks, thumbs, preview, reader,
+      onSwipeStart: (e) => this.onSwipeStart(e),
+      onSwipeEnd: (e) => this.onSwipeEnd(e),
+      onThumbKey: (e) => this.onThumbKey(e),
+      ...refs
+    };
+  }
+}
+</script>
+</body>
+</html>

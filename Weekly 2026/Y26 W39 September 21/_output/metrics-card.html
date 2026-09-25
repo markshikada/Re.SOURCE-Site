@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Metrics CARD</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000000;
+    color: #FFFFFF;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+  }
+
+  .stamp {
+    font-size: 12px;
+    font-weight: 400;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 480px;
+    background: #0D0D0D;
+    border: 1px solid #262626;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-bottom: 1px solid #262626;
+    padding-bottom: 24px;
+  }
+
+  .head h1 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .head p {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .stats {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat .label {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .stat .value {
+    font-size: 24px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .stat .value .unit {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .stat .delta {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .spark {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 1px solid #262626;
+    padding-top: 24px;
+  }
+
+  .spark .label {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 48px;
+    width: 100%;
+  }
+
+  .bars i {
+    flex: 1 1 0;
+    background: #000000;
+    border: 1px solid #3DDC97;
+    border-radius: 8px;
+  }
+
+  @media (min-width: 640px) {
+    .stats {
+      flex-direction: row;
+    }
+
+    .stat {
+      flex: 1 1 0;
+    }
+
+    .stat + .stat {
+      border-left: 1px solid #262626;
+      padding-left: 24px;
+    }
+
+    .stat .value {
+      font-size: 36px;
+    }
+  }
+</style>
+</head>
+<body>
+  <p class="stamp">Updated 2026-09-24 01:10</p>
+
+  <section class="card">
+    <header class="head">
+      <h1>Edge cluster</h1>
+      <p>Rolling 24 hours to 14:00</p>
+    </header>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="label">Requests</span>
+        <span class="value">48,210</span>
+        <span class="delta">4,812 more than the previous day</span>
+      </div>
+      <div class="stat">
+        <span class="label">Error rate</span>
+        <span class="value">0.12%</span>
+        <span class="delta">0.03 points better</span>
+      </div>
+      <div class="stat">
+        <span class="label">p95 latency</span>
+        <span class="value">128<span class="unit"> ms</span></span>
+        <span class="delta">6 ms faster</span>
+      </div>
+    </div>
+
+    <div class="spark">
+      <span class="label">Throughput, hour by hour</span>
+      <div class="bars">
+        <i style="height: 20px"></i>
+        <i style="height: 24px"></i>
+        <i style="height: 22px"></i>
+        <i style="height: 28px"></i>
+        <i style="height: 26px"></i>
+        <i style="height: 32px"></i>
+        <i style="height: 30px"></i>
+        <i style="height: 36px"></i>
+        <i style="height: 34px"></i>
+        <i style="height: 40px"></i>
+        <i style="height: 38px"></i>
+        <i style="height: 44px"></i>
+        <i style="height: 42px"></i>
+        <i style="height: 48px"></i>
+        <i style="height: 46px"></i>
+        <i style="height: 48px"></i>
+        <i style="height: 44px"></i>
+        <i style="height: 42px"></i>
+        <i style="height: 40px"></i>
+        <i style="height: 36px"></i>
+        <i style="height: 34px"></i>
+        <i style="height: 30px"></i>
+        <i style="height: 26px"></i>
+        <i style="height: 22px"></i>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
