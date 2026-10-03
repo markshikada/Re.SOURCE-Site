@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The deck · Re.Source</title>
+<style>
+/* ============================================================
+   Re.Source · the deck screen · lane 30 polish round.
+   One file, no external fetches, system fonts.
+
+   Card copy copied verbatim from Projects/Design System/data/deck-data.js
+   (twelve Singles, one per wheel position, every polar in the deck).
+   Tokens copied as written from Projects/Design System/tokens/
+   (colours.css, greys.css, space.css, typography.css, motion.css).
+
+   The deck lattice law, held here:
+   · one lattice     every card sits on one grid, the open card takes
+                     tracks from that same grid, never a panel beside it
+   · one gap         between cards, between rows, between the open card
+                     and its foot: one number per breakpoint
+   · count divides   6 above 1080 and 3 below it in portrait, both of
+                     which divide twelve; at 390 the deck is 4 rows of 3
+   · nothing stretches  the sheet is capped at its lattice width and the
+                     leftover is margin; cards are 5:7 at every width
+   · whole geometry  tracks are fixed whole pixels (110 x 154 at 390,
+                     200 x 280 at 1440) so every measured coordinate is
+                     a whole number whether or not the frame carries a
+                     scrollbar; the same card size steps between the two
+   · no decimals     every size, spacing, coordinate and radius in this
+                     file is a whole number; radius 8 / 12 / 24 only
+   · colour is a stroke on a shape  black fill, coloured stroke, white
+                     text; the twelve position colours and greys only
+   · type 12 / 18 / 24 / 36 / 48, leading on the 6px unit (30 excepted)
+   ============================================================ */
+
+:root{
+  /* greys.css */
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+
+  /* colours.css · twelve positions at 30 degree steps on a 360 degree wheel */
+  --cl-01:#99DD00;
+  --cl-02:#FFD100;
+  --cl-03:#FFB000;
+  --cl-04:#FF7700;
+  --cl-05:#FF5500;
+  --cl-06:#FF0000;
+  --cl-07:#E02888;
+  --cl-08:#9933CC;
+  --cl-09:#6655FF;
+  --cl-10:#2277FF;
+  --cl-11:#00BBDD;
+  --cl-12:#00D460;
+  --stroke:3px;
+
+  /* space.css · 2:3:6 harmonic on u = 4px */
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:24px;
+  --space-xl:48px;
+  --space-2xl:96px;
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:24px;
+
+  /* typography.css */
+  --fs-caption:12px;
+  --fs-body:18px;
+  --fs-h2:24px;
+  --fs-h1:36px;
+  --fs-display:48px;
+  --lh-caption:18px;
+  --lh-body:30px;
+  --lh-h2:36px;
+  --lh-h1:48px;
+  --lh-display:54px;
+  --fw-caption:300;
+  --fw-body:400;
+  --fw-h2:600;
+  --fw-h1:700;
+  --fw-display:800;
+  --font-sans:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  /* motion.css · the 60ms unit, keyword curves so no number here is a decimal */
+  --unit:60ms;
+  --dur-sm:120ms;
+  --dur-md:180ms;
+  --dur-lg:360ms;
+
+  /* the lattice at this breakpoint: small portrait phone */
+  --cols:3;
+  --col:90px;
+  --gap:8px;
+  --pad:12px;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--surface-page);
+  color:var(--text-primary);
+  font-family:var(--font-sans);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-optical-sizing:auto;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* the field margin, and the lattice itself */
+.pad{padding-left:var(--pad);padding-right:var(--pad)}
+.sheet{
+  display:grid;
+  grid-template-columns:repeat(var(--cols),var(--col));
+  gap:var(--gap);
+  width:100%;
+  max-width:calc(var(--cols) * var(--col) + (var(--cols) - 1) * var(--gap));
+  justify-content:start;
+}
+
+/* ---------- header ---------- */
+.head{padding-top:var(--space-xl);padding-bottom:0}
+.h1{
+  margin:0;
+  font-size:var(--fs-h1);
+  line-height:var(--lh-h1);
+  font-weight:var(--fw-display);
+}
+.meta{
+  margin:0;
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+}
+.head .meta{margin-top:var(--space-sm)}
+.hud{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:var(--space-md);
+  margin-top:var(--space-lg);
+}
+.legend{
+  margin:0;
+  flex:1 1 264px;
+  max-width:504px;
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+}
+
+/* ---------- controls ---------- */
+.btn{
+  min-height:48px;
+  padding:var(--space-md) var(--space-lg);
+  background:var(--black);
+  color:var(--text-primary);
+  border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-sm);
+  font-family:var(--font-sans);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-h2);
+  cursor:pointer;
+  transition:background-color var(--dur-sm) ease-out,border-color var(--dur-sm) ease-out,transform var(--dur-sm) ease-out;
+}
+.btn:hover{background:var(--surface-raised);border-color:var(--g66);transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+.chip{
+  min-height:48px;
+  padding:var(--space-md) var(--space-lg);
+  background:var(--black);
+  color:var(--text-primary);
+  border:var(--stroke) solid var(--pc);
+  border-radius:var(--radius-sm);
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-h2);
+  cursor:pointer;
+  transition:background-color var(--dur-sm) ease-out,transform var(--dur-sm) ease-out;
+}
+.chip:hover{background:var(--surface-raised);transform:translateY(-2px)}
+.chip:active{transform:translateY(0)}
+.chip:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+
+/* ---------- the closed card ---------- */
+.card{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:var(--space-sm);
+  width:100%;
+  aspect-ratio:5 / 7;
+  padding:var(--space-md);
+  overflow:hidden;
+  background:var(--black);
+  color:var(--text-primary);
+  border:var(--stroke) solid var(--pc);
+  border-radius:var(--radius-md);
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+  transition:transform var(--dur-sm) ease-out,background-color var(--dur-sm) ease-out;
+}
+.card:hover{transform:translateY(-2px);background:var(--surface-raised)}
+.card:active{transform:translateY(0)}
+.card:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+.card.is-open{background:var(--surface-raised)}
+.card-top{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-sm);width:100%}
+.pip{
+  display:grid;
+  place-items:center;
+  width:24px;
+  height:24px;
+  flex:0 0 auto;
+  background:var(--black);
+  border:var(--stroke) solid var(--pc);
+  border-radius:var(--radius-sm);
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+}
+.mark,.open-tag{
+  display:none;
+  padding:var(--space-xs) var(--space-sm);
+  background:var(--black);
+  border:var(--stroke) solid var(--g88);
+  border-radius:var(--radius-sm);
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+}
+.card.marked .mark{display:inline-block}
+.card.is-open .open-tag{display:inline-block}
+.card-title{
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+}
+.card-gloss{
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  color:var(--text-primary);
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3;
+  overflow:hidden;
+}
+.card-rel{
+  margin-top:auto;
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+}
+@media (max-width:720px){.card-gloss{display:none}}
+
+/* ---------- the open card and its foot, one object ----------
+   Above 1081 the pair are grid items on the lattice: the open card
+   takes two tracks by two rows, its foot takes two tracks under it,
+   and the twelve closed cards fill the twelve tracks beside them.
+   Below 1081 the same pair becomes the bottom sheet. */
+.focus{display:contents}
+.open{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-md);
+  padding:var(--space-lg);
+  background:var(--black);
+  border:var(--stroke) solid var(--pc);
+  border-radius:var(--radius-md);
+  min-height:0;
+  overflow-y:auto;
+}
+.open-head{display:flex;align-items:center;gap:var(--space-md)}
+.open-head .meta{flex:1 1 auto}
+.open-title{
+  margin:0;
+  font-size:var(--fs-display);
+  line-height:var(--lh-display);
+  font-weight:var(--fw-display);
+}
+.open-pos{
+  margin:0;
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+}
+.open-gloss{
+  margin:0;
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+}
+.open-reading{
+  margin:0;
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+}
+.open-q{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-xs);
+  padding:var(--space-md);
+  background:var(--black);
+  border:var(--stroke) solid var(--pc);
+  border-radius:var(--radius-sm);
+}
+.q-text{
+  margin:0;
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+}
+.open-rel{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:var(--space-sm);
+  margin-top:auto;
+}
+.foot{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:var(--space-md);
+  padding:var(--space-lg);
+  background:var(--black);
+  border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-md);
+}
+.foot-controls{display:flex;flex-direction:column;gap:var(--space-md)}
+.foot-row{display:flex;flex-wrap:wrap;gap:var(--space-sm)}
+
+/* ---------- lattice counts ----------
+   6 columns above 1080, 3 columns below it in portrait, 6 in landscape.
+   Every count divides twelve. The track is a fixed whole number of pixels
+   at each step, so every measured coordinate stays whole whether or not
+   the frame carries a scrollbar: 6 x 200 + 5 x 24 = 1320 at 1440 and
+   3 x 110 + 2 x 8 = 346 at 390. Every step is sized for the narrowest
+   frame it can meet, so nothing ever crosses the margin, and everything
+   the frame does not spend is margin: nothing stretches into it. */
+@media (max-width:324px){:root{--col:75px}}
+@media (min-width:385px) and (max-width:720px) and (orientation:portrait){:root{--col:110px}}
+@media (max-width:588px) and (orientation:landscape){:root{--col:80px}}
+@media (min-width:589px) and (max-width:720px) and (orientation:landscape){:root{--col:85px}}
+@media (min-width:721px) and (max-width:1080px) and (orientation:portrait){
+  :root{--cols:3;--col:200px;--gap:12px;--pad:24px}
+}
+@media (min-width:721px) and (max-width:859px) and (orientation:landscape){
+  :root{--cols:6;--col:95px;--gap:12px;--pad:24px}
+}
+@media (min-width:860px) and (max-width:1080px) and (orientation:landscape){
+  :root{--cols:6;--col:110px;--gap:12px;--pad:24px}
+}
+@media (min-width:1081px){
+  :root{--cols:6;--gap:24px;--pad:48px}
+  .h1{font-size:var(--fs-display);line-height:var(--lh-display)}
+  .open{grid-column:5 / span 2;grid-row:1 / span 2}
+  .foot{grid-column:5 / span 2;grid-row:3 / span 1}
+}
+@media (min-width:1081px) and (max-width:1130px){:root{--col:140px}}
+@media (min-width:1131px) and (max-width:1280px){:root{--col:150px}}
+@media (min-width:1281px) and (max-width:1430px){:root{--col:175px}}
+@media (min-width:1431px){:root{--col:200px}}
+
+/* the bottom sheet, every frame under 1081. Its ceiling is a whole
+   number of pixels in each height band, never a fraction of the frame,
+   and it leaves the top of the lattice standing so the deck behind it
+   stays legible while the card is open. There is deliberately no scrim
+   over that deck: a card behind the sheet answers a tap with one click,
+   exactly as at 1440, and tapping empty ground closes the sheet. */
+@media (max-width:1080px){
+  .focus{
+    display:flex;
+    flex-direction:column;
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:20;
+    max-height:488px;
+    background:var(--black);
+    border-top:var(--stroke) solid var(--pc);
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+  }
+  .open{
+    flex:1 1 auto;
+    min-height:0;
+    padding:var(--space-lg) var(--pad);
+    border:0;
+  }
+  .foot{
+    flex:0 0 auto;
+    justify-content:flex-start;
+    padding:var(--space-md) var(--pad) var(--space-lg);
+    border:0;
+  }
+}
+@media (max-width:1080px) and (max-height:680px){.focus{max-height:420px}}
+@media (max-width:1080px) and (max-height:576px){.focus{max-height:336px}}
+
+/* ---------- the deal ----------
+   The deck arrives in position order on the 60ms unit. It re-deals on
+   the Deal control, by pointer or by keyboard. The fill is backwards so
+   the arrival ends where the card's own hover and press live: a filled
+   forwards transform would hold the end frame and swallow the hover. */
+@keyframes rise{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.sheet.deal .card{
+  animation:rise var(--dur-lg) ease-out backwards;
+  animation-delay:calc(var(--i) * 60ms);
+}
+.sheet.deal .focus{
+  animation:rise var(--dur-lg) ease-out backwards;
+  animation-delay:0ms;
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:1ms!important;
+    animation-delay:0ms!important;
+    transition-duration:1ms!important;
+  }
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Polish-mimopro.html</span>
+</nav>
+
+<header class="head pad">
+  <h1 class="h1">The deck</h1>
+  <p class="meta">Re.Source · twelve printed cards in position order 01 to 12 · every card names its polar</p>
+  <div class="hud">
+    <button class="btn" type="button" id="deal">Deal</button>
+    <p class="meta" id="readout">3 columns · 12 cards</p>
+    <p class="legend">Pointer · hover to draw a card, click to open it, click another to switch. Keyboard · arrow keys deal, Enter opens, Esc closes, D deals again.</p>
+  </div>
+</header>
+
+<main class="pad">
+  <div class="sheet" id="sheet">
+    <div class="focus" id="focus" style="--i:12" hidden>
+      <article class="open" id="open" aria-live="polite"></article>
+      <div class="foot" id="foot">
+        <p class="meta">CONTROLS</p>
+        <div class="foot-controls">
+          <div class="foot-row">
+            <button class="btn" type="button" data-act="prev">&#8249; Prev</button>
+            <button class="btn" type="button" data-act="next">Next &#8250;</button>
+          </div>
+          <p class="meta" id="footread">01 / 12</p>
+          <p class="meta">Click any card to switch · Esc closes</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  /* Twelve real cards, copied verbatim from
+     Projects/Design System/data/deck-data.js (fields: titles, set, ring,
+     type, holds, gloss, reading, question, lastLabel, last). One card per
+     wheel position, so the twelve position colours each appear once and
+     every polar partner sits in this deck: partner is index plus six. */
+  var CARDS = [
+    {id:'r-single-01',title:'TONE',pos:'01',set:'Abstract REALM',ring:'outer',type:'Single',holds:1,gloss:'The pitch a place is set at',reading:'A room is already saying its piece before anyone speaks in it, and whatever is said next is heard through it.',question:'Which tone dominates the current environment?',relLabel:'Polar',relWord:'PATH'},
+    {id:'s-single-02',title:'HIGH',pos:'02',set:'Aspect STATE',ring:'mid',type:'Single',holds:1,gloss:'Intensity above the baseline',reading:'The threshold where perception widens, whether by clarity or by intoxication. Vivid, and by definition temporary.',question:'How high is this running?',relLabel:'Polar',relWord:'MIND'},
+    {id:'t-single-03',title:'ART',pos:'03',set:'Anchor TAG',ring:'inner',type:'Single',holds:1,gloss:'Experience, turned into form',reading:'A medium worked on purpose until it carries meaning. What was private becomes something others can hold.',question:'What pattern are you consciously shaping here?',relLabel:'Polar',relWord:'AIM'},
+    {id:'r-single-04',title:'LOVE',pos:'04',set:'Abstract REALM',ring:'outer',type:'Single',holds:1,gloss:'The gravity that ends isolation',reading:'It pulls separate things into one thing and holds them there. Less a feeling than a structural necessity, which is why its absence shows up as drift.',question:'What is drawing you closer right now?',relLabel:'Polar',relWord:'FORM'},
+    {id:'s-single-05',title:'NEED',pos:'05',set:'Aspect STATE',ring:'mid',type:'Single',holds:1,gloss:'The deficit that cannot wait',reading:'Everything secondary falls away in its presence. The requirement is not negotiable, only met or unmet.',question:'What is the minimum that sustains you here?',relLabel:'Polar',relWord:'MODE'},
+    {id:'t-single-06',title:'MAX',pos:'06',set:'Anchor TAG',ring:'inner',type:'Single',holds:1,gloss:'Capacity, at its own edge',reading:'Full output, with no margin left. Integrity gets tested at exactly that point.',question:'What is stretched to its limit right now?',relLabel:'Polar',relWord:'ECO'},
+    {id:'r-single-07',title:'PATH',pos:'07',set:'Abstract REALM',ring:'outer',type:'Single',holds:1,gloss:'A line forward, made of steps',reading:'Each step narrows what comes next, which is what makes a direction out of a series. It is only visible once a few have been taken.',question:'What is opening up ahead?',relLabel:'Polar',relWord:'TONE'},
+    {id:'s-single-08',title:'MIND',pos:'08',set:'Aspect STATE',ring:'mid',type:'Single',holds:1,gloss:'Attention working on something, turning it over',reading:'The working space of logic and strategy. It seeks to understand in order to control.',question:'Which idea is being assembled?',relLabel:'Polar',relWord:'HIGH'},
+    {id:'t-single-09',title:'AIM',pos:'09',set:'Anchor TAG',ring:'inner',type:'Single',holds:1,gloss:'Scatter, pulled to one point',reading:'A target selected so that action stops drifting. Everything immediate lines up behind it.',question:'Where exactly is your focus pointing?',relLabel:'Polar',relWord:'ART'},
+    {id:'r-single-10',title:'FORM',pos:'10',set:'Abstract REALM',ring:'outer',type:'Single',holds:1,gloss:'The edge that makes a thing',reading:'Nothing can be handled until it has a limit. Definition is the price of being recognisable.',question:'What gives this its shape?',relLabel:'Polar',relWord:'LOVE'},
+    {id:'s-single-11',title:'MODE',pos:'11',set:'Aspect STATE',ring:'mid',type:'Single',holds:1,gloss:'The setting you are running in',reading:'How energy is spent, and on what terms. Changing it changes the whole method without changing the intent.',question:'How are you configured right now?',relLabel:'Polar',relWord:'NEED'},
+    {id:'t-single-12',title:'ECO',pos:'12',set:'Anchor TAG',ring:'inner',type:'Single',holds:1,gloss:'Nothing here operates alone',reading:'Every action ripples through what surrounds it. Dependence is mutual whether or not it gets acknowledged.',question:'How is the wider world answering you?',relLabel:'Polar',relWord:'MAX'}
+  ];
+
+  var N = CARDS.length;
+  CARDS.forEach(function(c, i){
+    c.i = i;
+    c.partner = (i + 6) % N;
+    c.deg = (parseInt(c.pos, 10) % 12) * 30;
+    c.relPos = CARDS[c.partner].pos;
+  });
+
+  var sheet = document.getElementById('sheet');
+  var focusEl = document.getElementById('focus');
+  var openEl = document.getElementById('open');
+  var footEl = document.getElementById('foot');
+  var footRead = document.getElementById('footread');
+  var readout = document.getElementById('readout');
+  var dealBtn = document.getElementById('deal');
+  var cards = [];
+  var open = null;
+  var current = 0;
+
+  /* build the twelve closed cards on the lattice */
+  CARDS.forEach(function(c, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'card';
+    b.setAttribute('aria-expanded', 'false');
+    b.setAttribute('aria-label', c.title + ', position ' + c.pos + ' of 12, polar ' + c.relWord);
+    b.style.cssText = '--pc:var(--cl-' + c.pos + ');--i:' + i;
+    b.dataset.i = String(i);
+    b.innerHTML =
+      '<span class="card-top">' +
+        '<span class="pip">' + c.pos + '</span>' +
+        '<span class="mark">POLAR</span>' +
+        '<span class="open-tag">OPEN</span>' +
+      '</span>' +
+      '<span class="card-title">' + c.title + '</span>' +
+      '<span class="card-gloss">' + c.gloss + '</span>' +
+      '<span class="card-rel">' + c.relLabel + ' · ' + c.relWord + '</span>';
+    b.addEventListener('click', function(){ toggle(i); });
+    b.addEventListener('pointerenter', function(){ markPartner(i); });
+    b.addEventListener('pointerleave', function(){ markPartner(open); });
+    b.addEventListener('focus', function(){ markPartner(i); });
+    b.addEventListener('blur', function(){ markPartner(open); });
+    sheet.insertBefore(b, focusEl);
+    cards.push(b);
+  });
+
+  function markPartner(i){
+    cards.forEach(function(b, j){
+      b.classList.toggle('marked', i !== null && j === CARDS[i].partner);
+    });
+  }
+
+  function openMarkup(c){
+    return '' +
+      '<div class="open-head">' +
+        '<span class="pip">' + c.pos + '</span>' +
+        '<p class="meta">' + c.set + ' · ' + c.ring + ' ring · ' + c.type.toLowerCase() + ' · holds ' + c.holds + '</p>' +
+        '<button class="btn" type="button" data-act="close">Close</button>' +
+      '</div>' +
+      '<h2 class="open-title">' + c.title + '</h2>' +
+      '<p class="open-pos">POSITION ' + c.pos + ' / 12 · ' + c.deg + '°</p>' +
+      '<p class="open-gloss">' + c.gloss + '</p>' +
+      '<p class="open-reading">' + c.reading + '</p>' +
+      '<div class="open-q">' +
+        '<p class="meta">QUESTION</p>' +
+        '<p class="q-text">' + c.question + '</p>' +
+      '</div>' +
+      '<div class="open-rel">' +
+        '<p class="meta">RELATIONS</p>' +
+        '<button class="chip" type="button" data-open="' + c.partner + '">' + c.relLabel + ' · ' + c.relWord + ' · ' + c.relPos + '</button>' +
+      '</div>';
+  }
+
+  function render(){
+    cards.forEach(function(b, i){
+      var is = (open === i);
+      b.classList.toggle('is-open', is);
+      b.setAttribute('aria-expanded', is ? 'true' : 'false');
+      b.tabIndex = (i === current) ? 0 : -1;
+    });
+    if(open === null){
+      focusEl.hidden = true;
+      markPartner(null);
+    }else{
+      var c = CARDS[open];
+      openEl.innerHTML = openMarkup(c);
+      openEl.style.setProperty('--pc', 'var(--cl-' + c.pos + ')');
+      focusEl.style.setProperty('--pc', 'var(--cl-' + c.pos + ')');
+      footRead.textContent = c.pos + ' / 12 · ' + c.relLabel + ' ' + c.relWord + ' ' + c.relPos;
+      focusEl.hidden = false;
+      markPartner(open);
+    }
+  }
+
+  function setOpen(i){
+    open = i;
+    current = i;
+    render();
+    cards[i].focus();
+  }
+
+  function toggle(i){
+    if(open === i){
+      close();
+    }else{
+      setOpen(i);
+    }
+  }
+
+  function close(){
+    var was = open;
+    open = null;
+    render();
+    if(was !== null){ cards[was].focus(); }
+  }
+
+  function step(d){
+    var from = (open === null) ? current : open;
+    var t = ((from + d) % N + N) % N;
+    setOpen(t);
+  }
+
+  /* dealing: the deck arrives again in position order */
+  function deal(){
+    open = null;
+    current = 0;
+    render();
+    sheet.classList.remove('deal');
+    void sheet.offsetWidth;
+    sheet.classList.add('deal');
+  }
+
+  function colCount(){
+    var cols = getComputedStyle(sheet).gridTemplateColumns.split(' ');
+    return cols.length || 1;
+  }
+
+  /* how many cards stand in one visible row, read off the lattice itself:
+     six closed on the desktop sheet, four beside the open card, three on
+     the phone. Arrow keys deal along what the eye can see. */
+  function rowSpan(){
+    var tops = cards.map(function(b){ return Math.round(b.getBoundingClientRect().top); });
+    var first = tops[0];
+    var n = 0;
+    for(var i = 0; i < tops.length; i++){
+      if(tops[i] === first){ n++; } else { break; }
+    }
+    return n || 1;
+  }
+
+  function focusCard(t){
+    current = t;
+    cards.forEach(function(b, j){ b.tabIndex = (j === t) ? 0 : -1; });
+    cards[t].focus();
+    if(open !== null){ setOpen(t); }
+  }
+
+  function updateReadout(){
+    readout.textContent = colCount() + ' columns · ' + N + ' cards';
+  }
+
+  /* pointer, on the open card's own controls */
+  openEl.addEventListener('click', function(e){
+    var act = e.target.closest('[data-act]');
+    if(act && act.dataset.act === 'close'){ close(); return; }
+    var chip = e.target.closest('[data-open]');
+    if(chip){ setOpen(Number(chip.dataset.open)); }
+  });
+  footEl.addEventListener('click', function(e){
+    var act = e.target.closest('[data-act]');
+    if(!act){ return; }
+    if(act.dataset.act === 'prev'){ step(-1); }
+    if(act.dataset.act === 'next'){ step(1); }
+  });
+  dealBtn.addEventListener('click', deal);
+
+  /* tapping empty ground closes: cards and controls answer their own
+     clicks first, so the deck behind the sheet still switches in one */
+  document.addEventListener('click', function(e){
+    if(open === null){ return; }
+    if(e.target.closest('.card')){ return; }
+    if(e.target.closest('.focus')){ return; }
+    if(e.target.closest('button')){ return; }
+    close();
+  });
+
+  /* keyboard: dealing, opening, closing */
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      if(open !== null){ e.preventDefault(); close(); }
+      return;
+    }
+    if(e.key === 'd' || e.key === 'D'){
+      e.preventDefault();
+      deal();
+      return;
+    }
+    var cols = rowSpan();
+    var moves = {ArrowLeft:-1, ArrowRight:1, ArrowUp:-cols, ArrowDown:cols};
+    if(e.key in moves){
+      e.preventDefault();
+      var t = current + moves[e.key];
+      if(t >= 0 && t < N){ focusCard(t); }
+      return;
+    }
+    if(e.key === 'Home'){ e.preventDefault(); focusCard(0); }
+    if(e.key === 'End'){ e.preventDefault(); focusCard(N - 1); }
+  });
+
+  window.addEventListener('resize', updateReadout);
+  updateReadout();
+  render();
+  deal();
+})();
+</script>
+</body>
+</html>

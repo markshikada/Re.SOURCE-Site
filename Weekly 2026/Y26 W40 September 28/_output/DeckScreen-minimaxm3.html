@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Word DECK — twelve cards, one open</title>
+<style>
+/* ============================================================
+   TOKENS — taken verbatim from Projects/Design System/tokens/
+   ============================================================ */
+:root{
+  /* colours.css — twelve positions at 30 degree steps on a 360 degree wheel.
+     Colour is a stroke on a shape, never a fill behind text. */
+  --cl-00-core:transparent;
+  --cl-01-tone:#99DD00;
+  --cl-02-flux:#FFD100;
+  --cl-03-flow:#FFB000;
+  --cl-04-love:#FF7700;
+  --cl-05-bond:#FF5500;
+  --cl-06-fire:#FF0000;
+  --cl-07-path:#E02888;
+  --cl-08-time:#9933CC;
+  --cl-09-meta:#6655FF;
+  --cl-10-form:#2277FF;
+  --cl-11-type:#00BBDD;
+  --cl-12-life:#00D460;
+  --stroke:3px;
+
+  /* greys.css */
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+
+  /* space.css — 2:3:6 on u = 4px. Whole numbers only. */
+  --u:4px;
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:24px;
+  --space-xl:48px;
+  --space-2xl:96px;
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:24px;
+
+  /* typography.css — six-size scale. Letter spacing never declared. */
+  --fs-caption:12px; --lh-caption:18px; --fw-caption:300;
+  --fs-body:18px;    --lh-body:30px;    --fw-body:400;
+  --fs-h2:24px;      --lh-h2:36px;      --fw-h2:600;
+  --fs-h1:36px;      --lh-h1:48px;      --fw-h1:700;
+  --fs-display:48px; --lh-display:54px; --fw-display:800;
+
+  /* Figtree + JetBrains Mono are the system's faces.
+     Self-contained — no external fetch — so we read them from the
+     system stack first, then fall through to the closest installed
+     alternate. A reader with neither installed sees the OS default. */
+  --font-sans:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--surface-page);color:var(--text-primary)}
+body{
+  font-family:var(--font-sans);
+  min-height:100vh;
+  padding:var(--space-lg);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ============================================================
+   THE LATTICE
+   One lattice. 6 columns, the widest that fits.
+   Every band a grid on the same tracks.
+   The column count divides the deck (6 × 2 = 12).
+   Nothing stretches. Nothing uses space-between.
+   ============================================================ */
+.stage{
+  max-width:1248px;
+  margin:0 auto;
+}
+
+/* A band is a row of the deck. The key sits ABOVE the row. */
+.band + .band{margin-top:var(--space-2xl)}
+
+.band-key{
+  display:flex;
+  align-items:baseline;
+  gap:var(--space-md);
+  margin-bottom:var(--space-lg);
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+}
+.band-key::after{
+  content:"";
+  flex:0 0 var(--stroke);
+  height:var(--stroke);
+  background:var(--surface-border);
+  align-self:center;
+}
+.band-key .num{
+  color:var(--text-dim);
+}
+.band-key .label{
+  color:var(--text-primary);
+}
+
+/* The row of cards. 6 columns on desktop, gap = space-lg. */
+.row{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:var(--space-lg);
+}
+
+/* Phone: halve the field. 3 columns × 4 rows = 12.
+   Below 720 the lattice reflows. Below 1081 but above 720 stays at 6. */
+@media (max-width:719px){
+  .row{
+    grid-template-columns:repeat(3,1fr);
+    gap:var(--space-md);
+  }
+  body{padding:var(--space-md)}
+  .band + .band{margin-top:var(--space-xl)}
+  /* On a phone the cards are tight. Hide the gloss and trim the marks.
+     The word and its stroke still read. */
+  .card{padding:var(--space-sm);min-height:216px}
+  .card-gloss{display:none}
+  .marks{gap:var(--space-xs)}
+  .mark{width:14px;height:14px;border-width:var(--stroke)}
+  .card-foot{flex-wrap:wrap;gap:var(--space-xs)}
+  .counter{display:none}
+}
+
+/* ============================================================
+   THE CARD (at rest)
+   3px stroke, coloured, black fill, white text.
+   The card is the printed card laid on the table.
+   ============================================================ */
+.card{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  background:var(--surface-card);
+  border:var(--stroke) solid var(--cl-10-form);
+  border-radius:var(--radius-md);
+  padding:var(--space-md);
+  min-height:264px;
+  overflow:hidden;
+  /* the lattice defines width; the card fills its cell */
+}
+
+/* For compound cards, the stroke is split into N segments
+   via background painted into border-box. Rounded corners survive. */
+.card.is-pair,
+.card.is-triad,
+.card.is-base,
+.card.is-blend{
+  border-color:transparent;
+  background:
+    var(--surface-card) padding-box,
+    var(--card-stroke) border-box;
+}
+
+/* Core — the void. No position colour. A dim border marks the absence. */
+.card.is-core{
+  border-color:var(--g24);
+  background:var(--surface-card);
+}
+
+/* ============================================================
+   CARD FURNITURE
+   ============================================================ */
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:var(--space-xs);
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-dim);
+  text-transform:uppercase;
+}
+/* Position cluster — long on a triad/base/blend. On a phone it wraps
+   below the type label. The badge keeps the scale: 12px. */
+.card-head .pos-num{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:24px;
+  height:24px;
+  padding:0 var(--space-xs);
+  border:var(--stroke) solid currentColor;
+  border-radius:var(--radius-sm);
+  color:var(--text-primary);
+  font-weight:var(--fw-h2);
+  font-size:var(--fs-caption);
+  line-height:1;
+}
+.card.is-core .card-head{color:var(--g48)}
+
+@media (max-width:719px){
+  .card-head{
+    flex-wrap:wrap;
+  }
+  .card-head .pos-num{
+    flex:0 1 auto;
+  }
+}
+
+.card-body{
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:var(--space-md) 0;
+}
+
+.card-words{
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h1);
+  color:var(--text-primary);
+  text-transform:uppercase;
+  /* letter spacing never declared */
+}
+/* Single word — full H1 / 700 / 24px line fits without overflow.
+   But on a wider cell we have room — bump. */
+.card.is-core .card-words,
+.card.is-single .card-words{
+  font-size:var(--fs-h1);
+  line-height:var(--lh-h1);
+  font-weight:var(--fw-display);
+}
+
+/* Pair: two words stacked, separated by a small dot row */
+.card.is-pair .card-words{display:flex;flex-direction:column;gap:var(--space-xs)}
+.card.is-pair .card-words > span{display:block}
+
+/* Triad: PRIME / PART is the title; the three positions are marks */
+.card.is-triad .card-words{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-display)}
+
+/* Base/Blend: the label is the title; six positions are marks */
+.card.is-base .card-words,
+.card.is-blend .card-words{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-display)}
+
+/* Tiny marks: row of position dots for compound cards */
+.marks{
+  display:flex;
+  gap:var(--space-xs);
+  margin-top:var(--space-md);
+}
+/* A position mark: an 18px disc with a 3px black hairline at its edge.
+   Black fill of the card body shows through the hairline and reads as the
+   "between" between marks. The colour never sits behind a word. */
+.mark{
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  border:var(--stroke) solid var(--surface-card);
+  background:var(--own);
+}
+
+/* Footer of the card: row label and counter label */
+.card-foot{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+}
+.card-foot .row-tag{color:var(--text-primary)}
+.card-foot .polar{color:var(--text-dim)}
+
+/* Gloss — a single line of body text under the word(s) */
+.card-gloss{
+  margin-top:var(--space-sm);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  color:var(--text-secondary);
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+/* Counter label sits below the gloss on compound cards */
+.counter{
+  margin-top:var(--space-sm);
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-dim);
+  text-transform:uppercase;
+}
+
+/* ============================================================
+   THE OPEN CARD
+   One card is lifted off the deck and laid out flat, full face.
+   It keeps its lattice cell, grows downward to show reading + question.
+   A 3-col-wide "shadow band" marks its position on the table —
+   the space it came from — without using a drop shadow.
+   ============================================================ */
+.open-card{
+  background:var(--surface-card);
+  border:var(--stroke) solid var(--cl-02-flux);
+  border-radius:var(--radius-md);
+  padding:var(--space-lg);
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-lg);
+  min-height:264px;
+}
+
+.open-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+}
+.open-head .pos-cluster{display:flex;gap:var(--space-xs);align-items:center}
+.open-head .pos-cluster .p{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:24px;
+  height:24px;
+  padding:0 var(--space-xs);
+  border:var(--stroke) solid currentColor;
+  border-radius:var(--radius-sm);
+  color:var(--text-primary);
+  font-weight:var(--fw-h2);
+}
+
+.open-title{
+  font-size:var(--fs-h1);
+  line-height:var(--lh-h1);
+  font-weight:var(--fw-display);
+  color:var(--text-primary);
+  text-transform:uppercase;
+}
+
+.open-gloss{
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+}
+
+.open-section{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-sm);
+}
+.open-section .lab{
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-dim);
+  text-transform:uppercase;
+}
+.open-section .body{
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  color:var(--text-primary);
+}
+.open-section.q .body{
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+}
+
+/* The triangle mark inside the open TRIAD card — three small dots at
+   the apexes of a triangle, each in its own position colour. */
+.triad-mark{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:var(--space-lg);
+  align-items:center;
+  padding:var(--space-md) 0;
+}
+.triad-mark .node{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:var(--space-xs);
+}
+.triad-mark .dot{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:var(--own);
+}
+.triad-mark .lbl{
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+  text-transform:uppercase;
+}
+
+/* The counter cross-reference under the open card */
+.open-counter{
+  display:flex;
+  gap:var(--space-md);
+  align-items:center;
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+}
+.open-counter .pip{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:var(--cl-12-life);
+}
+
+/* ============================================================
+   THE OPEN CARD'S LATTICE CELL — show it as "lifted"
+   ============================================================ */
+.is-lifted{
+  border-color:transparent;
+  background:
+    var(--surface-card) padding-box,
+    var(--card-stroke) border-box;
+  /* dim: an outline only, marking where the card came from */
+  opacity:1;
+}
+.is-lifted .card-words,
+.is-lifted .card-head,
+.is-lifted .card-foot,
+.is-lifted .card-gloss,
+.is-lifted .counter,
+.is-lifted .marks{
+  opacity:0.42;
+}
+
+/* ============================================================
+   MOBILE — bottom sheet for the open card
+   On a phone the lattice keeps its 3-col count and the open card
+   becomes a sheet at the foot, capped at half the frame, head
+   pinned, body scrolls.
+   ============================================================ */
+@media (max-width:719px){
+  .open-card{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+    padding:var(--space-lg);
+    max-height:60vh;
+    overflow-y:auto;
+    z-index:10;
+  }
+  .open-card::before{
+    content:"";
+    display:block;
+    width:48px;
+    height:var(--stroke);
+    background:var(--g48);
+    margin:0 auto var(--space-md);
+    border-radius:var(--radius-sm);
+  }
+  /* The lifted cell collapses — the card is in the sheet now */
+  .is-lifted{
+    display:none;
+  }
+}
+
+/* ============================================================
+   Reduced motion — nothing in this page moves by default, so no
+   keyframes to collapse. Held here in case any future motion lands.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important;animation:none !important}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/DeckScreen-minimaxm3.html</span>
+</nav>
+<main class="stage" aria-label="Twelve cards of the deck">
+
+  <!-- ============ BAND 1 — CORE · SINGLE ============ -->
+  <section class="band" data-band="atoms">
+    <div class="band-key" aria-hidden="true">
+      <span class="num">01</span><span class="label">Core · Single</span>
+    </div>
+    <div class="row">
+
+      <!-- CORE: r-core (ZONE) — void -->
+      <article class="card is-core" aria-label="ZONE — core of Abstract REALM">
+        <div class="card-head">
+          <span class="pos-num">00</span>
+          <span>Core</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">ZONE</div>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">Realm</span>
+          <span class="polar">Void</span>
+        </div>
+      </article>
+
+      <!-- CORE: s-core (HERE) — void -->
+      <article class="card is-core" aria-label="HERE — core of Aspect STATE">
+        <div class="card-head">
+          <span class="pos-num">00</span>
+          <span>Core</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">HERE</div>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">State</span>
+          <span class="polar">Void</span>
+        </div>
+      </article>
+
+      <!-- CORE: t-core (YOU) — void -->
+      <article class="card is-core" aria-label="YOU — core of Anchor TAG">
+        <div class="card-head">
+          <span class="pos-num">00</span>
+          <span>Core</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">YOU</div>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">Tag</span>
+          <span class="polar">Void</span>
+        </div>
+      </article>
+
+      <!-- SINGLE: r-single-10 (FORM) — position 10 -->
+      <article class="card is-single"
+        style="border-color:var(--cl-10-form)"
+        aria-label="FORM — Abstract REALM, position 10, polar LOVE">
+        <div class="card-head">
+          <span class="pos-num">10</span>
+          <span>Single</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">FORM</div>
+          <p class="card-gloss">The edge that makes a thing</p>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">Realm</span>
+          <span class="polar">Polar Love</span>
+        </div>
+      </article>
+
+      <!-- SINGLE: s-single-08 (MIND) — position 8 -->
+      <article class="card is-single"
+        style="border-color:var(--cl-08-time)"
+        aria-label="MIND — Aspect STATE, position 8, polar HIGH">
+        <div class="card-head">
+          <span class="pos-num">08</span>
+          <span>Single</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">MIND</div>
+          <p class="card-gloss">Attention working on something, turning it over</p>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">State</span>
+          <span class="polar">Polar High</span>
+        </div>
+      </article>
+
+      <!-- SINGLE: t-single-03 (ART) — position 3 -->
+      <article class="card is-single"
+        style="border-color:var(--cl-03-flow)"
+        aria-label="ART — Anchor TAG, position 3, polar AIM">
+        <div class="card-head">
+          <span class="pos-num">03</span>
+          <span>Single</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">ART</div>
+          <p class="card-gloss">Experience, turned into form</p>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">Tag</span>
+          <span class="polar">Polar Aim</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ BAND 2 — PAIR · TRIAD · BASE · BLEND ============ -->
+  <section class="band" data-band="compounds">
+    <div class="band-key" aria-hidden="true">
+      <span class="num">02</span><span class="label">Pair · Triad · Base · Blend</span>
+    </div>
+    <div class="row">
+
+      <!-- PAIR: r-pair-0410 (LOVE + FORM) — positions 4, 10 -->
+      <article class="card is-pair"
+        style="--card-stroke:linear-gradient(to right, var(--cl-04-love) 0% 50%, var(--cl-10-form) 50% 100%)"
+        aria-label="LOVE and FORM — pair of positions 4 and 10">
+        <div class="card-head">
+          <span>Pair</span>
+          <span class="pos-num">04·10</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">
+            <span>LOVE</span>
+            <span>FORM</span>
+          </div>
+          <p class="card-gloss">Attraction, then the vessel</p>
+          <div class="marks" aria-hidden="true">
+            <span class="mark" style="--own:var(--cl-04-love)"></span>
+            <span class="mark" style="--own:var(--cl-10-form)"></span>
+          </div>
+          <div class="counter">Polar 10 / 04</div>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">Realm</span>
+          <span class="polar">Pair 10 / 04</span>
+        </div>
+      </article>
+
+      <!-- PAIR: s-pair-0511 (NEED + MODE) — positions 5, 11 -->
+      <article class="card is-pair"
+        style="--card-stroke:linear-gradient(to right, var(--cl-05-bond) 0% 50%, var(--cl-11-type) 50% 100%)"
+        aria-label="NEED and MODE — pair of positions 5 and 11">
+        <div class="card-head">
+          <span>Pair</span>
+          <span class="pos-num">05·11</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">
+            <span>NEED</span>
+            <span>MODE</span>
+          </div>
+          <p class="card-gloss">The requirement resets the method</p>
+          <div class="marks" aria-hidden="true">
+            <span class="mark" style="--own:var(--cl-05-bond)"></span>
+            <span class="mark" style="--own:var(--cl-11-type)"></span>
+          </div>
+          <div class="counter">Polar 11 / 05</div>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">State</span>
+          <span class="polar">Pair 11 / 05</span>
+        </div>
+      </article>
+
+      <!-- TRIAD: r-triad-prime (PRIME) — LIFTED, OPEN BELOW -->
+      <article class="card is-triad is-lifted"
+        style="--card-stroke:linear-gradient(to right, var(--cl-02-flux) 0% 33.3%, var(--cl-06-fire) 33.3% 66.6%, var(--cl-10-form) 66.6% 100%)"
+        aria-label="PRIME — triad of positions 2, 6, 10. Open below.">
+        <div class="card-head">
+          <span>Triad</span>
+          <span class="pos-num">02·06·10</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">PRIME</div>
+          <p class="card-gloss">A triangle, held in balance</p>
+          <div class="marks" aria-hidden="true">
+            <span class="mark" style="--own:var(--cl-02-flux)"></span>
+            <span class="mark" style="--own:var(--cl-06-fire)"></span>
+            <span class="mark" style="--own:var(--cl-10-form)"></span>
+          </div>
+          <div class="counter">Counter Part</div>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">Realm</span>
+          <span class="polar">Triad Part</span>
+        </div>
+      </article>
+
+      <!-- TRIAD: t-triad-part (PART) — positions 12, 4, 8 -->
+      <article class="card is-triad"
+        style="--card-stroke:linear-gradient(to right, var(--cl-12-life) 0% 33.3%, var(--cl-04-love) 33.3% 66.6%, var(--cl-08-time) 66.6% 100%)"
+        aria-label="PART — triad of positions 12, 4, 8">
+        <div class="card-head">
+          <span>Triad</span>
+          <span class="pos-num">12·04·08</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">PART</div>
+          <p class="card-gloss">The subtler marks, easily missed</p>
+          <div class="marks" aria-hidden="true">
+            <span class="mark" style="--own:var(--cl-12-life)"></span>
+            <span class="mark" style="--own:var(--cl-04-love)"></span>
+            <span class="mark" style="--own:var(--cl-08-time)"></span>
+          </div>
+          <div class="counter">Counter Prime</div>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">Tag</span>
+          <span class="polar">Triad Prime</span>
+        </div>
+      </article>
+
+      <!-- BASE: r-base (BASE) — positions 12, 2, 4, 6, 8, 10 -->
+      <article class="card is-base"
+        style="--card-stroke:linear-gradient(to right, var(--cl-12-life) 0% 16.66%, var(--cl-02-flux) 16.66% 33.33%, var(--cl-04-love) 33.33% 50%, var(--cl-06-fire) 50% 66.66%, var(--cl-08-time) 66.66% 83.33%, var(--cl-10-form) 83.33% 100%)"
+        aria-label="BASE — Realm base, six positions">
+        <div class="card-head">
+          <span>Base</span>
+          <span class="pos-num">12·02·04·06·08·10</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">BASE</div>
+          <p class="card-gloss">Where each circle is centred</p>
+          <div class="marks" aria-hidden="true">
+            <span class="mark" style="--own:var(--cl-12-life)"></span>
+            <span class="mark" style="--own:var(--cl-02-flux)"></span>
+            <span class="mark" style="--own:var(--cl-04-love)"></span>
+            <span class="mark" style="--own:var(--cl-06-fire)"></span>
+            <span class="mark" style="--own:var(--cl-08-time)"></span>
+            <span class="mark" style="--own:var(--cl-10-form)"></span>
+          </div>
+          <div class="counter">Counter Blend</div>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">Realm</span>
+          <span class="polar">Base</span>
+        </div>
+      </article>
+
+      <!-- BLEND: s-blend (BLEND) — blend positions 1, 3, 5, 7, 9, 11 -->
+      <article class="card is-blend"
+        style="--card-stroke:linear-gradient(to right, var(--cl-01-tone) 0% 16.66%, var(--cl-03-flow) 16.66% 33.33%, var(--cl-05-bond) 33.33% 50%, var(--cl-07-path) 50% 66.66%, var(--cl-09-meta) 66.66% 83.33%, var(--cl-11-type) 83.33% 100%)"
+        aria-label="BLEND — State blend, six positions">
+        <div class="card-head">
+          <span>Blend</span>
+          <span class="pos-num">01·03·05·07·09·11</span>
+        </div>
+        <div class="card-body">
+          <div class="card-words">BLEND</div>
+          <p class="card-gloss">The states found only in transit</p>
+          <div class="marks" aria-hidden="true">
+            <span class="mark" style="--own:var(--cl-01-tone)"></span>
+            <span class="mark" style="--own:var(--cl-03-flow)"></span>
+            <span class="mark" style="--own:var(--cl-05-bond)"></span>
+            <span class="mark" style="--own:var(--cl-07-path)"></span>
+            <span class="mark" style="--own:var(--cl-09-meta)"></span>
+            <span class="mark" style="--own:var(--cl-11-type)"></span>
+          </div>
+          <div class="counter">Counter Base</div>
+        </div>
+        <div class="card-foot">
+          <span class="row-tag">State</span>
+          <span class="polar">Blend</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ THE OPEN CARD — r-triad-prime, full face ============ -->
+  <section class="band" data-band="open" aria-label="The open card — PRIME">
+    <div class="band-key" aria-hidden="true">
+      <span class="num">03</span><span class="label">Open · Prime</span>
+    </div>
+
+    <article class="open-card" aria-labelledby="openTitle">
+      <header class="open-head">
+        <div class="pos-cluster">
+          <span class="p" style="color:var(--cl-02-flux)">02</span>
+          <span class="p" style="color:var(--cl-06-fire)">06</span>
+          <span class="p" style="color:var(--cl-10-form)">10</span>
+        </div>
+        <span>Triad · Abstract Realm</span>
+      </header>
+
+      <h2 class="open-title" id="openTitle">Prime</h2>
+
+      <p class="open-gloss">A triangle, held in balance</p>
+
+      <div class="triad-mark" aria-hidden="true">
+        <div class="node">
+          <span class="dot" style="--own:var(--cl-02-flux)"></span>
+          <span class="lbl">FLUX</span>
+        </div>
+        <div class="node">
+          <span class="dot" style="--own:var(--cl-06-fire)"></span>
+          <span class="lbl">FIRE</span>
+        </div>
+        <div class="node">
+          <span class="dot" style="--own:var(--cl-10-form)"></span>
+          <span class="lbl">FORM</span>
+        </div>
+      </div>
+
+      <section class="open-section">
+        <div class="lab">Reading</div>
+        <p class="body">No position here opposes another. The weight sits evenly rather than pulling to one side.</p>
+      </section>
+
+      <section class="open-section q">
+        <div class="lab">Question</div>
+        <p class="body">Which of the three anchors holds your focus?</p>
+      </section>
+
+      <footer class="open-counter">
+        <span class="pip" style="background:var(--cl-12-life)"></span>
+        <span>Counter Part — the triangle this one leaves behind</span>
+      </footer>
+    </article>
+  </section>
+
+</main>
+</body>
+</html>

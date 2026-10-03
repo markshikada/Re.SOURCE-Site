@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="refresh" content="0; url=Projects/HQ/HQ.html">
+  <title>Re.SOURCE: opening Estate HQ</title>
+  <link rel="stylesheet" href="Projects/Design%20System/styles.css">
+  <style>
+    /* M1, F2 quality review: the template's own button block
+       (studios/_template/studio.html), tokens only, so the manual fallback
+       link is styled before the redirect fires even though styles.css alone
+       defines no .button. */
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-raised);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .button-primary {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: var(--black);
+    }
+  </style>
+</head>
+<body>
+  <main class="shell" data-pad>
+    <p><a class="button button-primary" href="Projects/HQ/HQ.html">Open Estate HQ</a></p>
+  </main>
+</body>
+</html>

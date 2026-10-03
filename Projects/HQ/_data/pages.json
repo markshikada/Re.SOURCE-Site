@@ -1,0 +1,774 @@
+{
+  "stamp": "2026-10-01T14:24:27.247Z",
+  "count": 128,
+  "pages": [
+    {
+      "path": "Projects/Design System/HQ.html",
+      "title": "HQ · Re.SOURCE",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/Masters.html",
+      "title": "Brand MASTERS",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/Notes.html",
+      "title": "Notes · opening HQ",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/components/core/components.card.html",
+      "title": "Components",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/control-room.html",
+      "title": "Control room",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/flower-work.html",
+      "title": "Flower work · Re.SOURCE",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/research/craft-study-2026-09-23.html",
+      "title": "Craft study 2026-09-23 — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/research/design-workbench-2026-09-28.html",
+      "title": "The design workbench after Claude Design · Re.SOURCE",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/research/direction-a-native-restraint.html",
+      "title": "Direction A \\u2014 Native restraint",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/research/direction-b-hud-energy.html",
+      "title": "Direction B \\u2014 HUD energy",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/research/gesture-upgrade-2026-09-28.html",
+      "title": "Flower touch controls · Re.SOURCE",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/research/publishing-routes.html",
+      "title": "Publishing routes · Re.SOURCE",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/research/publishing-setup.html",
+      "title": "Publishing setup · Re.SOURCE",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/research/shadow-glow-comparison.html",
+      "title": "Shadow &amp; glow — Card Mark comparison",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/scraps/nav-demo-a-circle.html",
+      "title": "A. Circle",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/scraps/nav-demo-b-bar.html",
+      "title": "B. Bar",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/scraps/nav-demo-c-orbit.html",
+      "title": "C. Orbit arc",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/templates/brand-logo/BrandLogo.dc.html",
+      "title": "",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/templates/brand-style/BrandStyle.dc.html",
+      "title": "",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/templates/colour-flower/ColourFlower.dc.html",
+      "title": "",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/templates/colour-lingo/ColourLingo.dc.html",
+      "title": "",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/templates/colour-wheel/ColourWheel.dc.html",
+      "title": "",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/templates/word-card/WordCard.dc.html",
+      "title": "",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/templates/word-deck/DeckCell.dc.html",
+      "title": "",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/templates/word-deck/WordDeck.dc.html",
+      "title": "",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Design System/thumbnail.html",
+      "title": "",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/HQ/HQ.html",
+      "title": "Estate HQ · Re.SOURCE",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/HQ/interfaces.html",
+      "title": "Interface Map · Re.SOURCE",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/HQ/interfaces.qwen-seat.html",
+      "title": "Interface Map · Re.SOURCE",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/HQ/model-ladder.html",
+      "title": "Model Ladder: which model does what, and why",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/HQ/studios/_template/studio.html",
+      "title": "Studio Template · Re.SOURCE HQ",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/HQ/studios/captures.html",
+      "title": "Capture Gallery · Re.SOURCE HQ",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/HQ/studios/previews.html",
+      "title": "Previews Studio · Re.SOURCE HQ",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/HQ/studios/quota.html",
+      "title": "Quota Studio · Re.SOURCE HQ",
+      "staged": true,
+      "week": null
+    },
+    {
+      "path": "Projects/Publish/root-index.html",
+      "title": "Re.SOURCE: opening Estate HQ",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Re.Colour FLOWER/_archive/Flower-Ground-Truth-Diagram.html",
+      "title": "Re.Focus FLOWER — Ground Truth Diagram",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Re.Colour FLOWER/_archive/flower-walkthrough.html",
+      "title": "Re.Colour FLOWER — Welcome Walkthrough",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Re.Source WEBSITE/_Archive/Design-System/_template.html",
+      "title": "Re.SOURCE — [Page Title]",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Re.Source WEBSITE/_Archive/Design-System/brand-styleguide.html",
+      "title": "Re.SOURCE — Brand Styleguide",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Re.Source WEBSITE/_Archive/Design-System/colour-wheel.html",
+      "title": "Re.SOURCE — Colour Wheel",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Re.Source WEBSITE/_Archive/Design-System/flower-of-life.html",
+      "title": "Re.SOURCE — Flower of Life",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Re.Source WEBSITE/_Archive/Design-System/word-wheel.html",
+      "title": "Re.SOURCE — Word Map",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Re.Source WEBSITE/_Archive/open-people-parked-2026-09-25/open-people-launch.html",
+      "title": "Open People launch planner",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/Re.Source WEBSITE/copywriter-trainer.html",
+      "title": "Copy workbench — Re.SOURCE and Colour LINGO",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/_Archive/Re.Word MAP/src/rebuild_engine.html",
+      "title": "Re.BUILD Harmonic Studio v0.5",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Projects/_Archive/Re.Word WHEEL/_output/rebuild_engine.html",
+      "title": "Re.BUILD Harmonic Studio v0.5",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/Y26 W31 July 27/_output/design-system/design-system-overview.html",
+      "title": "Re.SOURCE design system",
+      "staged": false,
+      "week": "Y26 W31 July 27"
+    },
+    {
+      "path": "Weekly 2026/Y26 W31 July 27/_output/design-system/domain-colours.html",
+      "title": "Domain colours",
+      "staged": false,
+      "week": "Y26 W31 July 27"
+    },
+    {
+      "path": "Weekly 2026/Y26 W31 July 27/_output/design-system/geometry-laws.html",
+      "title": "Geometry laws",
+      "staged": false,
+      "week": "Y26 W31 July 27"
+    },
+    {
+      "path": "Weekly 2026/Y26 W31 July 27/_output/design-system/greys-and-surfaces.html",
+      "title": "Greys and surfaces",
+      "staged": false,
+      "week": "Y26 W31 July 27"
+    },
+    {
+      "path": "Weekly 2026/Y26 W31 July 27/_output/design-system/radius-and-spacing.html",
+      "title": "Radius and spacing",
+      "staged": false,
+      "week": "Y26 W31 July 27"
+    },
+    {
+      "path": "Weekly 2026/Y26 W31 July 27/_output/design-system/typography.html",
+      "title": "Typography",
+      "staged": false,
+      "week": "Y26 W31 July 27"
+    },
+    {
+      "path": "Weekly 2026/Y26 W32 August 03/_output/Re.Focus FLOWER Claude Design recreation.html",
+      "title": "Re.Focus FLOWER · Re.SOURCE",
+      "staged": false,
+      "week": "Y26 W32 August 03"
+    },
+    {
+      "path": "Weekly 2026/Y26 W32 August 03/_output/Re.Word FLOWER v2.07.html",
+      "title": "Re.Word FLOWER — Re.SOURCE",
+      "staged": false,
+      "week": "Y26 W32 August 03"
+    },
+    {
+      "path": "Weekly 2026/Y26 W33 August 10/_output/drive-reorg-map-2026-08-14.html",
+      "title": "Drive Reorg Map",
+      "staged": false,
+      "week": "Y26 W33 August 10"
+    },
+    {
+      "path": "Weekly 2026/Y26 W33 August 10/_output/gemini-word-cards-prompt-2026-08-15.html",
+      "title": "Re.Word CARDS Prompt",
+      "staged": false,
+      "week": "Y26 W33 August 10"
+    },
+    {
+      "path": "Weekly 2026/Y26 W33 August 10/_output/word-cards-batch-1-review-2026-08-15.html",
+      "title": "Word Cards Batch 1",
+      "staged": false,
+      "week": "Y26 W33 August 10"
+    },
+    {
+      "path": "Weekly 2026/Y26 W34 August 17/_output/recolour-lingo-outputs-2026-08-21.html",
+      "title": "Re.Colour LINGO Outputs",
+      "staged": false,
+      "week": "Y26 W34 August 17"
+    },
+    {
+      "path": "Weekly 2026/Y26 W34 August 17/_output/recolour-lingo-repo-proposal-2026-08-23.html",
+      "title": "Re.Colour LINGO Interface",
+      "staged": false,
+      "week": "Y26 W34 August 17"
+    },
+    {
+      "path": "Weekly 2026/Y26 W34 August 17/_output/recolour-lingo-skill-2026-08-23.html",
+      "title": "LINGO Word Judgement",
+      "staged": false,
+      "week": "Y26 W34 August 17"
+    },
+    {
+      "path": "Weekly 2026/Y26 W34 August 17/_output/recolour-lingo-wiring-2026-08-23.html",
+      "title": "Re.Colour LINGO Wiring",
+      "staged": false,
+      "week": "Y26 W34 August 17"
+    },
+    {
+      "path": "Weekly 2026/Y26 W35 August 24/_output/recolour-lingo-rules-and-pilot-2026-08-25.html",
+      "title": "Re.Colour LINGO Rules",
+      "staged": false,
+      "week": "Y26 W35 August 24"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/agentic-system-map.html",
+      "title": "Agentic system map",
+      "staged": true,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/agents-models.html",
+      "title": "Agents and models — Re.SOURCE",
+      "staged": false,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/arena-pipeline.html",
+      "title": "Lane pipeline · Re.SOURCE",
+      "staged": true,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/commanders-craft.html",
+      "title": "Intel, Ops and the craft bar — Re.SOURCE",
+      "staged": false,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/lane24-url-law.html",
+      "title": "Lane 24 · The share link, as it works",
+      "staged": true,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/metrics-card.html",
+      "title": "Metrics CARD",
+      "staged": true,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/model-chart.html",
+      "title": "Which model, for what — Re.SOURCE",
+      "staged": false,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/model-setup.html",
+      "title": "Model setup — Re.SOURCE",
+      "staged": false,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/opencode-upgrade-proof.html",
+      "title": "OpenCode upgrade – proof",
+      "staged": true,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/outputs.html",
+      "title": "Outputs, consolidated — Re.SOURCE",
+      "staged": false,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/three-agents.html",
+      "title": "Three agents — Re.SOURCE",
+      "staged": false,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W39 September 21/_output/voice-transcription.html",
+      "title": "Speak your feedback – Re.SOURCE",
+      "staged": true,
+      "week": "Y26 W39 September 21"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R1-A.html",
+      "title": "Word CARD · FORM · three directions",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R1-B.html",
+      "title": "Word Card at Rest — Three Directions",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R1-C.html",
+      "title": "Word card at rest - three directions",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R1-D.html",
+      "title": "Re.Source · word card at rest · bakeoff R1 D",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R1-E.html",
+      "title": "Word CARD · position 10 · FORM · bakeoff round 1 · E",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-A.html",
+      "title": "Word CARD — FORM · position 10",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-B.html",
+      "title": "Word CARD",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-C.html",
+      "title": "Re.Source Word CARD — FORM at position 10",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-D.html",
+      "title": "Word CARD · position 10 · FORM",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-E.html",
+      "title": "Word CARD — three states",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-comparison.html",
+      "title": "Bakeoff, component round – five builds, one held",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-preview.html",
+      "title": "Bake-off preview bench – every build, live and switchable",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Bakeoff-zoom.html",
+      "title": "Bake-off at full size – every capture, zoomable",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/DeckScreen-comparison.html",
+      "title": "Deck screen – four builds, one brief",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/DeckScreen-glmflash.html",
+      "title": "Word DECK — twelve cards dealt",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/DeckScreen-mimoflash.html",
+      "title": "Word Deck — Re.Source",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/DeckScreen-minimaxm3.html",
+      "title": "Word DECK — twelve cards, one open",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/DeckScreen-qwen38max.html",
+      "title": "Word DECK — the deck screen",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Polish-comparison.html",
+      "title": "Polish round – five builds, one brief",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Polish-glmflash.html",
+      "title": "Word DECK · Abstract REALM · twelve dealt",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Polish-mimoflash.html",
+      "title": "Word DECK – Deck Screen · Polish round · Lane 30 · mimoflash",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Polish-mimopro.html",
+      "title": "The deck · Re.Source",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Polish-minimaxm3.html",
+      "title": "Re.Source · Deck screen · Y26 W40 Polish",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/Y26 W40 September 28/_output/Polish-qwen38max.html",
+      "title": "Word DECK – Deck Screen · Polish Round · Lane 30",
+      "staged": true,
+      "week": "Y26 W40 September 28"
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/Arena-Pipeline-2026-06-24.html",
+      "title": "Arena · Claude Production Pipeline — COMMAND · Studio 2026-W26",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/Claude-Agent-System-2026-W26.html",
+      "title": "Claude Agent System Reference · 2026-W26",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/Pipeline-Loop-2026-06-24.html",
+      "title": "Full Pipeline — Every Step &amp; Handoff — COMMAND · Studio 2026-W26",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/_template.html",
+      "title": "Re.SOURCE — [Page Title]",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/claude_ecosystem_overview.html",
+      "title": "",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/colourlingopostdrafts.html",
+      "title": "Re.SOURCE — Colour Lingo Post Drafts",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/flower-of-life.html",
+      "title": "Re.SOURCE — Flower of Life",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/font-comparison.html",
+      "title": "Re.SOURCE — Font Comparison",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/task-panel.html",
+      "title": "Task Panel — COMMAND",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/vault-note-map.html",
+      "title": "Vault Note Map — 2026-W26",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W26/_output/weekly-system-reference.html",
+      "title": "Weekly Scratch System — Reference",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W27/_output/CORE-audit-viz-2026-W27.html",
+      "title": "CORE Audit — W27 Proposal",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W27/_output/vault-structure-viz-2026-W27.html",
+      "title": "Vault Structure — Current vs Proposed · W27",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W27/_reference/2026.07.02 Re.Colour LINGO/ORIGINAL.html",
+      "title": "",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W28/_output/Re.Brand-Styleguide.html",
+      "title": "Re.SOURCE — Re.Brand Style Guide",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W28/_output/Re.Word FLOWER v1.html",
+      "title": "Re.Word FLOWER — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W28/_output/projects-audit-W28-v2.html",
+      "title": "Projects Audit — W28 v2",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W29/_output/PARA-Vault-Structure-Proposal.html",
+      "title": "Filing the Vault — PARA for Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W29/_output/Re.Word FLOWER v2.01.html",
+      "title": "Re.Word FLOWER — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W29/_output/Re.Word FLOWER v2.02.html",
+      "title": "Re.Word FLOWER — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W29/_output/Re.Word FLOWER v2.03.html",
+      "title": "Re.Word FLOWER — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W29/_output/Re.Word FLOWER v2.html",
+      "title": "Re.Word FLOWER — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W29/_output/Vault-Structure-Editor.html",
+      "title": "Vault Structure Editor — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W30/_output/Helper-Card-Design-Options.html",
+      "title": "Re.Word FLOWER – Helper Card Design Options",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W30/_output/Re.Word FLOWER v2.04.html",
+      "title": "Re.Word FLOWER — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W30/_output/Re.Word FLOWER v2.05.html",
+      "title": "Re.Word FLOWER — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W30/_output/Re.Word FLOWER v2.06.html",
+      "title": "Re.Word FLOWER — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W30/_output/Re.Word FLOWER v2.07.html",
+      "title": "Re.Word FLOWER — Re.SOURCE",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W30/_output/Relationship-Icon-Reference.html",
+      "title": "Re.Word FLOWER – Relationship Icon Reference",
+      "staged": false,
+      "week": null
+    },
+    {
+      "path": "Weekly 2026/_Archive/2026-W30/_output/Selection-Badge-Design-Options.html",
+      "title": "Re.Word FLOWER – Selection Badge Design Options",
+      "staged": false,
+      "week": null
+    }
+  ]
+}

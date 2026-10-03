@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interface Map · Re.SOURCE</title>
+<style>
+/* Interface Map. Tokens, exact values from Projects/Design System/tokens/.
+   Radius 8 / 12 / 24. Colour is a 3px stroke on a dark fill, never a fill
+   behind text. No letter-spacing declared. No shadow. Dark only.
+   Rhythm: section gap 24, item gap 12, inner gap 8. */
+:root{
+  color-scheme:dark;
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --white:#FFFFFF;
+
+  --text-primary:#FFFFFF;
+  --text-secondary:#888888;
+  --text-dim:#555555;
+
+  --surface-page:#000000;
+  --surface-card:#0D0D0D;
+  --surface-raised:#1A1A1A;
+  --surface-border:#333333;
+
+  --cl-02-flux:#FFD100;
+  --cl-03-flow:#FFB000;
+  --cl-05-bond:#FF5500;
+  --cl-08-time:#9933CC;
+  --cl-10-form:#2277FF;
+  --cl-12-life:#00D460;
+  --stroke:3px;
+
+  --fs-caption:12px;  --lh-caption:18px;
+  --fs-body:18px;     --lh-body:30px;
+  --fs-h2:24px;       --lh-h2:36px;
+  --fs-h1:36px;       --lh-h1:48px;
+
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px; --space-xl:48px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+
+  --font-sans:system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:ui-monospace,'SF Mono',Menlo,monospace;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--surface-page);
+  color:var(--text-primary);
+  font-family:var(--font-sans);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:var(--space-lg) var(--space-md) var(--space-xl)}
+
+header{margin:0 0 var(--space-lg)}
+.kicker{
+  margin:0 0 var(--space-sm);
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  color:var(--text-secondary);
+}
+h1{margin:0 0 var(--space-sm);font-size:var(--fs-h1);line-height:var(--lh-h1)}
+.stamp{
+  margin:0 0 var(--space-md);
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  color:var(--text-dim);
+}
+.lede{margin:0;color:var(--text-secondary)}
+
+.finding{
+  margin:0 0 var(--space-lg);
+  padding:var(--space-md);
+  border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-md);
+  background:var(--surface-card);
+}
+
+section{margin:0 0 var(--space-lg)}
+h2{margin:0 0 var(--space-xs);font-size:var(--fs-h2);line-height:var(--lh-h2)}
+.section-lead{margin:0 0 var(--space-md);color:var(--text-secondary)}
+
+.grid{display:grid;grid-template-columns:1fr;gap:var(--space-md)}
+.card{
+  margin:0;
+  padding:var(--space-md);
+  background:var(--surface-card);
+  border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-md);
+}
+.card h3{margin:0 0 var(--space-sm);font-size:var(--fs-h2);line-height:var(--lh-h2)}
+.card p{margin:0 0 var(--space-sm);color:var(--text-secondary)}
+.card p:last-child{margin:0}
+
+.head-row{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-sm);margin:0 0 var(--space-sm)}
+.head-row h3{margin:0}
+
+.chip{
+  display:inline-block;
+  padding:var(--space-xs) var(--space-sm);
+  border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-sm);
+  background:var(--surface-raised);
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  color:var(--text-primary);
+}
+.chip.m2{border-color:var(--cl-02-flux)}
+.chip.m3{border-color:var(--cl-03-flow)}
+.chip.m8{border-color:var(--cl-08-time)}
+.chip.m10{border-color:var(--cl-10-form)}
+.chip.m12{border-color:var(--cl-12-life)}
+.chip.here{border-color:var(--white);color:var(--white)}
+.chip.status{border-color:var(--cl-05-bond)}
+
+.role{border-color:var(--surface-border)}
+.role.r8{border-color:var(--cl-08-time)}
+.role.r3{border-color:var(--cl-03-flow)}
+.role.r2{border-color:var(--cl-02-flux)}
+.role.r10{border-color:var(--cl-10-form)}
+
+a{color:var(--text-primary);text-decoration-color:var(--g48);text-underline-offset:3px;word-break:break-word}
+a:hover{text-decoration-color:var(--white)}
+a:focus-visible{outline:2px solid var(--g66);outline-offset:3px}
+
+.foot{
+  margin:var(--space-lg) 0 0;
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  color:var(--text-dim);
+}
+
+@media (min-width:900px){
+  .wrap{padding:var(--space-xl) var(--space-lg)}
+  .grid{grid-template-columns:1fr 1fr}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/interfaces.qwen-seat.html</span>
+</nav>
+<div class="wrap">
+
+  <header>
+    <p class="kicker">RE.SOURCE · INTERFACE MAP</p>
+    <h1>Interface Map</h1>
+    <p class="stamp">Updated 1 October 2026, <span>12:13</span></p>
+    <p class="lede">Every visual interface in the system, what it is for, who works in it, and where to open it. The Model Ladder says which model does what. This page says which window is which.</p>
+  </header>
+
+  <p class="finding">Two questions live here: which window am I in, and who is working in it.</p>
+
+  <section>
+    <h2>Who you are talking to</h2>
+    <p class="section-lead">Every session names its model at the top. These are the names behind the work. The model shown is the enforced pin: the seat <span class="chip mono">~/.omo/lanes/lane-watch.cjs</span> reads hourly and reports on.</p>
+    <div class="grid">
+
+      <div class="card role r8">
+        <div class="head-row">
+          <h3>OmO session lead</h3>
+          <span class="chip mono m8">mimo-v2.6-pro</span>
+          <span class="chip here">you are here</span>
+        </div>
+        <p>The chat itself. The plain-English front door: answers, judgements, dispatch, and question cards you tap to rule. It holds the judgement model and hands mechanical work to cheaper workers.</p>
+        <p>The model is named at the top of every session and changes with <span class="chip mono">/model</span>.</p>
+      </div>
+
+      <div class="card role r8">
+        <div class="head-row">
+          <h3>Intel</h3>
+          <span class="chip mono m8">glm-5.3</span>
+        </div>
+        <p>Judgement commander in the OpenCode app. Research, rulings, briefs and copy. Once the judgement is settled it hands Ops a written sheet.</p>
+      </div>
+
+      <div class="card role r3">
+        <div class="head-row">
+          <h3>Ops</h3>
+          <span class="chip mono m3">mimo-v2.6-flash</span>
+        </div>
+        <p>Mechanical commander. Audits, sweeps, publishing, repo hygiene, wrap and merge. It stays on the cheap driver and reports blockers instead of guessing.</p>
+      </div>
+
+      <div class="card role r2">
+        <div class="head-row">
+          <h3>Design</h3>
+          <span class="chip mono m2">qwen3.8-max</span>
+        </div>
+        <p>Craft commander. Owns the visual bar. Where quality matters more than speed, the craft pass takes <span class="chip mono m12">qwen3.8-flash</span>. Design and reviewer are two seats: the craft pass makes, the reviewer's eye only reports.</p>
+      </div>
+
+      <div class="card role r10">
+        <div class="head-row">
+          <h3>Design reviewer</h3>
+          <span class="chip mono m10">glm-5.3-flash</span>
+        </div>
+        <p>The designer's eye. Renders, screenshots and responsive checks. It never edits a file, only reports what it sees.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>Which window is which</h2>
+    <p class="section-lead">Eight places the work shows up. Every link opens from a phone.</p>
+    <div class="grid">
+
+      <div class="card">
+        <div class="head-row">
+          <h3>This chat, OmO</h3>
+          <span class="chip here">you are here</span>
+        </div>
+        <p>Where the two of you talk. Question cards are decisions: tap one and the work runs. <span class="chip mono">/tasks</span> shows what is running in the background.</p>
+      </div>
+
+      <div class="card">
+        <div class="head-row">
+          <h3>OpenCode app</h3>
+        </div>
+        <p>Code-first agent sessions inside each vault. Intel, Ops and Design live here, with their skills and connections. The place for terminal work.</p>
+      </div>
+
+      <div class="card">
+        <div class="head-row">
+          <h3>Penpot</h3>
+          <span class="chip status">plugin per file</span>
+        </div>
+        <p>The live design canvas at <a href="https://penpot.app">penpot.app</a>. Agents draw and revise real designs here, then export approved work into the vault.</p>
+        <p>Your hands once per file: open it, launch the MCP plugin from its Plugins panel, leave that tab open.</p>
+      </div>
+
+      <div class="card">
+        <div class="head-row">
+          <h3>The public site</h3>
+        </div>
+        <p>Every published page, phone-ready, at <a href="https://markshikada.github.io/Re.SOURCE-Site/">markshikada.github.io/Re.SOURCE-Site</a>. Republish from GitHub: Actions, Publish site, Run workflow.</p>
+      </div>
+
+      <div class="card">
+        <div class="head-row">
+          <h3>Model Ladder</h3>
+        </div>
+        <p>Which model does what, and why the seating sits where it does. Maintained in place, never rebuilt.<br>
+        <a href="https://markshikada.github.io/Re.SOURCE-Site/Projects/HQ/model-ladder.html">Open the Model Ladder</a></p>
+      </div>
+
+      <div class="card">
+        <div class="head-row">
+          <h3>Design masters</h3>
+        </div>
+        <p>The live design system on the site: the HQ view, the Masters switcher and all seven masters.<br>
+        <a href="https://markshikada.github.io/Re.SOURCE-Site/Projects/Design%20System/Masters.html">Open the Masters</a></p>
+      </div>
+
+      <div class="card">
+        <div class="head-row">
+          <h3>Core HQ</h3>
+          <span class="chip status">rebuild on the board</span>
+        </div>
+        <p>The control surface. Today it is a published copy with the Model Ladder panel written into it but not live. The replacement is scoped as its own piece of work in COMMAND.</p>
+      </div>
+
+      <div class="card">
+        <div class="head-row">
+          <h3>Review pane</h3>
+        </div>
+        <p>Inside OmO. When one thing needs your eyes it opens beside the chat, once, instead of a wall of windows.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <p class="foot">Maintained in place like the Model Ladder. Corrections go to the HQ scoping note in COMMAND.</p>
+
+</div>
+</body>
+</html>

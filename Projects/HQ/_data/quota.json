@@ -1,0 +1,113 @@
+{
+  "stamp": "2026-10-01T14:24:27.137Z",
+  "db": {
+    "path": "opencode.db",
+    "exists": true
+  },
+  "stale": false,
+  "models": [
+    {
+      "id": "kimi-k3",
+      "cap": 15,
+      "trainer": false,
+      "p5": 0,
+      "p7": 0,
+      "p30": 10,
+      "s30": 1.493500736
+    },
+    {
+      "id": "muse-spark-1.3-contributor",
+      "cap": 60,
+      "trainer": true,
+      "p5": 0,
+      "p7": 0,
+      "p30": 4,
+      "s30": 2.42680383
+    },
+    {
+      "id": "mimo-v2.6-pro",
+      "cap": 15,
+      "trainer": false,
+      "p5": 0,
+      "p7": 57,
+      "p30": 34,
+      "s30": 5.1455924888
+    },
+    {
+      "id": "deepseek-v4.1-flash",
+      "cap": 60,
+      "trainer": false,
+      "p5": 0,
+      "p7": 0,
+      "p30": 4,
+      "s30": 2.19305197
+    },
+    {
+      "id": "muse-spark-1.3-contributor-free",
+      "cap": null,
+      "trainer": false,
+      "p5": null,
+      "p7": null,
+      "p30": null,
+      "s30": 0.000062
+    },
+    {
+      "id": "mimo-v2.6-flash",
+      "cap": 60,
+      "trainer": false,
+      "p5": 0,
+      "p7": 12,
+      "p30": 11,
+      "s30": 6.6457072788
+    },
+    {
+      "id": "glm-5.3-flash",
+      "cap": 60,
+      "trainer": false,
+      "p5": 0,
+      "p7": 12,
+      "p30": 9,
+      "s30": 5.618714970000001
+    },
+    {
+      "id": "(model not recorded)",
+      "cap": null,
+      "trainer": false,
+      "p5": null,
+      "p7": null,
+      "p30": null,
+      "s30": 0.2058199352
+    },
+    {
+      "id": "qwen3.8-max",
+      "cap": 15,
+      "trainer": false,
+      "p5": 0,
+      "p7": 54,
+      "p30": 27,
+      "s30": 4.03521
+    },
+    {
+      "id": "minimax-m3",
+      "cap": 60,
+      "trainer": false,
+      "p5": 0,
+      "p7": 2,
+      "p30": 1,
+      "s30": 0.72315126
+    },
+    {
+      "id": "qwen3.8-flash",
+      "cap": 30,
+      "trainer": false,
+      "p5": 0,
+      "p7": 0,
+      "p30": 0,
+      "s30": 0.016065332
+    }
+  ],
+  "total30": 28.5,
+  "alerts": [
+    "muse-spark-1.3-contributor: $ 2.43 on a trainer"
+  ]
+}

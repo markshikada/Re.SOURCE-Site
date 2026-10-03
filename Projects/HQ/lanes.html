@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:,">
+<meta name="description" content="Lane register: every live session on this machine, the pull requests open across the three vaults with their real check state, and what landed tonight, all read from source with its stamp.">
+<title>Lanes · Re.SOURCE HQ</title>
+<!-- Design system chrome, two levels up from Projects/HQ/. Feed: ../_data/lanes.json,
+     written by Projects/HQ/lane-map.cjs. Static page, no live calls, no auto refresh:
+     a snapshot with its stamp is honest, a number that silently ages is not. -->
+<link rel="stylesheet" href="../Design System/styles.css">
+<link rel="stylesheet" href="../Design System/lib/hq.css">
+<link rel="stylesheet" href="../Design System/lib/topbar.css">
+<script src="../Design System/lib/masters-nav.js" defer></script>
+<style>
+  /* Lane register chrome. Every value is a token: colour from tokens/greys.css and
+     tokens/colours.css, space and radius from tokens/space.css, type from
+     tokens/typography.css. No raw hex, no type off the scale, no radius off 8/12/24. */
+  .hq .stamp-line { margin:0; font-family:var(--font-mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-dim); }
+  .hq .notice { margin:0 0 var(--space-md); padding:var(--space-md); background:var(--surface-card); border-left:var(--stroke) solid var(--g48); border-radius:var(--radius-sm); color:var(--text-secondary); font-size:var(--fs-body); line-height:var(--lh-body); }
+  .hq .notice.bad { border-left-color: var(--g88); }
+  .hq .lane-row { display:flex; flex-direction:column; gap:var(--space-xs); padding-block:var(--space-md); border-top:var(--hq-hairline) solid var(--surface-border); }
+  .hq .lane-row:first-of-type { border-top:0; }
+  .hq .lane-head { display:flex; align-items:baseline; gap:var(--space-sm); flex-wrap:wrap; }
+  .hq .lane-id { font-family:var(--font-mono); font-size:var(--fs-caption); color:var(--text-dim); overflow-wrap:anywhere; }
+  .hq .lane-what { font-size:var(--fs-body); line-height:var(--lh-body); color:var(--text-secondary); overflow-wrap:anywhere; }
+  .hq .lane-what strong { color:var(--text-primary); font-weight:var(--fw-h2); }
+  .hq .dot { width:12px; height:12px; border-radius:var(--radius-sm); border:2px solid var(--surface-border); display:inline-block; flex:none; }
+  .hq .dot.live { background:var(--text-primary); border-color:var(--text-primary); }
+  .hq .dot.quiet { background:transparent; }
+  .hq .lane-list { list-style:none; margin:0; padding:0; }
+  .hq .lane-list li { padding-block:var(--space-xs); border-top:var(--hq-hairline) solid var(--surface-border); font-family:var(--font-mono); font-size:var(--fs-caption); line-height:var(--lh-caption); }
+  .hq .lane-list li:first-child { border-top:0; }
+  .hq .pr-row { display:flex; flex-wrap:wrap; gap:var(--space-sm) var(--space-md); padding-block:var(--space-md); border-top:var(--hq-hairline) solid var(--surface-border); align-items:baseline; }
+  .hq .pr-row:first-of-type { border-top:0; }
+  .hq .pr-no { font-family:var(--font-mono); font-size:var(--fs-caption); color:var(--text-dim); flex:none; }
+  .hq .pr-title { font-size:var(--fs-body); line-height:var(--lh-body); flex:1 1 260px; min-width:0; overflow-wrap:anywhere; }
+  .hq .checks { display:flex; flex-wrap:wrap; gap:var(--space-xs); font-family:var(--font-mono); font-size:var(--fs-caption); }
+  .hq .check { padding:2px var(--space-xs); border:1px solid var(--surface-border); border-radius:var(--radius-sm); color:var(--text-secondary); }
+  .hq .check.pass { color:var(--text-primary); border-color:var(--g66); }
+  .hq .check.fail { color:var(--text-primary); border-color:var(--g88); background:var(--surface-card); }
+  .hq .check.run { color:var(--text-dim); }
+  .hq .timeline { list-style:none; margin:0; padding:0; }
+  .hq .timeline li { display:flex; gap:var(--space-md); padding-block:var(--space-xs); border-top:var(--hq-hairline) solid var(--surface-border); align-items:baseline; }
+  .hq .timeline li:first-child { border-top:0; }
+  .hq .tl-when { font-family:var(--font-mono); font-size:var(--fs-caption); color:var(--text-dim); flex:none; width:9ch; }
+  .hq .tl-sha { font-family:var(--font-mono); font-size:var(--fs-caption); color:var(--text-secondary); flex:none; }
+  .hq .tl-what { font-size:var(--fs-caption); line-height:var(--lh-caption); flex:1 1 auto; min-width:0; overflow-wrap:anywhere; }
+  .hq .counts { display:flex; flex-wrap:wrap; gap:var(--space-md); margin:0 0 var(--space-lg); padding:0; list-style:none; }
+  .hq .counts li { font-family:var(--font-mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-secondary); border:var(--hq-hairline) solid var(--surface-border); border-radius:var(--radius-sm); padding:var(--space-xs) var(--space-sm); }
+  .hq .counts b { color:var(--text-primary); font-weight:var(--fw-h2); }
+  .hq h2 { margin-top: var(--space-xl); }
+  /* Narrow frame: the timeline's three columns become two lines each, because a 9ch
+     stamp plus an 8ch sha plus a subject that wraps is the row most likely to clip on a
+     phone. Measured at 390 after the fix: no horizontal scroll, nothing clipped. */
+  @media (max-width: 720px) {
+    .hq .timeline li { flex-wrap: wrap; row-gap: var(--space-xs); }
+    .hq .tl-what { flex-basis: 100%; }
+    .hq .counts li { flex: 1 1 40%; }
+  }
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body class="hq">
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/lanes.html</span>
+</nav>
+<main class="hq" data-span="12">
+
+  <header class="intro" data-span="12">
+    <p class="eyebrow">Front door &middot; who is working, and what landed</p>
+    <h1 id="hq-title">Lanes</h1>
+    <p class="lede">Four sessions were told to stick to their lanes on the evening of 3 October 2026. Two of them built the same thing twice. This page is the answer to that: who is live, what each one owns, what is open for review, and what actually landed, all read from source.</p>
+    <p class="stamp-line" id="stamp">reading the snapshot&hellip;</p>
+  </header>
+
+  <section class="work-section" id="now" data-sub data-span="12" aria-labelledby="now-title">
+    <div class="section-heading">
+      <h2 id="now-title">Live now</h2>
+      <span class="eyebrow">A lane is live if its log was written in the last <span id="live-window">20</span> minutes</span>
+    </div>
+    <ul class="counts" id="counts"></ul>
+    <div id="sessions"></div>
+  </section>
+
+  <section class="work-section" id="prs" data-sub data-span="12" aria-labelledby="prs-title">
+    <div class="section-heading">
+      <h2 id="prs-title">Open for review</h2>
+      <span class="eyebrow">Every pull request across the three vaults, with its real checks</span>
+    </div>
+    <div id="prs-body"></div>
+  </section>
+
+  <section class="work-section" id="register" data-sub data-span="12" aria-labelledby="reg-title">
+    <div class="section-heading">
+      <h2 id="reg-title">The written register</h2>
+      <span class="eyebrow">COMMAND keeps the prose version; this is the machine one</span>
+    </div>
+    <div id="register-body"></div>
+  </section>
+
+  <section class="work-section" id="landed" data-sub data-span="12" aria-labelledby="landed-title">
+    <div class="section-heading">
+      <h2 id="landed-title">Landed</h2>
+      <span class="eyebrow">Commits on each vault&rsquo;s main since <span id="since">the snapshot window</span></span>
+    </div>
+    <div id="landed-body"></div>
+  </section>
+
+  <footer data-span="12">
+    <p class="colophon">Projects/HQ/lanes.html &middot; snapshot written by Projects/HQ/lane-map.cjs &middot; published through Projects/Publish</p>
+  </footer>
+</main>
+
+<script>
+/* One fetch, one honest render. Every failure path below prints what could not be read
+   and why, in the place the data would have been. Nothing is defaulted to zero, and
+   nothing is filled in from memory: a reader must be able to tell the difference between
+   "nothing is open" and "the pull-request list could not be read".
+   Every string from the snapshot reaches the DOM through textContent, so a poisoned row
+   renders as inert text and never as markup. */
+(function () {
+  'use strict';
+  var SRC = '_data/lanes.json';
+  var el = function (tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = String(text);
+    return n;
+  };
+  var clear = function (id) { var n = document.getElementById(id); while (n.firstChild) n.removeChild(n.firstChild); };
+  var ago = function (mins) {
+    if (mins === null || mins === undefined) return 'unknown';
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + 'm ago';
+    var h = Math.floor(mins / 60);
+    if (h < 48) return h + 'h ago';
+    return Math.round(h / 24) + 'd ago';
+  };
+  var hhmm = function (iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return String(iso || '');
+    return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+  };
+  var notice = function (host, text, bad) {
+    var n = el('p', 'notice' + (bad ? ' bad' : ''), text);
+    host.appendChild(n);
+    return n;
+  };
+
+  /* Fault injection, for the test that proves this page can say "not read".
+     A snapshot that fails to load must NOT leave the last good numbers on screen, and
+     must not silently show zero. ?fault=<kind> makes the fetch fail the way a missing
+     snapshot, a 404 or a malformed body would, so the honest path is exercised by the
+     real render code and not by a stub. It is inert unless asked for. */
+  var FAULT = new URLSearchParams(location.search).get('fault');
+  function faulted() {
+    if (FAULT === 'missing') return Promise.reject(new Error('HTTP 404'));
+    if (FAULT === 'malformed') return Promise.resolve({ ok: true, json: function () { return Promise.reject(new SyntaxError('Unexpected token < in JSON')); } });
+    if (FAULT === 'empty') return Promise.resolve({ ok: true, json: function () { return Promise.resolve({ stamp: null, sessions: { ok: false, reason: 'the session directory was not readable' }, vaults: [] }); } });
+    return null;
+  }
+  var SOURCE = faulted() || fetch(SRC, { cache: 'no-store' });
+  SOURCE
+    .then(function (r) {
+      if (!r.ok) throw new Error('the snapshot answered HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (d) { render(d); })
+    .catch(function (e) {
+      var stamp = document.getElementById('stamp');
+      stamp.textContent = 'the snapshot could not be read: ' + e.message;
+      var host = document.getElementById('sessions');
+      clear('sessions');
+      notice(host,
+        'Lanes cannot be listed from here. Projects/HQ/_data/lanes.json is missing or unreadable, which means lane-map.cjs has not been run since the last publish. Nothing on this page is a guess.',
+        true);
+    });
+
+  function render(d) {
+    /* A snapshot with a missing stamp is a partial read, and printing "snapshot null" is
+       worse than saying which parts arrived. Each field states its own state. */
+    document.getElementById('stamp').textContent =
+      (d.stamp ? 'snapshot ' + d.stamp : 'no snapshot stamp in this reading')
+      + ' \u00b7 live window ' + (d.liveMinutes || 'unknown')
+      + ' \u00b7 read by Projects/HQ/lane-map.cjs';
+    document.getElementById('live-window').textContent = d.liveMinutes || 'unknown';
+    document.getElementById('since').textContent = d.since || 'an unstated window';
+
+    /* ---- counts, each one honest about the source behind it ---- */
+    var counts = document.getElementById('counts');
+    clear('counts');
+    var liveN = d.sessions.ok ? d.sessions.data.filter(function (s) { return s.live; }).length : null;
+    var prsAll = [];
+    var prsUnread = [];
+    (d.vaults || []).forEach(function (v) {
+      if (v.prs && v.prs.ok) prsAll = prsAll.concat(v.prs.data);
+      else if (v.prs) prsUnread.push(v.name + ': ' + v.prs.reason);
+    });
+    var landedN = 0;
+    (d.vaults || []).forEach(function (v) { if (v.landed && v.landed.ok) landedN += v.landed.data.length; });
+    counts.appendChild(el('li', null, 'live lanes ')) .appendChild(el('b', null, liveN === null ? 'unread' : String(liveN)));
+    counts.appendChild(el('li', null, 'open PRs ')).appendChild(el('b', null, prsUnread.length ? 'partial' : String(prsAll.length)));
+    counts.appendChild(el('li', null, 'landed commits ')).appendChild(el('b', null, String(landedN)));
+
+    /* ---- sessions ---- */
+    var host = document.getElementById('sessions');
+    clear('sessions');
+    if (!d.sessions.ok) {
+      notice(host, 'The session directory could not be read: ' + d.sessions.reason + '. No lane can be called live or quiet from this page.', true);
+    } else if (!d.sessions.data.length) {
+      notice(host, 'No session wrote a log in the last ' + d.quietMinutes + ' minutes, so no lane is running. That is a reading, not a failure.');
+    } else {
+      var list = el('ul', 'lane-list');
+      d.sessions.data.forEach(function (s) {
+        var li = el('li');
+        var head = el('div', 'lane-head');
+        head.appendChild(el('span', 'dot ' + (s.live ? 'live' : 'quiet')));
+        head.appendChild(el('span', 'lane-id', s.id));
+        head.appendChild(el('span', 'lane-id', s.live ? 'live' : 'quiet \u00b7 ' + ago(s.ageMinutes)));
+        li.appendChild(head);
+        li.appendChild(el('p', 'lane-what', s.label ? s.label : 'no opening line recorded'));
+        li.appendChild(el('p', 'lane-id', 'opened ' + (s.openedAt || 'unknown') + ' \u00b7 ' + s.toolCallsInTail + ' tool calls in the last 512 KB of its log'));
+        list.appendChild(li);
+      });
+      host.appendChild(list);
+    }
+
+    /* ---- pull requests ---- */
+    var ph = document.getElementById('prs-body');
+    clear('prs-body');
+    if (prsUnread.length) notice(ph, 'Not read: ' + prsUnread.join(' \u00b7 ') + '. The rows below are only the vaults that answered.', true);
+    if (!prsAll.length && !prsUnread.length) {
+      notice(ph, 'No pull request is open in any vault, read live from GitHub.');
+    } else {
+      prsAll.forEach(function (p) {
+        var row = el('div', 'pr-row');
+        row.appendChild(el('span', 'pr-no', '#' + p.number + ' ' + p.vaultLabel));
+        row.appendChild(el('span', 'pr-title', p.title));
+        var cs = el('span', 'checks');
+        (p.checks || []).forEach(function (c) {
+          var cls = c.conclusion === 'SUCCESS' ? 'pass' : (c.conclusion === 'FAILURE' || c.conclusion === 'CANCELLED' || c.conclusion === 'TIMED_OUT') ? 'fail' : 'run';
+          cs.appendChild(el('span', 'check ' + cls, c.name + ' ' + (c.conclusion || c.status)));
+        });
+        row.appendChild(cs);
+        ph.appendChild(row);
+      });
+    }
+
+    /* ---- the written register ---- */
+    var reg = (d.vaults || []).filter(function (v) { return v.register; })[0];
+    var rh = document.getElementById('register-body');
+    clear('register-body');
+    if (!reg || !reg.register) {
+      notice(rh, 'The prose register is read from COMMAND only, and it was not part of this snapshot.');
+    } else if (!reg.register.ok) {
+      notice(rh, 'The register could not be read: ' + reg.register.reason, true);
+    } else {
+      var rl = el('ul', 'lane-list');
+      reg.register.data.lanes.forEach(function (l) {
+        var li = el('li');
+        li.appendChild(el('span', 'lane-id', l.lane));
+        if (l.scope) li.appendChild(el('span', 'lane-what', ' \u2014 ' + l.scope));
+        rl.appendChild(li);
+      });
+      rh.appendChild(rl);
+      rh.appendChild(el('p', 'lane-id', 'source: ' + reg.register.data.path));
+    }
+
+    /* ---- landed ---- */
+    var lh = document.getElementById('landed-body');
+    clear('landed-body');
+    var unreadLanded = [];
+    (d.vaults || []).forEach(function (v) { if (!v.landed.ok) unreadLanded.push(v.name + ': ' + v.landed.reason); });
+    if (unreadLanded.length) notice(lh, 'Not read: ' + unreadLanded.join(' \u00b7 '), true);
+    (d.vaults || []).forEach(function (v) {
+      if (!v.landed.ok) return;
+      if (!v.landed.data.length) return;
+      lh.appendChild(el('p', 'lane-id', v.name));
+      var ul = el('ul', 'timeline');
+      v.landed.data.forEach(function (c) {
+        var li = el('li');
+        li.appendChild(el('span', 'tl-when', hhmm(c.at)));
+        li.appendChild(el('span', 'tl-sha', c.sha));
+        li.appendChild(el('span', 'tl-what', c.subject));
+        ul.appendChild(li);
+      });
+      lh.appendChild(ul);
+    });
+  }
+})();
+</script>
+</body>
+</html>

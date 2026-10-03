@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:,">
+<title>Word DECK – Deck Screen · Polish round · Lane 30 · mimoflash</title>
+<!--
+  Re.SOURCE · Word DECK screen · Polish round · Lane 30 · mimo-v2.6-flash · 29 September 2026
+
+  Self-contained: the cards are copied out of Projects/Design System/data/deck-data.js,
+  and the token values are copied out of Projects/Design System/tokens/ (colours, greys, space,
+  typography, motion, grid). Nothing is fetched: no link, no script src, no webfont.
+
+  THE LATTICE (WordDeck master, five rules): one lattice, one gap, the count divides the deck,
+  nothing stretches, a two-card cell fits its row. Twelve cards, one measured track, counts
+  6 / 4 / 3 / 2 / 1 – every one of them divides twelve, so no row is ever ragged.
+
+  THE OPEN CARD IS ON THAT GRID. It is a child of the same grid, spanning 1/-1, and inside it
+  the card itself takes column 1 while its reading takes columns 2 to the end. Nothing is parked
+  beside the deck, and the deck itself stays laid underneath it. Below 721 (the field's own
+  narrow step) the open card becomes a bottom sheet: head and foot pinned, the body the one part
+  that scrolls, half the frame at most.
+
+  RELATIONSHIPS ARE WORDS, NOT A DIAGRAM. Each card prints its relation on its face (Polar · FORM,
+  Counter · PART), and the open card turns it into a control that opens that card in one press.
+
+  LAW CHECKED: whole numbers in every size, spacing, coordinate and radius; radius 8 / 12 / 24 only;
+  colour is a stroke on a shape, never a fill behind text (black fill, coloured stroke, white text);
+  the twelve position colours and the greyscale only; type 12 / 18 / 24 / 36 / 48 / 72 with leading
+  on the 6px unit (30 the one exception); no letter-spacing declared anywhere; every surface works
+  at 390.
+-->
+<style>
+/* ============================================================
+   TOKENS – read as written out of Projects/Design System/tokens/
+   ============================================================ */
+:root{
+  color-scheme:dark;
+
+  /* colours.css – twelve positions at 30 degree steps on a 360 degree wheel.
+     Position 12 sits at 0 degrees, at the top, and the count runs clockwise.
+     Position 00 is the core, a void, and carries no colour. */
+  --cl-00-core:transparent;   /* position 00 · core · void */
+  --cl-01-tone:#99DD00;       /* position 01 ·  30° */
+  --cl-02-flux:#FFD100;       /* position 02 ·  60° */
+  --cl-03-flow:#FFB000;       /* position 03 ·  90° */
+  --cl-04-love:#FF7700;       /* position 04 · 120° */
+  --cl-05-bond:#FF5500;       /* position 05 · 150° */
+  --cl-06-fire:#FF0000;       /* position 06 · 180° */
+  --cl-07-path:#E02888;       /* position 07 · 210° */
+  --cl-08-time:#9933CC;       /* position 08 · 240° */
+  --cl-09-meta:#6655FF;       /* position 09 · 270° */
+  --cl-10-form:#2277FF;       /* position 10 · 300° */
+  --cl-11-type:#00BBDD;       /* position 11 · 330° */
+  --cl-12-life:#00D460;       /* position 12 ·   0° */
+  --stroke:3px;               /* the stroke. There is deliberately no background utility. */
+
+  /* greys.css – every surface and every text colour points at one of these. */
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+
+  /* space.css – 2:3:6 harmonic on u = 4px. Radius values are the spacing values. */
+  --u:4px;
+  --space-xs:4px;    /* 1u  */
+  --space-sm:8px;    /* 2u  */
+  --space-md:12px;   /* 3u  */
+  --space-lg:24px;   /* 6u  */
+  --space-xl:48px;   /* 12u */
+  --space-2xl:96px;  /* 24u */
+  --radius-sm:8px;   /* 2u */
+  --radius-md:12px;  /* 3u */
+  --radius-lg:24px;  /* 6u */
+
+  /* typography.css – harmonic on u = 6px. Leading is whole px on the same unit. */
+  --u-type:6px;
+  --fs-caption:12px;  /* 2u · weight 300 */
+  --fs-body:18px;     /* 3u · weight 400 */
+  --fs-h2:24px;       /* 4u · weight 600 */
+  --fs-h1:36px;       /* 6u · weight 700 */
+  --fs-display:48px;  /* 8u · weight 800 */
+  --lh-caption:18px;  /* 3u  */
+  --lh-body:30px;     /* 5u  */
+  --lh-h2:36px;       /* 6u  */
+  --lh-h1:48px;       /* 8u  */
+  --lh-display:54px;  /* 9u  */
+  --fw-caption:300;
+  --fw-body:400;
+  --fw-h2:600;
+  --fw-h1:700;
+  --fw-display:800;
+
+  /* motion.css – the 60ms unit through 2:3:6. Durations and curves come from here. */
+  --unit:60ms;
+  --dur-sm:120ms;
+  --dur-md:180ms;
+  --dur-lg:360ms;
+  --ease-place:cubic-bezier(0.33,0,0.5,1);
+  --ease-arrive:cubic-bezier(0,0,0.5,1);
+  --ease-leave:cubic-bezier(0.33,0,1,1);
+  --ease-pop:cubic-bezier(0.34,1.56,0.64,1);
+  --ease:var(--ease-arrive);
+  --dur:var(--dur-md);
+
+  /* fonts.css, system stack – the brief allows system fonts and nothing may be fetched. */
+  --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--surface-page);
+  color:var(--text-primary);
+  font-family:var(--font-sans);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-optical-sizing:auto;
+  -webkit-font-smoothing:antialiased;
+}
+h1{margin:0;font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display)}
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+
+/* ============================================================
+   THE FIELD – grid.css, unchanged: the page margin follows the frame.
+   ============================================================ */
+[data-pad]{--field-pad:var(--space-xl);padding-left:var(--field-pad);padding-right:var(--field-pad)}
+@media (max-width:1080px){[data-pad]{--field-pad:var(--space-lg)}}
+@media (max-width:720px){[data-pad]{--field-pad:var(--space-md)}}
+
+/* ============================================================
+   MOTION – motion.css, applied by attribute. A surface applies the
+   token's keyframe rather than declaring one of its own.
+   ============================================================ */
+@keyframes rs-arrive{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+@keyframes rs-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+[data-lift]{transition:transform var(--dur-sm) var(--ease-place),background-color var(--dur-sm) var(--ease-place),border-color var(--dur-sm) var(--ease-place),color var(--dur-sm) var(--ease-place)}
+[data-lift]:hover{transform:translateY(-2px);background-color:var(--g12);border-color:var(--g66);color:var(--text-primary)}
+[data-press]{transition:transform var(--dur-sm) var(--ease-place)}
+[data-press]:active{transform:scale(0.96)}
+/* The stagger is the unit, counted off the child index. Twelve is the twelve the wheel sits on. */
+[data-stagger]>*:nth-child(1){animation-delay:0ms}
+[data-stagger]>*:nth-child(2){animation-delay:60ms}
+[data-stagger]>*:nth-child(3){animation-delay:120ms}
+[data-stagger]>*:nth-child(4){animation-delay:180ms}
+[data-stagger]>*:nth-child(5){animation-delay:240ms}
+[data-stagger]>*:nth-child(6){animation-delay:300ms}
+[data-stagger]>*:nth-child(7){animation-delay:360ms}
+[data-stagger]>*:nth-child(8){animation-delay:420ms}
+[data-stagger]>*:nth-child(9){animation-delay:480ms}
+[data-stagger]>*:nth-child(10){animation-delay:540ms}
+[data-stagger]>*:nth-child(11){animation-delay:600ms}
+[data-stagger]>*:nth-child(12){animation-delay:660ms}
+/* The deal. backwards, never forwards: once it has run the card is back under the pointer,
+   so hover and press still answer. */
+.dealt>.card{animation:rs-arrive var(--dur-lg) var(--ease-arrive) backwards}
+.open.is-in{animation:rs-rise var(--dur-lg) var(--ease-arrive) backwards}
+.sheet.is-in{animation:rs-rise var(--dur-lg) var(--ease-arrive) backwards}
+@media (prefers-reduced-motion:reduce){
+  [data-lift],[data-press],.dealt>.card,.open.is-in,.sheet.is-in{transition-duration:1ms!important;animation-duration:1ms!important;animation-delay:0ms!important}
+  [data-stagger]>*{animation-delay:0ms!important}
+}
+
+/* ============================================================
+   PAGE CHROME – compact by default, the column capped at the sheet.
+   ============================================================ */
+.page{padding-top:var(--space-lg);padding-bottom:var(--space-xl);min-height:100vh}
+.col{width:100%;max-width:var(--sheet,1320px);margin:0 auto}
+.head-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--space-md)}
+.kicker,.stamp,.legend,.label,.line,.mono,.f-top,.f-rel,.gw,.ctl{
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+}
+.kicker{color:var(--text-primary);text-transform:uppercase}
+.stamp{margin-left:auto;color:var(--text-secondary);text-transform:uppercase}
+h1{margin-top:var(--space-md)}
+.head-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-md);margin-top:var(--space-md)}
+.legend{margin:0;color:var(--text-secondary)}
+.rule{border:0;border-top:1px solid var(--surface-border);margin:var(--space-lg) 0 0}
+.foot-note{margin:var(--space-lg) 0 0;color:var(--text-dim);font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption)}
+
+/* The control: one language for every button on the surface. 36px visual row,
+   the hit area 44 behind it, radius-sm. */
+.ctl{
+  position:relative;
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:36px;
+  padding:var(--space-xs) var(--space-md);
+  background:var(--surface-card);
+  color:var(--text-primary);
+  border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);
+  text-transform:uppercase;text-align:center;
+  cursor:pointer;
+}
+.ctl::after{content:"";position:absolute;inset:calc(-1 * var(--space-xs))}
+.ctl:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+
+/* ============================================================
+   THE LATTICE – one grid, one gap, fixed tracks.
+   The count is measured off the frame; every count divides twelve.
+   ============================================================ */
+.lattice{
+  display:grid;
+  grid-template-columns:repeat(var(--cols),var(--track));
+  gap:var(--gap);
+  margin-top:var(--space-lg);
+  justify-content:start;
+}
+.card,.open-face{
+  width:var(--track);
+  height:var(--ch);
+  padding:var(--space-md);
+  background:var(--surface-page);
+  border:var(--stroke) solid var(--card-cl,var(--g66));
+  border-radius:var(--radius-md);
+  text-align:left;
+}
+.card{
+  display:flex;flex-direction:column;
+  margin:0;
+  font-family:var(--font-sans);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  color:var(--text-primary);
+  cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+}
+.open-face{display:flex;flex-direction:column}
+/* The colour stays the card's own stroke even while the state rule lifts the border. */
+.card:hover{border-color:var(--card-cl,var(--g66))}
+.card:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+/* You are here: the same mark on the deck and on the open card. */
+.card.is-here{outline:1px solid var(--white);outline-offset:2px}
+
+/* The face – the printed card, at one size everywhere it appears. */
+.face{
+  display:flex;flex-direction:column;
+  gap:var(--space-sm);
+  justify-content:space-between;
+  flex:1 1 auto;min-height:0;
+}
+.f-top{display:flex;justify-content:space-between;gap:var(--space-sm);text-transform:uppercase;color:var(--text-primary)}
+.f-pos{color:var(--text-secondary)}
+.f-title{display:block;font-weight:var(--fw-h1)}
+.f-line{display:block}
+.f-title.big{font-size:var(--fs-h1);line-height:var(--lh-h1)}
+.f-title.mid{font-size:var(--fs-h2);line-height:var(--lh-h2)}
+.f-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 var(--space-sm)}
+.gw{display:flex;align-items:center;gap:var(--space-xs);white-space:nowrap;color:var(--text-primary)}
+.dot{width:12px;height:12px;flex:0 0 auto;border:2px solid;border-radius:8px}
+.f-gloss,.f-rel{
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  color:var(--text-secondary);
+}
+.f-gloss{font-family:var(--font-sans);font-weight:var(--fw-caption)}
+.f-rel{text-transform:uppercase}
+
+/* ============================================================
+   THE OPEN CARD – a child of the lattice, spanning 1/-1.
+   The card takes column 1, its reading takes the columns after it.
+   ============================================================ */
+.open{
+  grid-column:1/-1;
+  grid-row:1;
+  display:grid;
+  grid-template-columns:repeat(var(--cols),var(--track));
+  gap:var(--gap);
+  scroll-margin-top:var(--space-lg);
+}
+.open:focus{outline:none}
+.open-face{grid-column:1}
+.open-face .f-title.big{font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display)}
+.open-face .f-title.mid{font-size:var(--fs-h1);line-height:var(--lh-h1)}
+.open-face .f-gloss{font-family:var(--font-sans);font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-body);color:var(--text-primary)}
+.open-main{
+  grid-column:2/-1;
+  min-width:0;
+  display:grid;
+  gap:var(--space-lg);
+  align-content:space-between;
+  padding:var(--space-lg);
+  background:var(--surface-card);
+  border:var(--stroke) solid var(--card-cl,var(--g66));
+  border-radius:var(--radius-lg);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.label{margin:0 0 var(--space-sm);text-transform:uppercase;color:var(--text-secondary)}
+.read{margin:0;max-width:62ch;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-primary)}
+.qbox{padding:var(--space-md);background:var(--surface-page);border:2px solid var(--card-cl,var(--g66));border-radius:var(--radius-md)}
+.qtext{margin:0;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-primary)}
+.none{margin:0;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)}
+.chips,.ctl-row{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-md)}
+
+/* ============================================================
+   THE BOTTOM SHEET – below 720, the field's own narrow step.
+   Head and foot pinned, the body the only part that scrolls.
+   ============================================================ */
+.sheet{display:none}
+@media (max-width:720px){
+  .open-inline{display:none}
+  .sheet{
+    display:flex;flex-direction:column;
+    position:fixed;left:0;right:0;bottom:0;z-index:10;
+    max-height:50vh;
+    padding:var(--space-md);
+    padding-bottom:calc(var(--space-md) + env(safe-area-inset-bottom));
+    background:var(--surface-raised);
+    border-top:var(--stroke) solid var(--card-cl,var(--g66));
+    border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  }
+  .sheet:focus{outline:none}
+  .lattice.is-open{padding-bottom:50vh}
+}
+.sheet-head{padding-bottom:var(--space-md);border-bottom:1px solid var(--surface-border)}
+.line{margin:0;text-transform:uppercase;color:var(--text-secondary)}
+.sheet-title{margin:var(--space-xs) 0 0;font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2)}
+.sheet-gloss{margin:var(--space-xs) 0 0;font-family:var(--font-sans);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--text-secondary)}
+.sheet-body{
+  flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:thin;
+  display:flex;flex-direction:column;gap:var(--space-lg);
+  padding:var(--space-md) 0;
+}
+.sheet-foot{display:flex;gap:var(--space-md);padding-top:var(--space-md);border-top:1px solid var(--surface-border)}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Polish-mimoflash.html</span>
+</nav>
+
+<div class="page" data-pad id="page">
+  <div class="col">
+    <header class="head">
+      <div class="head-top">
+        <span class="kicker">Word DECK · Abstract REALM</span>
+        <span class="stamp">Updated 29 September 2026 · 16:03</span>
+      </div>
+      <h1>The deck, opened</h1>
+      <div class="head-tools">
+        <p class="legend">Tap or Enter opens · tap another card to switch · Esc closes · ← → steps · D deals · Tab moves</p>
+        <button type="button" class="ctl" id="deal" data-lift data-press>Deal</button>
+      </div>
+      <hr class="rule">
+    </header>
+    <main>
+      <div class="lattice" id="lattice" data-stagger></div>
+    </main>
+    <noscript><p class="legend">The deck deals itself with JavaScript. Turn it on and the cards lay out.</p></noscript>
+  </div>
+</div>
+
+<p id="live" class="sr-only" aria-live="polite"></p>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   THE TWELVE – copied out of Projects/Design System/data/deck-data.js.
+   Every one of them is Abstract REALM, so polar and counter partners
+   both sit inside this deck and no relation points at a card that
+   is not on the table.
+   ============================================================ */
+var DECK = [
+{id:'r-set',set:'Abstract REALM',row:'SET',type:'Set',holds:12,titles:['REALM'],
+ picks:[0,1,2,3,4,5],blendPicks:[0,1,2,3,4,5],
+ grid:[['LIFE','#00D460'],['TONE','#99DD00'],['FLUX','#FFD100'],['FLOW','#FFB000'],['LOVE','#FF7700'],['BOND','#FF5500'],['FIRE','#FF0000'],['PATH','#E02888'],['TIME','#9933CC'],['META','#6655FF'],['FORM','#2277FF'],['TYPE','#00BBDD']],
+ gloss:'The world a thing belongs to',
+ reading:'Realm names the widest frame, with nobody in it. The answer stays true whether anyone is standing there or not.',
+ question:'Where does this belong?',lastLabel:'',last:'',counterId:''},
+
+{id:'r-core',set:'Abstract REALM',row:'CORE',type:'Core',holds:0,titles:['ZONE'],
+ picks:[],blendPicks:[],
+ gloss:'All potential, before orientation',
+ reading:'Nothing here has taken a direction yet. What follows arises from this quiet centre, which carries no colour of its own because it is looking rather than being looked at.',
+ question:'Is anything pointing anywhere yet?',lastLabel:'',last:'',counterId:''},
+
+{id:'r-triad-prime',set:'Abstract REALM',row:'TRIAD',type:'Triad',holds:3,titles:['PRIME'],
+ picks:[1,3,5],blendPicks:[],
+ grid:[['FLUX','#FFD100'],['FIRE','#FF0000'],['FORM','#2277FF']],
+ gloss:'A triangle, held in balance',
+ reading:'No position here opposes another. The weight sits evenly rather than pulling to one side.',
+ question:'Which of the three anchors holds your focus?',lastLabel:'Counter',last:'PART',counterId:'r-triad-part'},
+
+{id:'r-triad-part',set:'Abstract REALM',row:'TRIAD',type:'Triad',holds:3,titles:['PART'],
+ picks:[0,2,4],blendPicks:[],
+ grid:[['LIFE','#00D460'],['LOVE','#FF7700'],['TIME','#9933CC']],
+ gloss:'The triangle the first leaves',
+ reading:'The positions the other arrangement passes over. Between them the structure closes.',
+ question:'Which quieter anchor steadies the noise?',lastLabel:'Counter',last:'PRIME',counterId:'r-triad-prime'},
+
+{id:'r-base',set:'Abstract REALM',row:'BASE',type:'Base',holds:6,titles:['BASE'],
+ picks:[0,1,2,3,4,5],blendPicks:[],
+ grid:[['LIFE','#00D460'],['FLUX','#FFD100'],['LOVE','#FF7700'],['FIRE','#FF0000'],['TIME','#9933CC'],['FORM','#2277FF']],
+ gloss:'Where each circle is centred',
+ reading:'These map the main outline. The rest take their bearings from them.',
+ question:'Which centre are you standing on?',lastLabel:'Counter',last:'BLEND',counterId:'r-blend'},
+
+{id:'r-blend',set:'Abstract REALM',row:'BLEND',type:'Blend',holds:6,titles:['BLEND'],
+ picks:[],blendPicks:[0,1,2,3,4,5],
+ grid:[['TONE','#99DD00'],['FLOW','#FFB000'],['BOND','#FF5500'],['PATH','#E02888'],['META','#6655FF'],['TYPE','#00BBDD']],
+ gloss:'Where two circles cross',
+ reading:'Two overlapping fields make a third thing that belongs to neither. The geometry has a name for it before language does.',
+ question:'Which meeting point are you at?',lastLabel:'Counter',last:'BASE',counterId:'r-base'},
+
+{id:'r-single-04',set:'Abstract REALM',row:'SINGLE',type:'Single',holds:1,titles:['LOVE'],
+ picks:[2],blendPicks:[],
+ gloss:'The gravity that ends isolation',
+ reading:'It pulls separate things into one thing and holds them there. Less a feeling than a structural necessity, which is why its absence shows up as drift.',
+ question:'What is drawing you closer right now?',lastLabel:'Polar',last:'FORM',counterId:''},
+
+{id:'r-single-10',set:'Abstract REALM',row:'SINGLE',type:'Single',holds:1,titles:['FORM'],
+ picks:[5],blendPicks:[],
+ gloss:'The edge that makes a thing',
+ reading:'Nothing can be handled until it has a limit. Definition is the price of being recognisable.',
+ question:'What gives this its shape?',lastLabel:'Polar',last:'LOVE',counterId:''},
+
+{id:'r-single-03',set:'Abstract REALM',row:'SINGLE',type:'Single',holds:1,titles:['FLOW'],
+ picks:[],blendPicks:[1],
+ gloss:'Movement without resistance',
+ reading:'Action and attention stop arguing and run as one thing. Effort does not disappear, it stops being spent on friction.',
+ question:'Where is nothing in your way?',lastLabel:'Polar',last:'META',counterId:''},
+
+{id:'r-single-09',set:'Abstract REALM',row:'SINGLE',type:'Single',holds:1,titles:['META'],
+ picks:[],blendPicks:[4],
+ gloss:'The view that shows the rules',
+ reading:'Stepping back costs the detail and buys the structure. From here the game is legible and the moves are not.',
+ question:'What does the framework itself make clear?',lastLabel:'Polar',last:'FLOW',counterId:''},
+
+{id:'r-pair-0410',set:'Abstract REALM',row:'PAIR',type:'Pair',holds:2,titles:['LOVE','FORM'],
+ picks:[2,5],blendPicks:[],
+ gloss:'Attraction, then the vessel',
+ reading:'What gathers decides the shape that ends up holding it. Structure is the consequence, not the cause.',
+ question:'What is being drawn together here?',lastLabel:'Polar',last:'FORM • LOVE',counterId:'r-pair-1004'},
+
+{id:'r-pair-1004',set:'Abstract REALM',row:'PAIR',type:'Pair',holds:2,titles:['FORM','LOVE'],
+ picks:[5,2],blendPicks:[],
+ gloss:'A container, then closeness',
+ reading:'Limits hold a space, and what grows inside is safe because the space is held. Definition protects.',
+ question:'What is your structure making room for?',lastLabel:'Polar',last:'LOVE • FORM',counterId:'r-pair-0410'}
+];
+
+/* colours.css, keyed by position. A card's stroke is the colour of the word it leads with;
+   the core leads with nothing, so it takes the greyscale. */
+var POS_COL = {1:'#99DD00',2:'#FFD100',3:'#FFB000',4:'#FF7700',5:'#FF5500',6:'#FF0000',
+               7:'#E02888',8:'#9933CC',9:'#6655FF',10:'#2277FF',11:'#00BBDD',12:'#00D460'};
+
+/* The word store holds a position, not a colour: Base picks sit on the even positions
+   12, 02, 04, 06, 08, 10 and Blend picks on the odd ones, 01 to 11. */
+function positionsOf(c){
+  var out = [];
+  (c.picks || []).forEach(function(i){ var p = (2 * i) % 12; out.push(p === 0 ? 12 : p); });
+  (c.blendPicks || []).forEach(function(i){ out.push(2 * i + 1); });
+  return out;
+}
+function posText(c){
+  var p = positionsOf(c);
+  if(!p.length) return c.holds === 0 ? '00' : '';
+  if(p.length > 3) return '';           /* six and twelve are carried by the word grid instead. */
+  return p.map(function(n){ return n < 10 ? '0' + n : String(n); }).join('·');
+}
+function colOf(c){
+  var p = positionsOf(c);
+  return p.length ? POS_COL[p[0]] : 'var(--g66)';
+}
+function relOf(c){
+  if(c.counterId && BY_ID[c.counterId]) return {label:'Counter', text:BY_ID[c.counterId].titles.join(' • '), id:c.counterId};
+  if(c.lastLabel === 'Polar' && c.last){
+    var t = null;
+    DECK.forEach(function(x){ if(!t && x.set === c.set && x.row === 'SINGLE' && x.titles[0] === c.last) t = x; });
+    return {label:'Polar', text:c.last, id:t ? t.id : null};
+  }
+  return null;
+}
+var BY_ID = {};
+DECK.forEach(function(c){ BY_ID[c.id] = c; });
+
+/* ============================================================
+   THE FACE – one component, two type steps: the deck size and the
+   opened size. Never a transform, so nothing is ever fractional.
+   ============================================================ */
+function gridHTML(c){
+  return '<span class="f-grid">' + c.grid.map(function(g){
+    return '<span class="gw"><i class="dot" style="border-color:' + g[1] + '"></i>' + g[0] + '</span>';
+  }).join('') + '</span>';
+}
+function faceHTML(c, mode){
+  var pos = posText(c);
+  var rel = relOf(c);
+  var grid = (c.grid && c.grid.length) ? gridHTML(c) : '';
+  var size = (grid || c.titles.length > 1) ? 'mid' : 'big';
+  var h = '';
+  h += '<span class="f-top"><span>' + c.row + '</span>' + (pos ? '<span class="f-pos">' + pos + '</span>' : '') + '</span>';
+  h += '<span class="f-title ' + size + '">' + c.titles.map(function(t){ return '<span class="f-line">' + t + '</span>'; }).join('') + '</span>';
+  if(grid) h += grid;
+  /* A grid card wears its words, not its gloss, on the deck. The gloss is what opening reveals. */
+  if(!(grid && mode === 'lattice')) h += '<span class="f-gloss">' + c.gloss + '</span>';
+  if(mode === 'lattice' && rel) h += '<span class="f-rel">' + rel.label + ' · ' + rel.text + '</span>';
+  return h;
+}
+
+/* ============================================================
+   THE OPEN CARD'S CONTENT
+   ============================================================ */
+function chipsHTML(c){
+  var rel = relOf(c);
+  if(!rel) return '<p class="none">No linked card</p>';
+  if(!rel.id) return '<p class="none">' + rel.label + ' · ' + rel.text + '</p>';
+  return '<button type="button" class="ctl" data-lift data-press data-goto="' + rel.id + '">'
+       + rel.label + ' · ' + rel.text + '</button>';
+}
+function readBlock(c){ return '<div class="blk"><p class="label">Reading</p><p class="read">' + c.reading + '</p></div>'; }
+function qBlock(c){ return '<div class="blk qbox"><p class="label">Question</p><p class="qtext">' + c.question + '</p></div>'; }
+function relBlock(c){ return '<div class="blk"><p class="label">Relations</p><div class="chips">' + chipsHTML(c) + '</div></div>'; }
+function ctlRow(){
+  return '<button type="button" class="ctl" data-lift data-press data-act="prev">← Prev</button>'
+       + '<button type="button" class="ctl" data-lift data-press data-act="next">Next →</button>'
+       + '<button type="button" class="ctl" data-lift data-press data-act="close">Close</button>';
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var COUNTS = [6,4,3,2,1];
+var pageEl = document.getElementById('page');
+var lattice = document.getElementById('lattice');
+var live = document.getElementById('live');
+var state = {cols:6, track:200, gap:24, sheet:1320, ch:280, open:null,
+             order:DECK.map(function(c){ return c.id; })};
+var CARD = {};
+
+/* One slot is one column: the printed card at its own width, and the gap the lattice is
+   spaced by. The count is the widest of 6 / 4 / 3 / 2 / 1 that fits the measured frame –
+   every one of them divides twelve, so no row is ever ragged. Nothing stretches: what is
+   left over stays margin. */
+function latticeOf(frame){
+  var track = 200, gap = 24;
+  if(2 * track + gap > frame){ track = 165; gap = 12; }
+  function fits(n){ return n * track + (n - 1) * gap <= frame; }
+  var cols = 0;
+  for(var i = 0; i < COUNTS.length; i++){ if(fits(COUNTS[i])){ cols = COUNTS[i]; break; } }
+  if(!cols){
+    var two = Math.floor((frame - gap) / 2);
+    if(two >= 96){ track = Math.floor(two / 5) * 5; cols = 2; }   /* whole, and a card stays a card */
+    else { track = Math.max(96, Math.floor(frame / 5) * 5); cols = 1; }
+  }
+  return {cols:cols, track:track, gap:gap,
+          sheet:cols * track + (cols - 1) * gap,
+          ch:Math.round(track * 504 / 360)};   /* the printed card is 360 by 504 */
+}
+function measure(){
+  var cs = window.getComputedStyle(pageEl);
+  var w = Math.round(pageEl.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0));
+  return w > 0 ? w : 1440;
+}
+function layout(){
+  var L = latticeOf(measure());
+  var changed = L.cols !== state.cols;
+  state.cols = L.cols; state.track = L.track; state.gap = L.gap; state.sheet = L.sheet; state.ch = L.ch;
+  pageEl.style.setProperty('--cols', String(L.cols));
+  pageEl.style.setProperty('--track', L.track + 'px');
+  pageEl.style.setProperty('--gap', L.gap + 'px');
+  pageEl.style.setProperty('--sheet', L.sheet + 'px');
+  pageEl.style.setProperty('--ch', L.ch + 'px');
+  if(changed && state.open) renderOpen(false);
+}
+function isSheet(){ return window.matchMedia('(max-width:720px)').matches; }
+function say(msg){ live.textContent = msg; }
+
+/* ============================================================
+   THE DECK – one cell per card, built once, re-dealt by order.
+   ============================================================ */
+DECK.forEach(function(c){
+  var b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'card';
+  b.dataset.id = c.id;
+  b.setAttribute('data-lift','');
+  b.setAttribute('data-press','');
+  b.setAttribute('aria-expanded','false');
+  b.style.setProperty('--card-cl', colOf(c));
+  b.innerHTML = '<div class="face">' + faceHTML(c, 'lattice') + '</div>';
+  CARD[c.id] = b;
+  lattice.appendChild(b);
+});
+
+var openEl = document.createElement('section');
+openEl.id = 'openInline';
+openEl.className = 'open open-inline';
+openEl.setAttribute('tabindex','-1');
+openEl.setAttribute('aria-label','Open card');
+openEl.hidden = true;
+lattice.appendChild(openEl);
+
+var sheetEl = document.createElement('section');
+sheetEl.id = 'openSheet';
+sheetEl.className = 'sheet';
+sheetEl.setAttribute('tabindex','-1');
+sheetEl.setAttribute('aria-label','Open card');
+sheetEl.hidden = true;
+document.body.appendChild(sheetEl);
+
+function applyOrder(){
+  state.order.forEach(function(id){ lattice.insertBefore(CARD[id], openEl); });
+}
+
+/* The open card, drawn twice and shown once: on a wide frame it takes the lattice's own
+   tracks, under 721 it is the sheet at the foot. */
+function renderOpen(animate){
+  var c = BY_ID[state.open];
+  if(!c) return;
+  var act = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.act : null;
+  var two = state.cols >= 6;
+  var pos = posText(c);
+
+  openEl.style.setProperty('--card-cl', colOf(c));
+  openEl.innerHTML =
+      '<div class="open-face" style="--card-cl:' + colOf(c) + '"><div class="face">' + faceHTML(c,'open') + '</div></div>'
+    + '<div class="open-main" style="grid-template-columns:' + (two ? 'repeat(2,1fr)' : '1fr') + '">'
+    + readBlock(c) + qBlock(c) + relBlock(c)
+    + '<div class="blk ctl-row">' + ctlRow() + '</div></div>';
+
+  sheetEl.style.setProperty('--card-cl', colOf(c));
+  sheetEl.innerHTML =
+      '<div class="sheet-head"><p class="line">' + c.row + (pos ? ' · ' + pos : '') + '</p>'
+    + '<p class="sheet-title">' + c.titles.join(' · ') + '</p>'
+    + '<p class="sheet-gloss">' + c.gloss + '</p></div>'
+    + '<div class="sheet-body">'
+    + (c.grid && c.grid.length ? '<div class="blk"><p class="label">Held words</p>' + gridHTML(c) + '</div>' : '')
+    + readBlock(c) + qBlock(c) + relBlock(c)
+    + '</div>'
+    + '<div class="sheet-foot">' + ctlRow() + '</div>';
+
+  if(animate){
+    [openEl, sheetEl].forEach(function(el){
+      el.classList.remove('is-in');
+      void el.offsetWidth;
+      el.classList.add('is-in');
+    });
+  }
+  /* Stepping rebuilds the panel: put the pointer's button back under the finger. */
+  if(act){
+    var host = isSheet() ? sheetEl : openEl;
+    var btn = host.querySelector('[data-act="' + act + '"]');
+    if(btn) btn.focus({preventScroll:true});
+  }
+}
+
+function scrollPanel(){
+  if(isSheet()) return;
+  var r = openEl.getBoundingClientRect();
+  if(r.top < 0 || r.bottom > window.innerHeight){
+    var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    openEl.scrollIntoView({block:'start', behavior:reduce ? 'auto' : 'smooth'});
+  }
+}
+
+/* Open, switch and close. Another card opens without a second click: the state is one id. */
+function setOpen(id, opts){
+  opts = opts || {};
+  var prev = state.open;
+  state.open = id || null;
+
+  DECK.forEach(function(c){
+    var b = CARD[c.id];
+    var here = (c.id === state.open);
+    b.classList.toggle('is-here', here);
+    b.setAttribute('aria-expanded', here ? 'true' : 'false');
+    if(here) b.setAttribute('aria-controls','openInline openSheet');
+    else b.removeAttribute('aria-controls');
+  });
+
+  if(state.open){
+    openEl.hidden = false;
+    sheetEl.hidden = false;
+    lattice.classList.add('is-open');
+    renderOpen(opts.animate !== false);
+    if(opts.focus){
+      (isSheet() ? sheetEl : openEl).focus({preventScroll:true});
+      scrollPanel();
+    }
+    say('Opened ' + BY_ID[state.open].titles.join(' ') + '.');
+  } else {
+    openEl.hidden = true;
+    sheetEl.hidden = true;
+    openEl.innerHTML = '';
+    sheetEl.innerHTML = '';
+    lattice.classList.remove('is-open');
+    if(opts.focus && prev && CARD[prev]) CARD[prev].focus();
+    say('Closed.');
+  }
+}
+function step(dir){
+  if(!state.open) return;
+  var i = state.order.indexOf(state.open);
+  var n = Math.min(Math.max(i + dir, 0), state.order.length - 1);
+  if(state.order[n] !== state.open) setOpen(state.order[n], {focus:false, animate:true});
+}
+function deal(){
+  var a = state.order.slice();
+  for(var i = a.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  state.order = a;
+  applyOrder();
+  lattice.classList.remove('dealt');
+  void lattice.offsetWidth;
+  lattice.classList.add('dealt');
+  say('Dealt.');
+}
+
+/* ============================================================
+   HANDS – pointer, and the keys named on the surface above.
+   ============================================================ */
+document.addEventListener('click', function(e){
+  var act = e.target.closest('[data-act]');
+  if(act){
+    var a = act.getAttribute('data-act');
+    if(a === 'close') setOpen(null, {focus:true});
+    else if(a === 'prev') step(-1);
+    else if(a === 'next') step(1);
+    return;
+  }
+  var go = e.target.closest('[data-goto]');
+  if(go){
+    var gid = go.getAttribute('data-goto');
+    if(gid && BY_ID[gid]) setOpen(gid, {focus:true, animate:true});
+    return;
+  }
+  var card = e.target.closest('.card');
+  if(card){
+    var id = card.dataset.id;
+    setOpen(state.open === id ? null : id, {focus:true, animate:true});
+  }
+});
+document.getElementById('deal').addEventListener('click', deal);
+
+document.addEventListener('keydown', function(e){
+  var t = e.target;
+  if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+  if(e.key === 'Escape'){ if(state.open){ setOpen(null, {focus:true}); e.preventDefault(); } }
+  else if(e.key === 'ArrowLeft'){ if(state.open){ step(-1); e.preventDefault(); } }
+  else if(e.key === 'ArrowRight'){ if(state.open){ step(1); e.preventDefault(); } }
+  else if(e.key === 'd' || e.key === 'D'){ deal(); e.preventDefault(); }
+});
+
+/* ============================================================
+   COLD START
+   ============================================================ */
+layout();
+applyOrder();
+setOpen('r-base', {focus:false, animate:true});
+lattice.classList.add('dealt');
+
+if(window.ResizeObserver){
+  var ro = new ResizeObserver(function(){ layout(); });
+  ro.observe(pageEl);
+} else {
+  window.addEventListener('resize', layout);
+}
+window.addEventListener('resize', function(){ if(state.open) renderOpen(false); });
+if(document.fonts && document.fonts.ready && document.fonts.ready.then){
+  document.fonts.ready.then(function(){ layout(); }).catch(function(){});
+}
+})();
+</script>
+</body>
+</html>

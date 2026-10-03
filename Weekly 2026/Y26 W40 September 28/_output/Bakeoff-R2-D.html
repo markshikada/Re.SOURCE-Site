@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Word CARD · position 10 · FORM</title>
+<style>
+/* Values taken exactly from Re.SOURCE/Projects/Design System/tokens */
+:root{
+  /* colours.css — twelve positions, 30 degree steps */
+  --cl-00-core:transparent;
+  --cl-01-tone:#99DD00;
+  --cl-02-flux:#FFD100;
+  --cl-03-flow:#FFB000;
+  --cl-04-love:#FF7700;
+  --cl-05-bond:#FF5500;
+  --cl-06-fire:#FF0000;
+  --cl-07-path:#E02888;
+  --cl-08-time:#9933CC;
+  --cl-09-meta:#6655FF;
+  --cl-10-form:#2277FF;
+  --cl-11-type:#00BBDD;
+  --cl-12-life:#00D460;
+  --stroke:3px;
+
+  /* greys.css — the ramp */
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+
+  /* space.css */
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:24px;
+  --space-xl:48px;
+  --space-2xl:96px;
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:24px;
+
+  /* typography.css */
+  --fs-caption:12px;
+  --fs-body:18px;
+  --fs-h2:24px;
+  --fs-h1:36px;
+  --fs-display:48px;
+  --lh-caption:18px;
+  --lh-body:30px;
+  --lh-h2:36px;
+  --lh-h1:48px;
+  --lh-display:54px;
+  --fw-caption:300;
+  --fw-body:400;
+  --fw-h2:600;
+  --fw-h1:700;
+  --fw-display:800;
+
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{background:var(--surface-page)}
+
+body{
+  margin:0;
+  padding:var(--space-xl) var(--space-lg) var(--space-2xl);
+  background:var(--surface-page);
+  color:var(--text-primary);
+  font-family:var(--font-sans);
+}
+
+p,h1,h2,h3{margin:0}
+
+@media (min-width:720px){
+  body{padding:var(--space-2xl) var(--space-xl) var(--space-2xl)}
+}
+
+main{max-width:768px;margin:0 auto}
+
+/* Type steps, one of five, always whole pairings */
+.t-display{font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display)}
+.t-h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1)}
+.t-h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2)}
+.t-body{font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-body)}
+.t-caption{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);font-family:var(--font-mono)}
+
+.kicker{text-transform:uppercase;color:var(--text-secondary)}
+.label{margin:0 0 var(--space-xs);color:var(--text-dim)}
+.imprint{color:var(--text-dim)}
+.caption{color:var(--text-secondary)}
+.reading{color:var(--text-secondary)}
+
+/* Page head */
+.rule-accent{width:var(--space-xl);border-top:var(--stroke) solid var(--cl-10-form);margin-bottom:var(--space-lg)}
+.page-caption{margin-top:var(--space-md)}
+
+/* Specimens */
+.specimens{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:var(--space-2xl) var(--space-xl);
+  margin-top:var(--space-2xl);
+}
+.specimen{width:min(360px,100%)}
+.specimen--frame{width:min(390px,100%)}
+.specimen .caption{margin-top:var(--space-sm)}
+.specimen .card,.specimen .frame{margin-top:var(--space-lg)}
+
+/* Word CARD — 360 x 504, black fill, coloured stroke, white text */
+.card{
+  width:min(360px,100%);
+  min-height:504px;
+  background:var(--surface-card);
+  border:var(--stroke) solid var(--cl-10-form);
+  border-radius:var(--radius-lg);
+  padding:var(--space-lg);
+  display:flex;
+  flex-direction:column;
+  transition:transform 180ms ease;
+}
+.card:hover{transform:translateY(-4px)}
+
+.face-row{display:flex;align-items:center;gap:var(--space-md)}
+.badge{
+  width:var(--space-xl);
+  height:var(--space-xl);
+  flex:0 0 auto;
+  background:var(--black);
+  border:var(--stroke) solid var(--cl-10-form);
+  border-radius:var(--radius-md);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.badge--dim{border-color:var(--surface-border)}
+
+.word{margin-top:var(--space-lg)}
+.gloss{margin-top:var(--space-md)}
+.rule{margin-top:var(--space-lg);border-top:var(--stroke) solid var(--surface-border)}
+.block{margin-top:var(--space-lg)}
+.ask{margin-top:auto}
+
+.foot{
+  margin-top:auto;
+  border-top:var(--stroke) solid var(--surface-border);
+  padding-top:var(--space-md);
+}
+.imprint-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space-sm)}
+
+/* Bottom sheet on a 390 wide frame */
+.frame{
+  width:min(390px,100%);
+  min-height:844px;
+  background:var(--surface-page);
+  border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transition:transform 180ms ease;
+}
+.frame:hover{transform:translateY(-4px)}
+
+.backdrop{padding:var(--space-lg);display:flex;flex-direction:column;color:var(--text-dim)}
+.backdrop .kicker{color:var(--text-dim)}
+
+.sheet{
+  margin-top:auto;
+  background:var(--surface-raised);
+  border-top:var(--stroke) solid var(--surface-border);
+  border-top-left-radius:var(--radius-lg);
+  border-top-right-radius:var(--radius-lg);
+  padding:var(--space-md);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.handle{
+  width:var(--space-xl);
+  height:var(--space-xs);
+  border-radius:var(--radius-sm);
+  background:var(--g48);
+  margin-bottom:var(--space-md);
+}
+
+@media (prefers-reduced-motion:reduce){
+  .card,.frame{transition-duration:1ms}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-D.html</span>
+</nav>
+<main>
+
+  <header class="page-head">
+    <div class="rule-accent"></div>
+    <h1 class="t-h1">Word CARD</h1>
+    <p class="t-caption caption page-caption">360 × 504 · three states, one component at a scale</p>
+  </header>
+
+  <div class="specimens">
+
+    <section class="specimen">
+      <h2 class="t-h2">At rest</h2>
+      <p class="t-caption caption">1 · 360 × 504</p>
+      <article class="card">
+        <div class="face-row">
+          <div class="badge"><span class="t-body">10</span></div>
+          <p class="t-caption kicker">Position</p>
+        </div>
+        <h3 class="t-display word">FORM</h3>
+        <p class="t-body gloss">Form is the shape a thing takes when it holds together.</p>
+        <div class="foot">
+          <div class="imprint-row">
+            <span class="t-caption kicker">Reading and question inside</span>
+            <span class="t-caption imprint">Re.SOURCE</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="specimen">
+      <h2 class="t-h2">Opened</h2>
+      <p class="t-caption caption">2 · 360 × 504 · showing its reading and question</p>
+      <article class="card">
+        <div class="face-row">
+          <div class="badge"><span class="t-body">10</span></div>
+          <p class="t-caption kicker">Position</p>
+        </div>
+        <h3 class="t-display word">FORM</h3>
+        <div class="rule"></div>
+        <div class="block">
+          <p class="t-caption kicker label">Reading</p>
+          <p class="t-body reading">The card reads the shape, the pair and the position, in that order.</p>
+        </div>
+        <div class="block ask">
+          <p class="t-caption kicker label">Question</p>
+          <p class="t-h2 question">What is holding your shape together right now?</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="specimen specimen--frame">
+      <h2 class="t-h2">As a bottom sheet</h2>
+      <p class="t-caption caption">3 · 390 wide frame</p>
+      <div class="frame">
+        <div class="backdrop">
+          <div class="face-row">
+            <div class="badge badge--dim"><span class="t-body">10</span></div>
+            <p class="t-caption kicker">Position</p>
+          </div>
+          <h3 class="t-display word">FORM</h3>
+          <p class="t-body gloss">Form is the shape a thing takes when it holds together.</p>
+        </div>
+        <div class="sheet">
+          <div class="handle"></div>
+          <article class="card">
+            <div class="face-row">
+              <div class="badge"><span class="t-body">10</span></div>
+              <p class="t-caption kicker">Position</p>
+            </div>
+            <h3 class="t-display word">FORM</h3>
+            <div class="rule"></div>
+            <div class="block">
+              <p class="t-caption kicker label">Reading</p>
+              <p class="t-body reading">The card reads the shape, the pair and the position, in that order.</p>
+            </div>
+            <div class="block ask">
+              <p class="t-caption kicker label">Question</p>
+              <p class="t-h2 question">What is holding your shape together right now?</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+</body>
+</html>

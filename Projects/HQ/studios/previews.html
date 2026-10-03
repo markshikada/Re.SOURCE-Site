@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="icon" href="data:,">
+  <meta name="description" content="Previews studio: the seven masters and five key pages as live scaled iframe previews on one phone-openable page, with index metadata from the _data/pages.json snapshot.">
+  <title>Previews Studio · Re.SOURCE HQ</title>
+  <!-- Design system, two levels up to Projects/ (depth rule from the template:
+       a live studio sits one level shallower than studios/_template/).
+       Preview pattern: Projects/Design System/Masters.html, the shot frame at
+       the full desktop ratio, each iframe scaled to fit its card. The curated
+       key pages read their chips and stamp from ../_data/pages.json, written
+       by Projects/HQ/hq-data.cjs. The eight-step path from copy to publish is
+       in README.md beside this page. -->
+  <link rel="stylesheet" href="../../Design System/styles.css">
+  <link rel="stylesheet" href="../../Design System/lib/topbar.css">
+  <script src="../../Design System/lib/masters-nav.js" defer></script>
+  <style>
+    /* Previews studio chrome. Every value is a design token: colour from
+       tokens/greys.css, space and radius from tokens/space.css, type from
+       tokens/typography.css, motion from tokens/motion.css, the field from
+       tokens/grid.css. No new hex, no type off the scale, no radius off
+       the token set, whole numbers only. */
+
+    /* Content starts below the fixed bar; the bar height token is owned by lib/topbar.css. */
+    .shell {
+      padding-top: calc(var(--rs-topbar-h) + var(--space-xl));
+      padding-bottom: var(--space-2xl);
+      row-gap: var(--space-2xl);
+    }
+    section[id] { scroll-margin-top: calc(var(--rs-topbar-h) + var(--space-md)); }
+
+    .skip-link {
+      position: fixed;
+      top: var(--space-sm);
+      left: var(--space-sm);
+      z-index: 20;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--text-primary);
+      color: var(--black);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transform: translateY(calc(-100% - var(--space-lg)));
+      transition: transform var(--dur-md) var(--ease-arrive);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .eyebrow {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      font-weight: var(--fw-caption);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    .eyebrow-glyph {
+      font-size: var(--fs-h2);
+      line-height: var(--lh-h2);
+      vertical-align: middle;
+    }
+    .intro h1 {
+      margin: var(--space-sm) 0 var(--space-md);
+      font-size: var(--fs-display);
+      line-height: var(--lh-display);
+      font-weight: var(--fw-display);
+    }
+    .lede {
+      margin: 0 0 var(--space-md);
+      max-width: 60ch;
+      color: var(--text-secondary);
+    }
+    .stamp-line {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    .section-heading { margin-bottom: var(--space-lg); }
+    .section-heading h2 {
+      margin: 0;
+      font-size: var(--fs-h1);
+      line-height: var(--lh-h1);
+      font-weight: var(--fw-h1);
+    }
+
+    /* Preview grid. Cards follow the masters index pattern: a shot frame at
+       the full desktop ratio, the page inside it scaled down to fit, and a
+       body carrying the name, one line of purpose and the vault path. The
+       card is a link, so a tap opens the real page; the iframe itself never
+       takes the pointer. */
+    .preview-cards {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      row-gap: var(--space-lg);
+    }
+    .preview-slot[hidden] { display: none; }
+    .preview-card {
+      display: block;
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: border-color var(--dur-sm) var(--ease-place), background var(--dur-sm) var(--ease-place);
+    }
+    .preview-card:hover {
+      border-color: var(--g66);
+      background: var(--surface-raised);
+    }
+    .shot {
+      display: block;
+      position: relative;
+      aspect-ratio: 1440 / 900;
+      overflow: hidden;
+      border-bottom: 1px solid var(--surface-border);
+      background: var(--surface-page);
+    }
+    .shot iframe {
+      position: absolute;
+      inset: 0;
+      width: calc(var(--space-2xl) * 15);
+      height: calc(var(--space-2xl) * 9 + var(--lh-h2));
+      border: 0;
+      transform-origin: 0 0;
+      pointer-events: none;
+    }
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      padding: var(--space-md);
+    }
+    .card-name {
+      margin: 0;
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+      font-weight: var(--fw-h2);
+    }
+    .card-desc {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+    }
+    .card-meta {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+      overflow-wrap: anywhere;
+    }
+    .card-meta[hidden] { display: none; }
+
+    /* Index status chip. A colour is a stroke, never a fill behind the word:
+       staged reads in the Re.SOURCE position colour, unreadable in the fire
+       colour, and the chip word always says the state in full. */
+    .chip {
+      align-self: flex-start;
+      padding: 0 var(--space-sm);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    .chip-staged {
+      border-color: var(--cl-11-type);
+      color: var(--cl-11-type);
+    }
+    .chip-alert {
+      border-color: var(--cl-06-fire);
+      color: var(--cl-06-fire);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-raised);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .button-primary {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: var(--black);
+    }
+
+    .honest-note {
+      margin: 0;
+      padding: var(--space-md);
+      background: var(--surface-card);
+      border-left: 2px solid var(--g48);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+    }
+    .honest-note[hidden] { display: none; }
+    .note-alert { border-left-color: var(--cl-06-fire); }
+
+    .colophon {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    /* Narrow frames: the field itself collapses by orientation (tokens/grid.css);
+       this only tightens rhythm and the display size for a phone portrait. */
+    @media (max-width: 720px) {
+      .shell { row-gap: var(--space-xl); }
+      .intro h1 {
+        font-size: var(--fs-h1);
+        line-height: var(--lh-h1);
+      }
+      .card-body { padding: var(--space-sm); }
+    }
+  </style>
+</head>
+<body class="rs-topbar-page">
+  <a class="skip-link" href="#main">Skip to work</a>
+
+  <!-- Universal top bar: one shared component. Markup here, styles in
+       lib/topbar.css, switcher built by lib/masters-nav.js bar mode (the static
+       link in the switcher zone is its fallback). -->
+  <header class="rs-topbar" id="rsTopBar">
+    <div class="rs-topbar-inner" data-pad>
+      <a class="rs-topbar-brand" href="../HQ.html" aria-label="Estate HQ home">Re.SOURCE <span>Previews</span></a>
+      <p class="rs-topbar-stamp"><span>Previews</span><span class="rs-topbar-sep" aria-hidden="true">·</span><span>v1</span></p>
+      <div class="rs-topbar-navrow">
+        <nav class="rs-topbar-context" aria-label="Studio sections">
+          <a href="#masters">Masters</a>
+          <a href="#pages">Key pages</a>
+          <a href="#index">Index</a>
+        </nav>
+        <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a class="button" href="../../Design System/Masters.html">Open masters</a></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="main" data-pad data-grid tabindex="-1">
+    <section class="intro" data-span="12" aria-labelledby="studio-title">
+      <p class="eyebrow"><span class="eyebrow-glyph" aria-hidden="true">👁️</span> Previews studio</p>
+      <h1 id="studio-title">Every key surface, live on one page.</h1>
+      <p class="lede">Seven masters and five key pages, each a live iframe at the full 1440 by 900 desktop frame, scaled to fit its card. Tap a card to open the page itself. Previews load the real files at open time; only the chips and the stamp come from the pages index snapshot.</p>
+      <p class="stamp-line" id="stampLine">Pages index not read yet · refresh: ask in chat to run hq-data.cjs, then reload</p>
+      <p class="honest-note" id="availNote" role="status" hidden></p>
+    </section>
+
+    <!-- HONEST CONTROLS, the standing law for every studio page.
+         This studio is static: its controls are links (kind 1), every card
+         opening the staged page it previews, plus notes (kind 3) naming the
+         session job that refreshes the index snapshot. The only fetch is the
+         read of ../_data/pages.json for chips and stamp, and same-origin HEAD
+         checks that hide a card whose preview target is not served. No
+         buttons wired to nothing, no refresh theatre. -->
+    <section id="masters" data-sub data-span="12" aria-labelledby="masters-title">
+      <div class="section-heading">
+        <h2 id="masters-title">Masters</h2>
+        <p class="eyebrow">Hand-kept seven · rendered whatever the index says</p>
+      </div>
+      <ul class="preview-cards" data-sub id="mastersGrid">
+        <li class="preview-slot" data-span="4">
+          <a class="preview-card" data-lift href="../../Design System/templates/colour-flower/ColourFlower.dc.html">
+            <span class="shot"><iframe src="../../Design System/templates/colour-flower/ColourFlower.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Colour FLOWER live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Colour FLOWER</span>
+              <span class="card-desc">The live instrument. Three sets on twelve positions, cards floating over the diagram.</span>
+              <span class="card-meta">Projects/Design System/templates/colour-flower/ColourFlower.dc.html</span>
+            </span>
+          </a>
+        </li>
+        <li class="preview-slot" data-span="4">
+          <a class="preview-card" data-lift href="../../Design System/templates/colour-lingo/ColourLingo.dc.html">
+            <span class="shot"><iframe src="../../Design System/templates/colour-lingo/ColourLingo.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Colour LINGO live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Colour LINGO</span>
+              <span class="card-desc">The source of record for the words: thirteen positions against every set, editable inline.</span>
+              <span class="card-meta">Projects/Design System/templates/colour-lingo/ColourLingo.dc.html</span>
+            </span>
+          </a>
+        </li>
+        <li class="preview-slot" data-span="4">
+          <a class="preview-card" data-lift href="../../Design System/templates/colour-wheel/ColourWheel.dc.html">
+            <span class="shot"><iframe src="../../Design System/templates/colour-wheel/ColourWheel.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Colour WHEEL live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Colour WHEEL</span>
+              <span class="card-desc">The ground-truth wheel diagram: twelve positions, both triangles, the spectrum ring.</span>
+              <span class="card-meta">Projects/Design System/templates/colour-wheel/ColourWheel.dc.html</span>
+            </span>
+          </a>
+        </li>
+        <li class="preview-slot" data-span="4">
+          <a class="preview-card" data-lift href="../../Design System/templates/word-card/WordCard.dc.html">
+            <span class="shot"><iframe src="../../Design System/templates/word-card/WordCard.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Word CARD live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Word CARD</span>
+              <span class="card-desc">One card at its printed size, 360 by 504. Every other card in the system is this component at a scale.</span>
+              <span class="card-meta">Projects/Design System/templates/word-card/WordCard.dc.html</span>
+            </span>
+          </a>
+        </li>
+        <li class="preview-slot" data-span="4">
+          <a class="preview-card" data-lift href="../../Design System/templates/word-deck/WordDeck.dc.html">
+            <span class="shot"><iframe src="../../Design System/templates/word-deck/WordDeck.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Word DECK live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Word DECK</span>
+              <span class="card-desc">All ninety cards on one adjustable grid, drawn by the master card.</span>
+              <span class="card-meta">Projects/Design System/templates/word-deck/WordDeck.dc.html</span>
+            </span>
+          </a>
+        </li>
+        <li class="preview-slot" data-span="4">
+          <a class="preview-card" data-lift href="../../Design System/templates/brand-logo/BrandLogo.dc.html">
+            <span class="shot"><iframe src="../../Design System/templates/brand-logo/BrandLogo.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Brand LOGO live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Brand LOGO</span>
+              <span class="card-desc">The signature at every size: mark, wordmark, lockups and the size ladder.</span>
+              <span class="card-meta">Projects/Design System/templates/brand-logo/BrandLogo.dc.html</span>
+            </span>
+          </a>
+        </li>
+        <li class="preview-slot" data-span="4">
+          <a class="preview-card" data-lift href="../../Design System/templates/brand-style/BrandStyle.dc.html">
+            <span class="shot"><iframe src="../../Design System/templates/brand-style/BrandStyle.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Brand STYLE live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Brand STYLE</span>
+              <span class="card-desc">The brand book, long form: specimen sections, and the position and card studies.</span>
+              <span class="card-meta">Projects/Design System/templates/brand-style/BrandStyle.dc.html</span>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section id="pages" data-sub data-span="12" aria-labelledby="pages-title">
+      <div class="section-heading">
+        <h2 id="pages-title">Key pages</h2>
+        <p class="eyebrow">Curated five · chips and stamp from _data/pages.json</p>
+      </div>
+      <ul class="preview-cards" data-sub id="curatedGrid">
+        <li class="preview-slot" data-span="6" data-page="Projects/HQ/HQ.html">
+          <a class="preview-card" data-lift href="../HQ.html">
+            <span class="shot"><iframe src="../HQ.html" loading="lazy" tabindex="-1" scrolling="no" title="Estate hub live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Estate hub</span>
+              <span class="card-desc">The front door of the estate: now, studios, pages, vaults and tools in one view.</span>
+              <span class="card-meta">Projects/HQ/HQ.html</span>
+              <span class="chip slot-status">Index not read</span>
+              <span class="card-meta slot-title" hidden></span>
+            </span>
+          </a>
+        </li>
+        <li class="preview-slot" data-span="6" data-page="Projects/HQ/studios/quota.html">
+          <a class="preview-card" data-lift href="quota.html">
+            <span class="shot"><iframe src="quota.html" loading="lazy" tabindex="-1" scrolling="no" title="Quota studio live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Quota studio</span>
+              <span class="card-desc">Per-model burn against the five-hour, weekly and monthly windows, on the quota snapshot.</span>
+              <span class="card-meta">Projects/HQ/studios/quota.html</span>
+              <span class="chip slot-status">Index not read</span>
+              <span class="card-meta slot-title" hidden></span>
+            </span>
+          </a>
+        </li>
+        <li class="preview-slot" data-span="6" data-page="Projects/HQ/studios/captures.html">
+          <a class="preview-card" data-lift href="captures.html">
+            <span class="shot"><iframe src="captures.html" loading="lazy" tabindex="-1" scrolling="no" title="Capture gallery live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Capture gallery</span>
+              <span class="card-desc">Newest QA captures from the weekly output homes, phone-visible at last.</span>
+              <span class="card-meta">Projects/HQ/studios/captures.html</span>
+              <span class="chip slot-status">Index not read</span>
+              <span class="card-meta slot-title" hidden></span>
+            </span>
+          </a>
+        </li>
+        <li class="preview-slot" data-span="6" data-page="Projects/HQ/model-ladder.html">
+          <a class="preview-card" data-lift href="../model-ladder.html">
+            <span class="shot"><iframe src="../model-ladder.html" loading="lazy" tabindex="-1" scrolling="no" title="Model ladder live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Model ladder</span>
+              <span class="card-desc">Which model does what, and why: the estate's routing ladder in full.</span>
+              <span class="card-meta">Projects/HQ/model-ladder.html</span>
+              <span class="chip slot-status">Index not read</span>
+              <span class="card-meta slot-title" hidden></span>
+            </span>
+          </a>
+        </li>
+        <li class="preview-slot" data-span="6" data-page="Projects/Design System/flower-work.html">
+          <a class="preview-card" data-lift href="../../Design System/flower-work.html">
+            <span class="shot"><iframe src="../../Design System/flower-work.html" loading="lazy" tabindex="-1" scrolling="no" title="Flower work live preview"></iframe></span>
+            <span class="card-body">
+              <span class="card-name">Flower work</span>
+              <span class="card-desc">Working surface for the flower instrument: touch controls and live study.</span>
+              <span class="card-meta">Projects/Design System/flower-work.html</span>
+              <span class="chip slot-status">Index not read</span>
+              <span class="card-meta slot-title" hidden></span>
+            </span>
+          </a>
+        </li>
+      </ul>
+      <p class="honest-note" id="indexNotice" hidden></p>
+    </section>
+
+    <section id="index" data-sub data-span="12" aria-labelledby="index-title">
+      <div class="section-heading">
+        <h2 id="index-title">Index</h2>
+        <p class="eyebrow">Snapshot, never a live service</p>
+      </div>
+      <p class="stamp-line" id="indexCount">Index not read · the chips and the stamp arrive with _data/pages.json</p>
+      <p class="honest-note">Refreshing the index needs a session: ask in chat to run hq-data.cjs, then reload this page. The previews themselves are never stale: each iframe loads its page as the site serves it right now, and a preview whose target is not served hides its own card and says so above.</p>
+    </section>
+
+    <footer class="colophon" data-span="12">Previews studio · shot pattern from Projects/Design System/Masters.html · index feed Projects/HQ/_data/pages.json</footer>
+  </main>
+
+  <noscript>
+    <p class="honest-note">Previews render without JavaScript: every card is a plain iframe and link. Scaling each shot to its card, hiding a preview whose target is not served, and reading the index chips all need the page's small script.</p>
+  </noscript>
+
+  <script>
+  (function () {
+    'use strict';
+    /* Previews studio script. Three jobs, none of them live:
+       1. scale every shot iframe from its full desktop frame down to the card;
+       2. hide a card whose preview target is not served, honestly counted, so
+          a 404 never sits in the grid as a broken pane (an iframe paints the
+          server error page and fires no error of its own, so on an http origin
+          each target also gets one same-origin HEAD check; a definite 404
+          hides the card, any other answer leaves it standing);
+       3. read _data/pages.json once for the curated chips and the stamp, with
+          the failure cases kept apart: origin blocked, file not served,
+          corrupt JSON, row absent from an older snapshot.
+       All snapshot text goes in through textContent, so a hostile title in
+       the JSON stays inert. On file:// the fetch is skipped outright and the
+       notice says the origin blocks the read, never that data is absent. */
+
+    var DATA_URL = '../_data/pages.json';
+    var stampLine = document.getElementById('stampLine');
+    var indexCount = document.getElementById('indexCount');
+    var availNote = document.getElementById('availNote');
+    var indexNotice = document.getElementById('indexNotice');
+    var slots = Array.prototype.slice.call(document.querySelectorAll('.preview-slot'));
+    var curated = Array.prototype.slice.call(document.querySelectorAll('.preview-slot[data-page]'));
+
+    var stampFormatter = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+
+    /* 1. Shot scaling, the Masters.html pattern: the iframe keeps the full
+       desktop frame and is scaled by the card width against it. */
+    var FULL_W = 1440;
+    if (location.protocol === 'file:') {
+      /* On the disk origin every preview is a local read, so lazy deferral
+         buys no bandwidth and only risks frames standing empty: load them
+         all at once here. Http origins keep lazy for the phone's sake. */
+      var diskFrames = document.querySelectorAll('.shot iframe');
+      for (var d = 0; d < diskFrames.length; d++) diskFrames[d].loading = 'eager';
+    }
+    function fitShots() {
+      var shots = document.querySelectorAll('.shot');
+      for (var i = 0; i < shots.length; i++) {
+        var frame = shots[i];
+        var inner = frame.querySelector('iframe');
+        if (inner && frame.clientWidth > 0) {
+          inner.style.transform = 'scale(' + (frame.clientWidth / FULL_W) + ')';
+        }
+      }
+    }
+    if (typeof ResizeObserver !== 'undefined') {
+      var observer = new ResizeObserver(fitShots);
+      observer.observe(document.getElementById('mastersGrid'));
+      observer.observe(document.getElementById('curatedGrid'));
+    }
+    addEventListener('resize', fitShots);
+    addEventListener('load', fitShots);
+    fitShots();
+
+    /* 2. Availability: hide the card of a target that is definitely not
+       served, count every hide, and say the total once all checks answer. */
+    var hiddenNames = [];
+    var answered = 0;
+    var httpOrigin = location.protocol === 'http:' || location.protocol === 'https:';
+
+    function nameOf(slot) {
+      var name = slot.querySelector('.card-name');
+      return name ? name.textContent : '(unnamed)';
+    }
+
+    function writeAvailNote() {
+      if (hiddenNames.length) {
+        availNote.hidden = false;
+        availNote.classList.add('note-alert');
+        availNote.textContent = hiddenNames.length + ' of ' + slots.length + ' previews hidden: ' + hiddenNames.join(', ') + '. The target was not served on this origin, so the card stepped aside rather than show a broken pane. The rest are live.';
+      } else if (httpOrigin && answered === slots.length) {
+        availNote.hidden = false;
+        availNote.classList.remove('note-alert');
+        availNote.textContent = 'All ' + slots.length + ' preview targets answered on this origin.';
+      }
+    }
+
+    function hideSlot(slot, reason) {
+      if (slot.hidden) return;
+      slot.hidden = true;
+      slot.setAttribute('data-hidden-reason', reason);
+      hiddenNames.push(nameOf(slot) + ' (' + reason + ')');
+      writeAvailNote();
+      fitShots();
+    }
+
+    slots.forEach(function (slot) {
+      var inner = slot.querySelector('iframe');
+      if (!inner) return;
+      inner.addEventListener('error', function () {
+        hideSlot(slot, 'load error');
+      });
+      if (httpOrigin) {
+        fetch(inner.getAttribute('src'), { method: 'HEAD', cache: 'no-store' }).then(function (res) {
+          answered++;
+          if (res.status === 404) hideSlot(slot, 'HTTP 404');
+          if (answered === slots.length) writeAvailNote();
+        }).catch(function () {
+          /* A failed check proves nothing about the target, so the card
+             stays and the iframe's own error path keeps watch. */
+          answered++;
+          if (answered === slots.length) writeAvailNote();
+        });
+      }
+    });
+
+    /* 3. Index metadata for the curated five. */
+    function sayIndex(text, alert) {
+      indexNotice.hidden = false;
+      indexNotice.textContent = text;
+      if (alert) indexNotice.classList.add('note-alert');
+    }
+
+    function setChips(text, alert) {
+      curated.forEach(function (slot) {
+        var chip = slot.querySelector('.slot-status');
+        chip.textContent = text;
+        chip.classList.toggle('chip-alert', Boolean(alert));
+        chip.classList.remove('chip-staged');
+      });
+    }
+
+    function setStamp(iso) {
+      var d = new Date(iso);
+      if (typeof iso !== 'string' || isNaN(d.getTime())) return;
+      var text = 'Pages index updated ' + stampFormatter.format(d) + ' UTC';
+      stampLine.textContent = '';
+      stampLine.appendChild(document.createTextNode(text + ' · snapshot, not live · refresh: ask in chat'));
+    }
+
+    function applyIndex(data) {
+      setStamp(data.stamp);
+      var stagedCount = 0;
+      for (var i = 0; i < data.pages.length; i++) {
+        if (data.pages[i] && data.pages[i].staged === true) stagedCount++;
+      }
+      indexCount.textContent = 'Index knows ' + data.pages.length + ' pages, ' + stagedCount + ' staged · updated from _data/pages.json, never live';
+
+      var missing = [];
+      curated.forEach(function (slot) {
+        var key = slot.getAttribute('data-page');
+        var row = null;
+        for (var j = 0; j < data.pages.length; j++) {
+          if (data.pages[j] && data.pages[j].path === key) { row = data.pages[j]; break; }
+        }
+        var chip = slot.querySelector('.slot-status');
+        var titleSlot = slot.querySelector('.slot-title');
+        if (row) {
+          chip.textContent = row.staged === true ? 'Staged' : 'Vault only';
+          chip.classList.toggle('chip-staged', row.staged === true);
+          chip.classList.remove('chip-alert');
+          if (typeof row.title === 'string' && row.title.length) {
+            titleSlot.hidden = false;
+            titleSlot.textContent = 'Index title: ' + row.title;
+          }
+        } else {
+          chip.textContent = 'Not in snapshot';
+          chip.classList.remove('chip-staged', 'chip-alert');
+          missing.push(nameOf(slot));
+        }
+      });
+      if (missing.length) {
+        sayIndex('The snapshot stamp predates ' + missing.length + ' of the five key pages: ' + missing.join(', ') + ' read Not in snapshot. Nothing is fabricated for them; their previews load the live files regardless, and the chips return when hq-data.cjs next runs.', false);
+      }
+    }
+
+    async function boot() {
+      if (location.protocol === 'file:') {
+        setChips('Index blocked', true);
+        stampLine.textContent = 'Index not read · this origin blocks the read · refresh: ask in chat';
+        sayIndex('Opened from disk (file://). The browser blocks data reads on the file origin, so the chips and the stamp cannot be read from here; this page cannot tell from disk whether the snapshot exists. The previews above are live either way: each iframe loads its page straight from disk. Open the published site for the index metadata.', false);
+        return;
+      }
+      var res;
+      try {
+        res = await fetch(DATA_URL, { cache: 'no-store' });
+      } catch (err) {
+        setChips('Index unreadable', true);
+        stampLine.textContent = 'Index not read · the request failed · refresh: ask in chat';
+        sayIndex('The index request failed before any answer arrived (' + err.message + '). Chips and stamp cannot render; the previews are live regardless. Check the server and reload.', true);
+        return;
+      }
+      if (!res.ok) {
+        setChips('Index unreadable', true);
+        stampLine.textContent = 'Index not read · snapshot file not served · refresh: ask in chat';
+        sayIndex('The server answered HTTP ' + res.status + ' for _data/pages.json, so there is no index to read yet. Ask in chat to run hq-data.cjs, then reload this page. The previews are live regardless.', true);
+        return;
+      }
+      var data;
+      try {
+        data = await res.json();
+      } catch (err) {
+        setChips('Index corrupt', true);
+        stampLine.textContent = 'Index not read · snapshot corrupt · refresh: ask in chat';
+        sayIndex('The snapshot file did not parse as JSON, so it is treated as corrupt rather than empty. Ask in chat to rerun hq-data.cjs, then reload this page. The previews are live regardless.', true);
+        return;
+      }
+      if (!data || typeof data !== 'object' || !Array.isArray(data.pages)) {
+        setChips('Index corrupt', true);
+        stampLine.textContent = 'Index not read · snapshot shape invalid · refresh: ask in chat';
+        sayIndex('The snapshot parsed but carries no pages list, so its shape is invalid. Ask in chat to rerun hq-data.cjs. The previews are live regardless.', true);
+        return;
+      }
+      applyIndex(data);
+    }
+
+    boot().catch(function (e) {
+      /* The page-level boundary: nothing above may surface as an uncaught error. */
+      sayIndex('The previews script stopped with an error: ' + e.message + '. The page itself is fine; ask in chat to look at previews.html.', true);
+    });
+  })();
+  </script>
+</body>
+</html>

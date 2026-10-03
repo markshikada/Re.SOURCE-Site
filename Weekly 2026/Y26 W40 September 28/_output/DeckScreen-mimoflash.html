@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word Deck — Re.Source</title>
+<style>
+/* ---------------------------------------------------------------------------
+   Re.Source — the deck screen.
+   One lattice. One gap (12) inside a cell, between cells and between rows.
+   The column count is read off the frame by the script at the foot: 6, 4, 3, 2
+   or 1, the widest that keeps a card at 200 or more. Every cell spans whole
+   slots, every cell holds as many cards as it spans (so nothing stretches),
+   and the two-card cells fit their row.
+
+   Colour is a stroke on a shape: each card wears a 3px ring cut into twelve
+   30 degree segments, one per position on the wheel in colours.css. A position
+   the card holds is coloured there; a position it does not is the border grey.
+   Cores hold nothing and so carry no colour of their own. The ring is built as
+   the card's own padding band, so black sits behind the text and the colour
+   never does.
+--------------------------------------------------------------------------- */
+:root{
+  /* the ramp */
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+
+  /* twelve positions, 30 degree steps, 12 at the top, clockwise */
+  --cl-01:#99DD00; --cl-02:#FFD100; --cl-03:#FFB000; --cl-04:#FF7700;
+  --cl-05:#FF5500; --cl-06:#FF0000; --cl-07:#E02888; --cl-08:#9933CC;
+  --cl-09:#6655FF; --cl-10:#2277FF; --cl-11:#00BBDD; --cl-12:#00D460;
+
+  --stroke:3px;
+  --gap:12px;
+  --r-sm:8px;
+  --r-md:12px;
+  --r-lg:24px;
+
+  --sans:Figtree,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --n:6;            /* deck column count, written by the script */
+  --n-open:6;       /* open band column count */
+  --pad:48px;       /* page margin, stepped by the script 48 / 24 / 12 */
+  --card-h:0px;     /* every card in the deck is this tall, measured */
+  --sheet-h:0px;    /* height of the open card when it is a sheet */
+}
+
+*{box-sizing:border-box}
+html{background:var(--black)}
+body{
+  margin:0;
+  padding:var(--pad);
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* the one line of chrome: the premise, said once */
+.edge{
+  margin:0 0 var(--gap);
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:18px;
+  font-weight:300;
+  color:var(--g48);
+  text-transform:uppercase;
+}
+
+/* --------------------------------- the lattice --------------------------- */
+.lattice{
+  display:grid;
+  grid-template-columns:repeat(var(--n),minmax(0,1fr));
+  gap:var(--gap);
+  margin-bottom:var(--gap);
+}
+.cell{grid-column:span var(--span,1)}
+.cell--deck{
+  display:grid;
+  grid-template-columns:repeat(var(--k,1),minmax(0,1fr));
+  gap:var(--gap);
+}
+
+/* --------------------------------- a card -------------------------------- */
+.card{
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  min-height:var(--card-h);
+  margin:0;
+  padding:var(--stroke);
+  border:0;
+  border-radius:var(--r-md);
+  background:var(--ring,var(--g24));
+  font:inherit;
+  color:inherit;
+  text-align:left;
+}
+button.card{cursor:pointer}
+.face{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:var(--gap);
+  padding:12px;
+  background:var(--black);
+  border-radius:var(--r-sm);
+  transition:background-color 120ms linear;
+}
+button.card:hover .face{background:var(--g06)}
+button.card:active .face{background:var(--g12)}
+button.card[aria-pressed="true"] .face{background:var(--g06)}
+button.card:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+
+.meta{
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:18px;
+  font-weight:300;
+  text-transform:uppercase;
+}
+.meta .row{display:block;color:var(--g66)}
+.meta .set{display:block;color:var(--g48)}
+
+.words{
+  display:flex;
+  flex-direction:column;
+  font-size:36px;
+  line-height:48px;
+  font-weight:700;
+  color:var(--white);
+}
+
+.chips{display:flex;flex-wrap:wrap;gap:var(--gap)}
+.chip{
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:18px;
+  font-weight:400;
+  color:var(--white);
+  background:var(--black);
+  border:var(--stroke) solid var(--c,var(--g24));
+  border-radius:var(--r-sm);
+  padding:4px 8px;
+  white-space:nowrap;
+}
+
+.gloss{
+  margin:0;
+  font-size:18px;
+  line-height:30px;
+  font-weight:400;
+  color:var(--g66);
+}
+
+/* the relation sits at the card's foot, so every foot line aligns */
+.rel{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:var(--gap);
+  margin-top:auto;
+}
+.rel-k{
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:18px;
+  font-weight:300;
+  color:var(--g48);
+  text-transform:uppercase;
+}
+.rel-t{display:flex;flex-wrap:wrap;gap:var(--gap)}
+
+/* ------------------------- the card that is open ------------------------- */
+.open{
+  display:grid;
+  grid-template-columns:repeat(var(--n-open),minmax(0,1fr));
+  gap:var(--gap);
+}
+.cell--face{display:grid}
+.card--open{min-height:0}
+.card--open .face{padding:24px}
+.card--open .words{font-size:48px;line-height:54px;font-weight:800}
+
+.panel{
+  display:flex;
+  flex-direction:column;
+  gap:var(--gap);
+  padding:24px;
+  background:var(--g06);
+  border-radius:var(--r-md);
+}
+.lab{
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:18px;
+  font-weight:300;
+  color:var(--g48);
+  text-transform:uppercase;
+}
+.read{margin:0;font-size:18px;line-height:30px;font-weight:400;color:var(--white)}
+.q{margin:0;font-size:24px;line-height:36px;font-weight:600;color:var(--white)}
+
+/* ------------------- under 720 of frame: it is a sheet ------------------- */
+.handle{display:none}
+body[data-mode="sheet"] .open{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:5;
+  padding:var(--gap);
+  background:var(--g06);
+  border-top:var(--stroke) solid var(--g24);
+  border-start-start-radius:var(--r-lg);
+  border-start-end-radius:var(--r-lg);
+  max-height:50dvh;
+  overflow-y:auto;
+}
+body[data-mode="sheet"][data-peek="true"] .open{max-height:192px;overflow:hidden}
+body[data-mode="sheet"] .handle{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:44px;
+  margin:0;
+  padding:0;
+  background:none;
+  border:0;
+  cursor:pointer;
+}
+.handle .bar{width:48px;height:4px;border-radius:var(--r-sm);background:var(--g48)}
+.handle:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+body[data-mode="sheet"] .panel{background:var(--black)}
+body[data-mode="sheet"] .lattice{margin-bottom:calc(var(--sheet-h) + var(--gap))}
+
+@media (prefers-reduced-motion:reduce){
+  .face{transition-duration:1ms}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/DeckScreen-mimoflash.html</span>
+</nav>
+
+<h1 class="edge">Word deck &middot; ninety words in three sets</h1>
+
+<div class="lattice" id="lattice" role="group" aria-label="Word deck"></div>
+
+<section class="open" id="open" aria-live="polite"></section>
+
+<script>
+/* The twelve cards, lifted verbatim from Projects/Design System/data/deck-data.js
+   (window.DECK_CARDS). Nothing here is rewritten: titles, gloss, reading,
+   question, grid, lastLabel and last are the store's own copy. */
+var CARDS = [
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-core","holds":0,"row":"CORE","type":"Core","titles":["ZONE"],"picks":[],"blendPicks":[],"gloss":"All potential, before orientation","reading":"Nothing here has taken a direction yet. What follows arises from this quiet centre, which carries no colour of its own because it is looking rather than being looked at.","question":"Is anything pointing anywhere yet?","lastLabel":"","last":"","drafted":true},
+{"set":"Aspect STATE","setKey":"s","ring":"mid","id":"s-core","holds":0,"row":"CORE","type":"Core","titles":["HERE"],"picks":[],"blendPicks":[],"gloss":"Still, under every passing mood","reading":"Nothing has to be felt for this to be present. It sits behind whatever passes, unchanged by any of it.","question":"What is here when the feeling goes?","lastLabel":"","last":"","drafted":true},
+{"set":"Anchor TAG","setKey":"t","ring":"inner","id":"t-core","holds":0,"row":"CORE","type":"Core","titles":["YOU"],"picks":[],"blendPicks":[],"gloss":"Witness with no label attached","reading":"Perception arrives before naming does. This is the point that observes and takes no category of its own.","question":"Who is doing the looking?","lastLabel":"","last":"","drafted":true},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-single-10","holds":1,"row":"SINGLE","type":"Single","titles":["FORM"],"picks":[5],"blendPicks":[],"gloss":"The edge that makes a thing","reading":"Nothing can be handled until it has a limit. Definition is the price of being recognisable.","question":"What gives this its shape?","lastLabel":"Polar","last":"LOVE","drafted":true},
+{"set":"Aspect STATE","setKey":"s","ring":"mid","id":"s-single-08","holds":1,"row":"SINGLE","type":"Single","titles":["MIND"],"picks":[4],"blendPicks":[],"gloss":"Attention working on something, turning it over","reading":"The working space of logic and strategy. It seeks to understand in order to control.","question":"Which idea is being assembled?","lastLabel":"Polar","last":"HIGH","drafted":true},
+{"set":"Anchor TAG","setKey":"t","ring":"inner","id":"t-single-03","holds":1,"row":"SINGLE","type":"Single","titles":["ART"],"picks":[],"blendPicks":[1],"gloss":"Experience, turned into form","reading":"A medium worked on purpose until it carries meaning. What was private becomes something others can hold.","question":"What pattern are you consciously shaping here?","lastLabel":"Polar","last":"AIM","drafted":true},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-pair-0410","holds":2,"row":"PAIR","type":"Pair","titles":["LOVE","FORM"],"picks":[2,5],"blendPicks":[],"gloss":"Attraction, then the vessel","reading":"What gathers decides the shape that ends up holding it. Structure is the consequence, not the cause.","question":"What is being drawn together here?","lastLabel":"Polar","last":"FORM • LOVE","drafted":true,"counterId":"r-pair-1004"},
+{"set":"Aspect STATE","setKey":"s","ring":"mid","id":"s-pair-0511","holds":2,"row":"PAIR","type":"Pair","titles":["NEED","MODE"],"picks":[],"blendPicks":[2,5],"gloss":"The requirement resets the method","reading":"A deficit overrides preference and the way of working reconfigures around it. Comfort is dropped first.","question":"What must be met before anything else?","lastLabel":"Polar","last":"MODE • NEED","drafted":true,"counterId":"s-pair-1105"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-triad-prime","holds":3,"row":"TRIAD","type":"Triad","titles":["PRIME"],"picks":[1,3,5],"blendPicks":[],"grid":[{"w":"FLUX","col":"#FFD100"},{"w":"FIRE","col":"#FF0000"},{"w":"FORM","col":"#2277FF"}],"gloss":"A triangle, held in balance","reading":"No position here opposes another. The weight sits evenly rather than pulling to one side.","question":"Which of the three anchors holds your focus?","lastLabel":"Counter","last":"PART","counterId":"r-triad-part","drafted":true},
+{"set":"Anchor TAG","setKey":"t","ring":"inner","id":"t-triad-part","holds":3,"row":"TRIAD","type":"Triad","titles":["PART"],"picks":[0,2,4],"blendPicks":[],"grid":[{"w":"ECO","col":"#00D460"},{"w":"GOD","col":"#FF7700"},{"w":"WIT","col":"#9933CC"}],"gloss":"The subtler marks, easily missed","reading":"They handle what falls between the obvious ones, and ground what those leave open.","question":"Which subtle mark grounds this?","lastLabel":"Counter","last":"PRIME","counterId":"r-triad-prime","drafted":true},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-base","holds":6,"row":"BASE","type":"Base","titles":["BASE"],"picks":[0,1,2,3,4,5],"blendPicks":[],"grid":[{"w":"LIFE","col":"#00D460"},{"w":"FLUX","col":"#FFD100"},{"w":"LOVE","col":"#FF7700"},{"w":"FIRE","col":"#FF0000"},{"w":"TIME","col":"#9933CC"},{"w":"FORM","col":"#2277FF"}],"gloss":"Where each circle is centred","reading":"These map the main outline. The rest take their bearings from them.","question":"Which centre are you standing on?","lastLabel":"Counter","last":"BLEND","counterId":"r-blend","drafted":true},
+{"set":"Aspect STATE","setKey":"s","ring":"mid","id":"s-blend","holds":6,"row":"BLEND","type":"Blend","titles":["BLEND"],"picks":[],"blendPicks":[0,1,2,3,4,5],"grid":[{"w":"MOOD","col":"#99DD00"},{"w":"TRUE","col":"#FFB000"},{"w":"NEED","col":"#FF5500"},{"w":"WANT","col":"#E02888"},{"w":"VIEW","col":"#6655FF"},{"w":"MODE","col":"#00BBDD"}],"gloss":"The states found only in transit","reading":"Each one sits on the way to somewhere else, rarely a place to stop. Brief, and easy to mistake for the state just left.","question":"Which in-between are you in today?","lastLabel":"Counter","last":"BASE","counterId":"s-base","drafted":true}
+];
+
+/* position colours and the word to position map, both read off the store:
+   each single's picks or blendPicks give its position, colours.css gives
+   the colour at that position. Arrangement words (PRIME, PART, BASE, BLEND)
+   sit at no position, so they take the border grey. */
+var CL = {1:"--cl-01",2:"--cl-02",3:"--cl-03",4:"--cl-04",5:"--cl-05",6:"--cl-06",
+          7:"--cl-07",8:"--cl-08",9:"--cl-09",10:"--cl-10",11:"--cl-11",12:"--cl-12"};
+var GREY = "var(--g24)";
+var WORDPOS = {
+  LIFE:12,TONE:1,FLUX:2,FLOW:3,LOVE:4,BOND:5,FIRE:6,PATH:7,TIME:8,META:9,FORM:10,TYPE:11,
+  BODY:12,MOOD:1,HIGH:2,TRUE:3,SOUL:4,NEED:5,WILL:6,WANT:7,MIND:8,VIEW:9,SELF:10,MODE:11,
+  ECO:12,FUN:1,JOY:2,ART:3,GOD:4,SEX:5,MAX:6,WAY:7,WIT:8,AIM:9,EGO:10,POP:11
+};
+
+/* The lattice, one entry per column count. cells are the cards each cell
+   holds, in reading order; a cell spans min(count, n) whole slots and lays
+   them out on that many of the same tracks, so every card is one slot wide.
+   The sums fill every row: 3+3 / 2+2+2, 3+1 / 2+2 / 2+2, 3 / 3 / 1+2 / 1+2,
+   six rows of 2, and five stacked cells. */
+var STRUCT = {
+  6:{order:null,cells:[3,3,2,2,2]},
+  4:{order:null,cells:[3,1,2,2,2,2]},
+  3:{order:[0,1,2,3,4,5,6,8,9,7,10,11],cells:[3,3,1,2,1,2]},
+  2:{order:null,cells:[1,1,1,1,1,1,2,2,2]},
+  1:{order:null,cells:[3,3,2,2,2]}
+};
+var OPEN_SPANS = {6:[2,2,2],4:[4,2,2],3:[3,3,3],2:[2,2,2],1:[1,1,1]};
+var ORDER = [0,1,2,3,4,5,6,7,8,9,10,11];
+var MIN_CARD = 200;
+
+var root = document.documentElement;
+var body = document.body;
+var lattice = document.getElementById("lattice");
+var open = document.getElementById("open");
+var openId = "r-base";
+var curN = 0, curMode = "", curOpen = "";
+
+/* ---------------------------------------------------------------- the ring */
+function ring(card){
+  var held = {}, i, v, k, p, stops = [];
+  for(i = 0; i < card.picks.length; i++){
+    v = card.picks[i];
+    held[v === 0 ? 12 : 2 * v] = 1;
+  }
+  for(i = 0; i < card.blendPicks.length; i++){
+    v = card.blendPicks[i];
+    held[2 * v + 1] = 1;
+  }
+  for(k = 0; k < 12; k++){
+    p = (k === 0) ? 12 : k;                       /* position 12 sits at 0deg */
+    stops.push((held[p] ? "var(" + CL[p] + ")" : GREY) + " " + (k * 30) + "deg " + ((k + 1) * 30) + "deg");
+  }
+  return "conic-gradient(from -15deg," + stops.join(",") + ")";
+}
+
+/* ------------------------------------------------------------- the pieces */
+function el(tag, cls){
+  var n = document.createElement(tag);
+  if(cls){ n.className = cls; }
+  return n;
+}
+function chip(word, colour){
+  var c = el("span", "chip");
+  c.textContent = word;
+  c.style.setProperty("--c", colour || GREY);
+  return c;
+}
+function cardEl(card, opened){
+  var b = el(opened ? "div" : "button", "card" + (opened ? " card--open" : ""));
+  if(!opened){
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(card.id === openId));
+  }
+  b.dataset.id = card.id;
+  b.style.setProperty("--ring", ring(card));
+
+  var face = el("div", "face");
+
+  var meta = el("div", "meta");
+  var row = el("span", "row");
+  row.textContent = card.row;
+  var set = el("span", "set");
+  set.textContent = card.set;
+  meta.append(row, set);
+  face.appendChild(meta);
+
+  var words = el("div", "words");
+  card.titles.forEach(function(t){
+    var w = el("span");
+    w.textContent = t;
+    words.appendChild(w);
+  });
+  face.appendChild(words);
+
+  if(card.grid){
+    var chips = el("div", "chips");
+    card.grid.forEach(function(g){ chips.appendChild(chip(g.w, g.col)); });
+    face.appendChild(chips);
+  }
+
+  var gloss = el("p", "gloss");
+  gloss.textContent = card.gloss;
+  face.appendChild(gloss);
+
+  if(card.lastLabel){
+    var rel = el("div", "rel");
+    var key = el("span", "rel-k");
+    key.textContent = card.lastLabel;
+    var target = el("span", "rel-t");
+    card.last.split("•").forEach(function(part){
+      var word = part.trim();
+      if(!word){ return; }
+      var pos = WORDPOS[word];
+      target.appendChild(chip(word, pos ? "var(" + CL[pos] + ")" : GREY));
+    });
+    rel.append(key, target);
+    face.appendChild(rel);
+  }
+
+  b.appendChild(face);
+  return b;
+}
+function cellEl(count, n){
+  var cell = el("div", "cell cell--deck");
+  var span = Math.min(count, n);
+  cell.style.setProperty("--span", span);
+  cell.style.setProperty("--k", Math.min(count, span));
+  return cell;
+}
+
+/* --------------------------------------------------------------- rendering */
+function buildLattice(n){
+  var st = STRUCT[n];
+  var order = st.order || ORDER;
+  var idx = 0;
+  lattice.innerHTML = "";
+  st.cells.forEach(function(count){
+    var cell = cellEl(count, n);
+    for(var i = 0; i < count; i++){
+      cell.appendChild(cardEl(CARDS[order[idx]], false));
+      idx++;
+    }
+    lattice.appendChild(cell);
+  });
+}
+
+function buildOpen(n, mode){
+  var card = CARDS.filter(function(c){ return c.id === openId; })[0];
+  var spans = (mode === "sheet") ? [1, 1, 1] : OPEN_SPANS[n];
+  open.innerHTML = "";
+
+  var handle = el("button", "handle");
+  handle.type = "button";
+  handle.style.setProperty("--span", 1);
+  handle.setAttribute("aria-expanded", String(body.dataset.peek !== "true"));
+  handle.setAttribute("aria-label", body.dataset.peek === "true" ? "Show the card" : "Show the deck");
+  var bar = el("span", "bar");
+  handle.appendChild(bar);
+  handle.addEventListener("click", function(){
+    var peek = body.dataset.peek === "true";
+    body.dataset.peek = String(!peek);
+    handle.setAttribute("aria-expanded", String(peek));
+    handle.setAttribute("aria-label", peek ? "Show the deck" : "Show the card");
+    measure();
+  });
+  open.appendChild(handle);
+
+  var faceCell = el("div", "cell cell--face");
+  faceCell.style.setProperty("--span", spans[0]);
+  faceCell.appendChild(cardEl(card, true));
+  open.appendChild(faceCell);
+
+  var reading = el("div", "cell panel");
+  reading.style.setProperty("--span", spans[1]);
+  var rLab = el("span", "lab");
+  rLab.textContent = "Reading";
+  var rText = el("p", "read");
+  rText.textContent = card.reading;
+  reading.append(rLab, rText);
+  open.appendChild(reading);
+
+  var question = el("div", "cell panel");
+  question.style.setProperty("--span", spans[2]);
+  var qLab = el("span", "lab");
+  qLab.textContent = "Question";
+  var qText = el("p", "q");
+  qText.textContent = card.question;
+  question.append(qLab, qText);
+  open.appendChild(question);
+}
+
+/* Every card in the deck is the same height: measure them at rest, take the
+   tallest, and hold them all there. Cards do not stretch to fill a hole. */
+function measure(){
+  root.style.setProperty("--card-h", "0px");
+  var max = 0;
+  var cards = lattice.querySelectorAll(".card");
+  for(var i = 0; i < cards.length; i++){
+    if(cards[i].offsetHeight > max){ max = cards[i].offsetHeight; }
+  }
+  root.style.setProperty("--card-h", max + "px");
+  root.style.setProperty("--sheet-h", body.dataset.mode === "sheet" ? open.offsetHeight + "px" : "0px");
+}
+
+/* ------------------------------------------- the frame picks the column count */
+function padFor(w){ return w >= 1080 ? 48 : (w >= 720 ? 24 : 12); }
+function pickN(w){
+  var counts = [6, 4, 3, 2, 1];
+  for(var i = 0; i < counts.length; i++){
+    var n = counts[i];
+    if((w - 12 * (n - 1)) / n >= MIN_CARD){ return n; }
+  }
+  return 1;
+}
+
+function layout(){
+  var w = root.clientWidth;
+  var pad = padFor(w);
+  root.style.setProperty("--pad", pad + "px");
+  var frame = w - 2 * pad;
+  var n = pickN(frame);
+  var mode = frame < 720 ? "sheet" : "band";
+
+  body.dataset.mode = mode;
+  root.style.setProperty("--n", n);
+  root.style.setProperty("--n-open", mode === "sheet" ? 1 : n);
+
+  if(n !== curN || mode !== curMode){
+    buildLattice(n);
+    buildOpen(n, mode);
+    curN = n; curMode = mode; curOpen = openId;
+  }else if(openId !== curOpen){
+    buildOpen(n, mode);
+    curOpen = openId;
+  }
+  measure();
+}
+
+lattice.addEventListener("click", function(e){
+  var card = e.target.closest(".card");
+  if(!card || card.dataset.id === openId){ return; }
+  openId = card.dataset.id;
+  var all = lattice.querySelectorAll(".card");
+  for(var i = 0; i < all.length; i++){
+    all[i].setAttribute("aria-pressed", String(all[i].dataset.id === openId));
+  }
+  if(body.dataset.mode === "sheet"){ body.dataset.peek = "false"; }
+  buildOpen(curN, body.dataset.mode);
+  curOpen = openId;
+  measure();
+  if(body.dataset.mode !== "sheet"){
+    open.scrollIntoView({block:"nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+  }else{
+    open.scrollTop = 0;
+  }
+});
+
+var pending = 0;
+addEventListener("resize", function(){
+  cancelAnimationFrame(pending);
+  pending = requestAnimationFrame(layout);
+});
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(measure); }
+
+layout();
+</script>
+</body>
+</html>
