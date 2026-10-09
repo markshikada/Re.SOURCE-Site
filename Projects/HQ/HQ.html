@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Estate HQ: one front door for three vaults. Now items, studios, a page index, the vaults and their tools, on snapshot data with honest stamps.">
+  <title>Estate HQ · Re.SOURCE</title>
+  <link rel="icon" href="data:,">
+  <!-- Design system, one level up to Projects/ from Projects/HQ/.
+       Chrome is shared: styles.css carries the tokens, lib/hq.css the hub
+       idioms, lib/topbar.css the universal bar, lib/masters-nav.js fills the
+       switcher zone and lib/hq.js measures the wrapped bar. The page's own
+       style block below extends them with tokens only: no raw hex, no type
+       off the scale, no radius off 8/12/24, no letter-spacing. -->
+  <link rel="stylesheet" href="../Design System/styles.css">
+  <link rel="stylesheet" href="../Design System/lib/hq.css">
+  <link rel="stylesheet" href="../Design System/lib/topbar.css">
+  <script src="../Design System/lib/masters-nav.js" defer></script>
+  <script src="../Design System/lib/hq.js" defer></script>
+  <script src="snapshot-age.js"></script>
+  <style>
+    /* Estate hub chrome. Every value is a token: colour from tokens/greys.css
+       and tokens/colours.css, space and radius from tokens/space.css, type from
+       tokens/typography.css, the field from tokens/grid.css. */
+
+    .hq .stamp-line[data-freshness="stale"],
+    .hq .stamp-line[data-freshness="unknown"] {
+      color: var(--g88);
+      font-weight: 600;
+    }
+
+    .hq .stamp-line {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    /* Honest notice: the one voice for every empty, blocked or corrupt state. */
+    .hq .notice {
+      margin: 0;
+      padding: var(--space-md);
+      background: var(--surface-card);
+      border-left: var(--stroke) solid var(--g48);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+    }
+
+    /* Now: carryover items grouped per vault. */
+    .hq .now-grid { row-gap: var(--space-lg); align-items: start; }
+    .hq .now-list { display: flex; flex-direction: column; }
+    .hq .now-item { border-top: var(--hq-hairline) solid var(--surface-border); padding-block: var(--space-md); display: flex; flex-direction: column; gap: var(--space-xs); }
+    .hq .now-item:first-child { border-top: 0; padding-top: 0; }
+    .hq .now-item h3 { font-size: var(--fs-body); line-height: var(--lh-body); font-weight: var(--fw-h2); }
+    .hq .now-item p { font-size: var(--fs-body); line-height: var(--lh-body); overflow-wrap: anywhere; }
+
+    /* Studios: hand-kept cards, one glyph per thing, no dead links. */
+    .hq .card-glyph { font-size: var(--fs-h1); line-height: var(--lh-h1); }
+    .hq .card-meta { font-family: var(--font-mono); font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--text-dim); }
+
+    /* Pages: filter bar and the hairline row list. */
+    .hq .filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md); }
+    .hq .filter-bar input[type="search"],
+    .hq .filter-bar select {
+      min-height: var(--space-xl);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-page);
+      border: var(--hq-hairline) solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+    }
+    .hq .filter-bar input[type="search"] { flex: 1 1 240px; }
+    .hq .filter-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-height: var(--space-xl);
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-secondary);
+    }
+    .hq .filter-toggle input { width: var(--space-md); height: var(--space-md); accent-color: var(--text-primary); }
+    .hq .page-list { list-style: none; margin: 0; padding: 0; border-top: var(--hq-hairline) solid var(--surface-border); }
+    .hq .page-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: var(--space-xs) var(--space-md);
+      border-bottom: var(--hq-hairline) solid var(--surface-border);
+      padding-block: var(--space-sm);
+    }
+    .hq .page-title {
+      color: var(--text-primary);
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+      font-weight: var(--fw-h2);
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+    a.page-title { text-decoration: underline; text-decoration-color: var(--g48); text-underline-offset: 3px; }
+    .hq .page-path {
+      flex: 1 1 auto;
+      min-width: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+      overflow-wrap: anywhere;
+    }
+    .hq .page-row .status { margin-left: auto; }
+    .hq .status-vault { border-color: var(--g48); color: var(--text-secondary); }
+
+    /* Vaults: the estate colour convention as a stroke, never a fill behind
+       words. COMMAND position 02, Re.SOURCE position 11, PERSONAL position 07
+       (Core-HQ.html lines 19 to 21). Position words are read from the live
+       LINGO sheet, so the cards carry the position number only. */
+    .hq .vault-card { border-top: var(--stroke) solid var(--vault-tone); }
+    .hq .vault-command { --vault-tone: var(--cl-02-flux); }
+    .hq .vault-resource { --vault-tone: var(--cl-11-type); }
+    .hq .vault-personal { --vault-tone: var(--cl-07-path); }
+    .hq .vault-card h3 { display: flex; align-items: baseline; gap: var(--space-sm); }
+    .hq .vault-count { font-family: var(--font-mono); font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--text-secondary); }
+
+    /* Tools */
+    .hq .tool-list { margin: 0; padding-left: var(--space-lg); color: var(--text-secondary); font-size: var(--fs-body); line-height: var(--lh-body); }
+    .hq .tool-list li { font-family: var(--font-mono); font-size: var(--fs-caption); line-height: var(--lh-caption); padding-block: var(--space-xs); }
+
+    .hq .colophon { margin: 0; font-family: var(--font-mono); font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--text-dim); }
+
+    /* Phone portrait: tighten rhythm; the field itself collapses by orientation
+       (tokens/grid.css), so no column maths lives here. */
+    @media (max-width: 720px) {
+      .hq .task-card { padding: var(--space-md); }
+      .hq .page-row .status { margin-left: 0; }
+      .hq .filter-bar input[type="search"] { flex-basis: 100%; }
+    }
+    @media (hover: hover) {
+      a.page-title:hover { text-decoration-color: var(--white); }
+    }
+  </style>
+</head>
+<body class="hq rs-topbar-page">
+  <a class="skip-link" href="#main">Skip to work</a>
+
+  <!-- Universal top bar: one shared component. Markup here, styles in
+       lib/topbar.css, switcher built by lib/masters-nav.js bar mode (the static
+       link in the switcher zone is its fallback). -->
+  <header class="rs-topbar" id="rsTopBar">
+    <div class="rs-topbar-inner" data-pad>
+      <a class="rs-topbar-brand" href="HQ.html" aria-label="Estate HQ home">Re.SOURCE <span>Estate HQ</span></a>
+      <p class="rs-topbar-stamp"><span>v1</span><span class="rs-topbar-sep" aria-hidden="true">·</span><span id="rsStampWeek">W40</span></p>
+      <div class="rs-topbar-navrow">
+        <nav class="rs-topbar-context" aria-label="Estate HQ sections">
+          <a href="#now">Now</a>
+          <a href="#studios">Studios</a>
+          <a href="#pages">Pages</a>
+          <a href="#vaults">Vaults</a>
+          <a href="#tools">Tools</a>
+        </nav>
+        <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a class="button" href="../Design System/Masters.html">Open masters</a></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="main" data-pad data-grid tabindex="-1">
+    <section class="intro" data-span="12" aria-labelledby="hq-title">
+      <div class="intro-copy">
+        <p class="eyebrow">Front door · three vaults</p>
+        <h1 id="hq-title">One door for the whole estate.</h1>
+        <p>Studios, tools and published pages open in a tap. Everything the public site does not serve is named honestly below, with no dead links.</p>
+        <noscript><p class="notice">Snapshot data needs script: the Now items and the page index stay quiet without it. Every other section is static markup and reads as normal.</p></noscript>
+      </div>
+      <div class="edition">
+        <p class="stamp-line">Snapshot data · no live fetches</p>
+      </div>
+    </section>
+
+    <!-- HONEST CONTROLS, the standing law (studios/_template/studio.html).
+         This hub is static: it navigates, discloses and displays snapshot data,
+         and that is all. Links point only at pages the staged site serves;
+         anything needing a session is named in words with no fake control
+         beside it. Data arrives from _data/*.json written by hq-data.cjs;
+         a missing, blocked or corrupt snapshot renders an honest notice that
+         says which of the three happened, never a spinner and never a guess. -->
+    <section class="work-section" id="now" data-sub data-span="12" aria-labelledby="now-title">
+      <div class="section-heading">
+        <h2 id="now-title">Now</h2>
+        <span class="eyebrow">Waiting on you · carryover snapshot</span>
+      </div>
+      <p class="stamp-line" id="nowStamp">Data updated: loading the snapshot</p>
+      <div id="nowNotice"><p class="notice">Loading the carryover snapshot…</p></div>
+      <div class="now-grid" id="nowGrid" data-sub hidden></div>
+      <p class="notice">Live view opens inside Claude · ask in chat. Core HQ is not staged, and this page never fetches live data.</p>
+    </section>
+
+    <section class="work-section" id="studios" data-sub data-span="12" aria-labelledby="studios-title">
+      <div class="section-heading">
+        <h2 id="studios-title">Studios</h2>
+        <span class="eyebrow">First tranche · built</span>
+      </div>
+      <div class="card-row" data-sub>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="studio-quota-title">
+          <span class="card-glyph" aria-hidden="true">📊</span>
+          <h3 id="studio-quota-title">Model quota</h3>
+          <p class="card-meta">studios/quota.html</p>
+          <p>Per-model burn against the five-hour, weekly and monthly windows, on the quota snapshot.</p>
+          <div class="actions">
+            <a class="button" data-lift href="studios/quota.html">Open the quota studio</a>
+          </div>
+        </article>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="studio-captures-title">
+          <span class="card-glyph" aria-hidden="true">🖼️</span>
+          <h3 id="studio-captures-title">Capture gallery</h3>
+          <p class="card-meta">studios/captures.html</p>
+          <p>Newest screen captures from the weekly output homes, phone-visible at last.</p>
+          <div class="actions">
+            <a class="button" data-lift href="studios/captures.html">Open the capture gallery</a>
+          </div>
+        </article>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="studio-previews-title">
+          <span class="card-glyph" aria-hidden="true">👁️</span>
+          <h3 id="studio-previews-title">Previews</h3>
+          <p class="card-meta">studios/previews.html</p>
+          <p>Live iframe previews of the masters and the key pages, one standing view on the phone.</p>
+          <div class="actions">
+            <a class="button" data-lift href="studios/previews.html">Open the previews studio</a>
+          </div>
+        </article>
+      </div>
+      <p class="caption">The Studios section is hand-kept, one card per studio, per studios/README.md step 6.</p>
+    </section>
+
+    <section class="work-section" id="pages" data-sub data-span="12" aria-labelledby="pages-title">
+      <div class="section-heading">
+        <h2 id="pages-title">Pages</h2>
+        <span class="eyebrow">Re.SOURCE index · staged rows open</span>
+      </div>
+      <div class="filter-bar">
+        <input type="search" id="pagesFind" placeholder="Find a page" aria-label="Find a page by title or path">
+        <select id="pagesProject" aria-label="Filter by project"></select>
+        <select id="pagesWeek" aria-label="Filter by week"></select>
+        <label class="filter-toggle"><input type="checkbox" id="pagesStaged"> Staged only</label>
+      </div>
+      <p class="stamp-line" id="pagesCount">Loading the page index…</p>
+      <div id="pagesNotice" hidden></div>
+      <ul class="page-list" id="pageList"></ul>
+    </section>
+
+    <section class="work-section" id="vaults" data-sub data-span="12" aria-labelledby="vaults-title">
+      <div class="section-heading">
+        <h2 id="vaults-title">Vaults</h2>
+        <span class="eyebrow">Three vaults · one colour each, as a stroke</span>
+      </div>
+      <div class="card-row" data-sub>
+        <article class="task-card vault-card vault-command" data-span="4" data-lift aria-labelledby="vault-command-title">
+          <span class="card-glyph" aria-hidden="true">🧭</span>
+          <h3 id="vault-command-title">COMMAND</h3>
+          <p class="card-meta">Position 02 · operations authority</p>
+          <p>Weekly cycle, Arena pipeline and the Core artefacts. Its dashboard stays read-only by design, so nothing here links into it.</p>
+        </article>
+        <article class="task-card vault-card vault-resource" data-span="4" data-lift aria-labelledby="vault-resource-title">
+          <span class="card-glyph" aria-hidden="true">🎨</span>
+          <h3 id="vault-resource-title">Re.SOURCE</h3>
+          <p class="card-meta">Position 11 · design language and builds</p>
+          <p>Masters, studios, research and the weekly output. This hub is its estate door; the design system keeps its own.</p>
+          <div class="actions">
+            <a class="button" data-lift href="../Design System/HQ.html">Open Design System HQ</a>
+          </div>
+        </article>
+        <article class="task-card vault-card vault-personal" data-span="4" data-lift aria-labelledby="vault-personal-title">
+          <span class="card-glyph" aria-hidden="true">🔒</span>
+          <h3 id="vault-personal-title">PERSONAL</h3>
+          <p class="card-meta">Position 07 · private life hub</p>
+          <p>One schema page and one setup page are staged, and both open from the page index.</p>
+          <p class="vault-count" id="personalCount">Carryover items waiting: count arrives with the snapshot</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="work-section" id="tools" data-sub data-span="12" aria-labelledby="tools-title">
+      <div class="section-heading">
+        <h2 id="tools-title">Tools</h2>
+        <span class="eyebrow">Seven staged pages · the rest need a session</span>
+      </div>
+      <div class="card-row" data-sub>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="tool-ladder-title">
+          <span class="card-glyph" aria-hidden="true">🪜</span>
+          <h3 id="tool-ladder-title">Model ladder</h3>
+          <p class="card-meta">Projects/HQ/model-ladder.html · staged</p>
+          <p>Where every model sits, what each is trusted with, and what the estate rules out.</p>
+          <div class="actions">
+            <a class="button button-primary" data-lift href="model-ladder.html">Open the ladder</a>
+          </div>
+        </article>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="tool-house-title">
+          <span class="card-glyph" aria-hidden="true">🏠</span>
+          <h3 id="tool-house-title">The House</h3>
+          <p class="card-meta">Projects/HQ/the-house.html · staged</p>
+          <p>The whole vocabulary as a building: the Cellar where omO runs, the Stairs work climbs, the Main Floor you live on, and the Register that outlives the session.</p>
+          <div class="actions">
+            <a class="button" data-lift href="the-house.html">Climb it</a>
+          </div>
+        </article>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="tool-ultrawork-title">
+          <span class="card-glyph" aria-hidden="true">🎚️</span>
+          <h3 id="tool-ultrawork-title">Ultrawork</h3>
+          <p class="card-meta">Projects/HQ/ultrawork.html · staged</p>
+          <p>What the mode actually changes, measured across 96 sessions rather than described.</p>
+          <div class="actions">
+            <a class="button" data-lift href="ultrawork.html">Read the measurement</a>
+          </div>
+        </article>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="tool-tips-title">
+          <span class="card-glyph" aria-hidden="true">💡</span>
+          <h3 id="tool-tips-title">The tip catalogue</h3>
+          <p class="card-meta">Projects/HQ/tips.html · staged</p>
+          <p>All 124 tips omO can print, drawn as a ring. The two never shown are picked out in red, and the rotation rule that decides the next one is read out of the code rather than described.</p>
+          <div class="actions">
+            <a class="button" data-lift href="tips.html">See the ring</a>
+          </div>
+        </article>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="tool-scorecard-title">
+          <span class="card-glyph" aria-hidden="true">📊</span>
+          <h3 id="tool-scorecard-title">Harness scorecard</h3>
+          <p class="card-meta">Projects/HQ/harness-scorecard.html · staged</p>
+          <p>Seven days of real sessions measured: how much work ran in-session against how much fanned out, which entry points went unused, and the four standing changes that follow.</p>
+          <div class="actions">
+            <a class="button" data-lift href="harness-scorecard.html">Read the scorecard</a>
+          </div>
+        </article>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="tool-instruments-title">
+          <span class="card-glyph" aria-hidden="true">🔧</span>
+          <h3 id="tool-instruments-title">Session instruments</h3>
+          <p class="card-meta">Projects/HQ/*.cjs · terminal only</p>
+          <ul class="tool-list">
+            <li>quota-watch.cjs</li>
+            <li>hq-data.cjs</li>
+            <li>capture.cjs</li>
+            <li>law-sweep.cjs</li>
+            <li>tidy-check.cjs</li>
+            <li>self-check.cjs</li>
+            <li>tips.cjs</li>
+          </ul>
+          <p class="caption">Ask in chat to run one; a static page never executes anything.</p>
+        </article>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="tool-zed-title">
+          <span class="card-glyph" aria-hidden="true">⌨️</span>
+          <h3 id="tool-zed-title">Zed console</h3>
+          <p class="card-meta">Projects/Design System/zed.html · staged</p>
+          <p>The six keys that run this workspace and the agent each one opens, so the editor is a lookup rather than a memory test.</p>
+          <div class="actions">
+            <a class="button" data-lift href="../Design System/zed.html">Open the card</a>
+          </div>
+        </article>
+        <article class="task-card" data-span="4" data-lift aria-labelledby="tool-ds-title">
+          <span class="card-glyph" aria-hidden="true">🎛️</span>
+          <h3 id="tool-ds-title">Design system instruments</h3>
+          <p class="card-meta">Projects/Design System/HQ.html#instruments · staged</p>
+          <p>Copy workbench and the instruments the design language is checked with.</p>
+          <div class="actions">
+            <a class="button" data-lift href="../Design System/HQ.html#instruments">Open the instruments</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer data-span="12">
+      <p class="colophon">Estate HQ · Projects/HQ/HQ.html · snapshots written by hq-data.cjs · published through Projects/Publish</p>
+    </footer>
+  </main>
+
+  <div class="toast" id="hqToast" role="status" aria-live="polite"></div>
+
+  <script>
+    /* Estate hub data layer. Reads the two snapshots this page consumes
+       (_data/now.json and _data/pages.json) and nothing else: no live fetch to
+       GitHub, raw or API, ever. The vault repos are private and the connector
+       only exists inside claude.ai artefacts, so the honest mention in the Now
+       section is words, not a link.
+
+       Three failure kinds are told apart in the UI, because "no data" is not
+       one honest sentence:
+         blocked    the browser refused the read (a file:// open, a network fault)
+         absent     the server answered, the snapshot is not there (HTTP 404)
+         malformed  the snapshot is there and does not parse
+
+       Every data string reaches the DOM through textContent, so a poisoned
+       snapshot renders as inert text, never as markup. */
+    (function () {
+      'use strict';
+      var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      var NOTICES = {
+        blocked: 'Snapshot cannot load from a local file open: browsers block data reads on the file:// origin. Open the published site, or ask in chat to serve this folder locally.',
+        absent: 'Snapshot missing. Ask in chat to run hq-data.cjs, then reload this page.',
+        malformed: 'Snapshot does not parse. Ask in chat to rerun hq-data.cjs, then reload this page.'
+      };
+
+      function qs(id) { return document.getElementById(id); }
+      function el(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text !== undefined) n.textContent = text;
+        return n;
+      }
+      function fmtStamp(iso) {
+        var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(String(iso || ''));
+        if (!m) return iso ? String(iso) : 'stamp unavailable';
+        return Number(m[3]) + ' ' + MONTHS[Number(m[2]) - 1] + ' ' + m[1] + ' · ' + m[4] + ':' + m[5] + ' UTC';
+      }
+      function noticeInto(host, kind, text) {
+        host.textContent = '';
+        host.hidden = false;
+        host.appendChild(el('p', 'notice', text || NOTICES[kind] || NOTICES.blocked));
+      }
+      function loadSnapshot(url) {
+        return fetch(url, { cache: 'no-store' }).then(function (res) {
+          if (!res.ok) { var e = new Error('HTTP ' + res.status); e.kind = 'absent'; throw e; }
+          return res.text();
+        }).then(function (text) {
+          try { return JSON.parse(text); }
+          catch (err) { var e = new Error('parse failed'); e.kind = 'malformed'; throw e; }
+        }).catch(function (err) {
+          if (!err || !err.kind) { var e = new Error('network or origin blocked'); e.kind = 'blocked'; throw e; }
+          throw err;
+        });
+      }
+
+      /* ---- Now ---- */
+      function renderNow(data) {
+        /* The date alone read the same at any age, so the age and the STALE
+           mark come from the one renderer in Projects/HQ/snapshot-age.js. */
+        var nowAge = SnapshotAge.paint(qs('nowStamp'), data.stamp, { source: 'now', label: 'now' });
+        qs('nowStamp').textContent = nowAge.text + (data.week ? ' · week ' + data.week : '');
+        var week = /\bW\d+\b/.exec(String(data.week || ''));
+        if (week) qs('rsStampWeek').textContent = week[0];
+
+        var grid = qs('nowGrid');
+        grid.textContent = '';
+        var vaults = data.vaults || {};
+        ['Re.SOURCE', 'COMMAND'].forEach(function (name) {
+          var v = vaults[name];
+          if (!v) return;
+          var items = v.items || [];
+          var card = el('article', 'task-card');
+          card.setAttribute('data-span', '6');
+          var topline = el('div', 'card-topline');
+          topline.appendChild(el('span', 'eyebrow', name));
+          topline.appendChild(el('span', 'status', items.length + (items.length === 1 ? ' item' : ' items') + ' waiting'));
+          card.appendChild(topline);
+          var list = el('div', 'now-list');
+          items.forEach(function (item) {
+            var row = el('div', 'now-item');
+            row.appendChild(el('h3', null, String(item && item.title !== undefined ? item.title : 'Untitled item')));
+            if (item && item.body) row.appendChild(el('p', null, String(item.body)));
+            list.appendChild(row);
+          });
+          if (!items.length) list.appendChild(el('p', 'caption', 'No carryover items in this snapshot.'));
+          card.appendChild(list);
+          if (v.source) card.appendChild(el('p', 'caption', 'Source ' + String(v.source)));
+          grid.appendChild(card);
+        });
+        grid.hidden = false;
+        qs('nowNotice').hidden = true;
+
+        var personal = vaults.PERSONAL;
+        if (personal && personal.count !== undefined && personal.count !== null) {
+          var n = Number(personal.count);
+          qs('personalCount').textContent = 'Carryover items waiting: ' + n + ' · count only, text never leaves the vault';
+        } else {
+          qs('personalCount').textContent = 'Carryover items waiting: count unavailable in this snapshot';
+        }
+      }
+
+      /* ---- Pages ---- */
+      function safeRelPath(p) {
+        return typeof p === 'string' && p.length > 0 && p.charAt(0) !== '/' &&
+          !/^[a-z]+:/i.test(p) && p.split('/').indexOf('..') === -1;
+      }
+      function projectOf(path) {
+        var seg = String(path).split('/');
+        return seg[0] === 'Projects' && seg.length > 1 ? seg[0] + '/' + seg[1] : seg[0];
+      }
+      function fillSelect(sel, values, allLabel) {
+        sel.textContent = '';
+        var all = el('option', null, allLabel);
+        all.value = '';
+        sel.appendChild(all);
+        values.forEach(function (v) {
+          var o = el('option', null, v);
+          o.value = v;
+          sel.appendChild(o);
+        });
+      }
+      function renderPages(data) {
+        var rows = Array.isArray(data.pages) ? data.pages : [];
+        var list = qs('pageList');
+        var count = qs('pagesCount');
+        var noticeHost = qs('pagesNotice');
+        if (!rows.length) {
+          count.textContent = 'Index empty in this snapshot';
+          noticeInto(noticeHost, null, 'Snapshot holds no page rows. Ask in chat to rerun hq-data.cjs.');
+          return;
+        }
+        var stagedTotal = rows.filter(function (r) { return r && r.staged === true; }).length;
+        var projects = [], weeks = [], seenP = {}, seenW = {};
+        rows.forEach(function (r) {
+          var p = projectOf(r.path || '');
+          if (!seenP[p]) { seenP[p] = true; projects.push(p); }
+          var w = r.week || '';
+          if (w && !seenW[w]) { seenW[w] = true; weeks.push(w); }
+        });
+        projects.sort(); weeks.sort();
+        var selProject = qs('pagesProject'), selWeek = qs('pagesWeek');
+        fillSelect(selProject, projects, 'All projects');
+        fillSelect(selWeek, weeks, 'All weeks');
+        var find = qs('pagesFind'), stagedOnly = qs('pagesStaged');
+
+        function draw() {
+          var q = find.value.trim().toLowerCase();
+          var fp = selProject.value, fw = selWeek.value, only = stagedOnly.checked;
+          list.textContent = '';
+          var shown = 0;
+          rows.forEach(function (r) {
+            var path = String(r.path || '');
+            var title = String(r.title || path);
+            if (fp && projectOf(path) !== fp) return;
+            if (fw && (r.week || '') !== fw) return;
+            if (only && r.staged !== true) return;
+            if (q && (title + ' ' + path).toLowerCase().indexOf(q) === -1) return;
+            shown += 1;
+            var li = el('li', 'page-row');
+            var head;
+            if (r.staged === true && safeRelPath(path)) {
+              head = el('a', 'page-title', title);
+              head.href = '../../' + encodeURI(path);
+            } else {
+              head = el('span', 'page-title', title);
+            }
+            li.appendChild(head);
+            li.appendChild(el('span', 'page-path', path));
+            li.appendChild(el('span', 'status' + (r.staged === true ? '' : ' status-vault'), r.staged === true ? 'Staged' : 'Vault only'));
+            list.appendChild(li);
+          });
+          if (!shown) {
+            var empty = el('li', 'page-row');
+            empty.appendChild(el('span', 'page-title', 'No page matches. Loosen a filter.'));
+            list.appendChild(empty);
+          }
+          var pcAge = SnapshotAge.paint(count, data.stamp, { source: 'pages', label: 'page index' });
+          count.textContent = 'Showing ' + shown + ' of ' + rows.length + ' pages · ' + stagedTotal + ' staged rows open as links · ' + pcAge.text;
+        }
+        find.addEventListener('input', draw);
+        selProject.addEventListener('change', draw);
+        selWeek.addEventListener('change', draw);
+        stagedOnly.addEventListener('change', draw);
+        noticeHost.hidden = true;
+        draw();
+      }
+
+      loadSnapshot('_data/now.json')
+        .then(renderNow)
+        .catch(function (err) {
+          noticeInto(qs('nowNotice'), (err && err.kind) || 'blocked');
+          qs('nowStamp').textContent = 'now · unread · the snapshot could not be read, so nothing here is a current fact';
+          qs('nowStamp').setAttribute('data-freshness', 'unknown');
+        });
+      loadSnapshot('_data/pages.json')
+        .then(renderPages)
+        .catch(function (err) {
+          noticeInto(qs('pagesNotice'), (err && err.kind) || 'blocked');
+          qs('pagesCount').textContent = 'page index · unread · the snapshot could not be read';
+          qs('pagesCount').setAttribute('data-freshness', 'unknown');
+        });
+    })();
+  </script>
+</body>
+</html>

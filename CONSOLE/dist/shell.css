@@ -1,0 +1,23 @@
+.bar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 14px;
+  min-height: 32px; padding: 6px 10px;
+  background: #0d0d0f; border-bottom: 1px solid #26262b;
+}
+
+.bar a,
+.bar span {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px; letter-spacing: 0.02em;
+  color: #a1a1aa; text-decoration: none;
+}
+
+.bar .brand { color: #ececef; font-weight: 700; }
+.bar .here { color: #ececef; }
+.bar .spacer { flex: 1; }
+.bar a:hover { color: #ececef; }
+
+@media (max-width: 460px) {
+  .bar { gap: 9px; padding: 6px 8px; }
+  .bar a, .bar span { font-size: 11px; }
+}

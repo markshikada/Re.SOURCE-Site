@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Security Tools Setup — Re.SOURCE</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#000;color:#fff;
+  font-family:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:18px;line-height:30px;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:#fff;text-decoration-color:#555;text-underline-offset:3px;transition:text-decoration-color .2s}
+a:hover{text-decoration-color:#fff}
+a:focus-visible,button:focus-visible{outline:3px solid #ccc;outline-offset:3px}
+
+:root{
+  --g06:#0D0D0D;--g12:#1A1A1A;--g24:#333;--g48:#555;--g66:#888;--g88:#CCC;--white:#FFF;
+  --cl-01:#99DD00;--cl-02:#FFD100;--cl-03:#FFB000;--cl-04:#FF7700;--cl-05:#FF5500;
+  --cl-06:#FF0000;--cl-07:#E02888;--cl-08:#9933CC;--cl-09:#6655FF;--cl-10:#2277FF;
+  --cl-11:#00BBDD;--cl-12:#00D460;
+  --space-xs:4px;--space-sm:8px;--space-md:12px;--space-lg:24px;--space-xl:48px;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:24px;
+  --fs-caption:12px;--fs-body:18px;--fs-h2:24px;--fs-h1:36px;--fs-display:48px;
+  --lh-caption:18px;--lh-body:30px;--lh-h2:36px;--lh-h1:48px;--lh-display:54px;
+  --fw-caption:300;--fw-body:400;--fw-h2:600;--fw-h1:700;--fw-display:800;
+}
+
+.shell{max-width:720px;margin:0 auto;padding:var(--space-lg) var(--space-md) var(--space-xl)}
+.section{margin-bottom:var(--space-xl)}
+.section:last-child{margin-bottom:0}
+
+.header{text-align:center;padding:var(--space-xl) 0 var(--space-lg);border-bottom:1px solid var(--g24);margin-bottom:var(--space-lg)}
+.header h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);margin-bottom:var(--space-sm)}
+.header p{font-size:var(--fs-body);color:var(--g66);max-width:560px;margin:0 auto}
+
+/* --- Tabs --- */
+.tabbar{
+  position:sticky;top:0;z-index:10;
+  display:flex;gap:var(--space-xs);
+  background:#000;border-bottom:1px solid var(--g24);
+  padding:var(--space-sm) 0;margin-bottom:var(--space-lg);
+  overflow-x:auto;scrollbar-width:none;
+}
+.tabbar::-webkit-scrollbar{display:none}
+.tab{
+  position:relative;flex:0 0 auto;
+  min-height:44px;padding:0 var(--space-md);
+  background:transparent;color:var(--g66);
+  border:0;border-radius:var(--radius-sm);
+  font:inherit;font-size:var(--fs-body);font-weight:var(--fw-h2);cursor:pointer;
+  white-space:nowrap;
+  transition:color .2s ease,background-color .2s ease;
+}
+.tab:hover{color:var(--g88);background:var(--g12)}
+.tab[aria-selected="true"]{color:#fff;background:var(--g12)}
+.tab[aria-selected="true"]::after{
+  content:"";position:absolute;left:var(--space-md);right:var(--space-md);bottom:4px;
+  height:2px;background:var(--cl-11);border-radius:8px;
+}
+
+/* --- Call-to-action band --- */
+.do-this{
+  background:var(--g06);border:1px solid var(--g24);border-radius:var(--radius-lg);
+  padding:var(--space-lg);margin-bottom:var(--space-lg);
+}
+.do-this h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin-bottom:var(--space-sm)}
+.do-this > p{color:var(--g88);margin-bottom:var(--space-md)}
+.cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--space-sm);
+  min-height:48px;padding:0 var(--space-lg);
+  background:var(--cl-10);color:#fff;border:0;border-radius:var(--radius-md);
+  font:inherit;font-size:var(--fs-body);font-weight:var(--fw-h2);cursor:pointer;
+  transition:transform .15s ease,filter .15s ease;
+}
+.cta:hover{filter:brightness(1.15)}
+.cta:active{transform:scale(.97)}
+.cta-ghost{background:var(--g12);color:var(--g88);border:1px solid var(--g24)}
+
+/* --- Steps --- */
+.section-title{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin-bottom:var(--space-md);display:flex;align-items:center;gap:var(--space-sm)}
+.section-title .num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:24px;background:var(--g12);border:1px solid var(--g24);font-size:var(--fs-caption);font-weight:var(--fw-h2);color:var(--g66);flex-shrink:0}
+.panel[hidden]{display:none}
+.panel{animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* Step cards */
+.step-list{display:grid;gap:var(--space-sm)}
+.step{background:var(--g06);border:1px solid var(--g24);border-radius:var(--radius-md);padding:var(--space-md);display:flex;gap:var(--space-md);align-items:flex-start}
+.step .step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:24px;background:var(--g12);border:1px solid var(--g24);font-size:var(--fs-caption);font-weight:var(--fw-h2);color:var(--g66);flex-shrink:0}
+.step strong{display:block;font-size:var(--fs-body);margin-bottom:var(--space-xs)}
+.step span{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--g88)}
+.step .path{font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-caption);color:var(--cl-11);margin-top:var(--space-xs);word-break:break-all}
+
+/* Status badges */
+.status-badge{display:inline-flex;align-items:center;justify-content:center;min-width:80px;padding:var(--space-xs) var(--space-md);border-radius:var(--radius-sm);font-size:var(--fs-caption);font-weight:var(--fw-h2);text-transform:uppercase;flex-shrink:0}
+.status-badge.ok{background:rgba(0,212,96,.15);color:var(--cl-12);border:1px solid rgba(0,212,96,.3)}
+.status-badge.warn{background:rgba(255,209,0,.15);color:var(--cl-02);border:1px solid rgba(255,209,0,.3)}
+.status-badge.error{background:rgba(255,0,0,.15);color:var(--cl-06);border:1px solid rgba(255,0,0,.3)}
+
+/* Tool cards */
+.tool-grid{display:grid;gap:var(--space-sm)}
+.tool-card{background:var(--g06);border:1px solid var(--g24);border-radius:var(--radius-md);padding:var(--space-md);display:flex;align-items:flex-start;gap:var(--space-md);flex-wrap:wrap}
+.tool-info{flex:1;min-width:180px}
+.tool-name{font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-body);color:#fff}
+.tool-desc{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--g88);margin-top:var(--space-xs)}
+
+/* Checkbox list */
+.check-list{display:grid;gap:var(--space-sm);list-style:none;margin-top:var(--space-md)}
+.check-list li{display:flex;gap:var(--space-md);align-items:flex-start;color:var(--g88)}
+.check-list .tick{
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  width:24px;height:24px;border-radius:24px;
+  background:rgba(0,212,96,.15);border:1px solid rgba(0,212,96,.35);color:var(--cl-12);
+  font-size:var(--fs-caption);font-weight:700;margin-top:3px;
+}
+.check-list strong{color:#fff}
+
+/* Progress */
+.progress{display:flex;gap:var(--space-xs);margin-bottom:var(--space-lg)}
+.progress .dot{flex:1;height:4px;border-radius:4px;background:var(--g24)}
+.progress .dot.done{background:var(--cl-12)}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/security-setup-walkthrough.html</span>
+</nav>
+<div class="shell">
+
+  <header class="header">
+    <h1>Security Tools Setup</h1>
+    <p>All three permissions granted. The safety system is now operational.</p>
+  </header>
+
+  <div class="progress" id="progress">
+    <div class="dot done" id="dot1"></div>
+    <div class="dot done" id="dot2"></div>
+    <div class="dot done" id="dot3"></div>
+  </div>
+
+  <div class="do-this" style="margin-bottom:var(--space-lg)">
+    <h2>Safety system active</h2>
+    <p>MacCrab is installed and its daemon is running. For live figures, run <code>maccrabctl status</code> — this page deliberately carries no alert counts, because hard-coded ones were stale within a day.</p>
+    <p><strong>Correction, 9 October 2026:</strong> the prevention bridge runs every 60 seconds but <strong>has never taken an automatic action</strong>. Measured across 30,940 alerts: zero processes killed, zero LaunchAgents disabled, zero hosts blocked. It is a reader, not yet a preventer. Do not rely on it for protection.</p>
+  </div>
+
+  <div class="tabbar" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="1">1. System Extension</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="2">2. Full Disk Access</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="3">3. Enable MacCrab</button>
+  </div>
+
+  <div class="panel" id="panel1" role="tabpanel">
+    <div class="do-this">
+      <h2>Approve MacCrab's system extension</h2>
+      <p>MacCrab uses Apple's Endpoint Security framework to monitor system events. macOS requires your explicit approval before it can run.</p>
+      <button class="cta" onclick="window.location.href='x-apple.systempreferences:com.apple.LoginItems-Settings.extension'">Open System Settings</button>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title"><span class="num">1</span> What to do</h3>
+      <div class="step-list">
+        <div class="step">
+          <span class="step-num">1</span>
+          <div>
+            <strong>Open System Settings</strong>
+            <span>Click the blue button above, or go to System Settings → General → Login Items & Extensions</span>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <div>
+            <strong>Find Endpoint Security Extensions</strong>
+            <span>Scroll down to the "Endpoint Security Extensions" section (near the bottom)</span>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <div>
+            <strong>Toggle MacCrab ON</strong>
+            <span>Click the toggle switch next to "MacCrab Endpoint Security Extension" so it turns green</span>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">4</span>
+          <div>
+            <strong>Enter your password if prompted</strong>
+            <span>macOS will ask for your admin password to confirm the change</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title"><span class="num">2</span> Verify it worked</h3>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-info">
+            <div class="tool-name">MacCrab</div>
+            <div class="tool-desc">Should show "activated enabled" in systemextensionsctl</div>
+          </div>
+          <span class="status-badge warn" id="status1">Pending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel2" role="tabpanel" hidden>
+    <div class="do-this">
+      <h2>Grant Full Disk Access</h2>
+      <p>All three tools need Full Disk Access to monitor files and processes across your entire Mac. Without this, they are blind.</p>
+      <button class="cta" onclick="window.location.href='x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles'">Open Full Disk Access</button>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title"><span class="num">1</span> What to do</h3>
+      <div class="step-list">
+        <div class="step">
+          <span class="step-num">1</span>
+          <div>
+            <strong>Open System Settings</strong>
+            <span>Click the blue button above, or go to System Settings → Privacy & Security → Full Disk Access</span>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <div>
+            <strong>Click the + button</strong>
+            <span>Click the "+" button at the bottom of the list to add a new app</span>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <div>
+            <strong>Add MacCrab</strong>
+            <span>Navigate to /Applications and select MacCrab.app</span>
+            <div class="path">/Applications/MacCrab.app</div>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">4</span>
+          <div>
+            <strong>Add BlockBlock</strong>
+            <span>Navigate to /Library/Objective-See/BlockBlock and select BlockBlock.app</span>
+            <div class="path">/Library/Objective-See/BlockBlock/BlockBlock.app</div>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">5</span>
+          <div>
+            <strong>Add OverSight</strong>
+            <span>Navigate to /Applications and select OverSight.app</span>
+            <div class="path">/Applications/OverSight.app</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title"><span class="num">2</span> Verify it worked</h3>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-info">
+            <div class="tool-name">MacCrab</div>
+            <div class="tool-desc">Should appear in the Full Disk Access list with toggle ON</div>
+          </div>
+          <span class="status-badge warn" id="status2a">Pending</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-info">
+            <div class="tool-name">BlockBlock</div>
+            <div class="tool-desc">Should appear in the Full Disk Access list with toggle ON</div>
+          </div>
+          <span class="status-badge warn" id="status2b">Pending</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-info">
+            <div class="tool-name">OverSight</div>
+            <div class="tool-desc">Should appear in the Full Disk Access list with toggle ON</div>
+          </div>
+          <span class="status-badge warn" id="status2c">Pending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel3" role="tabpanel" hidden>
+    <div class="do-this">
+      <h2>Enable MacCrab protection</h2>
+      <p>MacCrab's daemon needs to be started. This activates the detection engine and begins monitoring.</p>
+      <p><strong>A web page cannot do this.</strong> Nothing here can launch a Mac application — the old control tried <code>open -a MacCrab</code>, which is a Terminal command, not something a browser can execute. Open MacCrab from your Applications folder instead.</p>
+      <button class="cta" onclick="window.location.href='x-apple.systempreferences:com.apple.LoginItems-Settings.extension'">Open System Settings instead</button>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title"><span class="num">1</span> What to do</h3>
+      <div class="step-list">
+        <div class="step">
+          <span class="step-num">1</span>
+          <div>
+            <strong>Open MacCrab</strong>
+            <span>Open MacCrab from your Applications folder (/Applications/MacCrab.app) — a web page cannot launch it for you</span>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <div>
+            <strong>Click "Enable Protection"</strong>
+            <span>The main window will show a button to enable the detection engine</span>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <div>
+            <strong>Wait for the daemon to start</strong>
+            <span>The status should change from "Not running" to "Running" within a few seconds</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title"><span class="num">2</span> Verify it worked</h3>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-info">
+            <div class="tool-name">MacCrab Daemon</div>
+            <div class="tool-desc">Should show "Running" in maccrabctl status</div>
+          </div>
+          <span class="status-badge warn" id="status3">Pending</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title"><span class="num">3</span> All tools status</h3>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-info">
+            <div class="tool-name">MacCrab</div>
+            <div class="tool-desc">AI agent threat detection, credential access, persistence monitoring</div>
+          </div>
+          <span class="status-badge ok" id="tool1">Running</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-info">
+            <div class="tool-name">BlockBlock</div>
+            <div class="tool-desc">Persistence location monitoring (LaunchAgents, LaunchDaemons)</div>
+          </div>
+          <span class="status-badge ok" id="tool2">Running</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-info">
+            <div class="tool-name">OverSight</div>
+            <div class="tool-desc">Microphone and webcam access monitoring</div>
+          </div>
+          <span class="status-badge ok" id="tool3">Running</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-info">
+            <div class="tool-name">LuLu</div>
+            <div class="tool-desc">Network firewall — already active and enabled</div>
+          </div>
+          <span class="status-badge ok" id="tool4">Active</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Tab switching
+const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.panel');
+const dots = document.querySelectorAll('.progress .dot');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    
+    tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+    tab.setAttribute('aria-selected', 'true');
+    
+    panels.forEach(p => p.hidden = true);
+    document.getElementById('panel' + target).hidden = false;
+    
+    dots.forEach((d, i) => {
+      d.classList.toggle('done', i < parseInt(target));
+    });
+  });
+});
+</script>
+</body>
+</html>

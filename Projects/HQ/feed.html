@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:,">
+<meta name="description" content="The estate feed: every HTML artefact across the four vaults and the console, one card each, with a mechanical verdict of current, duplicate copy, superseded, stale or archived, read from the _data/feed.json snapshot with its own stamp.">
+<title>Feed &middot; Re.SOURCE HQ</title>
+<!-- Design system chrome, one level up from Projects/HQ/. Feed: _data/feed.json,
+     written by Projects/HQ/feed.cjs. Static page, no live calls, no auto refresh:
+     a snapshot with its stamp is honest, a number that silently ages is not. -->
+<link rel="stylesheet" href="../Design System/styles.css">
+<link rel="stylesheet" href="../Design System/lib/hq.css">
+<link rel="stylesheet" href="../Design System/lib/topbar.css">
+<script src="../Design System/lib/masters-nav.js" defer></script>
+<!-- lib/hq.js measures the wrapped bar's real height into --rs-topbar-h, so the
+     intro clears the bar on a phone instead of sitting under the CSS fallback. -->
+<script src="../Design System/lib/hq.js" defer></script>
+<script src="snapshot-age.js"></script>
+<style>
+  /* Feed hub chrome. Every value is a design token: colour from tokens/greys.css
+     and tokens/colours.css, space and radius from tokens/space.css, type from
+     tokens/typography.css, the field from tokens/grid.css, motion from
+     tokens/motion.css. No raw hex, no type off the scale, no letter-spacing,
+     no radius off 8/12/24.
+
+     A verdict chip is a stroke in its position colour, never a fill behind text:
+     the colours wheel rule in tokens/colours.css is a stroke on a shape. */
+
+  .feed-track { --feed-track: calc(var(--space-2xl) * 2); }
+
+  /* ---- the decision strip: four numbers, the only four that change a decision ---- */
+  .feed-counters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--feed-track), 1fr));
+    gap: var(--space-lg);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .feed-counter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-lg);
+    background: var(--surface-card);
+    border: var(--hq-hairline) solid var(--surface-border);
+    border-radius: var(--radius-md);
+  }
+  .feed-counter[data-tone="live"]      { border-top: var(--stroke) solid var(--cl-12-life); }
+  .feed-counter[data-tone="waste"]     { border-top: var(--stroke) solid var(--cl-03-flow); }
+  .feed-counter[data-tone="retired"]   { border-top: var(--stroke) solid var(--cl-08-time); }
+  .feed-counter[data-tone="unpublished"] { border-top: var(--stroke) solid var(--cl-11-type); }
+  .feed-counter-value {
+    font-family: var(--font-mono);
+    font-size: var(--fs-h1);
+    line-height: var(--lh-h1);
+    font-weight: var(--fw-h1);
+    color: var(--text-primary);
+  }
+  .feed-counter-label { font-size: var(--fs-body); line-height: var(--lh-body); color: var(--text-primary); }
+  .feed-counter-note {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+  }
+
+  /* ---- the filter bar: one row, wrapping rather than clipping ---- */
+  .feed-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-md) var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--surface-card);
+    border: var(--hq-hairline) solid var(--surface-border);
+    border-radius: var(--radius-md);
+  }
+  .feed-field { display: flex; flex-direction: column; gap: var(--space-xs); min-width: 0; }
+  .feed-field > label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+  }
+  .feed-field select, .feed-field input {
+    appearance: none;
+    min-height: var(--pill-height);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--surface-page);
+    color: var(--text-primary);
+    border: var(--hq-hairline) solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+  }
+  .feed-field select:hover, .feed-field input:hover { border-color: var(--g66); }
+  .feed-field select:focus-visible, .feed-field input:focus-visible {
+    outline: var(--hq-focus) solid var(--text-primary);
+    outline-offset: var(--space-xs);
+  }
+  .feed-field-search { flex: 1 1 calc(var(--space-2xl) * 6); }
+  .feed-field-search input { width: 100%; }
+  .feed-count {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+    margin-left: auto;
+  }
+
+  /* ---- the card grid: one artefact per card ---- */
+  .feed-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--feed-track), 1fr));
+    gap: var(--space-lg);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .feed-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    background: var(--surface-card);
+    border: var(--hq-hairline) solid var(--surface-border);
+    border-radius: var(--radius-md);
+    min-width: 0;
+    transition: border-color var(--dur-sm) var(--ease-place), transform var(--dur-sm) var(--ease-place);
+  }
+  .feed-card:hover { transform: translateY(-2px); border-color: var(--g66); }
+  .feed-card[data-verdict="current"]        { border-left: var(--stroke) solid var(--cl-12-life); }
+  .feed-card[data-verdict="duplicate-copy"] { border-left: var(--stroke) solid var(--cl-03-flow); }
+  .feed-card[data-verdict="superseded"]     { border-left: var(--stroke) solid var(--cl-08-time); }
+  .feed-card[data-verdict="stale"]          { border-left: var(--stroke) solid var(--cl-04-love); }
+  .feed-card[data-verdict="archived"]       { border-left: var(--stroke) solid var(--g48); }
+
+  .feed-name {
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    font-weight: var(--fw-h2);
+    color: var(--text-primary);
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  /* A lane path runs six or seven segments deep. Clamped to three lines it stays
+     the full string in the DOM and in the search index, and stops eating a card. */
+  .feed-path {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-dim);
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .feed-chips { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-sm); }
+  .feed-chip {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    padding: var(--space-xs) var(--space-sm);
+    border: var(--hq-hairline) solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .feed-chip[data-chip="vault"]    { color: var(--text-primary); }
+  .feed-chip[data-chip="verdict"]  { color: var(--text-primary); }
+  .feed-chip[data-verdict="current"]        { border-color: var(--cl-12-life); }
+  .feed-chip[data-verdict="duplicate-copy"] { border-color: var(--cl-03-flow); }
+  .feed-chip[data-verdict="superseded"]     { border-color: var(--cl-08-time); }
+  .feed-chip[data-verdict="stale"]          { border-color: var(--cl-04-love); }
+  .feed-chip[data-verdict="archived"]       { border-color: var(--g48); }
+  .feed-chip[data-chip="staged"]  { border-color: var(--cl-11-type); color: var(--text-primary); }
+  /* A gap in the published set, not a state of it. Cyan is this page's language
+     for "the manifest serves this", so a chip reading "unpublished" must not wear
+     it: the word and the mark would contradict each other, which is worse than
+     the 87% noise this replaced. Dashed and neutral is already the language for
+     "not the live one", and the word carries the fact. */
+  .feed-chip[data-chip="unpublished"] { border-style: dashed; border-color: var(--surface-border); }
+  .feed-chip[data-chip="closed"]  { border-style: dashed; }
+
+  .feed-facts {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+  }
+  .feed-facts > span:not(:last-child)::after { content: " \00b7 "; color: var(--text-dim); }
+  .feed-link {
+    margin-top: auto;
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-primary);
+  }
+  .feed-empty {
+    grid-column: 1 / -1;
+    padding: var(--space-lg);
+    border: var(--hq-hairline) dashed var(--surface-border);
+    border-radius: var(--radius-md);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--text-secondary);
+  }
+  .feed-notice {
+    margin: 0;
+    padding: var(--space-lg);
+    background: var(--surface-card);
+    border-left: var(--stroke) solid var(--g88);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--text-secondary);
+  }
+  .feed-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-md);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+  }
+  .feed-legend li { display: inline-flex; align-items: center; gap: var(--space-xs); }
+  .feed-legend i {
+    width: var(--space-md);
+    height: var(--space-sm);
+    border-radius: var(--pill-radius);
+    display: inline-block;
+  }
+  .feed-skip {
+    position: absolute;
+    left: var(--space-lg);
+    top: var(--space-lg);
+    z-index: 20;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--surface-raised);
+    color: var(--text-primary);
+    border: var(--hq-hairline) solid var(--g66);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    transform: translateY(-200%);
+  }
+  .feed-skip:focus { transform: none; }
+  /* A narrow frame stacks the filter fields rather than squeezing them. */
+  @media (max-width: 720px) {
+    .feed-count { margin-left: 0; }
+    .feed-field-search { flex: 1 1 100%; }
+  }
+
+  /* The artefact card as a short horizontal band rather than a tall block.
+     Name and chips on one line, path and facts on the next, three columns at the
+     desktop measure.
+
+     Every column is bounded on purpose. An auto-sized facts column sets the width of
+     every card beside it and the name collapses to a single character, which is
+     what the first two attempts at this did. The facts line needs nowrap on its
+     spans as well as on itself, because nowrap on the container alone leaves each
+     span free to break inside itself.
+
+     Card height fell from 336px to 108px, so a screen shows three rows of artefacts
+     rather than one. */
+  .feed-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-md); }
+  @media (max-width: 1080px) { .feed-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 720px) { .feed-grid { grid-template-columns: minmax(0, 1fr); } }
+  .feed-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "name chips" "path facts";
+    align-items: center;
+    gap: var(--space-xs) var(--space-md);
+    padding: var(--space-md);
+    border-radius: var(--radius-sm);
+  }
+  .feed-name { grid-area: name; -webkit-line-clamp: 2; }
+  .feed-path { grid-area: path; -webkit-line-clamp: 1; }
+  .feed-chips { grid-area: chips; flex-wrap: nowrap; justify-content: flex-end; }
+  .feed-facts {
+    grid-area: facts;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 34ch;
+  }
+  .feed-facts > span { white-space: nowrap; flex: 0 0 auto; }
+  .feed-link { display: none; }
+
+</style>
+<style>
+/* A reading past its cadence, or one with no stamp at all, must not sit on
+   the page in the same quiet grey as a reading from ten minutes ago. One rule,
+   from the one renderer in Projects/HQ/snapshot-age.js. */
+.hq .stamp-line[data-freshness="stale"],
+.hq .stamp-line[data-freshness="unknown"] { color: var(--g88); font-weight: 600; }
+</style>
+</head>
+<body class="hq rs-topbar-page feed-track">
+<a class="feed-skip" href="#feed-grid">Skip to the artefacts</a>
+
+<header class="rs-topbar" id="rsTopBar">
+  <div class="rs-topbar-inner" data-pad>
+    <a class="rs-topbar-brand" href="HQ.html" aria-label="Estate HQ home">Re.SOURCE <span>Feed</span></a>
+    <p class="rs-topbar-stamp"><span>Feed</span><span class="rs-topbar-sep" aria-hidden="true">&middot;</span><span>snapshot</span></p>
+    <div class="rs-topbar-navrow">
+      <nav class="rs-topbar-context" aria-label="Feed sections">
+        <a href="#decide">Decide</a>
+        <a href="#artefacts">Artefacts</a>
+        <a href="#legend">Verdicts</a>
+      </nav>
+      <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a class="button" href="../Design System/Masters.html">Open masters</a></div>
+    </div>
+  </div>
+</header>
+
+<main class="hq shell" data-pad data-grid tabindex="-1">
+
+  <header class="intro" data-span="12">
+    <p class="eyebrow">Estate consolidation &middot; one card per artefact</p>
+    <h1 id="feed-title">The feed</h1>
+    <p class="lede">Every HTML artefact in Re.SOURCE, COMMAND, PERSONAL, the lane checkouts and the console, read in one pass by <code>Projects/HQ/feed.cjs</code> and given a verdict by rule rather than by opinion. The verdict decides; Mark disposes. Nothing on this page moves or deletes anything.</p>
+    <p class="stamp-line" id="stamp">reading the snapshot&hellip;</p>
+  </header>
+
+  <section class="work-section" id="decide" data-span="12" aria-labelledby="decide-title">
+    <div class="section-heading">
+      <h2 id="decide-title">Four numbers that change a decision</h2>
+      <p class="eyebrow">Read from the snapshot, with its stamp &middot; field <span id="field-count">?</span> columns</p>
+    </div>
+    <ul class="feed-counters" data-span="12">
+      <li class="feed-counter" data-tone="live">
+        <span class="feed-counter-value" id="c-current">&mdash;</span>
+        <span class="feed-counter-label">current</span>
+        <span class="feed-counter-note" id="c-current-note">the newest of their own name</span>
+      </li>
+      <li class="feed-counter" data-tone="waste">
+        <span class="feed-counter-value" id="c-waste">&mdash;</span>
+        <span class="feed-counter-label">wasted by duplicates</span>
+        <span class="feed-counter-note" id="c-waste-note">across the duplicate groups</span>
+      </li>
+      <li class="feed-counter" data-tone="retired">
+        <span class="feed-counter-value" id="c-retired">&mdash;</span>
+        <span class="feed-counter-label">superseded and stale</span>
+        <span class="feed-counter-note" id="c-retired-note">the pile that wants archiving</span>
+      </li>
+      <li class="feed-counter" data-tone="unpublished">
+        <span class="feed-counter-value" id="c-unpub">&mdash;</span>
+        <span class="feed-counter-label">current but unpublished</span>
+        <span class="feed-counter-note" id="c-unpub-note">Re.SOURCE pages the manifest never serves</span>
+      </li>
+    </ul>
+    <p class="notice" id="archive-note" hidden></p>
+    <!-- The 45-day review, stated whether or not anything is waiting. A status
+         that only speaks when it has bad news is a status nobody sees, and for
+         the next several weeks there is nothing bad: that quiet period is exactly
+         when the number is worth having. The detail lives in _data/feed-summary.md;
+         this is the one line that belongs on the page Mark actually opens. -->
+    <p class="notice" id="cooling-note" hidden></p>
+  </section>
+
+  <section class="work-section" id="artefacts" data-span="12" aria-labelledby="artefacts-title">
+    <div class="section-heading">
+      <h2 id="artefacts-title">The artefacts</h2>
+      <p class="eyebrow">One card each &middot; filter, search, sort &middot; a link only where the target is inside the published vault</p>
+    </div>
+
+    <form class="feed-filters" id="filters" data-span="12" role="search" aria-label="Filter the artefacts">
+      <div class="feed-field">
+        <label for="f-vault">Vault</label>
+        <select id="f-vault" name="vault"><option value="">Every vault</option></select>
+      </div>
+      <div class="feed-field">
+        <label for="f-verdict">Verdict</label>
+        <select id="f-verdict" name="verdict"><option value="">Every verdict</option></select>
+      </div>
+      <div class="feed-field">
+        <label for="f-staged">Published</label>
+        <select id="f-staged" name="staged">
+          <option value="">Any</option>
+          <option value="yes">Served by the manifest</option>
+          <option value="no">Not served</option>
+        </select>
+      </div>
+      <div class="feed-field">
+        <label for="f-sort">Sort</label>
+        <select id="f-sort" name="sort">
+          <option value="fresh">Freshest first</option>
+          <option value="waste">Wasted bytes first</option>
+        </select>
+      </div>
+      <div class="feed-field feed-field-search">
+        <label for="f-search">Search title, name or path</label>
+        <input id="f-search" name="search" type="search" autocomplete="off" spellcheck="false" placeholder="model-ladder">
+      </div>
+      <p class="feed-count" id="count" aria-live="polite">&mdash;</p>
+    </form>
+
+    <ul class="feed-grid" id="feed-grid" data-span="12" aria-live="polite">
+      <li class="feed-empty" id="feed-state">Reading _data/feed.json&hellip;</li>
+    </ul>
+  </section>
+
+  <section class="work-section" id="legend" data-span="12" aria-labelledby="legend-title">
+    <div class="section-heading">
+      <h2 id="legend-title">What each verdict means</h2>
+      <p class="eyebrow">Mechanical, in this order &middot; Projects/HQ/FEED-POLICY.md carries the archive rule</p>
+    </div>
+    <ul class="feed-legend" data-span="12">
+      <li><i style="background:var(--cl-12-life)" aria-hidden="true"></i>current &mdash; newest of its own name, moved since the cutoff</li>
+      <li><i style="background:var(--cl-03-flow)" aria-hidden="true"></i>duplicate copy &mdash; an older copy of a page that has a newer one</li>
+      <li><i style="background:var(--cl-08-time)" aria-hidden="true"></i>superseded &mdash; says so in the filename, or a higher version exists</li>
+      <li><i style="background:var(--cl-04-love)" aria-hidden="true"></i>stale &mdash; untouched since the cutoff</li>
+      <li><i style="background:var(--g48)" aria-hidden="true"></i>archived &mdash; already filed under an _Archive folder by hand</li>
+    </ul>
+  </section>
+
+  <footer data-span="12">
+    <p class="colophon">Projects/HQ/feed.html &middot; snapshot written by Projects/HQ/feed.cjs &middot; COMMAND, PERSONAL and lane rows carry name, path and date only, never a title</p>
+  </footer>
+</main>
+
+<script>
+/* One fetch, one honest render, in the lanes.html shape: every failure path prints
+   what could not be read and why, in the place the data would have been. Nothing is
+   defaulted to zero, so "nothing matches" and "the snapshot could not be read" can
+   never look the same. Every string from the snapshot reaches the DOM through
+   textContent, so a poisoned row renders as inert text and never as markup. */
+(function () {
+  'use strict';
+  var SRC = '_data/feed.json';
+  var VERDICTS = ['current', 'duplicate-copy', 'superseded', 'stale', 'archived'];
+  var VAULT_RANK = { 'Re.SOURCE': 0, COMMAND: 1, PERSONAL: 1, console: 2, lanes: 3 };
+
+  var el = function (tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = String(text);
+    return n;
+  };
+  var clear = function (id) { var n = document.getElementById(id); while (n.firstChild) n.removeChild(n.firstChild); };
+  var kb = function (bytes) {
+    var mb = bytes / 1048576;
+    return mb >= 1 ? (Math.round(mb * 10) / 10) + ' MB' : (Math.round(bytes / 102.4) / 10) + ' KB';
+  };
+  var age = function (days) {
+    if (days === null || days === undefined) return 'age unknown';
+    if (days === 0) return 'today';
+    if (days === 1) return 'yesterday';
+    return days + 'd ago';
+  };
+
+  var data = null;
+  var cards = [];
+
+  /* ---- the field count, measured rather than asserted: tokens/grid.css says the
+     orientation picks 6 in landscape and 3 in portrait below 1081, so the badge
+     under the heading is read off a real [data-grid] probe. */
+  (function fieldCount() {
+    var probe = document.querySelector('[data-grid]');
+    if (!probe) return;
+    var read = function () {
+      var tracks = window.getComputedStyle(probe).gridTemplateColumns;
+      if (!tracks || tracks === 'none') return;
+      var n = tracks.trim().split(/\s+/).length;
+      var out = document.getElementById('field-count');
+      if (out) out.textContent = String(n);
+    };
+    read();
+    window.addEventListener('resize', read);
+  })();
+
+  /* Fault injection, for the test that proves this page can say "not read".
+     ?fault=<kind> makes the fetch fail the way a missing snapshot, a 404 or a
+     malformed body would, so the honest path is exercised by the real render code
+     and not by a stub. Inert unless asked for. */
+  var FAULT = new URLSearchParams(location.search).get('fault');
+  function faulted() {
+    if (FAULT === 'missing') return Promise.reject(new Error('HTTP 404'));
+    if (FAULT === 'malformed') return Promise.resolve({ ok: true, json: function () { return Promise.reject(new SyntaxError('Unexpected token < in JSON')); } });
+    if (FAULT === 'empty') return Promise.resolve({ ok: true, json: function () { return Promise.resolve({}); } });
+    return null;
+  }
+  var SOURCE = faulted() || fetch(SRC, { cache: 'no-store' });
+  SOURCE
+    .then(function (r) {
+      if (!r.ok) throw new Error('the snapshot answered HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (d) { render(d); })
+    .catch(function (e) {
+      var stamp = document.getElementById('stamp');
+      stamp.textContent = 'feed · unread · the snapshot could not be read: ' + (e && e.message ? e.message : 'unknown error')
+        + ' · nothing on this page is a current fact';
+      stamp.setAttribute('data-freshness', 'unknown');
+      var grid = document.getElementById('feed-grid');
+      clear('feed-grid');
+      grid.appendChild(el('li', 'feed-empty',
+        'Nothing on this page is a guess. Projects/HQ/_data/feed.json is missing or unreadable, so no artefact is listed and no count is shown. Ask in chat to run node Projects/HQ/feed.cjs, then reload.'));
+      var filters = document.getElementById('filters');
+      if (filters) filters.hidden = true;
+      ['c-current', 'c-waste', 'c-retired', 'c-unpub'].forEach(function (id) {
+        document.getElementById(id).textContent = 'not read';
+      });
+      var count = document.getElementById('count');
+      if (count) count.textContent = 'not read';
+    });
+
+  function render(d) {
+    /* A snapshot with no totals is a partial read. Printing "0 current" would be a
+       lie about the estate, so each counter states its own state instead. */
+    var t = d.totals;
+    if (!t || typeof t.files !== 'number') {
+      document.getElementById('stamp').textContent =
+        (d.stamp ? 'snapshot ' + d.stamp : 'no snapshot stamp in this reading') + ' \u00b7 totals block absent, so no count can be read';
+      clear('feed-grid');
+      document.getElementById('feed-grid').appendChild(el('li', 'feed-empty',
+        'This reading carries no totals block, so the decision strip and the grid are both withheld rather than zeroed. Ask in chat to rerun Projects/HQ/feed.cjs.'));
+      var f = document.getElementById('filters');
+      if (f) f.hidden = true;
+      return;
+    }
+
+    var by = t.byVerdict || {};
+    document.getElementById('c-current').textContent = String(by.current === undefined ? 'not read' : by.current);
+    document.getElementById('c-current-note').textContent = 'of ' + t.files + ' artefacts read';
+    document.getElementById('c-waste').textContent = t.wastedMB ? String(t.wastedMB) + ' MB' : kb(t.wastedBytes || 0);
+    document.getElementById('c-waste-note').textContent =
+      'across ' + (t.duplicateGroups === undefined ? '?' : t.duplicateGroups) + ' groups, ' + (by['duplicate-copy'] === undefined ? '?' : by['duplicate-copy']) + ' copies';
+    var retired = (by.superseded || 0) + (by.stale || 0);
+    document.getElementById('c-retired').textContent = String(retired);
+    document.getElementById('c-retired-note').textContent =
+      (by.superseded || 0) + ' superseded, ' + (by.stale || 0) + ' stale';
+    document.getElementById('c-unpub').textContent = String(t.unpublishedCurrent === undefined ? 'not read' : t.unpublishedCurrent);
+    document.getElementById('c-unpub-note').textContent = 'Re.SOURCE pages the manifest never serves';
+
+    var f = SnapshotAge.paint(document.getElementById('stamp'), d.stamp, { source: 'feed', label: 'feed' });
+    document.getElementById('stamp').textContent = f.text
+      + ' \u00b7 cutoff ' + (d.cutoff || 'unstated')
+      + ' \u00b7 read by Projects/HQ/feed.cjs';
+
+    /* Archived is counted apart from the live pile so the strip never asks for a
+       decision twice. The note says so rather than leaving it implied. */
+    if (by.archived) {
+      // The review line. It prints in the quiet case too, which is the whole
+      // point: for the next several weeks nothing is waiting, and a line that
+      // only appeared once something did would spend that time saying nothing.
+      var cool = document.getElementById('cooling-note');
+      if (typeof t.coolingInDays === 'number') {
+        cool.hidden = false;
+        cool.textContent = t.cooling
+          ? t.cooling + ' current page' + (t.cooling === 1 ? '' : 's') + ' waiting on a 45-day review. The list is in _data/feed-summary.md.'
+          : '45-day review: nothing waiting. The nearest is ' + (t.nearestCoolingPath || 'unknown') +
+            ', which crosses in ' + t.coolingInDays + ' day' + (t.coolingInDays === 1 ? '' : 's') + '.';
+      } else if (t.cooling) {
+        cool.hidden = false;
+        cool.textContent = t.cooling + ' current page' + (t.cooling === 1 ? '' : 's') +
+          ' waiting on a 45-day review. This snapshot predates the countdown, so no date is given; rerun feed.cjs.';
+      } else {
+        cool.hidden = false;
+        cool.textContent = '45-day review: nothing waiting. This snapshot predates the countdown, so no date is given; rerun feed.cjs.';
+      }
+
+      var note = document.getElementById('archive-note');
+      note.hidden = false;
+      note.textContent = by.archived + ' of the ' + t.files + ' artefacts already sit under an _Archive folder. They are listed below with their own verdict and are excluded from the four numbers above, because a filed page is not waiting on a decision.';
+    }
+
+    cards = (d.cards || []).slice();
+    fillOptions();
+
+    var form = document.getElementById('filters');
+    ['f-vault', 'f-verdict', 'f-staged', 'f-sort'].forEach(function (id) {
+      document.getElementById(id).addEventListener('change', draw);
+    });
+    var search = document.getElementById('f-search');
+    search.addEventListener('input', draw);
+    form.addEventListener('submit', function (e) { e.preventDefault(); draw(); });
+    form.hidden = false;
+    draw();
+  }
+
+  function fillOptions() {
+    /* Option order follows the snapshot's own order for vaults, which puts Re.SOURCE
+       first, and the verdict precedence order for verdicts. */
+    var vaults = [];
+    var seen = {};
+    cards.forEach(function (c) {
+      if (!seen[c.vault]) { seen[c.vault] = true; vaults.push(c.vault); }
+    });
+    vaults.sort(function (a, b) {
+      var ra = VAULT_RANK[a] === undefined ? 9 : VAULT_RANK[a];
+      var rb = VAULT_RANK[b] === undefined ? 9 : VAULT_RANK[b];
+      if (ra !== rb) return ra - rb;
+      return a < b ? -1 : 1;
+    });
+    var vs = document.getElementById('f-vault');
+    vaults.forEach(function (v) {
+      var n = cards.filter(function (c) { return c.vault === v; }).length;
+      var o = el('option', null, v + ' (' + n + ')');
+      o.value = v;
+      vs.appendChild(o);
+    });
+    var vd = document.getElementById('f-verdict');
+    VERDICTS.forEach(function (v) {
+      if (!byVerdict(v)) return;
+      var o = el('option', null, v.replace('-', ' ') + ' (' + byVerdict(v) + ')');
+      o.value = v;
+      vd.appendChild(o);
+    });
+  }
+  function byVerdict(v) {
+    var n = 0;
+    for (var i = 0; i < cards.length; i++) if (cards[i].verdict === v) n++;
+    return n;
+  }
+
+  function draw() {
+    var vault = document.getElementById('f-vault').value;
+    var verdict = document.getElementById('f-verdict').value;
+    var staged = document.getElementById('f-staged').value;
+    var sort = document.getElementById('f-sort').value;
+    var q = document.getElementById('f-search').value.trim().toLowerCase();
+
+    var rows = cards.filter(function (c) {
+      if (vault && c.vault !== vault) return false;
+      if (verdict && c.verdict !== verdict) return false;
+      if (staged === 'yes' && !c.staged) return false;
+      if (staged === 'no' && c.staged) return false;
+      if (q) {
+        var hay = ((c.title || '') + ' ' + (c.name || '') + ' ' + (c.path || '')).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+
+    rows.sort(function (a, b) {
+      if (sort === 'waste') {
+        var wa = a.wastedBytes || 0;
+        var wb = b.wastedBytes || 0;
+        if (wb !== wa) return wb - wa;
+      }
+      if (a.mtime < b.mtime) return 1;
+      if (a.mtime > b.mtime) return -1;
+      return 0;
+    });
+
+    var grid = document.getElementById('feed-grid');
+    clear('feed-grid');
+    if (!rows.length) {
+      grid.appendChild(el('li', 'feed-empty',
+        cards.length
+          ? 'No artefact matches these filters out of ' + cards.length + ' read. Clear the search box or widen the verdict.'
+          : 'The snapshot carried no artefacts to list.'));
+    } else {
+      rows.forEach(function (c) { grid.appendChild(card(c)); });
+    }
+
+    var parts = [rows.length + ' of ' + cards.length + ' artefacts'];
+    if (sort === 'waste') parts.push('sorted by wasted bytes');
+    document.getElementById('count').textContent = parts.join(' \u00b7 ');
+  }
+
+  function card(c) {
+    var li = el('li', 'feed-card');
+    li.setAttribute('data-verdict', c.verdict);
+    li.setAttribute('data-id', c.id);
+
+    /* The name is the title where a title exists and the filename where it does
+       not. COMMAND, PERSONAL and the lane checkouts arrive without a title on
+       purpose, so they never gain one here. */
+    li.appendChild(el('p', 'feed-name', c.title || c.name));
+
+    var where = c.path || c.name;
+    var same = where === (c.name || '');
+    if (same && c.vault !== 'Re.SOURCE') where = c.vault + '/' + c.name;
+    li.appendChild(el('p', 'feed-path', where));
+
+    var chips = el('div', 'feed-chips');
+    var v = el('span', 'feed-chip', c.vault);
+    v.setAttribute('data-chip', 'vault');
+    chips.appendChild(v);
+    var vd = el('span', 'feed-chip', String(c.verdict).replace('-', ' '));
+    vd.setAttribute('data-chip', 'verdict');
+    vd.setAttribute('data-verdict', c.verdict);
+    chips.appendChild(vd);
+    if (c.staged) {
+      var st = el('span', 'feed-chip', 'staged');
+      st.setAttribute('data-chip', 'staged');
+      chips.appendChild(st);
+    } else if (c.vault === 'Re.SOURCE' && c.verdict === 'current') {
+      /* The chip marks a live option, not an absence: these are exactly the rows
+         the fourth counter counts, so the grid and the strip agree. A COMMAND,
+         PERSONAL or lane row can never be published (the privacy split keeps its
+         content off the public site) and a retired row has nothing to publish, so
+         neither is "unpublished" in the sense the counter means. Marking all of
+         them put the chip on 87% of cards while the number it belongs to was 26,
+         which is the same failure as restating one fact everywhere: it stops
+         being information. Those rows carry their own closed and archived chips. */
+      var ns = el('span', 'feed-chip', 'unpublished');
+      ns.setAttribute('data-chip', 'unpublished');
+      chips.appendChild(ns);
+    }
+    if (c.closed) {
+      /* The marker is the point: this row is on the public snapshot with its name,
+         its path and its date, and with no title at all. */
+      var cl = el('span', 'feed-chip', 'closed');
+      cl.setAttribute('data-chip', 'closed');
+      chips.appendChild(cl);
+    }
+    li.appendChild(chips);
+
+    var facts = el('p', 'feed-facts');
+    facts.appendChild(el('span', null, age(c.ageDays)));
+    facts.appendChild(el('span', null, kb(c.sizeBytes === undefined ? 0 : c.sizeBytes)));
+    if (c.duplicateCount && c.duplicateCount > 1) {
+      facts.appendChild(el('span', null, c.duplicateCount + ' copies' + (c.canonicalId === c.id ? ', this is the canonical' : '')));
+    }
+    li.appendChild(facts);
+
+    /* A link only where the target sits inside the published vault. A card the
+       manifest does not serve has no href, and no new tab: the page is one click
+       from the grid, never out of it.
+
+       The snapshot's path is relative to the vault root and this page sits at
+       Projects/HQ/, so a target inside this directory is one step down the plain
+       relative path and anything else steps up to the root first. Encoding each
+       segment keeps a name with a space in it reachable. */
+    if (c.staged && c.vault === 'Re.SOURCE' && c.path) {
+      var segs = String(c.path).split('/').filter(Boolean).map(encodeURIComponent);
+      var here = 'Projects/HQ/';
+      var rel;
+      if (segs.slice(0, 2).join('/') === here.slice(0, -1)) rel = segs.slice(2).join('/');
+      else rel = '../' + segs.join('/');
+      if (rel) {
+        var a = el('a', 'feed-link', 'Open the published page');
+        a.href = rel;
+        li.appendChild(a);
+      }
+    }
+    return li;
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Connect Your Browser — Re.SOURCE</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#000;color:#fff;
+  font-family:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:18px;line-height:30px;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:#fff;text-decoration-color:#555;text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:3px solid #ccc;outline-offset:3px}
+
+:root{
+  --g06:#0D0D0D;--g12:#1A1A1A;--g24:#333;--g48:#555;--g66:#888;--g88:#CCC;
+  --cl-02:#FFD100;--cl-06:#FF0000;--cl-10:#2277FF;--cl-12:#00D460;
+  --space-xs:4px;--space-sm:8px;--space-md:12px;--space-lg:24px;--space-xl:48px;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:24px;
+  --fs-caption:12px;--fs-body:18px;--fs-h2:24px;--fs-h1:36px;
+  --lh-caption:18px;--lh-body:30px;--lh-h2:36px;--lh-h1:48px;
+}
+
+.shell{max-width:720px;margin:0 auto;padding:var(--space-lg) var(--space-md) var(--space-xl)}
+.section{margin-bottom:var(--space-xl)}
+
+/* Header */
+.header{text-align:center;padding:var(--space-xl) 0 var(--space-lg);border-bottom:1px solid var(--g24);margin-bottom:var(--space-lg)}
+.header h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:700;margin-bottom:var(--space-sm)}
+.header p{font-size:var(--fs-body);color:var(--g66);max-width:560px;margin:0 auto}
+
+/* What this is */
+.plain{background:var(--g06);border:1px solid var(--g24);border-radius:var(--radius-md);padding:var(--space-lg)}
+.plain h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:600;margin-bottom:var(--space-md)}
+.plain p{margin-bottom:var(--space-md);color:var(--g88)}
+.plain p:last-child{margin-bottom:0}
+.plain code{font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-body);background:var(--g12);border:1px solid var(--g24);border-radius:var(--radius-sm);padding:2px 6px}
+
+/* Progress */
+.progress{display:flex;align-items:center;gap:var(--space-md);margin-bottom:var(--space-lg)}
+.progress-track{flex:1;height:8px;background:var(--g12);border:1px solid var(--g24);border-radius:var(--radius-sm);overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--cl-12);transform-origin:left center;transition:transform .3s ease}
+.progress-label{font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g66);white-space:nowrap}
+
+/* Steps */
+.steps{display:grid;gap:var(--space-md)}
+.step{background:var(--g06);border:1px solid var(--g24);border-radius:var(--radius-md);padding:var(--space-lg);transition:background-color .2s ease,border-color .2s ease}
+.step.is-done{background:rgba(0,212,96,.06);border-color:rgba(0,212,96,.3)}
+.step-head{display:flex;align-items:flex-start;gap:var(--space-md);margin-bottom:var(--space-md)}
+.step-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:24px;background:var(--g12);border:1px solid var(--g24);
+  font-size:var(--fs-body);font-weight:600;color:var(--g88);flex-shrink:0;
+}
+.step.is-done .step-num{background:rgba(0,212,96,.15);border-color:rgba(0,212,96,.35);color:var(--cl-12)}
+.step-title{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:600}
+.step-body{color:var(--g88);margin-bottom:var(--space-md)}
+.step-body strong{color:#fff}
+.step-hint{font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g66);margin-bottom:var(--space-md)}
+
+/* The call to action — a real filled button, never a coloured stripe on a card */
+.cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--space-sm);
+  min-height:48px;padding:0 var(--space-lg);
+  background:var(--cl-10);color:#fff;
+  border:0;border-radius:var(--radius-md);
+  font:inherit;font-size:var(--fs-body);font-weight:600;cursor:pointer;
+  transition:transform .15s ease,filter .15s ease;
+}
+.cta:hover{filter:brightness(1.15)}
+.cta:active{transform:scale(.97)}
+.cta[disabled]{background:var(--g12);color:var(--g48);cursor:default;transform:none;filter:none}
+.cta-done{background:rgba(0,212,96,.15);color:var(--cl-12);border:1px solid rgba(0,212,96,.35)}
+.cta svg{width:20px;height:20px;flex-shrink:0}
+
+/* Final panel */
+.finish{
+  border:1px solid var(--g24);border-radius:var(--radius-lg);
+  background:var(--g06);padding:var(--space-lg);text-align:center;
+  opacity:.4;transition:opacity .3s ease;
+}
+.finish.is-live{opacity:1;background:rgba(0,212,96,.06);border-color:rgba(0,212,96,.3)}
+.finish h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:600;margin-bottom:var(--space-sm)}
+.finish p{color:var(--g88);margin-bottom:var(--space-md)}
+.finish p:last-child{margin-bottom:0}
+.finish .note{font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g66)}
+
+.footer{text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g48);margin-top:var(--space-xl)}
+
+@media (max-width:480px){
+  body{font-size:var(--fs-body);line-height:var(--lh-body)}
+  .header h1{font-size:var(--fs-h1);line-height:var(--lh-h2)}
+  .step-title{font-size:var(--fs-h2);line-height:var(--lh-body)}
+  .cta{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important}
+  .cta:active{transform:none}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/connect-your-browser.html</span>
+</nav>
+<div class="shell">
+
+  <header class="header">
+    <h1>Connect Your Browser</h1>
+    <p>Three steps, about a minute. When you are done, I can open a web page in your Chrome and read what is on it.</p>
+  </header>
+
+  <section class="section">
+    <div class="plain">
+      <h2>What this tool is, in plain words</h2>
+      <p><strong>BrowserSkill</strong> is a small free tool, open source and openly licensed, that lets me see and click inside your Chrome <em>when you ask me to look at a web page</em>. It has two halves: a helper program running on this Mac (you saw it as <code>bsk</code> in the LuLu alert), and a small extension inside Chrome that does the actual seeing.</p>
+      <p>The extension is the part that needs <strong>your</strong> one click. Until you switch it on, I cannot see anything in your browser, and I am not asking for any macOS permission — no screen recording, no accessibility access. Nothing is sent anywhere: the single network call you saw was a version check to GitHub, and LuLu blocked it.</p>
+      <p>You only do this once.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="progress">
+      <div class="progress-track"><div class="progress-fill" id="fill"></div></div>
+      <div class="progress-label" id="plabel">0 of 3 done</div>
+    </div>
+
+    <div class="steps">
+
+      <article class="step" id="s1">
+        <div class="step-head">
+          <span class="step-num">1</span>
+          <h2 class="step-title">Quit Chrome completely</h2>
+        </div>
+        <p class="step-body">Not just close the window. Press <strong>Cmd + Q</strong> while Chrome is the front window, or choose <strong>Chrome &rsaquo; Quit Chrome</strong> from the menu bar.</p>
+        <p class="step-hint">Chrome has to fully stop before it will offer the extension on the next launch.</p>
+        <button class="cta" data-step="1" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          I have quit Chrome
+        </button>
+      </article>
+
+      <article class="step" id="s2">
+        <div class="step-head">
+          <span class="step-num">2</span>
+          <h2 class="step-title">Open Chrome again</h2>
+        </div>
+        <p class="step-body">Click the Chrome icon in your Dock or Applications. Your tabs and logins come back exactly as they were — nothing is cleared.</p>
+        <p class="step-hint">Give it a few seconds to finish starting up.</p>
+        <button class="cta" data-step="2" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          I have reopened Chrome
+        </button>
+      </article>
+
+      <article class="step" id="s3">
+        <div class="step-head">
+          <span class="step-num">3</span>
+          <h2 class="step-title">Click <em>Enable</em> on the BrowserSkill dialog</h2>
+        </div>
+        <p class="step-body">A dialog appears offering to enable <strong>BrowserSkill</strong>. Press the <strong>Enable</strong> button on it.</p>
+        <p class="step-hint">If no dialog appears, look for a small puzzle-piece icon at the top right of Chrome, click it, and pin BrowserSkill from there.</p>
+        <button class="cta" data-step="3" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          I have clicked Enable
+        </button>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="finish" id="finish">
+      <h2 id="finish-title">Finish all three steps</h2>
+      <p id="finish-body">Each button above saves your progress on this phone or computer, so you can close the page and come back.</p>
+      <p class="note">This page cannot check your browser — a published page has no way to reach your Mac. Tell me in the chat that you are done and I will check it from my side and report the result.</p>
+    </div>
+  </section>
+
+  <p class="footer">Published from Re.SOURCE &middot; 7 October 2026</p>
+
+</div>
+
+<script>
+(function () {
+  var KEY = 'connect-browser-steps';
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { done = {}; }
+
+  var fill = document.getElementById('fill');
+  var plabel = document.getElementById('plabel');
+  var finish = document.getElementById('finish');
+  var finishTitle = document.getElementById('finish-title');
+  var finishBody = document.getElementById('finish-body');
+
+  function render() {
+    var n = 0;
+    for (var i = 1; i <= 3; i++) {
+      var step = document.getElementById('s' + i);
+      var btn = step.querySelector('.cta');
+      if (done[i]) {
+        n++;
+        step.classList.add('is-done');
+        btn.classList.add('cta-done');
+        btn.disabled = true;
+        btn.lastChild.textContent = ' Done';
+      } else {
+        step.classList.remove('is-done');
+        btn.classList.remove('cta-done');
+        btn.disabled = false;
+      }
+    }
+    fill.style.transform = 'scaleX(' + (n / 3) + ')';
+    plabel.textContent = n + ' of 3 done';
+
+    if (n === 3) {
+      finish.classList.add('is-live');
+      finishTitle.textContent = 'All three done';
+      finishBody.textContent = 'Now go back to the chat and say that you have enabled it. I will check it straight away and tell you what I can see.';
+    } else {
+      finish.classList.remove('is-live');
+      finishTitle.textContent = 'Finish all three steps';
+      finishBody.textContent = 'Each button above saves your progress on this phone or computer, so you can close the page and come back.';
+    }
+  }
+
+  document.querySelectorAll('.cta').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      done[btn.getAttribute('data-step')] = true;
+      try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

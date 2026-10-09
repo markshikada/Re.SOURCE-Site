@@ -1,0 +1,1081 @@
+{
+  "stamp": "2026-10-05T18:10:25.194Z",
+  "since": "2026-09-01",
+  "dayZero": "2026-04-01",
+  "tracks": [
+    {
+      "key": "resource",
+      "label": "Re.SOURCE",
+      "lane": "the-house",
+      "kind": "design",
+      "home": "Projects/HQ/the-house.html",
+      "total": 439,
+      "first": 154,
+      "last": 188,
+      "missing": false,
+      "byDay": {
+        "154": 1,
+        "159": 1,
+        "161": 6,
+        "166": 8,
+        "172": 26,
+        "173": 28,
+        "174": 31,
+        "175": 25,
+        "176": 108,
+        "177": 35,
+        "178": 1,
+        "179": 11,
+        "180": 10,
+        "181": 32,
+        "182": 9,
+        "183": 18,
+        "184": 35,
+        "185": 3,
+        "186": 47,
+        "187": 2,
+        "188": 2
+      },
+      "landings": [
+        {
+          "sha": "e806560",
+          "day": 188,
+          "pr": "233",
+          "subject": "Restore the page stamps that the trigger commit reverted (#233)"
+        },
+        {
+          "sha": "10282e9",
+          "day": 188,
+          "pr": "232",
+          "subject": "Stamp every baked reading with its age, and schedule the collector (#232)"
+        },
+        {
+          "sha": "d13da0d",
+          "day": 187,
+          "pr": null,
+          "subject": "Screenshot triage: 603 tracked images, 77 MB, measured and sorted"
+        },
+        {
+          "sha": "9ee1df3",
+          "day": 187,
+          "pr": "231",
+          "subject": "Refresh the snapshot: the live page was listing 118 artefacts that no longer exist (#231)"
+        },
+        {
+          "sha": "976d9e7",
+          "day": 186,
+          "pr": "230",
+          "subject": "The artefact card is a band, not a block, on both estate pages (#230)"
+        },
+        {
+          "sha": "c6a35a2",
+          "day": 186,
+          "pr": "229",
+          "subject": "feat(ds): recover the Zed console page and make it reachable (#229)"
+        },
+        {
+          "sha": "c47efc0",
+          "day": 186,
+          "pr": null,
+          "subject": "Publish the seat measurement and flood page so it opens on a phone"
+        },
+        {
+          "sha": "347b8a0",
+          "day": 186,
+          "pr": "227",
+          "subject": "fix(hq): the harness scorecard was on main and reachable from nothing (#227)"
+        },
+        {
+          "sha": "71f73a8",
+          "day": 186,
+          "pr": "226",
+          "subject": "Put the review countdown on the page, not only in the summary file (#226)"
+        },
+        {
+          "sha": "58d24d6",
+          "day": 186,
+          "pr": "225",
+          "subject": "Correct the review reading, and hoist the countdown out of the branch that dropped it (#225)"
+        },
+        {
+          "sha": "532ea32",
+          "day": 186,
+          "pr": "224",
+          "subject": "Report a countdown to the review line, not a zero that means nothing (#224)"
+        },
+        {
+          "sha": "b589423",
+          "day": 186,
+          "pr": "223",
+          "subject": "Deliver the 45-day review list the policy promises (#223)"
+        },
+        {
+          "sha": "8f1472b",
+          "day": 186,
+          "pr": "222",
+          "subject": "Map the publish chain's four links, and who is allowed to block on each (#222)"
+        },
+        {
+          "sha": "55c5f73",
+          "day": 186,
+          "pr": "221",
+          "subject": "Ask the site whether it serves what the manifest names (#221)"
+        },
+        {
+          "sha": "3cf9850",
+          "day": 186,
+          "pr": "220",
+          "subject": "Name the publish gap in the check, as a report and not a failure (#220)"
+        },
+        {
+          "sha": "78e4d21",
+          "day": 186,
+          "pr": "219",
+          "subject": "Make a silently-stale page fail the check, not wait to be noticed (#219)"
+        },
+        {
+          "sha": "53216e7",
+          "day": 186,
+          "pr": "218",
+          "subject": "State the card fork as three answers, not two (#218)"
+        },
+        {
+          "sha": "d09bf6c",
+          "day": 186,
+          "pr": "217",
+          "subject": "Cover the last manifest folder, and add the audit that finds it (#217)"
+        },
+        {
+          "sha": "94bfa01",
+          "day": 186,
+          "pr": "216",
+          "subject": "Record the three rulings 0efead0 bundled, so they are one tap each (#216)"
+        },
+        {
+          "sha": "5c9bf32",
+          "day": 186,
+          "pr": "215",
+          "subject": "Land the harness scorecard page on its own (#215)"
+        },
+        {
+          "sha": "6bd01ae",
+          "day": 186,
+          "pr": "214",
+          "subject": "Let a studio-only change republish the site (#214)"
+        },
+        {
+          "sha": "b3c4c3e",
+          "day": 186,
+          "pr": "213",
+          "subject": "Write the worktree rule into the generator that it bit (#213)"
+        },
+        {
+          "sha": "f7ade58",
+          "day": 186,
+          "pr": "212",
+          "subject": "Read the estate in its own checkout, not in a worktree (#212)"
+        },
+        {
+          "sha": "9e8e770",
+          "day": 186,
+          "pr": "210",
+          "subject": "Report a page that nothing in the repo names (#210)"
+        },
+        {
+          "sha": "336cce7",
+          "day": 186,
+          "pr": "209",
+          "subject": "Close the publish gap in ten lines rather than thirty-one decisions (#209)"
+        },
+        {
+          "sha": "006b742",
+          "day": 186,
+          "pr": "207",
+          "subject": "Publish the sweep page so the tap is reachable from a phone (#207)"
+        },
+        {
+          "sha": "588da24",
+          "day": 186,
+          "pr": "206",
+          "subject": "docs(hq): record how to re-run the console sweep's own reading (#206)"
+        },
+        {
+          "sha": "23e3e97",
+          "day": 186,
+          "pr": "204",
+          "subject": "Prepare the archive sweep, and separate duplication from archivable (#204)"
+        },
+        {
+          "sha": "60ab626",
+          "day": 186,
+          "pr": "202",
+          "subject": "docs(hq): one line per console page - front door, widget or retire (#202)"
+        },
+        {
+          "sha": "b561b36",
+          "day": 186,
+          "pr": "201",
+          "subject": "feat(hq): the tip catalogue gets a card on the front door (#201)"
+        },
+        {
+          "sha": "5ffc4bd",
+          "day": 186,
+          "pr": "200",
+          "subject": "Republish the snapshot so the live figure is true by rule (#200)"
+        },
+        {
+          "sha": "85ad173",
+          "day": 186,
+          "pr": "199",
+          "subject": "Stop the unpublished chip wearing the published colour (#199)"
+        },
+        {
+          "sha": "fca1e68",
+          "day": 186,
+          "pr": "198",
+          "subject": "Show the unpublished chip only where publishing is a live option (#198)"
+        },
+        {
+          "sha": "3182502",
+          "day": 186,
+          "pr": "197",
+          "subject": "Make the canonical seat a rule, not a directory order (#197)"
+        },
+        {
+          "sha": "ea1cabe",
+          "day": 186,
+          "pr": "196",
+          "subject": "Refresh the consolidation numbers against the current estate (#196)"
+        },
+        {
+          "sha": "2252a87",
+          "day": 186,
+          "pr": "195",
+          "subject": "fix(hq): the tips dial must not scroll the page on arrival (#195)"
+        },
+        {
+          "sha": "4920289",
+          "day": 186,
+          "pr": "194",
+          "subject": "Publish the feed, and stop hq-data overwriting the feed snapshot (#194)"
+        },
+        {
+          "sha": "37b9d1e",
+          "day": 186,
+          "pr": "193",
+          "subject": "feat(hq): the tip catalogue as a dial, and the two tips never seen (#193)"
+        },
+        {
+          "sha": "7fd7361",
+          "day": 186,
+          "pr": "192",
+          "subject": "The estate feed as a page, and a check that counts the pile (#192)"
+        },
+        {
+          "sha": "782ae81",
+          "day": 186,
+          "pr": "191",
+          "subject": "fix(publish): a refreshed snapshot must actually republish the site (#191)"
+        }
+      ]
+    },
+    {
+      "key": "command",
+      "label": "COMMAND",
+      "lane": "estate-integrity",
+      "kind": "law",
+      "home": "Operations/Development/lanes-live.md",
+      "total": 216,
+      "first": 159,
+      "last": 188,
+      "missing": false,
+      "byDay": {
+        "159": 2,
+        "161": 1,
+        "173": 1,
+        "175": 2,
+        "176": 21,
+        "177": 3,
+        "178": 4,
+        "181": 4,
+        "182": 4,
+        "183": 15,
+        "184": 56,
+        "185": 23,
+        "186": 68,
+        "187": 6,
+        "188": 6
+      },
+      "landings": [
+        {
+          "sha": "4a75a2b",
+          "day": 188,
+          "pr": "116",
+          "subject": "Register the snapshot tick in the estate automation registry (#116)"
+        },
+        {
+          "sha": "0ebbb57",
+          "day": 188,
+          "pr": "115",
+          "subject": "Ops: correct the vault partial count — 60 of 253 verified, and one rejected (#115)"
+        },
+        {
+          "sha": "e6c183c",
+          "day": 188,
+          "pr": "114",
+          "subject": "Ops: name the owning app and the rebuildable verdict for all 79 GB of Application Support (#114)"
+        },
+        {
+          "sha": "45ae874",
+          "day": 188,
+          "pr": "113",
+          "subject": "Ops: the reclaim total is 99.67 GB, not 99.39 — recomputed from the measured rows (#113)"
+        },
+        {
+          "sha": "62b46fd",
+          "day": 188,
+          "pr": "112",
+          "subject": "Ops: the storage audit, and the 65 GB duplicate that only a cross-drive hash could find (#112)"
+        },
+        {
+          "sha": "c75709d",
+          "day": 188,
+          "pr": "111",
+          "subject": "Correct the runtime reaper's scope and interval in the automation authority (#111)"
+        },
+        {
+          "sha": "ffc43f4",
+          "day": 187,
+          "pr": "110",
+          "subject": "Register the runtime reaper in the automation authority (#110)"
+        },
+        {
+          "sha": "d7efe64",
+          "day": 187,
+          "pr": null,
+          "subject": "Ops: register the branch reaper, the lane guard and the lander"
+        },
+        {
+          "sha": "4cf5e3f",
+          "day": 187,
+          "pr": null,
+          "subject": "Ops: the quota alerts are dead history, and quota is clean"
+        },
+        {
+          "sha": "1a37f67",
+          "day": 187,
+          "pr": null,
+          "subject": "Regenerate HANDOVER.md so the RAM findings reach the next session"
+        },
+        {
+          "sha": "5eb4fba",
+          "day": 187,
+          "pr": null,
+          "subject": "Ops: correct the disk claim, and retune the watch off swap"
+        },
+        {
+          "sha": "2a55d75",
+          "day": 187,
+          "pr": null,
+          "subject": "Ops: RAM watch, and the finding that there is no dead memory to reclaim"
+        },
+        {
+          "sha": "6ce33b8",
+          "day": 186,
+          "pr": "104",
+          "subject": "docs(ops): the estate HTML inventory summary, generated and re-runnable (#104)"
+        },
+        {
+          "sha": "130191f",
+          "day": 186,
+          "pr": null,
+          "subject": "Record what landed, the published page, and two process faults of my own"
+        },
+        {
+          "sha": "397dc10",
+          "day": 186,
+          "pr": "99",
+          "subject": "Replace the ancestry rule with reachability from a live host (#99)"
+        },
+        {
+          "sha": "7819224",
+          "day": 186,
+          "pr": null,
+          "subject": "The page for Mark, so both answers open on a phone"
+        },
+        {
+          "sha": "8ca3710",
+          "day": 186,
+          "pr": null,
+          "subject": "Handover carrying the closed LongCat question and the unused batching fix"
+        },
+        {
+          "sha": "c9e8ed2",
+          "day": 186,
+          "pr": null,
+          "subject": "The mail flood as a number, and the guard that stops the probe measuring the machine"
+        },
+        {
+          "sha": "e5eafe5",
+          "day": 186,
+          "pr": null,
+          "subject": "LongCat under concurrent load, the measurement nobody had taken"
+        },
+        {
+          "sha": "0b720d2",
+          "day": 186,
+          "pr": null,
+          "subject": "Regenerate the handover after the audit shift and the push guard fix"
+        },
+        {
+          "sha": "9a9622f",
+          "day": 186,
+          "pr": null,
+          "subject": "The push guard is tracked 644, so it never ran and never will in a fresh clone"
+        },
+        {
+          "sha": "5a182cb",
+          "day": 186,
+          "pr": null,
+          "subject": "Ops audit: the probe measured its own footprint, and the starter prompt now names the vault root"
+        },
+        {
+          "sha": "1859923",
+          "day": 186,
+          "pr": "94",
+          "subject": "Regenerate the handover after the sweep guard and the push guard (#94)"
+        },
+        {
+          "sha": "5b616f0",
+          "day": 186,
+          "pr": "93",
+          "subject": "Record the direct push to main and the gap in the guard that let it through (#93)"
+        },
+        {
+          "sha": "3e3d59f",
+          "day": 186,
+          "pr": "92",
+          "subject": "A pre-push hook, because the post-commit one cannot refuse anything (#92)"
+        },
+        {
+          "sha": "02c4ec6",
+          "day": 186,
+          "pr": null,
+          "subject": "Regenerate the handover after the sweep guard session"
+        },
+        {
+          "sha": "6da9549",
+          "day": 186,
+          "pr": "91",
+          "subject": "The sweeper's guard would have killed 40 live sessions, and it is now proved (#91)"
+        },
+        {
+          "sha": "7eed19e",
+          "day": 186,
+          "pr": "90",
+          "subject": "Intel ruled on LongCat, and corrected the finding the ruling rested on (#90)"
+        },
+        {
+          "sha": "886a787",
+          "day": 186,
+          "pr": "89",
+          "subject": "Carry the notification ruling into the handover (#89)"
+        },
+        {
+          "sha": "e9a9a91",
+          "day": 186,
+          "pr": "88",
+          "subject": "Mark's ruling on the feed, and the split made live (#88)"
+        },
+        {
+          "sha": "732b7e4",
+          "day": 186,
+          "pr": "87",
+          "subject": "Correct the LongCat line, whose own check reported the wrong number (#87)"
+        },
+        {
+          "sha": "7624ae0",
+          "day": 186,
+          "pr": "86",
+          "subject": "Make the guard fail shut, because it failed open (#86)"
+        },
+        {
+          "sha": "283f238",
+          "day": 186,
+          "pr": "85",
+          "subject": "The sweeper's guard is unsafe, and here is the proof (#85)"
+        },
+        {
+          "sha": "ad1573f",
+          "day": 186,
+          "pr": "84",
+          "subject": "Carry the notification routing work into the handover (#84)"
+        },
+        {
+          "sha": "3c1b6a3",
+          "day": 186,
+          "pr": "83",
+          "subject": "Close of day: RAM reclaimed, and what the next session needs (#83)"
+        },
+        {
+          "sha": "082454e",
+          "day": 186,
+          "pr": "82",
+          "subject": "A closing reading: 15.25 GB free, every check clear (#82)"
+        },
+        {
+          "sha": "24b0ded",
+          "day": 186,
+          "pr": "81",
+          "subject": "End every session close with a paste-ready prompt for the next session in the lane (#81)"
+        },
+        {
+          "sha": "df39bf0",
+          "day": 186,
+          "pr": "80",
+          "subject": "One channel per producer, and messages that render (#80)"
+        },
+        {
+          "sha": "eb98f28",
+          "day": 186,
+          "pr": "79",
+          "subject": "Make the sweeper refuse to run until its safety rule is proven (#79)"
+        },
+        {
+          "sha": "204dcb6",
+          "day": 186,
+          "pr": "78",
+          "subject": "The starter prompt led with a settled line, and now leads with the live one (#78)"
+        }
+      ]
+    },
+    {
+      "key": "console",
+      "label": "omO console",
+      "lane": "console-surfaces",
+      "kind": "surface",
+      "home": "index.html",
+      "total": 87,
+      "first": 185,
+      "last": 188,
+      "missing": false,
+      "byDay": {
+        "185": 30,
+        "186": 25,
+        "187": 29,
+        "188": 3
+      },
+      "landings": [
+        {
+          "sha": "a7a890e",
+          "day": 188,
+          "pr": "30",
+          "subject": "Regenerate the surface inventory so the hourly gate stops failing on stale drift (#30)"
+        },
+        {
+          "sha": "3b8318b",
+          "day": 188,
+          "pr": null,
+          "subject": "Read the effort ladder from the policy instead of a six-rung copy, so max can be placed"
+        },
+        {
+          "sha": "18ce729",
+          "day": 188,
+          "pr": null,
+          "subject": "Restrict the runtime reaper to session runtimes by role, not by exclusion Mark raised the right objection on 5 October 2"
+        },
+        {
+          "sha": "144fc04",
+          "day": 187,
+          "pr": null,
+          "subject": "Correct the plan page's machine section against what was measured"
+        },
+        {
+          "sha": "9f8d10e",
+          "day": 187,
+          "pr": null,
+          "subject": "Reap orphaned agent runtimes, which is where 15 GB was going"
+        },
+        {
+          "sha": "e6bcc21",
+          "day": 187,
+          "pr": null,
+          "subject": "A red check that predates the change is not this change's fault"
+        },
+        {
+          "sha": "d8fa50d",
+          "day": 187,
+          "pr": null,
+          "subject": "Add the plan face: the income strategy, rendered"
+        },
+        {
+          "sha": "3e9f10e",
+          "day": 187,
+          "pr": null,
+          "subject": "The loop wrote sixteen captures six times a day and kept every one"
+        },
+        {
+          "sha": "21137ec",
+          "day": 187,
+          "pr": null,
+          "subject": "The push gate now refuses a push that touches another live lane's file"
+        },
+        {
+          "sha": "bb99214",
+          "day": 187,
+          "pr": null,
+          "subject": "Three pieces of housekeeping, so branch management stops asking Mark anything"
+        },
+        {
+          "sha": "8a4abb5",
+          "day": 187,
+          "pr": null,
+          "subject": "A file, so the branch has something to land"
+        },
+        {
+          "sha": "8a4ee4a",
+          "day": 187,
+          "pr": null,
+          "subject": "Desk header overflowed on a phone; rail separator adjacency made explicit"
+        },
+        {
+          "sha": "40a8924",
+          "day": 187,
+          "pr": null,
+          "subject": "Night QA: the probe stops reporting design decisions as defects"
+        },
+        {
+          "sha": "942e4c0",
+          "day": 187,
+          "pr": null,
+          "subject": "Night QA: two findings withdrawn, because they were read off a screenshot"
+        },
+        {
+          "sha": "5ffcf15",
+          "day": 187,
+          "pr": null,
+          "subject": "Night QA round 1, read off the captures rather than the probe."
+        },
+        {
+          "sha": "0b2b9be",
+          "day": 187,
+          "pr": null,
+          "subject": "Duplicates were a sliding window, not a rendering fault"
+        },
+        {
+          "sha": "52830e3",
+          "day": 187,
+          "pr": null,
+          "subject": "Spend and stalls were real, live, and only visible on a page Mark had to go and open"
+        },
+        {
+          "sha": "ed91369",
+          "day": 187,
+          "pr": null,
+          "subject": "The strip said \"stalls unreadable\" because it asked for numbers nobody published"
+        },
+        {
+          "sha": "f8252a5",
+          "day": 187,
+          "pr": null,
+          "subject": "A second device could read the conversation but could not stop it"
+        },
+        {
+          "sha": "eaa4a29",
+          "day": 187,
+          "pr": null,
+          "subject": "The feed said how many calls a burst made and never which seat made them"
+        },
+        {
+          "sha": "01c219f",
+          "day": 187,
+          "pr": null,
+          "subject": "A check name and its state are one fact, so they wrap as one"
+        },
+        {
+          "sha": "9b0eab5",
+          "day": 187,
+          "pr": null,
+          "subject": "The Map was drawing black boxes on white paper and hiding its own labels"
+        },
+        {
+          "sha": "8429e33",
+          "day": 187,
+          "pr": null,
+          "subject": "A lane name leads in ink, and the accent is reserved for live"
+        },
+        {
+          "sha": "c20c0fe",
+          "day": 187,
+          "pr": null,
+          "subject": "Light mode has to reach the faces the vault paints"
+        },
+        {
+          "sha": "79e708e",
+          "day": 187,
+          "pr": null,
+          "subject": "Six faces were carrying their own palette, so the newest declaration won"
+        },
+        {
+          "sha": "4037e94",
+          "day": 187,
+          "pr": null,
+          "subject": "One palette, two themes, and the pane follows the console"
+        },
+        {
+          "sha": "14e5d3c",
+          "day": 187,
+          "pr": null,
+          "subject": "The gate flagged the chat for quoting itself"
+        },
+        {
+          "sha": "5b4afab",
+          "day": 187,
+          "pr": null,
+          "subject": "The chat now reads its history from the transcript, and shows the work"
+        },
+        {
+          "sha": "ad03639",
+          "day": 187,
+          "pr": null,
+          "subject": "One conversation on every device, and it opens while the agent is busy"
+        },
+        {
+          "sha": "a2c66a5",
+          "day": 187,
+          "pr": null,
+          "subject": "The console opened a fresh husk instead of the conversation you are already in"
+        },
+        {
+          "sha": "f193664",
+          "day": 187,
+          "pr": null,
+          "subject": "The bridge initialised with no capabilities, so the chat could never read a conversation"
+        },
+        {
+          "sha": "d0122c4",
+          "day": 187,
+          "pr": null,
+          "subject": "The chat died on a handshake its own liveness probe had already spent"
+        },
+        {
+          "sha": "b8c9032",
+          "day": 186,
+          "pr": "28",
+          "subject": "chore: ignore the generated estate inventory JSON (#28)"
+        },
+        {
+          "sha": "bd185b5",
+          "day": 186,
+          "pr": null,
+          "subject": "fix(console): a bridge that stopped answering is silent, not ready"
+        },
+        {
+          "sha": "346b291",
+          "day": 186,
+          "pr": "27",
+          "subject": "Answer /hq/pages from the snapshot, not from a hand-kept list (#27)"
+        },
+        {
+          "sha": "5c91e2d",
+          "day": 186,
+          "pr": null,
+          "subject": "docs: the harness-craft lane's night close-out"
+        },
+        {
+          "sha": "c941ae3",
+          "day": 186,
+          "pr": null,
+          "subject": "The estate's HTML artefacts, counted and dated in one pass"
+        },
+        {
+          "sha": "571a8de",
+          "day": 186,
+          "pr": "26",
+          "subject": "Half the tapestry had no name, and the reason was a squash merge (#26)"
+        },
+        {
+          "sha": "7523ea1",
+          "day": 186,
+          "pr": "24",
+          "subject": "Read the four repositories at once, and hold the reading warm (#24)"
+        },
+        {
+          "sha": "ad8786f",
+          "day": 186,
+          "pr": "25",
+          "subject": "The Night Log passed every check in the gate while its live panel was empty (#25)"
+        }
+      ]
+    },
+    {
+      "key": "personal",
+      "label": "PERSONAL",
+      "lane": "personal",
+      "kind": "law",
+      "home": null,
+      "total": 58,
+      "first": 159,
+      "last": 188,
+      "missing": false,
+      "byDay": {
+        "159": 1,
+        "161": 4,
+        "173": 1,
+        "175": 2,
+        "176": 7,
+        "177": 3,
+        "180": 1,
+        "181": 11,
+        "182": 1,
+        "183": 9,
+        "184": 11,
+        "185": 1,
+        "186": 1,
+        "188": 5
+      },
+      "landings": [
+        {
+          "sha": "6d15fad",
+          "day": 188,
+          "pr": "14",
+          "subject": "Correct the vault rule that said the businesses live only here (#14)"
+        },
+        {
+          "sha": "e5bb5cb",
+          "day": 188,
+          "pr": "13",
+          "subject": "Move the commercial half of this vault into WORK (#13)"
+        },
+        {
+          "sha": "c1c5e00",
+          "day": 188,
+          "pr": "12",
+          "subject": "Refresh the handover prompt to the end of 5 October (#12)"
+        },
+        {
+          "sha": "abd706c",
+          "day": 188,
+          "pr": "11",
+          "subject": "Move other people contact data out of this vault, and redact a login id (#11)"
+        },
+        {
+          "sha": "7196907",
+          "day": 188,
+          "pr": "10",
+          "subject": "Add the life and estate strategy audit (#10)"
+        },
+        {
+          "sha": "74e1c31",
+          "day": 186,
+          "pr": "9",
+          "subject": "docs: refresh the PERSONAL handover from this morning run (#9)"
+        },
+        {
+          "sha": "c632054",
+          "day": 185,
+          "pr": null,
+          "subject": "VAULT: an agent never posts in Mark's name outside the vaults, and never signs with his identity"
+        },
+        {
+          "sha": "4539ce3",
+          "day": 184,
+          "pr": null,
+          "subject": "Redact the console pair password from this note"
+        },
+        {
+          "sha": "16b55ed",
+          "day": 184,
+          "pr": null,
+          "subject": "HANDOVER.md: first generated handover, the one-writer rule now in force"
+        },
+        {
+          "sha": "d158e5e",
+          "day": 184,
+          "pr": null,
+          "subject": "VAULT.md: the handover is generated, never typed"
+        },
+        {
+          "sha": "b5bf8fa",
+          "day": 184,
+          "pr": null,
+          "subject": "VAULT.md: main is reached by pull request, at Mark's 3 October ruling"
+        },
+        {
+          "sha": "2aeb788",
+          "day": 184,
+          "pr": "3",
+          "subject": "Name the COMMAND vault in the Arena pointer, so it resolves (#3)"
+        },
+        {
+          "sha": "313797d",
+          "day": 184,
+          "pr": "2",
+          "subject": "Correct the Arena pointer, which named a file that has never existed (#2)"
+        },
+        {
+          "sha": "2fbf806",
+          "day": 184,
+          "pr": null,
+          "subject": "Measured fix: an absolute core.hooksPath, or the hook is silent in every lane"
+        },
+        {
+          "sha": "80137d9",
+          "day": 184,
+          "pr": null,
+          "subject": "Add the auto-push hook: this vault had no core.hooksPath, so it never auto-pushed"
+        },
+        {
+          "sha": "007fb07",
+          "day": 184,
+          "pr": null,
+          "subject": "Free seats only: strike the credit-reset restore instruction"
+        },
+        {
+          "sha": "c1e2f71",
+          "day": 184,
+          "pr": null,
+          "subject": "chore: ignore _Trash, the vault's own discard pile"
+        },
+        {
+          "sha": "14056dc",
+          "day": 184,
+          "pr": null,
+          "subject": "chore(config): hold every pin on the free rung until the 4 October reset"
+        },
+        {
+          "sha": "c2c4880",
+          "day": 183,
+          "pr": null,
+          "subject": "Close out the Smiler watcher session: confirmed under 3 seconds end to end"
+        },
+        {
+          "sha": "946329c",
+          "day": 183,
+          "pr": null,
+          "subject": "Add --test-shoot: a fake alert through the real path, and record the timing"
+        },
+        {
+          "sha": "53db370",
+          "day": 183,
+          "pr": null,
+          "subject": "Record the armed watcher and the published phone setup page"
+        },
+        {
+          "sha": "5f47709",
+          "day": 183,
+          "pr": null,
+          "subject": "Smiler alerts phone setup page: the two switches on Mark's phone"
+        },
+        {
+          "sha": "bbd6926",
+          "day": 183,
+          "pr": null,
+          "subject": "Seating: worker lanes to qwen3.8-flash with the default driver"
+        },
+        {
+          "sha": "9780f94",
+          "day": 183,
+          "pr": null,
+          "subject": "smiler-watch: notification hints and error-message trim, found uncommitted in the tree and preserved"
+        },
+        {
+          "sha": "c6535cc",
+          "day": 183,
+          "pr": null,
+          "subject": "Seating: default driver to qwen3.8-flash on Mark's ruling 30 September"
+        },
+        {
+          "sha": "9b96566",
+          "day": 183,
+          "pr": null,
+          "subject": "Fix the setup command: stop security prompting, show stars for the password"
+        },
+        {
+          "sha": "13cf0fe",
+          "day": 183,
+          "pr": null,
+          "subject": "Smiler booking watcher: 2s poll of the Available pool with an ntfy ping"
+        },
+        {
+          "sha": "b5bf820",
+          "day": 182,
+          "pr": null,
+          "subject": "Design seats on qwen3.8-max in this vault"
+        },
+        {
+          "sha": "e105dd7",
+          "day": 181,
+          "pr": null,
+          "subject": "Record the settled password ruling, short while the phone link stays Tailscale-only"
+        },
+        {
+          "sha": "19ed03a",
+          "day": 181,
+          "pr": null,
+          "subject": "Phone access confirmed working on device, close out the mobile setup record"
+        },
+        {
+          "sha": "10bd6b4",
+          "day": 181,
+          "pr": null,
+          "subject": "Route phone OpenCode via Desktop service so chats load agents and models, carryover updated"
+        },
+        {
+          "sha": "0ea95ae",
+          "day": 181,
+          "pr": null,
+          "subject": "Phone access finished on the private Tailscale route, public entrance closed, carryover settled"
+        },
+        {
+          "sha": "5fdb743",
+          "day": 181,
+          "pr": null,
+          "subject": "Redact leaked password from the mobile setup note, rotate the server password, record the Tailscale decision"
+        },
+        {
+          "sha": "f9bc86b",
+          "day": 181,
+          "pr": null,
+          "subject": "Phone connection completed: wrong-credentials cause traced in the app source, password rotated, handover refreshed"
+        },
+        {
+          "sha": "b4fa13b",
+          "day": 181,
+          "pr": null,
+          "subject": "OpenCode Mobile Android setup: dedicated server plus Cloudflared quick tunnel, session note and handover"
+        },
+        {
+          "sha": "5d33906",
+          "day": 181,
+          "pr": null,
+          "subject": "Publish CI failure fixed: @PERSONAL carry-forward in publish.sh, diagnosis in session note"
+        },
+        {
+          "sha": "8d91f5c",
+          "day": 181,
+          "pr": null,
+          "subject": "Publish the IQON schematic for Mark's phone: fonts carried inside, live link in note/handover/carryover"
+        },
+        {
+          "sha": "f4136c6",
+          "day": 181,
+          "pr": null,
+          "subject": "Move playwright session cache to Trash"
+        },
+        {
+          "sha": "efdc811",
+          "day": 181,
+          "pr": null,
+          "subject": "IQON schematic traced from factory drawing; 68-90-90-68 setup mode; build-verification rule in VAULT"
+        },
+        {
+          "sha": "57af4d8",
+          "day": 180,
+          "pr": null,
+          "subject": "W40: IQON CL Decode Pro 90 live schematic build; week folder opened"
+        }
+      ]
+    }
+  ]
+}

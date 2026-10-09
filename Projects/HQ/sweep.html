@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:,">
+<meta name="description" content="The archive sweep, prepared: one card per duplicate group with the copy to keep, the copies a sweep would archive, the destination folder each would go to, and the bytes that frees.">
+<title>Sweep &middot; Re.SOURCE HQ</title>
+<!-- Design system chrome, one level up from Projects/HQ/. Feed: _data/feed.json,
+     written by Projects/HQ/feed.cjs. Static page, no live calls, no auto refresh. -->
+<link rel="stylesheet" href="../Design System/styles.css">
+<link rel="stylesheet" href="../Design System/lib/hq.css">
+<link rel="stylesheet" href="../Design System/lib/topbar.css">
+<script src="../Design System/lib/masters-nav.js" defer></script>
+<script src="../Design System/lib/hq.js" defer></script>
+<script src="snapshot-age.js"></script>
+<style>
+  /* Sweep chrome. Every value is a design token: colour from tokens/greys.css and
+     tokens/colours.css, space and radius from tokens/space.css, type from
+     tokens/typography.css, motion from tokens/motion.css. No raw hex, no type off
+     the scale, no letter-spacing, no radius off 8/12/24. */
+
+  .feed-track { --feed-track: calc(var(--space-2xl) * 2); }
+
+  /* ---- the three numbers: duplication is not the same as archivable ---- */
+  .sweep-counters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--feed-track), 1fr));
+    gap: var(--space-lg);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .sweep-counter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-lg);
+    background: var(--surface-card);
+    border: var(--hq-hairline) solid var(--surface-border);
+    border-radius: var(--radius-md);
+  }
+  .sweep-counter[data-tone="act"]   { border-top: var(--stroke) solid var(--cl-12-life); }
+  .sweep-counter[data-tone="dup"]   { border-top: var(--stroke) solid var(--cl-03-flow); }
+  .sweep-counter[data-tone="scratch"] { border-top: var(--stroke) solid var(--cl-08-time); }
+  .sweep-counter[data-tone="surface"] { border-top: var(--stroke) solid var(--cl-04-love); }
+  .sweep-counter-value {
+    font-family: var(--font-mono);
+    font-size: var(--fs-h1);
+    line-height: var(--lh-h1);
+    font-weight: var(--fw-h1);
+    color: var(--text-primary);
+  }
+  .sweep-counter-label { font-size: var(--fs-body); line-height: var(--lh-body); color: var(--text-primary); }
+  .sweep-counter-note {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+  }
+
+  /* ---- filters ---- */
+  .sweep-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-md) var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--surface-card);
+    border: var(--hq-hairline) solid var(--surface-border);
+    border-radius: var(--radius-md);
+  }
+  .sweep-field { display: flex; flex-direction: column; gap: var(--space-xs); min-width: 0; }
+  .sweep-field > label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+  }
+  .sweep-field select, .sweep-field input {
+    appearance: none;
+    min-height: var(--pill-height);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--surface-page);
+    color: var(--text-primary);
+    border: var(--hq-hairline) solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+  }
+  .sweep-field select:hover, .sweep-field input:hover { border-color: var(--g66); }
+  .sweep-field select:focus-visible, .sweep-field input:focus-visible {
+    outline: var(--hq-focus) solid var(--text-primary);
+    outline-offset: var(--space-xs);
+  }
+  .sweep-field-search { flex: 1 1 calc(var(--space-2xl) * 6); }
+  .sweep-field-search input { width: 100%; }
+  .sweep-count {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+    margin-left: auto;
+  }
+
+  /* ---- one card per group ---- */
+  .sweep-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--feed-track), 1fr));
+    gap: var(--space-lg);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .sweep-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    background: var(--surface-card);
+    border: var(--hq-hairline) solid var(--surface-border);
+    border-radius: var(--radius-md);
+    min-width: 0;
+    transition: border-color var(--dur-sm) var(--ease-place), transform var(--dur-sm) var(--ease-place);
+  }
+  .sweep-card:hover { transform: translateY(-2px); border-color: var(--g66); }
+  .sweep-card[data-actionable="yes"] { border-left: var(--stroke) solid var(--cl-12-life); }
+  .sweep-card[data-actionable="no"]  { border-left: var(--stroke) solid var(--surface-border); }
+
+  .sweep-group {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    font-weight: var(--fw-h2);
+    color: var(--text-primary);
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .sweep-frees {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+  }
+  .sweep-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
+  .sweep-list li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    border: var(--hq-hairline) solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-page);
+  }
+  .sweep-list li[data-d="keep"]    { border-left: var(--stroke) solid var(--cl-12-life); }
+  .sweep-list li[data-d="archive"] { border-left: var(--stroke) solid var(--cl-03-flow); }
+  .sweep-list li[data-d="scratch"] { border-left: var(--stroke) solid var(--g48); border-style: dashed; }
+  .sweep-list li[data-d="surface"] { border-left: var(--stroke) solid var(--cl-04-love); border-style: dashed; }
+  .sweep-dest {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-dim);
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .sweep-src {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-primary);
+    overflow-wrap: anywhere;
+  }
+  .sweep-tag {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+  }
+  .sweep-empty {
+    grid-column: 1 / -1;
+    padding: var(--space-lg);
+    border: var(--hq-hairline) dashed var(--surface-border);
+    border-radius: var(--radius-md);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--text-secondary);
+  }
+  .sweep-notice {
+    margin: 0;
+    padding: var(--space-lg);
+    background: var(--surface-card);
+    border-left: var(--stroke) solid var(--cl-11-type);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--text-secondary);
+  }
+  .sweep-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-lg);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+  }
+  .sweep-legend li { display: inline-flex; align-items: center; gap: var(--space-xs); }
+  .sweep-legend i {
+    width: var(--space-md);
+    height: var(--space-sm);
+    border-radius: var(--pill-radius);
+    display: inline-block;
+  }
+  .sweep-skip {
+    position: absolute;
+    left: var(--space-lg);
+    top: var(--space-lg);
+    z-index: 20;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--surface-raised);
+    color: var(--text-primary);
+    border: var(--hq-hairline) solid var(--g66);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    transform: translateY(-200%);
+  }
+  .sweep-skip:focus { transform: none; }
+  @media (max-width: 720px) {
+    .sweep-count { margin-left: 0; }
+    .sweep-field-search { flex: 1 1 100%; }
+  }
+
+  /* Three columns at the desktop measure, fewer as the frame narrows, and a cap on
+     the member list. One group carries 24 members and, in a grid row, set the
+     height of every card beside it at 4430px - the largest single piece of wasted
+     space on either page. A cap that hides members silently would make the card
+     look smaller by lying about it, so the row says what it is not showing. */
+  .sweep-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-md); }
+  @media (max-width: 1080px) { .sweep-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 720px) { .sweep-grid { grid-template-columns: minmax(0, 1fr); } }
+  .sweep-card { gap: var(--space-sm); padding: var(--space-md); border-radius: var(--radius-sm); }
+  .sweep-group { -webkit-line-clamp: 2; }
+  .sweep-list li { padding: var(--space-xs) var(--space-sm); }
+  .sweep-more {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+  }
+
+</style>
+<style>
+/* A reading past its cadence, or one with no stamp at all, must not sit on
+   the page in the same quiet grey as a reading from ten minutes ago. One rule,
+   from the one renderer in Projects/HQ/snapshot-age.js. */
+.hq .stamp-line[data-freshness="stale"],
+.hq .stamp-line[data-freshness="unknown"] { color: var(--g88); font-weight: 600; }
+</style>
+</head>
+<body class="hq rs-topbar-page feed-track">
+<a class="sweep-skip" href="#groups">Skip to the groups</a>
+
+<header class="rs-topbar" id="rsTopBar">
+  <div class="rs-topbar-inner" data-pad>
+    <a class="rs-topbar-brand" href="HQ.html" aria-label="Estate HQ home">Re.SOURCE <span>Sweep</span></a>
+    <p class="rs-topbar-stamp"><span>Sweep</span><span class="rs-topbar-sep" aria-hidden="true">&middot;</span><span>snapshot</span></p>
+    <div class="rs-topbar-navrow">
+      <nav class="rs-topbar-context" aria-label="Sweep sections">
+        <a href="#decide">Decide</a>
+        <a href="#groups">Groups</a>
+        <a href="#publish">Publish</a>
+        <a href="#legend">Dispositions</a>
+      </nav>
+      <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a class="button" href="../Design System/Masters.html">Open masters</a></div>
+    </div>
+  </div>
+</header>
+
+<main class="hq shell" data-pad data-grid tabindex="-1">
+
+  <header class="intro" data-span="12">
+    <p class="eyebrow">Estate consolidation &middot; the archive sweep, prepared</p>
+    <h1 id="sweep-title">The sweep</h1>
+    <p class="lede">Every duplicate group in the estate with the copy to keep and the copies a sweep would archive, each with the folder it would go to and the bytes that frees. This page moves nothing and deletes nothing. It is the tap, prepared so the decision is one press.</p>
+    <p class="stamp-line" id="stamp">reading the snapshot&hellip;</p>
+  </header>
+
+  <section class="work-section" id="decide" data-span="12" aria-labelledby="decide-title">
+    <div class="section-heading">
+      <h2 id="decide-title">Duplication is not the same as archivable</h2>
+      <p class="eyebrow">Read from the snapshot, with its stamp &middot; field <span id="field-count">?</span> columns</p>
+    </div>
+    <ul class="sweep-counters" data-span="12">
+      <li class="sweep-counter" data-tone="act">
+        <span class="sweep-counter-value" id="c-archive">&mdash;</span>
+        <span class="sweep-counter-label">a sweep can archive</span>
+        <span class="sweep-counter-note" id="c-archive-note">vault copies, with a destination</span>
+      </li>
+      <li class="sweep-counter" data-tone="scratch">
+        <span class="sweep-counter-value" id="c-scratch">&mdash;</span>
+        <span class="sweep-counter-label">lane scratch</span>
+        <span class="sweep-counter-note" id="c-scratch-note">a disposable checkout, not a record</span>
+      </li>
+      <li class="sweep-counter" data-tone="surface">
+        <span class="sweep-counter-value" id="c-surface">&mdash;</span>
+        <span class="sweep-counter-label">console routes</span>
+        <span class="sweep-counter-note" id="c-surface-note">live faces, never archive candidates</span>
+      </li>
+      <li class="sweep-counter" data-tone="dup">
+        <span class="sweep-counter-value" id="c-total">&mdash;</span>
+        <span class="sweep-counter-label">total duplication</span>
+        <span class="sweep-counter-note" id="c-total-note">the three above, added up</span>
+      </li>
+    </ul>
+    <p class="sweep-notice" id="rule-note" hidden></p>
+  </section>
+
+  <section class="work-section" id="groups" data-span="12" aria-labelledby="groups-title">
+    <div class="section-heading">
+      <h2 id="groups-title">The groups</h2>
+      <p class="eyebrow">Largest first &middot; one card per group &middot; the keep is decided, the archive is Mark&rsquo;s</p>
+    </div>
+
+    <form class="sweep-filters" id="filters" data-span="12" role="search" aria-label="Filter the groups">
+      <div class="sweep-field">
+        <label for="f-show">Show</label>
+        <select id="f-show" name="show">
+          <option value="actionable">Actionable only</option>
+          <option value="">Every group</option>
+          <option value="yes">With archive candidates</option>
+          <option value="no">Nothing to archive</option>
+        </select>
+      </div>
+      <div class="sweep-field">
+        <label for="f-sort">Sort</label>
+        <select id="f-sort" name="sort">
+          <option value="frees">Bytes freed first</option>
+          <option value="copies">Copies first</option>
+          <option value="name">By name</option>
+        </select>
+      </div>
+      <div class="sweep-field sweep-field-search">
+        <label for="f-search">Search a group or a path</label>
+        <input id="f-search" name="search" type="search" autocomplete="off" spellcheck="false" placeholder="hq">
+      </div>
+      <p class="sweep-count" id="count" aria-live="polite">&mdash;</p>
+    </form>
+
+    <ul class="sweep-grid" id="sweep-grid" data-span="12" aria-live="polite">
+      <li class="sweep-empty" id="sweep-state">Reading _data/feed.json&hellip;</li>
+    </ul>
+  </section>
+
+  <section class="work-section" id="publish" data-span="12" aria-labelledby="publish-title">
+    <div class="section-heading">
+      <h2 id="publish-title">The publish gap</h2>
+      <p class="eyebrow">Current Re.SOURCE pages the manifest never serves &middot; the shortest set of lines that closes it</p>
+    </div>
+    <p class="sweep-notice" id="gap-note" hidden></p>
+    <ul class="sweep-grid" id="gap-grid" data-span="12" aria-live="polite"></ul>
+  </section>
+
+  <section class="work-section" id="legend" data-span="12" aria-labelledby="legend-title">
+    <div class="section-heading">
+      <h2 id="legend-title">What each disposition means</h2>
+      <p class="eyebrow">Decided by the generator, not by this page &middot; Projects/HQ/FEED-POLICY.md carries the archive rule</p>
+    </div>
+    <ul class="sweep-legend" data-span="12">
+      <li><i style="background:var(--cl-12-life)" aria-hidden="true"></i>keep &mdash; holds the canonical seat; never moves</li>
+      <li><i style="background:var(--cl-03-flow)" aria-hidden="true"></i>archive &mdash; a vault copy, filed under _Archive/&lt;year&gt;-&lt;month&gt;/ with its manifest line removed</li>
+      <li><i style="background:var(--g48)" aria-hidden="true"></i>scratch &mdash; a lane checkout, disposable by construction and never a record</li>
+      <li><i style="background:var(--cl-04-love)" aria-hidden="true"></i>surface &mdash; a console face that is a live route, never an archive candidate</li>
+    </ul>
+    <p class="sweep-notice" id="bound-note" hidden></p>
+  </section>
+
+  <footer data-span="12">
+    <p class="colophon">Projects/HQ/sweep.html &middot; snapshot written by Projects/HQ/feed.cjs &middot; nothing on this page moves, archives or deletes anything</p>
+  </footer>
+</main>
+
+<script>
+/* One fetch, one honest render, in the feed.html shape: every failure path prints
+   what could not be read and why, in the place the data would have been. Nothing
+   defaults to zero, so "nothing to archive" and "the snapshot could not be read"
+   can never look the same. Every string reaches the DOM through textContent. */
+(function () {
+  'use strict';
+  var SRC = '_data/feed.json';
+  var D_LABEL = {
+    keep: 'keep',
+    archive: 'archive',
+    scratch: 'scratch',
+    surface: 'console route'
+  };
+
+  var el = function (tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = String(text);
+    return n;
+  };
+  var clear = function (id) { var n = document.getElementById(id); while (n.firstChild) n.removeChild(n.firstChild); };
+  var kb = function (bytes) {
+    if (bytes === undefined || bytes === null) return 'not read';
+    var mb = bytes / 1048576;
+    return mb >= 1 ? (Math.round(mb * 10) / 10) + ' MB' : (Math.round(bytes / 102.4) / 10) + ' KB';
+  };
+  var groups = [];
+
+  /* The field count is measured off a real [data-grid] probe rather than asserted,
+     because tokens/grid.css says the orientation picks the count below 1081. */
+  (function fieldCount() {
+    var probe = document.querySelector('[data-grid]');
+    if (!probe) return;
+    var read = function () {
+      var tracks = window.getComputedStyle(probe).gridTemplateColumns;
+      if (!tracks || tracks === 'none') return;
+      var out = document.getElementById('field-count');
+      if (out) out.textContent = String(tracks.trim().split(/\s+/).length);
+    };
+    read();
+    window.addEventListener('resize', read);
+  })();
+
+  /* Fault injection, so the honest path is exercised by the real render code and
+     not by a stub. Inert unless asked for. */
+  var FAULT = new URLSearchParams(location.search).get('fault');
+  function faulted() {
+    if (FAULT === 'missing') return Promise.reject(new Error('HTTP 404'));
+    if (FAULT === 'malformed') return Promise.resolve({ ok: true, json: function () { return Promise.reject(new SyntaxError('Unexpected token < in JSON')); } });
+    if (FAULT === 'empty') return Promise.resolve({ ok: true, json: function () { return Promise.resolve({}); } });
+    return null;
+  }
+  var SOURCE = faulted() || fetch(SRC, { cache: 'no-store' });
+  SOURCE
+    .then(function (r) {
+      if (!r.ok) throw new Error('the snapshot answered HTTP ' + r.status);
+      return r.json();
+    })
+    .then(render)
+    .catch(function (e) {
+      document.getElementById('stamp').textContent =
+        'sweep \u00b7 unread \u00b7 the snapshot could not be read: ' + (e && e.message ? e.message : 'unknown error')
+        + ' \u00b7 nothing on this page is a current fact';
+      document.getElementById('stamp').setAttribute('data-freshness', 'unknown');
+      clear('sweep-grid');
+      document.getElementById('sweep-grid').appendChild(el('li', 'sweep-empty',
+        'Nothing on this page is a guess. Projects/HQ/_data/feed.json is missing or unreadable, so no group is listed and no total is shown. Ask in chat to run node Projects/HQ/feed.cjs, then reload.'));
+      var f = document.getElementById('filters');
+      if (f) f.hidden = true;
+      ['c-archive', 'c-scratch', 'c-surface', 'c-total'].forEach(function (id) {
+        document.getElementById(id).textContent = 'not read';
+      });
+      var c = document.getElementById('count');
+      if (c) c.textContent = 'not read';
+    });
+
+  function render(d) {
+    var t = d.totals;
+    if (!t || typeof t.files !== 'number' || !Array.isArray(d.duplicateGroups)) {
+      var partAge = SnapshotAge.paint(document.getElementById('stamp'), d.stamp, { source: 'sweep', label: 'sweep' });
+      document.getElementById('stamp').textContent = partAge.text
+        + ' \u00b7 no totals or no groups, so every number here is withheld rather than zeroed';
+      clear('sweep-grid');
+      document.getElementById('sweep-grid').appendChild(el('li', 'sweep-empty',
+        'This reading carries no duplicate groups, so there is no sweep to prepare. That is either a clean estate or a partial snapshot, and the two must not look the same: ask in chat to rerun Projects/HQ/feed.cjs.'));
+      var f0 = document.getElementById('filters');
+      if (f0) f0.hidden = true;
+      return;
+    }
+
+    var known = typeof t.archiveBytes === 'number';
+    document.getElementById('c-archive').textContent = known ? kb(t.archiveBytes) : 'not read';
+    document.getElementById('c-archive-note').textContent = known
+      ? (t.archiveCount || 0) + ' copies across ' + (d.duplicateGroups.filter(function (g) { return g.archiveCount; }).length) + ' groups'
+      : 'this snapshot predates the disposition split';
+    document.getElementById('c-scratch').textContent = known ? kb(t.scratchBytes) : 'not read';
+    document.getElementById('c-surface').textContent = known ? kb(t.surfaceBytes) : 'not read';
+    document.getElementById('c-total').textContent = kb(t.wastedBytes);
+    document.getElementById('c-total-note').textContent = known
+      ? 'the three above, added up'
+      : (t.duplicateGroups || 0) + ' groups, every non-canonical copy counted';
+
+    var s = SnapshotAge.paint(document.getElementById('stamp'), d.stamp, { source: 'sweep', label: 'sweep' });
+    document.getElementById('stamp').textContent = s.text
+      + ' \u00b7 cutoff ' + (d.cutoff || 'unstated')
+      + ' \u00b7 read by Projects/HQ/feed.cjs';
+
+    if (known && t.wastedBytes) {
+      var rule = document.getElementById('rule-note');
+      rule.hidden = false;
+      rule.textContent =
+        'A sweep archives ' + kb(t.archiveBytes) + ', not ' + kb(t.wastedBytes) + '. The other ' +
+        kb(t.scratchBytes + t.surfaceBytes) + ' is a lane checkout or a console face: the first is ' +
+        'disposable by construction and the second is a live route, so neither is a page waiting to be filed.';
+    }
+
+    groups = d.duplicateGroups.slice();
+    renderGap(d);
+    ['f-show', 'f-sort'].forEach(function (id) {
+      document.getElementById(id).addEventListener('change', draw);
+    });
+    var search = document.getElementById('f-search');
+    search.addEventListener('input', draw);
+    document.getElementById('filters').addEventListener('submit', function (e) { e.preventDefault(); draw(); });
+    document.getElementById('filters').hidden = false;
+
+    var bound = document.getElementById('bound-note');
+    bound.hidden = false;
+    bound.textContent =
+      'The feed decides and Mark disposes. Every destination above is a proposal: nothing here has been moved, and a proposal is not a permission. Lane checkouts are scratch and the console faces are live routes, so neither is ever on this list to file.';
+    draw();
+  }
+
+  /* The publish gap: 31 pages, but the manifest takes a directory, so the fix is
+     a handful of lines rather than a page each. The proposals come from the
+     generator; this only renders them and checks that they still account for
+     every gap, because a proposal set that quietly missed one would understate
+     the work. */
+  function renderGap(d) {
+    var host = document.getElementById('gap-grid');
+    clear('gap-grid');
+    var note = document.getElementById('gap-note');
+    var list = d.publishProposals;
+
+    if (!Array.isArray(list)) {
+      note.hidden = false;
+      note.textContent =
+        'This snapshot predates the publish proposal, so the gap is shown as a count and nothing more. Rerun Projects/HQ/feed.cjs and reload to see which manifest lines would close it.';
+      return;
+    }
+    if (!list.length) {
+      note.hidden = false;
+      note.textContent = 'Every current Re.SOURCE page is served by the manifest. There is no publish gap on this reading.';
+      return;
+    }
+
+    var covered = list.reduce(function (s, x) { return s + x.covers; }, 0);
+    var gap = (d.totals && d.totals.unpublishedCurrent) || covered;
+    note.hidden = false;
+    note.textContent =
+      covered === gap
+        ? gap + ' current pages are unserved, and ' + list.length + ' manifest lines close all of them. A line is a proposal: adding one publishes a page, which is Mark\'s call and not this page\'s.'
+        : 'The proposals account for ' + covered + ' pages but the counter reads ' + gap +
+          '. The two disagree, so this list is incomplete rather than complete: rerun Projects/HQ/feed.cjs rather than act on it.';
+
+    list.forEach(function (p) {
+      var li = el('li', 'sweep-card');
+      li.setAttribute('data-actionable', 'yes');
+      li.appendChild(el('p', 'sweep-group', p.line));
+      li.appendChild(el('p', 'sweep-frees',
+        'covers ' + p.covers + ' page' + (p.covers === 1 ? '' : 's') + ' · ' + kb(p.bytes) +
+        (p.archived ? ' · filed under _archive' : '')));
+      var list2 = el('ul', 'sweep-list');
+      (p.paths || []).forEach(function (path, i) {
+        var row = el('li');
+        row.setAttribute('data-d', p.archived ? 'scratch' : 'archive');
+        row.appendChild(el('span', 'sweep-src', path));
+        var t = p.titles && p.titles[i];
+        if (t) row.appendChild(el('span', 'sweep-tag', t));
+        list2.appendChild(row);
+      });
+      li.appendChild(list2);
+      host.appendChild(li);
+    });
+  }
+
+  function draw() {
+    var show = document.getElementById('f-show').value;
+    var sort = document.getElementById('f-sort').value;
+    var q = document.getElementById('f-search').value.trim().toLowerCase();
+
+    var rows = groups.filter(function (g) {
+      var has = (g.archiveCount || 0) > 0;
+      if (show === 'actionable' && !has) return false;
+      if (show === 'yes' && !has) return false;
+      if (show === 'no' && has) return false;
+      if (q) {
+        var hay = (g.key + ' ' + (g.members || []).map(function (m) { return m.path; }).join(' ')).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+
+    rows.sort(function (a, b) {
+      if (sort === 'copies') {
+        if (b.count !== a.count) return b.count - a.count;
+      } else if (sort === 'name') {
+        return a.key < b.key ? -1 : a.key > b.key ? 1 : 0;
+      }
+      var af = a.archiveBytes === undefined ? a.wastedBytes : a.archiveBytes;
+      var bf = b.archiveBytes === undefined ? b.wastedBytes : b.archiveBytes;
+      if (bf !== af) return bf - af;
+      return b.wastedBytes - a.wastedBytes;
+    });
+
+    var grid = document.getElementById('sweep-grid');
+    clear('sweep-grid');
+    if (!rows.length) {
+      grid.appendChild(el('li', 'sweep-empty', groups.length
+        ? 'No group matches these filters out of ' + groups.length + ' read. Widen the filter or clear the search.'
+        : 'The snapshot carried no duplicate groups.'));
+    } else {
+      rows.forEach(function (g) { grid.appendChild(card(g)); });
+    }
+
+    var frees = 0;
+    rows.forEach(function (g) { frees += g.archiveBytes === undefined ? 0 : g.archiveBytes; });
+    document.getElementById('count').textContent =
+      rows.length + ' of ' + groups.length + ' groups \u00b7 ' + kb(frees) + ' freed by the ones shown';
+  }
+
+  function card(g) {
+    var li = el('li', 'sweep-card');
+    var frees = g.archiveBytes === undefined ? 0 : g.archiveBytes;
+    li.setAttribute('data-actionable', (g.archiveCount || 0) > 0 ? 'yes' : 'no');
+
+    li.appendChild(el('p', 'sweep-group', g.key));
+    li.appendChild(el('p', 'sweep-frees',
+      (g.archiveCount || 0) + ' of ' + g.count + ' copies would archive \u00b7 frees ' + kb(frees) +
+      ' \u00b7 ' + kb(g.wastedBytes) + ' duplicated'));
+
+    var list = el('ul', 'sweep-list');
+    // Ten shown, the rest counted and named as hidden.
+    var SHOWN = 10;
+    (g.members || []).slice(0, SHOWN).forEach(function (m) {
+      var d = m.disposition || (m.canonical ? 'keep' : 'archive');
+      var row = el('li');
+      row.setAttribute('data-d', d);
+      row.appendChild(el('span', 'sweep-src', m.path || m.id));
+      row.appendChild(el('span', 'sweep-tag',
+        D_LABEL[d] + ' \u00b7 ' + m.vault + ' \u00b7 ' + (m.mtime || 'no date') + ' \u00b7 ' + kb(m.sizeBytes)));
+      if (m.archiveTo) row.appendChild(el('span', 'sweep-dest', '\u2192 ' + m.archiveTo));
+      list.appendChild(row);
+    });
+    li.appendChild(list);
+    var hidden = (g.members || []).length - SHOWN;
+    if (hidden > 0) {
+      li.appendChild(el('p', 'sweep-more',
+        hidden + ' more not shown \u00b7 all ' + (g.members || []).length + ' are in the snapshot'));
+    }
+    return li;
+  }
+})();
+</script>
+</body>
+</html>

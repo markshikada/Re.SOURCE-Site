@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="icon" href="data:,">
+  <meta name="description" content="Quota studio: per-model usage bars for the 5-hour, weekly and monthly windows plus 30-day spend, read from the _data/quota.json snapshot with its own stamp.">
+  <title>Quota Studio · Re.SOURCE HQ</title>
+  <!-- Design system, two levels up to Projects/ from studios/ (depth rule,
+       studios/README.md step 2). Snapshot feed: ../_data/quota.json, written
+       by Projects/HQ/hq-data.cjs. Static page: no live calls, no auto refresh. -->
+  <link rel="stylesheet" href="../../Design System/styles.css">
+  <link rel="stylesheet" href="../../Design System/lib/topbar.css">
+  <script src="../../Design System/lib/masters-nav.js" defer></script>
+  <style>
+    /* Quota studio chrome. Every value is a design token: colour from
+       tokens/colours.css and tokens/greys.css, space and radius from
+       tokens/space.css, type from tokens/typography.css, the field from
+       tokens/grid.css. No new hex, no type off the scale, no radius off
+       8/12/24, whole numbers only. */
+
+    .shell {
+      padding-top: calc(var(--rs-topbar-h) + var(--space-xl));
+      padding-bottom: var(--space-2xl);
+      row-gap: var(--space-2xl);
+    }
+    section[id] { scroll-margin-top: calc(var(--rs-topbar-h) + var(--space-md)); }
+
+    .skip-link {
+      position: fixed;
+      top: var(--space-sm);
+      left: var(--space-sm);
+      z-index: 20;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--text-primary);
+      color: var(--black);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transform: translateY(calc(-100% - var(--space-lg)));
+      transition: transform var(--dur-md) var(--ease-arrive);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .eyebrow {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      font-weight: var(--fw-caption);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    .intro h1 {
+      margin: var(--space-sm) 0 var(--space-md);
+      font-size: var(--fs-display);
+      line-height: var(--lh-display);
+      font-weight: var(--fw-display);
+    }
+    .lede {
+      margin: 0 0 var(--space-md);
+      max-width: 60ch;
+      color: var(--text-secondary);
+    }
+    .stamp-line {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    .section-heading { margin-bottom: var(--space-lg); }
+    .section-heading h2 {
+      margin: 0;
+      font-size: var(--fs-h1);
+      line-height: var(--lh-h1);
+      font-weight: var(--fw-h1);
+    }
+
+    .studio-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+    }
+    .studio-card h3 {
+      margin: 0;
+      font-size: var(--fs-h2);
+      line-height: var(--lh-h2);
+      font-weight: var(--fw-h2);
+    }
+    .card-glyph {
+      font-size: var(--fs-h1);
+      line-height: var(--lh-h1);
+    }
+    .card-meta {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+      overflow-wrap: anywhere;
+    }
+    .big-number {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-display);
+      line-height: var(--lh-display);
+      font-weight: var(--fw-display);
+      color: var(--cl-11-type);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-raised);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .button-primary {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: var(--black);
+    }
+
+    .honest-note {
+      margin: 0;
+      padding: var(--space-md);
+      background: var(--surface-card);
+      border-left: 2px solid var(--g48);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+    }
+    .note-alert { border-left-color: var(--cl-06-fire); }
+
+    /* Legend: a swatch is a mark, the word beside it carries the meaning. */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      margin: 0 0 var(--space-lg);
+      padding: 0;
+      list-style: none;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-secondary);
+    }
+    .legend li {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: var(--radius-sm);
+      background: var(--cl-11-type);
+    }
+    .swatch-trainer { background: var(--cl-06-fire); }
+
+    /* Model rows. */
+    .model-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+    }
+    .models-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .model-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--space-sm) var(--space-md);
+    }
+    .model-name {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+      font-weight: var(--fw-h2);
+      overflow-wrap: anywhere;
+    }
+    .chip {
+      display: inline-block;
+      padding: 0 var(--space-sm);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    .chip-trainer {
+      border-color: var(--cl-06-fire);
+      color: var(--cl-06-fire);
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+    }
+    .bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      min-width: 0;
+    }
+    .bar-label {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+    .bar-track {
+      height: 12px;
+      background: var(--surface-raised);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: var(--cl-11-type);
+    }
+    .bar-fill-trainer { background: var(--cl-06-fire); }
+    .bar-value {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-primary);
+    }
+
+    .alerts-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .alert-item {
+      padding: var(--space-md);
+      background: var(--surface-card);
+      border-left: 2px solid var(--cl-06-fire);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-secondary);
+      overflow-wrap: anywhere;
+    }
+
+    .colophon {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    /* Narrow frames: the field itself collapses by orientation
+       (tokens/grid.css); this only stacks the bars and tightens rhythm. */
+    @media (max-width: 720px) {
+      .shell { row-gap: var(--space-xl); }
+      .intro h1 {
+        font-size: var(--fs-h1);
+        line-height: var(--lh-h1);
+      }
+      .model-row { padding: var(--space-md); }
+      .bar-row { grid-template-columns: repeat(2, 1fr); }
+      .studio-card { padding: var(--space-md); }
+      .big-number {
+        font-size: var(--fs-h1);
+        line-height: var(--lh-h1);
+      }
+    }
+  </style>
+</head>
+<body class="rs-topbar-page">
+  <a class="skip-link" href="#main">Skip to work</a>
+
+  <header class="rs-topbar" id="rsTopBar">
+    <div class="rs-topbar-inner" data-pad>
+      <a class="rs-topbar-brand" href="../HQ.html" aria-label="Estate HQ home">Re.SOURCE <span>Quota</span></a>
+      <p class="rs-topbar-stamp"><span>Quota</span><span class="rs-topbar-sep" aria-hidden="true">·</span><span>snapshot</span></p>
+      <div class="rs-topbar-navrow">
+        <nav class="rs-topbar-context" aria-label="Studio sections">
+          <a href="#overview">Overview</a>
+          <a href="#models">Models</a>
+          <a href="#alerts">Alerts</a>
+        </nav>
+        <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a class="button" href="../../Design System/Masters.html">Open masters</a></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="main" data-pad data-grid tabindex="-1">
+    <section class="intro" data-span="12" aria-labelledby="studio-title">
+      <p class="eyebrow">Quota studio</p>
+      <h1 id="studio-title">Every model's quota, one row each.</h1>
+      <p class="lede">Usage against the 5-hour, weekly and monthly windows, plus 30-day spend against cap, read from the <code>_data/quota.json</code> snapshot when this page opens. Nothing here is live and nothing refreshes itself.</p>
+      <p class="stamp-line" id="stamp-line">Data not read yet · refresh: ask in chat to run hq-data.cjs, then reload</p>
+    </section>
+
+    <section id="overview" data-sub data-span="12" aria-labelledby="overview-title">
+      <div class="section-heading" data-span="12">
+        <h2 id="overview-title">Overview</h2>
+        <p class="eyebrow">Snapshot totals · every number carries the file's own stamp</p>
+      </div>
+      <article class="studio-card" data-span="6" aria-labelledby="spend-title">
+        <span class="card-glyph" aria-hidden="true">📈</span>
+        <h3 id="spend-title">Spend, 30 days</h3>
+        <p class="big-number" id="total30-value" data-raw="">Not read yet</p>
+        <p class="card-meta">total30 in _data/quota.json</p>
+      </article>
+      <article class="studio-card" data-span="6" aria-labelledby="source-title">
+        <span class="card-glyph" aria-hidden="true">💾</span>
+        <h3 id="source-title">Source</h3>
+        <p class="card-meta" id="db-line">Database: not read yet</p>
+        <p class="card-meta" id="stale-line">Staleness: not read yet</p>
+      </article>
+    </section>
+
+    <section id="models" data-sub data-span="12" aria-labelledby="models-title">
+      <div class="section-heading" data-span="12">
+        <h2 id="models-title">Models</h2>
+        <p class="eyebrow">Used share of each window · spend against cap</p>
+      </div>
+      <ul class="legend" data-span="12">
+        <li><span class="swatch" aria-hidden="true"></span> Standard model</li>
+        <li><span class="swatch swatch-trainer" aria-hidden="true"></span> Trainer: company trains on prompts</li>
+      </ul>
+      <div class="models-stack" id="models-list" data-span="12" aria-live="polite">
+        <p class="honest-note" id="state-note">Reading the snapshot _data/quota.json …</p>
+      </div>
+    </section>
+
+    <section id="alerts" data-sub data-span="12" aria-labelledby="alerts-title">
+      <div class="section-heading" data-span="12">
+        <h2 id="alerts-title">Alerts</h2>
+        <p class="eyebrow">Carried verbatim from the snapshot</p>
+      </div>
+      <div id="alerts-list" data-span="12">
+        <p class="honest-note">Alerts appear once the snapshot has been read.</p>
+      </div>
+    </section>
+
+    <footer class="colophon" data-span="12">Quota studio · snapshot feed _data/quota.json via hq-data.cjs · pattern: studios/README.md</footer>
+  </main>
+
+  <noscript>
+    <p class="honest-note">This page reads its snapshot with a small script. With JavaScript off the numbers cannot render; the data itself lives in Projects/HQ/_data/quota.json.</p>
+  </noscript>
+
+  <script>
+    /* Quota studio render. Static snapshot only: one read of
+       ../_data/quota.json when the page opens, no polling, no auto refresh.
+       Every value on screen is the snapshot's own; the stamp shown is the
+       file's generated stamp, never the current time. All data text goes in
+       through textContent, so a hostile model name in the JSON stays inert. */
+    (function () {
+      'use strict';
+
+      var DATA_URL = '../_data/quota.json';
+      var stateNote = document.getElementById('state-note');
+      var modelsList = document.getElementById('models-list');
+      var alertsList = document.getElementById('alerts-list');
+      var stampLine = document.getElementById('stamp-line');
+      var total30Value = document.getElementById('total30-value');
+      var dbLine = document.getElementById('db-line');
+      var staleLine = document.getElementById('stale-line');
+
+      function el(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text !== undefined && text !== null) node.textContent = text;
+        return node;
+      }
+
+      var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+      function formatStamp(iso) {
+        var d = new Date(iso);
+        if (typeof iso !== 'string' || isNaN(d.getTime())) return String(iso);
+        var hh = String(d.getUTCHours()).padStart(2, '0');
+        var mm = String(d.getUTCMinutes()).padStart(2, '0');
+        return d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()] + ' ' + d.getUTCFullYear() + ', ' + hh + ':' + mm + ' UTC';
+      }
+
+      /* Honest failure states. The three cases are kept apart on purpose:
+         an origin that blocks the read is not the same claim as a file that
+         is absent, and neither is a file that is present but corrupt. */
+      function setState(kind, text) {
+        modelsList.textContent = '';
+        stateNote = el('p', 'honest-note note-alert', text);
+        stateNote.id = 'state-note';
+        stateNote.setAttribute('data-state', kind);
+        modelsList.appendChild(stateNote);
+        alertsList.textContent = '';
+        alertsList.appendChild(el('p', 'honest-note', 'Alerts cannot be shown: ' + text));
+      }
+
+      function clampPct(value) {
+        var n = Math.round(Number(value));
+        if (!isFinite(n)) return 0;
+        if (n < 0) return 0;
+        if (n > 100) return 100;
+        return n;
+      }
+
+      function barGroup(window_, label, rawValue, unit, fillClass, denom) {
+        var group = el('div', 'bar-group');
+        group.setAttribute('data-window', window_);
+        group.appendChild(el('p', 'bar-label', label));
+        var track = el('div', 'bar-track');
+        var fill = el('div', 'bar-fill' + (fillClass ? ' ' + fillClass : ''));
+        var valueText;
+        var hasValue = rawValue !== null && rawValue !== undefined && isFinite(Number(rawValue));
+        if (hasValue) {
+          var pct;
+          if (unit === '%') {
+            pct = clampPct(rawValue);
+            valueText = Math.round(Number(rawValue)) + '%';
+          } else {
+            pct = (denom && denom > 0) ? clampPct(Number(rawValue) / denom * 100) : 0;
+            valueText = '$' + Number(rawValue).toFixed(2) + (denom ? ' of $' + denom : ' · no cap');
+          }
+          fill.style.width = pct + '%';
+        } else {
+          valueText = 'n/a';
+          fill.style.width = '0%';
+        }
+        track.appendChild(fill);
+        group.appendChild(track);
+        var value = el('p', 'bar-value', valueText);
+        value.setAttribute('data-raw', hasValue ? String(rawValue) : '');
+        group.appendChild(value);
+        return group;
+      }
+
+      function modelRow(m) {
+        var trainer = m.trainer === true;
+        var row = el('article', 'model-row');
+        row.setAttribute('data-model-id', typeof m.id === 'string' ? m.id : '');
+        row.setAttribute('data-trainer', trainer ? 'true' : 'false');
+        row.setAttribute('data-cap', m.cap === null || m.cap === undefined ? '' : String(m.cap));
+        row.setAttribute('data-p5', m.p5 === null || m.p5 === undefined ? '' : String(m.p5));
+        row.setAttribute('data-p7', m.p7 === null || m.p7 === undefined ? '' : String(m.p7));
+        row.setAttribute('data-p30', m.p30 === null || m.p30 === undefined ? '' : String(m.p30));
+        row.setAttribute('data-s30', m.s30 === null || m.s30 === undefined ? '' : String(m.s30));
+
+        var head = el('div', 'model-head');
+        var name = (typeof m.id === 'string' && m.id !== '') ? m.id : '(unnamed)';
+        head.appendChild(el('h3', 'model-name', name));
+        var capText = (m.cap === null || m.cap === undefined) ? 'no cap recorded' : 'cap $' + m.cap;
+        head.appendChild(el('span', 'chip', capText));
+        if (trainer) head.appendChild(el('span', 'chip chip-trainer', 'trainer'));
+        row.appendChild(head);
+
+        var bars = el('div', 'bar-row');
+        var fillClass = trainer ? 'bar-fill-trainer' : '';
+        bars.appendChild(barGroup('p5', '5-hour', m.p5, '%', fillClass));
+        bars.appendChild(barGroup('p7', 'Weekly', m.p7, '%', fillClass));
+        bars.appendChild(barGroup('p30', 'Monthly', m.p30, '%', fillClass));
+        bars.appendChild(barGroup('s30', 'Spend 30d', m.s30, '$', fillClass, m.cap));
+        row.appendChild(bars);
+        return row;
+      }
+
+      function render(data) {
+        /* Stamp: the snapshot's own generated stamp, never the current time. */
+        stampLine.textContent = '';
+        stampLine.appendChild(document.createTextNode('Data updated '));
+        var time = el('time', null, formatStamp(data.stamp));
+        time.setAttribute('datetime', String(data.stamp));
+        stampLine.appendChild(time);
+        stampLine.appendChild(document.createTextNode(' · refresh: ask in chat'));
+
+        total30Value.textContent = '$' + Number(data.total30).toFixed(2);
+        total30Value.setAttribute('data-raw', String(data.total30));
+
+        var db = data.db || {};
+        dbLine.textContent = 'Database: ' + (db.path ? String(db.path) : 'path not recorded') + (db.exists ? ' · present at snapshot time' : ' · MISSING at snapshot time');
+        staleLine.textContent = data.stale ? 'Staleness: snapshot marked STALE · numbers may predate the source' : 'Staleness: fresh at snapshot time';
+
+        if (data.stale) {
+          var staleNote = el('p', 'honest-note note-alert', 'This snapshot is marked stale: the source database was unreadable or out of date when it was generated. Treat every number below as historical.');
+          modelsList.appendChild(staleNote);
+        }
+
+        for (var i = 0; i < data.models.length; i++) {
+          modelsList.appendChild(modelRow(data.models[i]));
+        }
+
+        alertsList.textContent = '';
+        if (Array.isArray(data.alerts) && data.alerts.length) {
+          var ul = el('ul', 'alerts-list');
+          for (var j = 0; j < data.alerts.length; j++) {
+            ul.appendChild(el('li', 'alert-item', String(data.alerts[j])));
+          }
+          alertsList.appendChild(ul);
+        } else {
+          alertsList.appendChild(el('p', 'honest-note', 'No alerts in this snapshot.'));
+        }
+      }
+
+      function validShape(data) {
+        return data && typeof data === 'object' && Array.isArray(data.models);
+      }
+
+      if (window.location.protocol === 'file:') {
+        /* Browsers block fetch on the file origin, so from here the page
+           cannot even tell whether the snapshot exists. Say exactly that. */
+        setState('origin-blocked', 'Opened from disk (file://). The browser blocks data reads on the file origin, so this page cannot tell from here whether the snapshot exists. Open it through the published site, or serve the vault folder over http.');
+        stampLine.textContent = 'Data not read · this origin blocks the read · refresh: ask in chat';
+        return;
+      }
+
+      fetch(DATA_URL, { cache: 'no-store' }).then(function (res) {
+        if (!res.ok) {
+          var miss = new Error('missing ' + res.status);
+          miss.kind = 'missing';
+          throw miss;
+        }
+        return res.json();
+      }).then(function (data) {
+        if (!validShape(data)) {
+          setState('corrupt', 'Snapshot unreadable: _data/quota.json parsed but carries no models list. Ask in chat to rerun hq-data.cjs.');
+          stampLine.textContent = 'Data not read · snapshot shape invalid · refresh: ask in chat';
+          return;
+        }
+        modelsList.textContent = '';
+        render(data);
+      }).catch(function (err) {
+        if (err && err.kind === 'missing') {
+          setState('missing', 'No data snapshot found: _data/quota.json returned HTTP ' + String(err.message).replace('missing ', '') + '. Ask in chat to run hq-data.cjs, then reload this page.');
+          stampLine.textContent = 'Data not read · snapshot file absent · refresh: ask in chat';
+        } else if (err instanceof SyntaxError) {
+          setState('corrupt', 'Snapshot unreadable: _data/quota.json did not parse as JSON. Ask in chat to rerun hq-data.cjs.');
+          stampLine.textContent = 'Data not read · snapshot corrupt · refresh: ask in chat';
+        } else {
+          setState('network', 'Could not read the snapshot: ' + (err && err.message ? String(err.message) : 'network error') + '. Ask in chat to check the site data.');
+          stampLine.textContent = 'Data not read · fetch failed · refresh: ask in chat';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

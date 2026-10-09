@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Capture gallery studio: every QA screenshot staged by hq-data.cjs, newest first, graded-width thumbnails, tap to open the full image.">
+  <title>Capture Gallery · Re.SOURCE HQ</title>
+  <!-- Design system, two levels up to Projects/ (depth rule from the template:
+       a live studio sits one level shallower than studios/_template/).
+       The eight-step path from copy to publish is in README.md beside this page. -->
+  <link rel="stylesheet" href="../../Design System/styles.css">
+  <link rel="stylesheet" href="../../Design System/lib/topbar.css">
+  <link rel="icon" href="data:,">
+  <script src="../../Design System/lib/masters-nav.js" defer></script>
+  <style>
+    /* Studio chrome plus the gallery's own block. Every value is a design
+       token: colour from tokens/greys.css, space and radius from
+       tokens/space.css, type from tokens/typography.css, motion from
+       tokens/motion.css, the field from tokens/grid.css. No new hex, no type
+       off the scale, no radius off 8/12/24. */
+
+    /* Content starts below the fixed bar; the bar height token is owned by lib/topbar.css. */
+    .shell {
+      padding-top: calc(var(--rs-topbar-h) + var(--space-xl));
+      padding-bottom: var(--space-2xl);
+      row-gap: var(--space-2xl);
+    }
+    section[id] { scroll-margin-top: calc(var(--rs-topbar-h) + var(--space-md)); }
+
+    .skip-link {
+      position: fixed;
+      top: var(--space-sm);
+      left: var(--space-sm);
+      z-index: 20;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--text-primary);
+      color: var(--black);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transform: translateY(calc(-100% - var(--space-lg)));
+      transition: transform var(--dur-md) var(--ease-arrive);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .eyebrow {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      font-weight: var(--fw-caption);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    .eyebrow-glyph {
+      font-size: var(--fs-h2);
+      line-height: var(--lh-h2);
+      vertical-align: middle;
+    }
+    .intro h1 {
+      margin: var(--space-sm) 0 var(--space-md);
+      font-size: var(--fs-display);
+      line-height: var(--lh-display);
+      font-weight: var(--fw-display);
+    }
+    .lede {
+      margin: 0 0 var(--space-md);
+      max-width: 60ch;
+      color: var(--text-secondary);
+    }
+    .stamp-line {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    .section-heading { margin-bottom: var(--space-lg); }
+    .section-heading h2 {
+      margin: 0;
+      font-size: var(--fs-h1);
+      line-height: var(--lh-h1);
+      font-weight: var(--fw-h1);
+    }
+
+    /* Graded-width grid: a wide capture takes span 8 of the twelve, a phone
+       capture span 4, so an alternating pair fills one row exactly. The field
+       token halves the spans by division at six columns and three. */
+    .gallery { row-gap: var(--space-lg); }
+
+    .shot-card {
+      display: block;
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+    .shot-frame {
+      display: block;
+      aspect-ratio: 3 / 2;
+      background: var(--surface-page);
+    }
+    .shot-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+    .shot-body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      padding: var(--space-md);
+    }
+    .shot-title {
+      margin: 0;
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+      font-weight: var(--fw-h2);
+    }
+    .card-meta {
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-raised);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .button-primary {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: var(--black);
+    }
+
+    .honest-note {
+      margin: 0;
+      padding: var(--space-md);
+      background: var(--surface-card);
+      border-left: 2px solid var(--g48);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+    }
+    .honest-note[hidden] { display: none; }
+
+    .colophon {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    /* Narrow frames: the field itself collapses by orientation (tokens/grid.css);
+       this only tightens rhythm and the display size for a phone portrait. */
+    @media (max-width: 720px) {
+      .shell { row-gap: var(--space-xl); }
+      .intro h1 {
+        font-size: var(--fs-h1);
+        line-height: var(--lh-h1);
+      }
+      .shot-body { padding: var(--space-sm); }
+    }
+  </style>
+</head>
+<body class="rs-topbar-page">
+  <a class="skip-link" href="#main">Skip to work</a>
+
+  <!-- Universal top bar: one shared component. Markup here, styles in
+       lib/topbar.css, switcher built by lib/masters-nav.js bar mode (the static
+       link in the switcher zone is its fallback). -->
+  <header class="rs-topbar" id="rsTopBar">
+    <div class="rs-topbar-inner" data-pad>
+      <a class="rs-topbar-brand" href="../HQ.html" aria-label="Estate HQ home">Re.SOURCE <span>Captures</span></a>
+      <p class="rs-topbar-stamp"><span>Capture gallery</span><span class="rs-topbar-sep" aria-hidden="true">·</span><span>v1</span></p>
+      <div class="rs-topbar-navrow">
+        <nav class="rs-topbar-context" aria-label="Studio sections">
+          <a href="#gallery">Gallery</a>
+          <a href="#data">Data</a>
+        </nav>
+        <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a class="button" href="../../Design System/Masters.html">Open masters</a></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="main" data-pad data-grid tabindex="-1">
+    <section class="intro" data-span="12" aria-labelledby="studio-title">
+      <p class="eyebrow"><span class="eyebrow-glyph" aria-hidden="true">🖼️</span> Capture gallery</p>
+      <h1 id="studio-title">Every staged capture, newest first.</h1>
+      <p class="lede">QA screenshots copied into _data/captures/ by hq-data.cjs, capped at the newest 24. Tap a thumbnail to open the full image in its own tab.</p>
+      <p class="stamp-line" id="stampLine">Data stamp loads with the snapshot</p>
+    </section>
+
+    <!-- HONEST CONTROLS, the standing law for every studio page.
+         This studio is static: its only controls are links (kind 1) to the
+         staged captures it displays, plus one note (kind 3) naming the session
+         job that refreshes the snapshot. No live fetches beyond reading the
+         snapshot file, no buttons wired to nothing, no refresh theatre. -->
+    <section id="gallery" data-sub data-span="12" aria-labelledby="gallery-title">
+      <div class="section-heading">
+        <h2 id="gallery-title">Gallery</h2>
+        <p class="eyebrow" id="countNote" role="status">Reading the snapshot</p>
+      </div>
+      <div class="gallery" data-sub id="grid"></div>
+      <p class="honest-note" id="galleryNotice" hidden></p>
+    </section>
+
+    <section id="data" data-sub data-span="12" aria-labelledby="data-title">
+      <div class="section-heading">
+        <h2 id="data-title">Data</h2>
+        <p class="eyebrow">Snapshot, never a live service</p>
+      </div>
+      <p class="stamp-line" id="dataStamp">Stamp arrives with the snapshot file</p>
+      <p class="honest-note">Refreshing the gallery needs a session: ask in chat to run hq-data.cjs, then reload this page. Captures that did not copy into _data/captures/ are skipped and counted in the note above, never shown broken.</p>
+    </section>
+
+    <footer class="colophon" data-span="12">Capture gallery · fed by Projects/HQ/_data/captures.json · staged copies only</footer>
+  </main>
+
+  <script>
+  (function () {
+    'use strict';
+    /* The gallery reads its snapshot with fetch. Browsers block fetch of local
+       files on the file:// origin, so every failure path here says honestly
+       what happened: origin blocked, file not served, corrupt JSON, or data
+       genuinely absent. Cards are built with createElement and textContent
+       only, so a row's text can never execute as markup. */
+    var DATA_URL = '../_data/captures.json';
+    var CAP = 24;
+    var grid = document.getElementById('grid');
+    var countNote = document.getElementById('countNote');
+    var stampLine = document.getElementById('stampLine');
+    var dataStamp = document.getElementById('dataStamp');
+    var notice = document.getElementById('galleryNotice');
+
+    var found = 0;
+    var attempted = 0;
+
+    var dateFormatter = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+    var stampFormatter = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+
+    function say(message) {
+      notice.hidden = false;
+      notice.textContent = message;
+    }
+
+    function updateNote() {
+      var shown = grid.querySelectorAll('.shot-card').length;
+      var skipped = attempted - shown;
+      var text = 'newest ' + shown + ' of ' + found;
+      if (skipped > 0) text += ' · ' + skipped + ' skipped, staged file missing';
+      countNote.textContent = text;
+    }
+
+    function unreadable(line, message) {
+      countNote.textContent = 'snapshot not read';
+      stampLine.textContent = 'Data stamp unavailable · snapshot not read';
+      say(message);
+    }
+
+    function safeStagedPath(file) {
+      /* Only the staged copies under _data/captures/ are ever linked or shown. */
+      return typeof file === 'string' && file.indexOf('captures/') === 0 && file.indexOf('..') === -1;
+    }
+
+    function stagedUrl(file) {
+      return '../_data/' + file.split('/').map(encodeURIComponent).join('/');
+    }
+
+    function widthClass(file) {
+      var m = /-(\d+)\.png$/i.exec(file);
+      return m && Number(m[1]) >= 1081 ? '8' : '4';
+    }
+
+    function labelOf(row) {
+      if (row.title !== undefined && row.title !== null && String(row.title).length) return String(row.title);
+      var base = String(row.file).split('/').pop();
+      return base.replace(/\.png$/i, '');
+    }
+
+    function metaOf(row) {
+      var parts = [];
+      if (typeof row.source === 'string' && row.source.length) {
+        var dirs = row.source.split('/');
+        dirs.pop();
+        if (dirs.length) parts.push(dirs.join(' / '));
+      }
+      if (typeof row.mtime === 'string') {
+        var d = new Date(row.mtime);
+        if (!isNaN(d.getTime())) parts.push(dateFormatter.format(d));
+      }
+      return parts.join(' · ');
+    }
+
+    function setStamps(stamp) {
+      if (typeof stamp !== 'string' || !stamp.length) return;
+      var d = new Date(stamp);
+      if (isNaN(d.getTime())) return;
+      var text = 'Data updated ' + stampFormatter.format(d) + ' UTC · snapshot, not live';
+      for (var i = 0; i < 2; i++) {
+        var host = i === 0 ? stampLine : dataStamp;
+        host.textContent = '';
+        var lead = document.createElement('span');
+        lead.textContent = text.split(' UTC')[0] + ' ';
+        var time = document.createElement('time');
+        time.dateTime = d.toISOString();
+        time.textContent = 'UTC';
+        host.textContent = '';
+        host.append(lead, time);
+        host.append(document.createTextNode(' · snapshot, not live'));
+      }
+    }
+
+    function addCard(row) {
+      var url = stagedUrl(row.file);
+      var card = document.createElement('a');
+      card.className = 'shot-card';
+      card.setAttribute('data-span', widthClass(row.file));
+      card.setAttribute('data-lift', '');
+      card.href = url;
+      card.target = '_blank';
+      card.rel = 'noopener';
+
+      var frame = document.createElement('span');
+      frame.className = 'shot-frame';
+      var img = document.createElement('img');
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = 'Capture ' + labelOf(row);
+      img.src = url;
+      img.addEventListener('error', function () {
+        /* A staged copy that is not on disk is skipped and counted, never
+           shown broken. The note recomputes from the live DOM. */
+        if (!card.isConnected) return;
+        card.remove();
+        updateNote();
+      });
+      frame.appendChild(img);
+
+      var body = document.createElement('span');
+      body.className = 'shot-body';
+      var title = document.createElement('h3');
+      title.className = 'shot-title';
+      title.textContent = labelOf(row);
+      var meta = document.createElement('span');
+      meta.className = 'card-meta';
+      meta.textContent = metaOf(row);
+      body.appendChild(title);
+      body.appendChild(meta);
+
+      card.appendChild(frame);
+      card.appendChild(body);
+      grid.appendChild(card);
+    }
+
+    async function boot() {
+      var res;
+      try {
+        res = await fetch(DATA_URL);
+      } catch (err) {
+        if (location.protocol === 'file:') {
+          unreadable('blocked', 'This page read its snapshot with fetch, which browsers block on the file:// origin. Nothing is missing by itself: open this page on the published site or through a local static server and the gallery renders. The snapshot lives at Projects/HQ/_data/captures.json.');
+        } else {
+          unreadable('network', 'The snapshot request failed before any answer arrived (' + err.message + '). Check the server and reload.');
+        }
+        return;
+      }
+      if (!res.ok) {
+        unreadable('http ' + res.status, 'The server answered HTTP ' + res.status + ' for the snapshot file, so there is nothing to render yet. Ask in chat to run hq-data.cjs, then reload this page.');
+        return;
+      }
+      var data;
+      try {
+        data = await res.json();
+      } catch (err) {
+        unreadable('corrupt', 'The snapshot file did not parse as JSON, so it is treated as corrupt rather than empty. Ask in chat to rerun hq-data.cjs, then reload this page.');
+        return;
+      }
+      var rows = Array.isArray(data.captures)
+        ? data.captures.filter(function (r) { return r && safeStagedPath(r.file); })
+        : [];
+      rows.sort(function (a, b) { return String(b.mtime || '').localeCompare(String(a.mtime || '')); });
+      if (rows.length > CAP) rows = rows.slice(0, CAP);
+
+      found = Number(data.found) > 0 ? Number(data.found) : rows.length;
+      setStamps(data.stamp);
+
+      if (!rows.length) {
+        countNote.textContent = 'newest 0 of ' + found;
+        say('No captures are staged in the snapshot. Ask in chat to run hq-data.cjs, then reload this page.');
+        return;
+      }
+      rows.forEach(addCard);
+      attempted = rows.length;
+      updateNote();
+    }
+
+    boot().catch(function (e) {
+      /* The page-level boundary: nothing above may surface as an uncaught error. */
+      unreadable('script', 'The gallery script stopped with an error: ' + e.message + '. The page itself is fine; ask in chat to look at captures.html.');
+    });
+  })();
+  </script>
+</body>
+</html>

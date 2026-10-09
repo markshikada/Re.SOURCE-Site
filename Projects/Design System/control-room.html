@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Control room</title>
+<meta name="description" content="One standing surface where all seven Re.SOURCE masters are mounted live, one at a time, each inside a frame at 12, 6 or 3 columns — or all three counts together, without opening another window.">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="lib/topbar.css">
+<link rel="stylesheet" href="lib/hubs.css">
+<script src="lib/masters-nav.js"></script>
+<style>
+/* Control room. Tokens only. The field and the motion are the compiled closure
+   (tokens/grid.css, tokens/motion.css) — nothing here declares its own column
+   maths or its own keyframe. The chrome is the hub chrome: lib/topbar.css for
+   the bar, lib/hubs.css for the type and the measure, so this page and HQ and
+   Masters read as one surface.
+
+   Letter spacing on the mono metadata layer, declared and justified: 0.06em on
+   the three row labels and 0.02em on every caption, chip, readout and path,
+   matching the live library (lib/topbar.css 0.02em, lib/masters-nav.js 0.06em
+   on a heading). Tracking is a craft dial, not a ban; here it exists to
+   separate 11px mono capitals from the words around them.
+
+   Compare is the one addition, and it is the same page in a second mode: three
+   frames at the three divisions at once, one row at 1081 and up — the field's
+   own step for twelve columns — and a stack below it. Every frame carries its
+   own readout head, because a division, a width and a fit belong to the frame
+   they describe; the path belongs to all three and is named once in the panel
+   head. One breakpoint, and it is the field's, not this page's. */
+
+/* ---- identity ---------------------------------------------------------- */
+.cr-id { display: flex; align-items: center; gap: var(--space-lg); }
+.cr-id h1 { margin: 0; }
+/* The mark is the system's own twelve positions, drawn as strokes at r2 in a 48
+   box, with the core as a hollow ring. Colour lives in strokes and marks; no
+   word sits on any of it. */
+.cr-mark { flex: 0 0 auto; width: 48px; height: 48px; display: block; }
+.cr-mark circle { fill: none; stroke-width: 3; }
+/* Two facts, not a sentence: they wrap onto their own lines at a phone rather
+   than stranding a separator at the head of the second one. */
+.cr-origin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-md);
+  margin: var(--space-xs) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  letter-spacing: 0.02em;
+  color: var(--text-dim);
+  overflow-wrap: anywhere;
+}
+
+/* ---- the control cluster ----------------------------------------------- */
+.cr-controls {
+  padding: var(--space-md);
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  row-gap: var(--space-sm);
+}
+.cr-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md); }
+/* A labelled group travels as one unit, so a label is never stranded at the end
+   of a wrapped line away from the chips it names: the two division controls sit
+   beside each other at twelve columns and stack onto their own lines below the
+   field's own 1081, and at 390 the division chips wrap inside their group while
+   the label stays with the first of them. */
+.cr-group { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md); }
+.cr-label {
+  flex: 0 0 auto;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: var(--lh-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.cr-chips { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+/* A chip is the HUD control: 32px visual row, 6px 10px, radius-sm, card fill
+   and surface border. The 44px hit area sits behind it on the ::before, inset by
+   half the difference, so the painted row stays 32px and the hit target reads 44
+   — the same mechanism lib/topbar.css uses for its own rows. The row gap is 8px
+   and the inset is horizontal-free, so two neighbouring hits never overlap. */
+.cr-chip {
+  position: relative;
+  z-index: 0;
+  min-height: 32px;
+  margin: 0;
+  padding: 6px 10px;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform var(--dur-sm) var(--ease-place), background-color var(--dur-sm) var(--ease-place),
+    border-color var(--dur-sm) var(--ease-place), color var(--dur-sm) var(--ease-place);
+}
+.cr-chip::before {
+  content: '';
+  position: absolute;
+  inset: calc((44px - 32px) / -2) 0;
+  z-index: -1;
+  border-radius: var(--radius-sm);
+}
+.cr-chip:hover { transform: translateY(-2px); background: var(--g12); border-color: var(--g66); color: var(--text-primary); }
+.cr-chip:active { transform: scale(0.96); }
+.cr-chip[aria-pressed="true"] { color: var(--text-primary); border-color: var(--g88); background: var(--surface-raised); }
+.cr-chip[aria-pressed="true"]::before { background: var(--g12); }
+.cr-chip:focus-visible { outline: 2px solid var(--g88); outline-offset: 2px; }
+/* Idle-dim rather than disabled, the states law's own form: a control that has
+   nothing to do in this mode stays reachable and is announced as unavailable,
+   where a disabled button drops out of the tab order and says nothing. Compare
+   holds every division at once, so there is one division left to choose. */
+.cr-chip[aria-disabled="true"] { opacity: 0.4; cursor: default; }
+.cr-chip[aria-disabled="true"]:hover { transform: none; background: var(--surface-card); border-color: var(--surface-border); color: var(--text-secondary); }
+.cr-chip[aria-disabled="true"]:active { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .cr-chip { transition-duration: 1ms; }
+}
+
+/* ---- the frame --------------------------------------------------------- */
+.cr-panel {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+/* space-between, not an auto margin: on one line the readout sits left and the
+   path right; when the head wraps at a phone each takes its own line and both
+   align to the left edge instead of leaving the path stranded mid-measure. */
+.cr-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-xs) var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--surface-border);
+}
+/* The division line. This is the one live status on the page, so it is also the
+   one region aria-live speaks: the division, the width it is drawn at, and the
+   fit. It never repeats the master — the picker above already names it. */
+.cr-readout {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+.cr-path {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: var(--lh-caption);
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+  transition: color var(--dur-sm) var(--ease-place);
+}
+.cr-path:hover { transform: translateY(-1px); }
+.cr-path:focus-visible { outline: 2px solid var(--g88); outline-offset: 2px; border-radius: var(--radius-sm); }
+
+.cr-stage { padding: var(--space-sm); background: var(--surface-page); }
+/* fit-content, so the frame hugs the division it is showing: a 3-column master
+   stands as a phone-sized screen in the middle of the panel rather than as a
+   phone floating in the middle of a desktop-shaped hole. */
+.cr-frame {
+  position: relative;
+  width: fit-content;
+  margin-inline: auto;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  background: var(--black);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+/* The scaler is the frame's own box; the viewport inside it is the master's true
+   frame at the chosen division, scaled to fit. The scale never exceeds 1, so a
+   master is never shown larger than it renders. */
+.cr-scaler { position: relative; overflow: hidden; }
+.cr-viewport { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+.cr-viewport iframe { display: block; width: 100%; height: 100%; border: 0; background: var(--black); }
+.cr-note {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: var(--lh-caption);
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+}
+.cr-panel[data-state="mounting"] .cr-note,
+.cr-panel[data-state="empty"] .cr-note { display: flex; }
+
+/* While a master is mounting, or when a path answers with no document, the note
+   is the whole frame: the viewport is hidden rather than left showing the
+   previous master's last painted frame under the words. */
+.cr-panel[data-state="mounting"] .cr-viewport,
+.cr-panel[data-state="empty"] .cr-viewport { visibility: hidden; }
+
+/* ---- compare ----------------------------------------------------------- */
+/* The same stage material as the single frame — the field's page fill at the
+   field's own small step — carrying a row of three frames instead of one. The
+   base case is the stack, because below 1081 the count is six or three and a
+   twelfth of the row would leave all three unreadable; the row itself is added
+   at 1081, which is the field's step for twelve columns and not a breakpoint of
+   this page's. The gap walks the field's own gutter with the count: lg at
+   twelve, md at six, sm at three. */
+.cr-compare {
+  display: none;
+  padding: var(--space-sm);
+  background: var(--surface-page);
+}
+.cr-panel[data-compare="on"] .cr-compare { display: grid; grid-template-columns: 1fr; gap: var(--space-sm); }
+.cr-panel[data-compare="on"] .cr-stage { display: none; }
+/* With no division to name, the panel head is one line carrying the path. It
+   takes the left edge rather than the right, and the empty readout beside it
+   takes no gap, so the head reads as a name for the three frames under it rather
+   than as a right-hand fragment with a hole beside it. */
+.cr-panel[data-compare="on"] .cr-head { justify-content: flex-start; column-gap: 0; }
+@media (min-width: 721px) {
+  .cr-panel[data-compare="on"] .cr-compare { gap: var(--space-md); }
+}
+@media (min-width: 1081px) {
+  .cr-panel[data-compare="on"] .cr-compare { grid-template-columns: repeat(3, 1fr); align-items: start; gap: var(--space-lg); }
+}
+/* One instrument card per division: a stroke, the medium radius, a black fill.
+   No shadow — the single frame's reads against the stage fill it shares, and a
+   shadow on black is a smudge rather than an edge. */
+.cr-unit {
+  position: relative;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  background: var(--black);
+  overflow: hidden;
+}
+/* A division, the width it is drawn at and the fit are facts about this frame,
+   so they sit on the frame, not on the panel above it. The path is the one fact
+   all three share and it is named once, in the panel head. */
+.cr-unit-head {
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+.cr-unit-stage { position: relative; padding: var(--space-sm); }
+/* The scaler is centred in its card, so three frames of different scales sit
+   on one line without either stretching to the column or leaving a hole. */
+.cr-unit .cr-scaler { margin-inline: auto; }
+.cr-unit[data-state="mounting"] .cr-note,
+.cr-unit[data-state="empty"] .cr-note { display: flex; }
+.cr-unit[data-state="mounting"] .cr-viewport,
+.cr-unit[data-state="empty"] .cr-viewport { visibility: hidden; }
+</style>
+</head>
+<body class="rs-topbar-page hub-page cr-page">
+
+<a class="hub-skip" href="#frame">Skip to the mounted master</a>
+
+<header class="rs-topbar" id="rsTopBar">
+  <div class="rs-topbar-inner" data-pad>
+    <a class="rs-topbar-brand" href="HQ.html">Re.SOURCE <span>Design System</span></a>
+    <p class="rs-topbar-stamp">W40</p>
+    <div class="rs-topbar-navrow">
+      <nav class="rs-topbar-context" aria-label="Design System pages">
+        <a href="HQ.html">HQ</a>
+      </nav>
+      <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a href="Masters.html">Open masters</a></div>
+    </div>
+  </div>
+</header>
+
+<main id="main" data-pad="" data-grid="">
+
+  <div class="cr-id" data-span="8">
+    <svg class="cr-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+      <circle style="stroke:var(--white)" cx="24" cy="24" r="4"></circle>
+      <circle style="stroke:var(--cl-01-tone)" cx="33" cy="8.41" r="2"></circle>
+      <circle style="stroke:var(--cl-02-flux)" cx="39.59" cy="15" r="2"></circle>
+      <circle style="stroke:var(--cl-03-flow)" cx="42" cy="24" r="2"></circle>
+      <circle style="stroke:var(--cl-04-love)" cx="39.59" cy="33" r="2"></circle>
+      <circle style="stroke:var(--cl-05-bond)" cx="33" cy="39.59" r="2"></circle>
+      <circle style="stroke:var(--cl-06-fire)" cx="24" cy="42" r="2"></circle>
+      <circle style="stroke:var(--cl-07-path)" cx="15" cy="39.59" r="2"></circle>
+      <circle style="stroke:var(--cl-08-time)" cx="8.41" cy="33" r="2"></circle>
+      <circle style="stroke:var(--cl-09-meta)" cx="6" cy="24" r="2"></circle>
+      <circle style="stroke:var(--cl-10-form)" cx="8.41" cy="15" r="2"></circle>
+      <circle style="stroke:var(--cl-11-type)" cx="15" cy="8.41" r="2"></circle>
+      <circle style="stroke:var(--cl-12-life)" cx="24" cy="6" r="2"></circle>
+    </svg>
+    <div>
+      <h1>Control room</h1>
+      <p class="cr-origin"><span id="crOrigin">Projects/Design System</span><span id="crWhere"></span></p>
+    </div>
+  </div>
+
+  <p class="lede" data-narrow="">One master mounted live, in a frame at 12, 6 or 3 columns — one count at a time, or all three at once. Values change in the master&rsquo;s own Sets and Effects controls, inside the frame; nothing here writes back.</p>
+
+  <section class="cr-controls" data-span="12" aria-label="What is mounted">
+    <div class="cr-row">
+      <h2 class="cr-label" id="crMasterLabel">Master</h2>
+      <div class="cr-chips" id="crMasters" role="group" aria-labelledby="crMasterLabel"></div>
+    </div>
+    <div class="cr-row">
+      <div class="cr-group">
+        <h2 class="cr-label" id="crDivisionLabel">Division</h2>
+        <div class="cr-chips" id="crDivisions" role="group" aria-labelledby="crDivisionLabel"></div>
+      </div>
+      <div class="cr-group">
+        <h2 class="cr-label" id="crCompareLabel">Compare</h2>
+        <div class="cr-chips" id="crCompare" role="group" aria-labelledby="crCompareLabel"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cr-panel" id="frame" data-span="12" data-state="mounting" data-compare="off" aria-label="Mounted master">
+    <div class="cr-head">
+      <p class="cr-readout" id="crReadout" role="status" aria-live="polite"></p>
+      <p class="cr-path"><a id="crPath" href="Masters.html"></a></p>
+    </div>
+    <div class="cr-stage" id="crStage">
+      <div class="cr-frame" id="crFrame">
+        <p class="cr-note" id="crNote">Mounting&hellip;</p>
+        <div class="cr-scaler" id="crScaler">
+          <div class="cr-viewport" id="crViewport">
+            <iframe id="crIframe" title="Mounted master"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cr-compare" id="crCompareRow" role="group" aria-label="Every division at once"></div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* The seven masters, in the law's order: Brand LOGO, Brand STYLE, Colour FLOWER,
+     Colour LINGO, Colour WHEEL, Word CARD, Word DECK. */
+  var MASTERS = [
+    { name: 'Brand LOGO', path: 'templates/brand-logo/BrandLogo.dc.html' },
+    { name: 'Brand STYLE', path: 'templates/brand-style/BrandStyle.dc.html' },
+    { name: 'Colour FLOWER', path: 'templates/colour-flower/ColourFlower.dc.html' },
+    { name: 'Colour LINGO', path: 'templates/colour-lingo/ColourLingo.dc.html' },
+    { name: 'Colour WHEEL', path: 'templates/colour-wheel/ColourWheel.dc.html' },
+    { name: 'Word CARD', path: 'templates/word-card/WordCard.dc.html' },
+    { name: 'Word DECK', path: 'templates/word-deck/WordDeck.dc.html' }
+  ];
+
+  /* The field's own divisions, each at the width the system demonstrates it.
+     1440 is the desktop check, 768 the tablet, 390 the phone. Nothing here is a
+     breakpoint of this page's own — it is the master's own frame that changes,
+     and it changes without the master reloading. */
+  var DIVISIONS = [
+    { n: '12', w: 1440, h: 900 },
+    { n: '6', w: 768, h: 1024 },
+    { n: '3', w: 390, h: 844 }
+  ];
+
+  var els = {
+    masters: document.getElementById('crMasters'),
+    divisions: document.getElementById('crDivisions'),
+    compare: document.getElementById('crCompare'),
+    compareRow: document.getElementById('crCompareRow'),
+    readout: document.getElementById('crReadout'),
+    path: document.getElementById('crPath'),
+    panel: document.getElementById('frame'),
+    note: document.getElementById('crNote'),
+    stage: document.getElementById('crStage'),
+    scaler: document.getElementById('crScaler'),
+    viewport: document.getElementById('crViewport'),
+    iframe: document.getElementById('crIframe')
+  };
+
+  /* Which division a reader lands on is the field's own count, read off the frame
+     they arrived in — 12 at 1081 and up, and below that the orientation ruling
+     (landscape six, portrait three). It is set once, on load: a later resize never
+     overrides a division the reader has chosen. */
+  var openingCount = window.innerWidth > 1080 ? 0 : (window.innerWidth > window.innerHeight ? 1 : 2);
+
+  var state = { master: 2, division: openingCount, compare: false };
+  var mounted = '';
+
+  function clamp(n, lo, hi) { return Math.min(hi, Math.max(lo, n)); }
+
+  /* The room a frame has inside its own box, and the height it is allowed to
+     spend. clientWidth carries the stage's padding, so it is read off as a
+     content box: reading it whole would push the frame 2px past the padding on
+     each side. Height is budgeted only where there is a wide frame to fit into —
+     1081 is the field's own step — because on a phone the right answer is a
+     true-size frame and a page that scrolls, not a whole desktop master shrunk to
+     a thumbnail. */
+  function room(stage) {
+    var cs = window.getComputedStyle(stage);
+    return {
+      w: stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight),
+      h: window.innerWidth > 1080 ? clamp(window.innerHeight - 240, 400, 900) : Infinity
+    };
+  }
+
+  /* One frame, drawn at one division: the true frame inside, scaled to fit the
+     box it was given. The scale never exceeds 1, so a master is never shown
+     larger than it renders. */
+  function fitFrame(frame, d, r) {
+    var s = clamp(Math.min(r.w / d.w, r.h / d.h, 1), 0.05, 1);
+    frame.scaler.style.width = Math.floor(d.w * s) + 'px';
+    frame.scaler.style.height = Math.floor(d.h * s) + 'px';
+    frame.viewport.style.width = d.w + 'px';
+    frame.viewport.style.height = d.h + 'px';
+    frame.viewport.style.transform = 'scale(' + s + ')';
+    return s;
+  }
+
+  /* Fit the division into the room the panel has. This is the single mounted
+     master, and compare never touches it while it is hidden. */
+  function fit() {
+    if (state.compare) { els.readout.textContent = ''; return; }
+    var d = DIVISIONS[state.division];
+    var s = fitFrame(els, d, room(els.stage));
+    els.readout.textContent = d.n + ' COLUMNS · ' + d.w + ' × ' + d.h + ' · FIT ' + s.toFixed(2);
+  }
+
+  /* The three frames, each to its own column — a row at 1081 and up, a stack
+     below it. Each carries its own readout; the panel head's is emptied instead,
+     because one live region should not say a thing three times over. */
+  function fitCompare() {
+    units.forEach(function (u) {
+      var s = fitFrame(u.els, u.d, room(u.els.stage));
+      u.els.head.textContent = u.d.n + ' COLUMNS · ' + u.d.w + ' × ' + u.d.h + ' · FIT ' + s.toFixed(2);
+    });
+  }
+
+  function fitAll() { fit(); if (state.compare) fitCompare(); }
+
+  /* Did the frame answer with a document, or with nothing? */
+  function answered(iframe) {
+    var doc = null;
+    try { doc = iframe.contentDocument; } catch (err) { doc = null; }
+    return !!doc && doc.contentType === 'text/html' && !!doc.body;
+  }
+
+  /* One master at a time. The previous document is torn down before the next one
+     is asked for, so seven heavy masters are never resident at once. */
+  function mount() {
+    var m = MASTERS[state.master];
+    els.path.textContent = m.path;
+    els.path.href = m.path;
+    els.iframe.title = m.name + ', at ' + DIVISIONS[state.division].n + ' columns';
+
+    if (mounted === m.path) { fit(); return; }
+
+    els.panel.setAttribute('data-state', 'mounting');
+    els.note.textContent = 'Mounting…';
+    mounted = m.path;
+    els.iframe.src = 'about:blank';
+    requestAnimationFrame(function () { els.iframe.src = m.path; });
+  }
+
+  /* Compare mounts the same master at all three divisions, as three documents:
+     one per division, each with its own Sets and Effects controls, each writing
+     only into itself. The single frame above is left mounted and hidden, so
+     turning compare off is a refit and never a reload. */
+  function mountCompare() {
+    var m = MASTERS[state.master];
+    els.path.textContent = m.path;
+    els.path.href = m.path;
+    units.forEach(function (u) {
+      if (u.mounted === m.path) { return; }
+      u.el.setAttribute('data-state', 'mounting');
+      u.els.note.textContent = 'Mounting…';
+      u.mounted = m.path;
+      u.els.iframe.src = 'about:blank';
+      requestAnimationFrame(function () { u.els.iframe.src = m.path; });
+    });
+    els.readout.textContent = '';
+    fitCompare();
+  }
+
+  /* Compare holds every division at once, so there is one division left to
+     choose: the chips go idle-dim and answer that they are unavailable, rather
+     than driving a frame nobody is looking at. */
+  function markDivisions() {
+    Array.prototype.forEach.call(els.divisions.children, function (b) {
+      if (state.compare) b.setAttribute('aria-disabled', 'true');
+      else b.removeAttribute('aria-disabled');
+    });
+  }
+
+  els.iframe.addEventListener('load', function () {
+    var ok = answered(els.iframe);
+    els.panel.setAttribute('data-state', ok ? 'ready' : 'empty');
+    if (!ok) els.note.textContent = 'No document came back for this path.';
+    fit();
+  });
+
+  function chip(label, pressed, onPick) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'cr-chip';
+    b.textContent = label;
+    b.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+    b.addEventListener('click', onPick);
+    return b;
+  }
+
+  function markPressed(host, index) {
+    Array.prototype.forEach.call(host.children, function (b, i) {
+      b.setAttribute('aria-pressed', i === index ? 'true' : 'false');
+    });
+  }
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text) n.textContent = text;
+    return n;
+  }
+
+  /* Three instrument cards, one per division, built once. They are the same three
+     boxes the Division chips walk between, so a frame at 12 and a frame at 3 in
+     compare are drawn by one piece of code and one set of measurements. */
+  var units = DIVISIONS.map(function (d) {
+    var card = el('div', 'cr-unit');
+    card.setAttribute('data-state', 'mounting');
+    var head = el('p', 'cr-unit-head');
+    var stage = el('div', 'cr-unit-stage');
+    var note = el('p', 'cr-note', 'Mounting…');
+    var scaler = el('div', 'cr-scaler');
+    var viewport = el('div', 'cr-viewport');
+    var iframe = document.createElement('iframe');
+    iframe.title = MASTERS[state.master].name + ', at ' + d.n + ' columns';
+    viewport.appendChild(iframe);
+    scaler.appendChild(viewport);
+    stage.appendChild(note);
+    stage.appendChild(scaler);
+    card.appendChild(head);
+    card.appendChild(stage);
+    els.compareRow.appendChild(card);
+
+    var u = { d: d, el: card, mounted: '', els: { head: head, stage: stage, note: note, scaler: scaler, viewport: viewport, iframe: iframe } };
+    iframe.addEventListener('load', function () {
+      var ok = answered(iframe);
+      card.setAttribute('data-state', ok ? 'ready' : 'empty');
+      if (!ok) note.textContent = 'No document came back for this path.';
+      if (state.compare) fitCompare();
+    });
+    return u;
+  });
+
+  MASTERS.forEach(function (m, i) {
+    els.masters.appendChild(chip(m.name, i === state.master, function () {
+      if (i === state.master) return;
+      state.master = i;
+      markPressed(els.masters, i);
+      units.forEach(function (u) { u.els.iframe.title = m.name + ', at ' + u.d.n + ' columns'; });
+      if (state.compare) mountCompare(); else mount();
+    }));
+  });
+
+  DIVISIONS.forEach(function (d, i) {
+    els.divisions.appendChild(chip(d.n + ' columns', i === state.division, function () {
+      if (state.compare || i === state.division) return;
+      state.division = i;
+      markPressed(els.divisions, i);
+      /* The frame is resized, not reloaded: the same document reflows into the
+         new division, so a Sets or Effects value dialled in one count is still
+         there in the next. */
+      fit();
+    }));
+  });
+
+  /* One control, two states: off it reads the three counts, on it says what
+     those counts are doing. Off is the page as it was built — one frame, one
+     division — so the control is never the reason the page changed. */
+  var compareChip = chip('12 · 6 · 3', false, function () {
+    state.compare = !state.compare;
+    els.panel.setAttribute('data-compare', state.compare ? 'on' : 'off');
+    compareChip.setAttribute('aria-pressed', state.compare ? 'true' : 'false');
+    compareChip.textContent = state.compare ? '12 · 6 · 3 side by side' : '12 · 6 · 3';
+    markDivisions();
+    /* Off, mount() is a refit when the single frame already carries this master
+       — leaving compare never reloads it. */
+    if (state.compare) mountCompare(); else mount();
+  });
+  els.compare.appendChild(compareChip);
+
+  if (window.ResizeObserver) {
+    new ResizeObserver(fitAll).observe(els.stage);
+    units.forEach(function (u) { new ResizeObserver(fitAll).observe(u.els.stage); });
+  }
+  window.addEventListener('resize', fitAll);
+
+  /* Where this page is actually being served from, said once and read live:
+     the standing view on the Mac, or the published site from anywhere else. A
+     hardcoded 127.0.0.1 would be a lie on the second of those. */
+  var where = document.getElementById('crWhere');
+  if (where) where.textContent = window.location.host || 'opened as a file';
+
+  mount();
+  fit();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word CARD · position 10 · FORM · bakeoff round 1 · E</title>
+<style>
+/* Tokens, copied verbatim from
+   /Projects/Design System/tokens/{colours,greys,space,typography}.css.
+   u = 4px for space, u = 6px for type. */
+:root{
+  --cl-00-core:transparent;
+  --cl-01-tone:#99DD00;
+  --cl-02-flux:#FFD100;
+  --cl-03-flow:#FFB000;
+  --cl-04-love:#FF7700;
+  --cl-05-bond:#FF5500;
+  --cl-06-fire:#FF0000;
+  --cl-07-path:#E02888;
+  --cl-08-time:#9933CC;
+  --cl-09-meta:#6655FF;
+  --cl-10-form:#2277FF;
+  --cl-11-type:#00BBDD;
+  --cl-12-life:#00D460;
+
+  --stroke:3px;
+
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+
+  --u:4px;
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:24px;
+  --space-xl:48px;
+  --space-2xl:96px;
+
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:24px;
+
+  --u-type:6px;
+  --fs-caption:12px;
+  --fs-body:18px;
+  --fs-h2:24px;
+  --fs-h1:36px;
+  --fs-display:48px;
+
+  --lh-caption:18px;
+  --lh-body:30px;
+  --lh-h2:36px;
+  --lh-h1:48px;
+  --lh-display:54px;
+
+  --fw-caption:300;
+  --fw-body:400;
+  --fw-h2:600;
+  --fw-h1:700;
+  --fw-display:800;
+}
+
+/* Page chrome */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--surface-page);color:var(--text-primary);
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Roboto,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;}
+body{padding:var(--space-lg);padding-top:var(--space-xl);}
+.page-head{max-width:1440px;margin:0 auto var(--space-lg) auto;}
+.page-head .eyebrow{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+  color:var(--text-dim);text-transform:uppercase;}
+.page-head h1{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);
+  margin:var(--space-xs) 0 var(--space-sm) 0;color:var(--text-primary);}
+.page-head p{font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-body);
+  color:var(--text-secondary);margin:0;max-width:60ch;}
+
+.band{max-width:1440px;margin:0 auto var(--space-2xl) auto;
+  border:3px solid var(--surface-border);
+  border-radius:var(--radius-lg);
+  background:var(--surface-card);
+  padding:var(--space-lg);
+  position:relative;
+}
+.band-label{position:absolute;top:calc(-1 * var(--lh-caption) - 2px);left:var(--space-lg);
+  font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+  color:var(--text-secondary);text-transform:uppercase;background:var(--surface-page);
+  padding:0 var(--space-sm);}
+.band-label .n{color:var(--text-primary);font-weight:var(--fw-h2);}
+.band-pitch{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+  color:var(--text-dim);text-transform:uppercase;margin:0 0 var(--space-lg) 0;
+  padding-bottom:var(--space-md);border-bottom:3px solid var(--surface-border);}
+
+.card{position:relative;
+  border:3px solid var(--cl-10-form);
+  border-radius:var(--radius-md);
+  background:var(--surface-card);
+  padding:var(--space-lg);
+}
+.card .pos{
+  position:absolute;top:var(--space-md);right:var(--space-md);
+  font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+  color:var(--cl-10-form);text-transform:uppercase;
+  border:3px solid var(--cl-10-form);border-radius:var(--radius-sm);
+  padding:0 var(--space-sm);min-width:60px;text-align:center;
+}
+.card .pos b{display:block;font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-display);
+  color:var(--text-primary);margin-bottom:var(--space-xs);}
+.card .meta{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+  color:var(--text-dim);text-transform:uppercase;}
+.card .word{font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display);
+  color:var(--text-primary);margin:0;}
+.card .gloss{font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-body);
+  color:var(--text-secondary);margin:0;}
+.card .reading{font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-body);
+  color:var(--text-primary);margin:0;}
+.card .question{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);
+  color:var(--text-primary);margin:0;}
+
+/* Reusable 12-position wheel, centred at (0,0), outer radius 54,
+   inner hole 18, position 12 at top going clockwise. Each spoke is
+   a 3px stroke from hole to ring; position 10 gets a coloured spoke
+   and coloured ring; the others stay as the rest of the system. */
+.wheel{width:144px;height:144px;display:block;}
+.wheel .ring{fill:none;stroke:var(--surface-border);stroke-width:var(--stroke);}
+.wheel .spoke{fill:none;stroke:var(--surface-border);stroke-width:var(--stroke);
+  stroke-linecap:round;}
+.wheel .dot{fill:var(--surface-border);}
+.wheel .ring--active{stroke:var(--cl-10-form);}
+.wheel .spoke--active{stroke:var(--cl-10-form);}
+.wheel .dot--active{fill:var(--cl-10-form);}
+.wheel .index{font:600 12px/16px -apple-system,system-ui,sans-serif;
+  fill:var(--text-secondary);text-anchor:middle;}
+.wheel .index--active{fill:var(--cl-10-form);font-weight:800;}
+
+/* =================== DIRECTION 1 ===================
+*   Idea: the wheel is the title. Position 10 is named in space,
+*   not in sequence. The card hands the word a wide ring at the
+*   centre of an asymmetric page, with the 12 spokes radiating
+*   outwards. Reading order: position mark (top-left), wheel,
+*   word, gloss, reading, question. The wheel is bigger than the
+*   word — it carries the position, the word sits inside it. */
+.d1{display:grid;grid-template-columns:144px 1fr;gap:var(--space-lg);
+  align-items:center;}
+.d1 .left{display:flex;flex-direction:column;gap:var(--space-md);
+  align-items:flex-start;}
+.d1 .pos-tile{
+  border:3px solid var(--cl-10-form);border-radius:var(--radius-sm);
+  padding:var(--space-sm) var(--space-md);min-width:96px;text-align:left;
+}
+.d1 .pos-tile .k{font-size:var(--fs-caption);line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);color:var(--text-dim);text-transform:uppercase;}
+.d1 .pos-tile .v{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-display);
+  color:var(--text-primary);}
+.d1 .pos-tile .a{font-size:var(--fs-caption);line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);color:var(--cl-10-form);text-transform:uppercase;}
+.d1 .right{display:flex;flex-direction:column;gap:var(--space-md);}
+.d1 .right .word{font-size:var(--fs-display);line-height:var(--lh-display);}
+.d1 .right .gloss{max-width:42ch;}
+.d1 .right .reading{max-width:42ch;padding-top:var(--space-sm);
+  border-top:3px solid var(--surface-border);}
+.d1 .right .question{padding-top:var(--space-sm);
+  border-top:3px solid var(--surface-border);}
+
+/* =================== DIRECTION 2 ===================
+*   Idea: a vertical spine. The wheel sits left and acts as a
+*   yardstick the eye climbs down. Number 10 is the second stop
+*   on the way down from the top, with the word, gloss, reading
+*   and question stacked beneath it in a single column at the
+*   spine's right. Position reads as a marker on a clock —
+*   the spokes are tick marks, the active spoke is the long hand. */
+.d2{display:grid;grid-template-columns:108px 1fr;gap:var(--space-lg);
+  align-items:flex-start;}
+.d2 .left{display:flex;flex-direction:column;gap:var(--space-lg);
+  align-items:flex-start;padding-top:var(--space-md);}
+.d2 .left .tick{
+  font-size:var(--fs-caption);line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);color:var(--text-dim);
+  text-transform:uppercase;
+  border:3px solid var(--surface-border);border-radius:var(--radius-sm);
+  padding:var(--space-xs) var(--space-sm);min-width:84px;text-align:center;
+}
+.d2 .left .tick--active{color:var(--cl-10-form);border-color:var(--cl-10-form);}
+.d2 .right{padding-top:var(--space-md);
+  border-left:3px solid var(--cl-10-form);
+  padding-left:var(--space-lg);display:flex;flex-direction:column;gap:var(--space-md);}
+.d2 .right .word{font-size:var(--fs-display);line-height:var(--lh-display);}
+.d2 .right .gloss{max-width:46ch;}
+.d2 .right .reading{max-width:46ch;color:var(--text-secondary);
+  border-top:3px solid var(--surface-border);padding-top:var(--space-sm);}
+.d2 .right .question{padding-top:var(--space-sm);
+  border-top:3px solid var(--surface-border);max-width:46ch;}
+
+/* =================== DIRECTION 3 ===================
+*   Idea: the word IS the wheel. A row of three concentric rings
+*   with the word FORM set across the outermost as a mark. The
+*   active ring lights, the position number lands on the ring at
+*   the position where the long hand rests. Gloss and question
+*   sit under the mark, reading as a paragraph caption — the
+*   wheel doesn't repeat. The reading line is the only meta. */
+.d3{display:flex;flex-direction:column;gap:var(--space-md);
+  align-items:flex-start;}
+.d3 .stage{display:flex;align-items:center;gap:var(--space-lg);}
+.d3 .stage .pos-stamp{
+  font-size:var(--fs-caption);line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);color:var(--cl-10-form);
+  text-transform:uppercase;border:3px solid var(--cl-10-form);
+  border-radius:var(--radius-sm);
+  padding:var(--space-sm) var(--space-md);text-align:center;min-width:84px;
+}
+.d3 .stage .pos-stamp b{display:block;font-size:var(--fs-h2);line-height:var(--lh-h2);
+  font-weight:var(--fw-display);color:var(--text-primary);}
+.d3 .word{font-size:var(--fs-display);line-height:var(--lh-display);
+  color:var(--text-primary);
+  border-top:3px solid var(--cl-10-form);border-bottom:3px solid var(--cl-10-form);
+  padding:var(--space-sm) 0;}
+.d3 .gloss{max-width:48ch;}
+.d3 .meta-row{display:flex;gap:var(--space-lg);align-items:flex-start;
+  border-top:3px solid var(--surface-border);padding-top:var(--space-md);}
+.d3 .meta-row .reading{max-width:46ch;flex:1 1 auto;}
+.d3 .meta-row .question{max-width:30ch;flex:0 0 auto;
+  border-left:3px solid var(--cl-10-form);padding-left:var(--space-md);}
+
+/* Mobile. Each band stacks; nothing scrolls sideways. */
+@media (max-width:720px){
+  body{padding:var(--space-md);padding-top:var(--space-lg);}
+  .band{padding:var(--space-md);}
+  .d1{grid-template-columns:1fr;}
+  .d1 .left{flex-direction:row;align-items:center;gap:var(--space-md);}
+  .d2{grid-template-columns:1fr;}
+  .d2 .right{border-left:none;border-top:3px solid var(--cl-10-form);
+    padding-left:0;padding-top:var(--space-md);}
+  .d3 .stage{flex-direction:column;align-items:flex-start;gap:var(--space-md);}
+  .d3 .meta-row{flex-direction:column;gap:var(--space-md);}
+  .d3 .meta-row .question{border-left:none;border-top:3px solid var(--cl-10-form);
+    padding-left:0;padding-top:var(--space-md);}
+  .card .word{font-size:var(--fs-h1);line-height:var(--lh-h1);}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R1-E.html</span>
+</nav>
+
+<header class="page-head">
+  <div class="eyebrow">Bakeoff round 1 · throwaway sketches</div>
+  <h1>Word CARD · position 10 · FORM</h1>
+  <p>Three readings of the same card at rest. Position 10 sits at 300 degrees on the twelve-step wheel. Colour is a stroke on a shape, never a fill behind text.</p>
+</header>
+
+<!-- ============== DIRECTION 1 ============== -->
+<section class="band" aria-label="Direction 1">
+  <div class="band-label">Direction <span class="n">1</span></div>
+  <p class="band-pitch">The wheel is the title. Position 10 named in space, not in sequence.</p>
+
+  <div class="card">
+    <span class="pos" aria-label="position 10"><b>10</b>position</span>
+
+    <div class="d1">
+      <div class="left">
+        <div class="pos-tile" aria-hidden="true">
+          <div class="k">position</div>
+          <div class="v">10</div>
+          <div class="a">300°</div>
+        </div>
+        <svg class="wheel" viewBox="-72 -72 144 144" aria-hidden="true">
+          <circle class="ring" cx="0" cy="0" r="54"/>
+          <circle class="ring ring--active" cx="0" cy="0" r="54" stroke-dasharray="85 254" stroke-dashoffset="-72"/>
+          <g>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54"/>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(30)"/>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(60)"/>
+            <line class="spoke spoke--active" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(90)"/>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(120)"/>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(150)"/>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(180)"/>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(210)"/>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(240)"/>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(270)"/>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(300)"/>
+            <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(330)"/>
+          </g>
+          <g>
+            <circle class="dot" cx="0" cy="-54"/>
+            <circle class="dot" cx="0" cy="-54" transform="rotate(30)"/>
+            <circle class="dot" cx="0" cy="-54" transform="rotate(60)"/>
+            <circle class="dot dot--active" cx="0" cy="-54" transform="rotate(90)"/>
+            <circle class="dot" cx="0" cy="-54" transform="rotate(120)"/>
+            <circle class="dot" cx="0" cy="-54" transform="rotate(150)"/>
+            <circle class="dot" cx="0" cy="-54" transform="rotate(180)"/>
+            <circle class="dot" cx="0" cy="-54" transform="rotate(210)"/>
+            <circle class="dot" cx="0" cy="-54" transform="rotate(240)"/>
+            <circle class="dot" cx="0" cy="-54" transform="rotate(270)"/>
+            <circle class="dot" cx="0" cy="-54" transform="rotate(300)"/>
+            <circle class="dot" cx="0" cy="-54" transform="rotate(330)"/>
+          </g>
+          <circle fill="none" stroke="var(--surface-border)" stroke-width="3" cx="0" cy="0" r="18"/>
+          <text class="index" x="0" y="-58">12</text>
+          <text class="index" x="32" y="-50">1</text>
+          <text class="index" x="56" y="-22">2</text>
+          <text class="index" x="58" y="14">3</text>
+          <text class="index" x="42" y="42">4</text>
+          <text class="index" x="14" y="60">5</text>
+          <text class="index" x="-14" y="60">6</text>
+          <text class="index" x="-44" y="44">7</text>
+          <text class="index" x="-60" y="16">8</text>
+          <text class="index" x="-58" y="-20">9</text>
+          <text class="index index--active" x="38" y="-22">10</text>
+          <text class="index" x="14" y="-62">11</text>
+        </svg>
+      </div>
+
+      <div class="right">
+        <div class="meta">position 10 · 300°</div>
+        <h2 class="word">FORM</h2>
+        <p class="gloss">Form is the shape a thing takes when it holds together.</p>
+        <p class="reading">The card reads the shape, the pair and the position, in that order.</p>
+        <p class="question">What is holding your shape together right now?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== DIRECTION 2 ============== -->
+<section class="band" aria-label="Direction 2">
+  <div class="band-label">Direction <span class="n">2</span></div>
+  <p class="band-pitch">A vertical spine. The wheel reads as a clock; position 10 is the long hand.</p>
+
+  <div class="card">
+    <span class="pos" aria-label="position 10"><b>10</b>position</span>
+
+    <div class="d2">
+      <div class="left">
+        <div class="tick">12 · 0°</div>
+        <div class="tick">11 · 330°</div>
+        <div class="tick tick--active">10 · 300°</div>
+        <div class="tick">9 · 270°</div>
+        <div class="tick">8 · 240°</div>
+        <div class="tick">7 · 210°</div>
+        <div class="tick">6 · 180°</div>
+        <div class="tick">5 · 150°</div>
+        <div class="tick">4 · 120°</div>
+        <div class="tick">3 · 90°</div>
+        <div class="tick">2 · 60°</div>
+        <div class="tick">1 · 30°</div>
+
+        <svg class="wheel" viewBox="-72 -72 144 144" aria-hidden="true">
+          <circle class="ring" cx="0" cy="0" r="54"/>
+          <circle class="ring ring--active" cx="0" cy="0" r="54" stroke-dasharray="85 254" stroke-dashoffset="-72"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(30)"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(60)"/>
+          <line class="spoke spoke--active" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(90)"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(120)"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(150)"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(180)"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(210)"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(240)"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(270)"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(300)"/>
+          <line class="spoke" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(330)"/>
+          <circle fill="none" stroke="var(--surface-border)" stroke-width="3" cx="0" cy="0" r="18"/>
+          <text class="index index--active" x="0" y="4">10</text>
+        </svg>
+      </div>
+
+      <div class="right">
+        <div class="meta">word</div>
+        <h2 class="word">FORM</h2>
+        <p class="gloss">Form is the shape a thing takes when it holds together.</p>
+        <p class="reading">The card reads the shape, the pair and the position, in that order.</p>
+        <p class="question">What is holding your shape together right now?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== DIRECTION 3 ============== -->
+<section class="band" aria-label="Direction 3">
+  <div class="band-label">Direction <span class="n">3</span></div>
+  <p class="band-pitch">The word is the wheel. Position 10 lands on the ring as a marker.</p>
+
+  <div class="card">
+    <span class="pos" aria-label="position 10"><b>10</b>position</span>
+
+    <div class="d3">
+      <div class="stage">
+        <svg class="wheel" viewBox="-72 -72 144 144" aria-hidden="true">
+          <circle class="ring" cx="0" cy="0" r="18"/>
+          <circle class="ring" cx="0" cy="0" r="36"/>
+          <circle class="ring ring--active" cx="0" cy="0" r="54"/>
+          <line class="spoke spoke--active" x1="0" y1="-18" x2="0" y2="-54" transform="rotate(90)"/>
+          <circle class="dot dot--active" cx="0" cy="-54" transform="rotate(90)"/>
+          <text class="index index--active" x="38" y="-22">10</text>
+          <text class="index" x="0" y="-58">12</text>
+        </svg>
+
+        <div class="pos-stamp" aria-hidden="true">
+          position<br><b>10</b>
+        </div>
+      </div>
+
+      <h2 class="word">FORM</h2>
+
+      <p class="gloss">Form is the shape a thing takes when it holds together.</p>
+
+      <div class="meta-row">
+        <p class="reading">The card reads the shape, the pair and the position, in that order.</p>
+        <p class="question">What is holding your shape together right now?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

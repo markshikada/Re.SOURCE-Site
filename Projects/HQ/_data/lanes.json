@@ -1,0 +1,1210 @@
+{
+  "stamp": "2026-10-08T23:11:04.204Z",
+  "since": "2026-10-08T11:11:04.204Z",
+  "liveMinutes": 20,
+  "quietMinutes": 90,
+  "sessions": {
+    "ok": true,
+    "label": "sessions",
+    "data": []
+  },
+  "activity": {
+    "ok": true,
+    "label": "activity trail",
+    "data": [
+      {
+        "at": "2026-10-07T23:25:25.000Z",
+        "kind": "done",
+        "text": "ops follow-up: Phone mode on a desk window now previews at the phone's measure (430px, centred) instead of stretching the table; real-phone behaviour unchanged.",
+        "ageMinutes": 1426
+      },
+      {
+        "at": "2026-10-07T23:00:22.000Z",
+        "kind": "done",
+        "text": "front door wired and live: /state/data + assets served, cap on first paint, missing faces answer 404 not crash; PR 51 merged; launchd crash-loop cleared",
+        "ageMinutes": 1451
+      },
+      {
+        "at": "2026-10-07T22:53:22.000Z",
+        "kind": "doing",
+        "text": "ops: wiring the front door - state/data, console assets, cap on first paint, 404s instead of crashes",
+        "ageMinutes": 1458
+      },
+      {
+        "at": "2026-10-07T21:27:06.000Z",
+        "kind": "doing",
+        "text": "Waiting on Mark: the one-screen board is live at /one with all four states pressable — his ruling on the design comes from playing with it, not from prose",
+        "ageMinutes": 1544
+      },
+      {
+        "at": "2026-10-07T21:21:38.000Z",
+        "kind": "done",
+        "text": "402 health check fixed (PR 48): it was counting agents grepping for the phrase, so the estate went red on its own investigation; planted fault proves it still f",
+        "ageMinutes": 1549
+      },
+      {
+        "at": "2026-10-07T21:15:55.000Z",
+        "kind": "done",
+        "text": "The gate now sweeps /one on four lists (PR 47): face, phone, motion and focus; 26/26 one-screen QA re-run green",
+        "ageMinutes": 1555
+      },
+      {
+        "at": "2026-10-07T21:07:35.000Z",
+        "kind": "done",
+        "text": "One-screen prototype at /one: four bands, one row shape, five labels, fail-closed ages; PR 45, 26/26 QA",
+        "ageMinutes": 1563
+      },
+      {
+        "at": "2026-10-07T20:53:38.000Z",
+        "kind": "doing",
+        "text": "One-screen prototype: four bands, one row shape, five labels at /one",
+        "ageMinutes": 1577
+      },
+      {
+        "at": "2026-10-07T20:20:48.000Z",
+        "kind": "done",
+        "text": "Walkthroughs index now opens the field version per Mark's ruling — e45c337 pushed, gate green",
+        "ageMinutes": 1610
+      },
+      {
+        "at": "2026-10-07T20:16:28.000Z",
+        "kind": "doing",
+        "text": "Walkthroughs index points at the field version per Mark's ruling",
+        "ageMinutes": 1615
+      },
+      {
+        "at": "2026-10-07T19:50:42.000Z",
+        "kind": "done",
+        "text": "Chat face redesigned: hover actions, Ctrl+K search, drag-drop attachments, follow-up chips, designed rest state (7bc112c)",
+        "ageMinutes": 1640
+      },
+      {
+        "at": "2026-10-07T19:49:36.000Z",
+        "kind": "done",
+        "text": "Close-out: four checkouts on main and level with origin, no branches of mine left, five live links at 200, pin-sweep PASS, free-gear exit 0, self-check exit 0, ",
+        "ageMinutes": 1641
+      },
+      {
+        "at": "2026-10-07T19:29:28.000Z",
+        "kind": "done",
+        "text": "Modular layout published and verified live: 11 content checks pass on the served copy, HTTP 200, PR 259; only the two grid containers run the full measure",
+        "ageMinutes": 1662
+      },
+      {
+        "at": "2026-10-07T19:28:29.000Z",
+        "kind": "doing",
+        "text": "Field page respans to the modular grid (PR 259): masthead 8/4, tabs and CTA at 8, nav right-aligned at 9-to-12; only the two grid containers run the full measur",
+        "ageMinutes": 1663
+      },
+      {
+        "at": "2026-10-07T18:56:46.000Z",
+        "kind": "done",
+        "text": "Field version published and verified live: model-settings-walkthrough-field.html, HTTP 200, nine content checks pass, zero script tags, law-sweep 0",
+        "ageMinutes": 1694
+      },
+      {
+        "at": "2026-10-07T18:55:50.000Z",
+        "kind": "doing",
+        "text": "Model settings page rebuilt on the twelve-column field (PR 258): six cards at three across, zero script tags, law-sweep 0; waiting on the publish workflow for t",
+        "ageMinutes": 1695
+      },
+      {
+        "at": "2026-10-07T18:45:48.000Z",
+        "kind": "done",
+        "text": "Walkthroughs page live at /walkthroughs (PR 44): every guided page on one list, built on master.css over the twelve-column field, zero script tags",
+        "ageMinutes": 1705
+      },
+      {
+        "at": "2026-10-07T18:13:07.000Z",
+        "kind": "done",
+        "text": "Master template landed (PR 42): master.css on the Re.SOURCE twelve-column field, comparison page rebuilt pure-CSS with no script tag; Figma API key moved out of",
+        "ageMinutes": 1738
+      },
+      {
+        "at": "2026-10-07T18:05:56.000Z",
+        "kind": "doing",
+        "text": "Pruned the Figma MCP key out of argv into a launchd env var (was readable by any ps); investigating the two listeners Mark asked about",
+        "ageMinutes": 1745
+      },
+      {
+        "at": "2026-10-07T17:48:36.000Z",
+        "kind": "done",
+        "text": "Comparison page live at /walkthrough-compare (PR 41): three references pressed side by side, 7 DOM assertions pass, console now launchd-supervised so it survive",
+        "ageMinutes": 1762
+      },
+      {
+        "at": "2026-10-07T17:44:11.000Z",
+        "kind": "doing",
+        "text": "Comparison page: three live walkthrough references (GOV.UK / Open Props / Linear) at /walkthrough-compare, so Mark picks by pressing rather than reading",
+        "ageMinutes": 1767
+      },
+      {
+        "at": "2026-10-07T17:26:27.000Z",
+        "kind": "done",
+        "text": "Both walkthroughs live and verified by HTTP 200: tabs and disclosure buttons on the model page, three buttoned steps on the browser connect page. law-sweep 0 fi",
+        "ageMinutes": 1785
+      },
+      {
+        "at": "2026-10-07T17:25:48.000Z",
+        "kind": "doing",
+        "text": "Both walkthroughs made interactive and merged (PR 257): tabs, buttons, highlighted calls to action; waiting on the publish workflow for the links",
+        "ageMinutes": 1785
+      },
+      {
+        "at": "2026-10-07T17:07:35.000Z",
+        "kind": "done",
+        "text": "Walkthrough page published: law-sweep 0 findings, renders checked at 390 and 1280, all nine live-content checks pass at markshikada.github.io",
+        "ageMinutes": 1803
+      },
+      {
+        "at": "2026-10-07T16:55:03.000Z",
+        "kind": "done",
+        "text": "OpenCode settings corrected and merged: every pin now resolves to the free primary, pin-sweep 37/37 PASS, free-gear-guard rejects unreachable seats, fresh sessi",
+        "ageMinutes": 1816
+      },
+      {
+        "at": "2026-10-07T16:29:18.000Z",
+        "kind": "doing",
+        "text": "Model settings fix: repoint OpenCode off the gated space-bunny-free seat; peer lane building the walkthrough page",
+        "ageMinutes": 1842
+      },
+      {
+        "at": "2026-10-07T15:52:21.000Z",
+        "kind": "done",
+        "text": "Closed OpenCode Desktop and its serve backend per Mark's tap",
+        "ageMinutes": 1879
+      },
+      {
+        "at": "2026-10-07T15:11:23.000Z",
+        "kind": "doing",
+        "text": "Monitoring MiMo Flash session 01a116c6 (free-gear ruling work) from the support lane",
+        "ageMinutes": 1920
+      },
+      {
+        "at": "2026-10-06T16:37:22.000Z",
+        "kind": "done",
+        "text": "Concept-map interaction prototype is live and published: tap a row, the panel opens with only what the page already knew. PR 253 merged. Awaiting Mark's judgeme",
+        "ageMinutes": 3274
+      },
+      {
+        "at": "2026-10-06T16:05:39.000Z",
+        "kind": "doing",
+        "text": "Waiting on Mark: the concept map's 83 diagram nodes are not interactive, only the three view tabs are. What a click should do is his call, not mine",
+        "ageMinutes": 3305
+      },
+      {
+        "at": "2026-10-06T16:05:39.000Z",
+        "kind": "done",
+        "text": "Health gate fully green again: the free seat is restored on both routing pins with the fallback chain armed, so the outage that stranded this morning now costs ",
+        "ageMinutes": 3305
+      },
+      {
+        "at": "2026-10-06T15:55:13.000Z",
+        "kind": "doing",
+        "text": "Next lane, found by the gate: pin-sweep and console-inventory both read the harness settings.json defaultModel as a routing value, but the running session rewri",
+        "ageMinutes": 3316
+      },
+      {
+        "at": "2026-10-06T15:55:13.000Z",
+        "kind": "done",
+        "text": "Pickup lane closed: concept map landed with the colour ruling applied and measured, page published and named in the feed; August work recovered to PERSONAL; HQ ",
+        "ageMinutes": 3316
+      },
+      {
+        "at": "2026-10-06T14:30:17.000Z",
+        "kind": "done",
+        "text": "Support lane: health gate 4 fails -> 0. Tailscale restarted (phone surface 401 again), model pins restored to the ruled free pair (37 values, 22 files), auto-fa",
+        "ageMinutes": 3401
+      },
+      {
+        "at": "2026-10-05T21:33:38.000Z",
+        "kind": "done",
+        "text": "Finished work is now links: page URLs in the index, and the Estate board lists the newest pages as clickable links. Mark: 'I don't even know where they live.'",
+        "ageMinutes": 4417
+      },
+      {
+        "at": "2026-10-05T20:25:34.000Z",
+        "kind": "done",
+        "text": "Estate sweep closed: 41 uncommitted paths banked and landed, 107branches swept with archive tags at every kept tip, the red pulse check was an instrument fault ",
+        "ageMinutes": 4486
+      },
+      {
+        "at": "2026-10-05T20:01:57.000Z",
+        "kind": "doing",
+        "text": "Estate sweep: bank the uncommitted Re.SOURCE delta, sweep stale branches, catch up the lanes",
+        "ageMinutes": 4509
+      },
+      {
+        "at": "2026-10-05T19:15:29.000Z",
+        "kind": "done",
+        "text": "landed night-critic (18 commits), cleared two superseded night-log branches, and made the estate front door fetch its reading live (#236)",
+        "ageMinutes": 4556
+      },
+      {
+        "at": "2026-10-05T19:02:54.000Z",
+        "kind": "doing",
+        "text": "taking the live-feed slice of the estate front door",
+        "ageMinutes": 4568
+      },
+      {
+        "at": "2026-10-05T19:01:25.000Z",
+        "kind": "doing",
+        "text": "landing the stranded night-critic lane (18 commits) and clearing two superseded Night Log branches",
+        "ageMinutes": 4570
+      }
+    ]
+  },
+  "vaults": [
+    {
+      "name": "Re.SOURCE",
+      "path": "/Users/sushi/Documents/Vaults/Re.SOURCE",
+      "prs": {
+        "ok": true,
+        "label": "pull requests",
+        "data": []
+      },
+      "landed": {
+        "ok": true,
+        "label": "landed",
+        "data": [
+          {
+            "sha": "d84f0283",
+            "at": "2026-10-08T23:30:04+01:00",
+            "subject": "Merge pull request #285 from markshikada/lane/houseclean-carry"
+          },
+          {
+            "sha": "a4e357aa",
+            "at": "2026-10-08T23:24:23+01:00",
+            "subject": "Ops: houseclean stage 3 - carry index wiring in VAULT.md and the generated index in HQ/_data"
+          },
+          {
+            "sha": "dc2559b2",
+            "at": "2026-10-08T23:17:28+01:00",
+            "subject": "Ops: houseclean stage 2 - carry-index row added to Re.SOURCE's filing table"
+          },
+          {
+            "sha": "6c41d50b",
+            "at": "2026-10-08T23:08:44+01:00",
+            "subject": "Merge pull request #284 from markshikada/lane/hook-lane-push-policy"
+          },
+          {
+            "sha": "88c00ee9",
+            "at": "2026-10-08T23:08:36+01:00",
+            "subject": "Ops: the post-commit hook stops pushing lane branches, matching the section 3A decision recorded in COMMAND"
+          },
+          {
+            "sha": "e32a54e0",
+            "at": "2026-10-08T21:53:12+01:00",
+            "subject": "Merge pull request #283 from markshikada/lane/estate-wrap-guard"
+          },
+          {
+            "sha": "bc63ea1f",
+            "at": "2026-10-08T21:52:57+01:00",
+            "subject": "Ops: clear the wrap guard's Re.SOURCE red lines - W41 _output created, W41 CARRYOVER written from W40, handover regenerated off it"
+          },
+          {
+            "sha": "6d52e2ba",
+            "at": "2026-10-08T20:46:32+01:00",
+            "subject": "Merge pull request #282 from markshikada/lane/houseclean-res"
+          },
+          {
+            "sha": "93bf0a9f",
+            "at": "2026-10-08T20:44:48+01:00",
+            "subject": "Ops: houseclean phases 2-4, Re.SOURCE filing rows, the no-deletion wording fix, FEED-POLICY sentence and the wrap-guard wiring"
+          },
+          {
+            "sha": "f2a3bac3",
+            "at": "2026-10-08T19:46:16+01:00",
+            "subject": "Merge pull request #281 from markshikada/lane/houseclean-review-publish"
+          },
+          {
+            "sha": "1a5359f2",
+            "at": "2026-10-08T19:45:59+01:00",
+            "subject": "Publish the houseclean review page: manifest line added after COMMAND PR 211 carried the bytes"
+          },
+          {
+            "sha": "29a1fad2",
+            "at": "2026-10-08T16:31:49+01:00",
+            "subject": "Merge pull request #280 from markshikada/lane/diagram-style-proposals"
+          },
+          {
+            "sha": "49465e50",
+            "at": "2026-10-08T16:28:17+01:00",
+            "subject": "Research: three diagram style proposals, rendered specimen, closed by LANG ruling"
+          },
+          {
+            "sha": "986b0849",
+            "at": "2026-10-08T15:01:57+01:00",
+            "subject": "Merge pull request #279 from markshikada/lane/blown-away-specimen"
+          },
+          {
+            "sha": "e7c591c6",
+            "at": "2026-10-08T15:01:38+01:00",
+            "subject": "Interactive system-map specimen (step 3) and the reference pass closeout: Mark's bar is operationally interactive, IBM LANG named as the next inspection"
+          },
+          {
+            "sha": "70e71c3b",
+            "at": "2026-10-08T14:01:19+01:00",
+            "subject": "Merge pull request #278 from markshikada/lane/pinterest-reference-setup"
+          },
+          {
+            "sha": "15a0627d",
+            "at": "2026-10-08T14:00:23+01:00",
+            "subject": "Pinterest as default reference home: ruling in Design System, setup walkthrough, diagram/system-map reference pass"
+          },
+          {
+            "sha": "2d5466a4",
+            "at": "2026-10-08T12:56:30+01:00",
+            "subject": "Merge pull request #277 from markshikada/lane/ops-2026-10-08-creation-ledger"
+          },
+          {
+            "sha": "d6f876f8",
+            "at": "2026-10-08T12:56:12+01:00",
+            "subject": "Intel keeps the Creation Ledger: creation-ledger paragraph appended to the prompt body, frontmatter untouched (Mark's tap, 8 October 2026)"
+          },
+          {
+            "sha": "31b6444d",
+            "at": "2026-10-08T12:32:32+01:00",
+            "subject": "Merge pull request #276 from markshikada/lane/ops-2026-10-08-handover"
+          },
+          {
+            "sha": "d66859df",
+            "at": "2026-10-08T12:31:50+01:00",
+            "subject": "Handover regenerated 8 October: W41 source week, temp-checkout ghosts pruned"
+          }
+        ]
+      },
+      "register": null
+    },
+    {
+      "name": "COMMAND",
+      "path": "/Users/sushi/Documents/Vaults/COMMAND",
+      "prs": {
+        "ok": true,
+        "label": "pull requests",
+        "data": []
+      },
+      "landed": {
+        "ok": true,
+        "label": "landed",
+        "data": [
+          {
+            "sha": "68e5c3db",
+            "at": "2026-10-09T00:01:58+01:00",
+            "subject": "Merge pull request #230 from markshikada/lane/console-design-close"
+          },
+          {
+            "sha": "e51eea75",
+            "at": "2026-10-09T00:01:36+01:00",
+            "subject": "Console design phase close: desktop-only ruling and Ultrawork weave in VAULT.md, two W41 session notes, the carryover, five console pages and the UI kit plan"
+          },
+          {
+            "sha": "dfdfbfa5",
+            "at": "2026-10-08T23:35:36+01:00",
+            "subject": "Merge pull request #229 from markshikada/lane/intel-houseclean-fault6"
+          },
+          {
+            "sha": "33772d2f",
+            "at": "2026-10-08T23:35:27+01:00",
+            "subject": "Intel: sixth fault - a live citation can be a rejection - and the independent trial that confirms the shape"
+          },
+          {
+            "sha": "1969252e",
+            "at": "2026-10-08T23:34:31+01:00",
+            "subject": "Merge pull request #228 from markshikada/lane/intel-houseclean-strategy"
+          },
+          {
+            "sha": "1be9b70b",
+            "at": "2026-10-08T23:34:12+01:00",
+            "subject": "Intel: strike the .obsidian item - Obsidian was reinstated mid-session - and record where Stage 1 landed"
+          },
+          {
+            "sha": "cc30879c",
+            "at": "2026-10-08T23:30:02+01:00",
+            "subject": "Merge pull request #227 from markshikada/lane/houseclean-carry"
+          },
+          {
+            "sha": "88234828",
+            "at": "2026-10-08T23:28:49+01:00",
+            "subject": "Ops: session note for the houseclean execution sheet, handover regenerated off it"
+          },
+          {
+            "sha": "627792fc",
+            "at": "2026-10-08T23:24:23+01:00",
+            "subject": "Ops: houseclean stage 3 - carry-index.mjs built to rule L, both trial counts reproduced, wrap wiring added to VAULT.md"
+          },
+          {
+            "sha": "25a9a5dd",
+            "at": "2026-10-08T23:17:28+01:00",
+            "subject": "Ops: houseclean stage 2 - carry-index row added to COMMAND's filing table"
+          },
+          {
+            "sha": "22b01d3e",
+            "at": "2026-10-08T23:28:21+01:00",
+            "subject": "Merge pull request #226 from markshikada/lane/intel-option-a-close"
+          },
+          {
+            "sha": "f6637676",
+            "at": "2026-10-08T23:28:15+01:00",
+            "subject": "Intel: the designated refresher built for Option A - ledger row, GIT-WORKFLOW pointer, owed PORTALS entry, and the plan of record tells what landed and what is sequenced"
+          },
+          {
+            "sha": "262198e8",
+            "at": "2026-10-08T23:11:10+01:00",
+            "subject": "Merge pull request #225 from markshikada/lane/ops-estate-audit-close"
+          },
+          {
+            "sha": "d83713c2",
+            "at": "2026-10-08T23:11:04+01:00",
+            "subject": "Ops: the audit session's Part 4 - three taps recorded, repo-first executed with proof, and the clone rescue held on its own precondition"
+          },
+          {
+            "sha": "ba436b9b",
+            "at": "2026-10-08T23:07:56+01:00",
+            "subject": "Merge pull request #224 from markshikada/lane/repo-first-exec"
+          },
+          {
+            "sha": "b62a8905",
+            "at": "2026-10-08T23:07:26+01:00",
+            "subject": "Ops: repo-first lands - the hook stops pushing lane branches, refresh discipline written, and the portals table records Cloudflare and Google as Mark's hands only"
+          },
+          {
+            "sha": "45d5f0f0",
+            "at": "2026-10-08T22:54:22+01:00",
+            "subject": "Merge pull request #223 from markshikada/lane/intel-houseclean-strategy"
+          },
+          {
+            "sha": "597299cb",
+            "at": "2026-10-08T22:54:01+01:00",
+            "subject": "Intel: Mark's authorisation tap, and the execution sheet for Ops"
+          },
+          {
+            "sha": "77786333",
+            "at": "2026-10-08T22:52:53+01:00",
+            "subject": "Merge pull request #222 from markshikada/lane/ops-estate-audit"
+          },
+          {
+            "sha": "ab839c79",
+            "at": "2026-10-08T22:52:40+01:00",
+            "subject": "Merge pull request #221 from markshikada/lane/intel-cloud-ruling"
+          },
+          {
+            "sha": "f0fd944f",
+            "at": "2026-10-08T22:52:33+01:00",
+            "subject": "Intel: Mark's tap recorded - Repo-first adopted, host move parked, execution queued in carryover"
+          },
+          {
+            "sha": "986881c9",
+            "at": "2026-10-08T22:52:30+01:00",
+            "subject": "Ops: full-system audit, portals and agent wiring measured, two world-readable credentials closed, the shipping gap at 25 percent, four recommendations for Intel"
+          },
+          {
+            "sha": "25e03f75",
+            "at": "2026-10-08T22:42:06+01:00",
+            "subject": "Merge pull request #220 from markshikada/lane/intel-cloud-assessment"
+          },
+          {
+            "sha": "d907d020",
+            "at": "2026-10-08T22:41:29+01:00",
+            "subject": "Intel: cloud-first strategy assessed from scratch, ten untidy rows sorted by cause, options and one recommendation"
+          },
+          {
+            "sha": "71082984",
+            "at": "2026-10-08T22:29:07+01:00",
+            "subject": "Merge pull request #219 from markshikada/lane/root-hygiene-guard"
+          },
+          {
+            "sha": "27d3cc87",
+            "at": "2026-10-08T22:29:01+01:00",
+            "subject": "Ops: guard the shared parent root - a sixth root for tidy-check-estate, proved both ways, and the untidy-behaviour inventory handed to Intel"
+          },
+          {
+            "sha": "9cd888cf",
+            "at": "2026-10-08T22:24:37+01:00",
+            "subject": "Merge pull request #218 from markshikada/lane/cloud-first-brief"
+          },
+          {
+            "sha": "494c4a23",
+            "at": "2026-10-08T22:21:29+01:00",
+            "subject": "Ops: sheet for Intel - the local/cloud split assessed from scratch, ten measurements handed over, carryover line and handover regenerated"
+          },
+          {
+            "sha": "94fb37dd",
+            "at": "2026-10-08T21:57:48+01:00",
+            "subject": "Merge pull request #217 from markshikada/lane/scratch-clear-ignore"
+          },
+          {
+            "sha": "5270cb8e",
+            "at": "2026-10-08T21:57:32+01:00",
+            "subject": "Ops: keep the wrap guard's cleared scratch out of the repo, the .bak rule's own shape"
+          },
+          {
+            "sha": "2cec201c",
+            "at": "2026-10-08T21:50:03+01:00",
+            "subject": "Merge pull request #216 from markshikada/lane/estate-wrap-guard"
+          },
+          {
+            "sha": "107a25b0",
+            "at": "2026-10-08T21:49:40+01:00",
+            "subject": "Ops: estate wrap guard cleared - 45 red lines to zero across five roots, liveness line recorded, wrap-guard red carried out of the carryover and handover"
+          },
+          {
+            "sha": "5d033679",
+            "at": "2026-10-08T21:23:30+01:00",
+            "subject": "Merge pull request #215 from markshikada/lane/houseclean-csv-close"
+          },
+          {
+            "sha": "c1b69fb4",
+            "at": "2026-10-08T21:23:12+01:00",
+            "subject": "Ops: ClickUp CSV landed on Mark's tap (unarchive, move, re-archive), records updated, guard re-run shows clickup-archive 0, handover regenerated"
+          },
+          {
+            "sha": "6373c772",
+            "at": "2026-10-08T20:59:33+01:00",
+            "subject": "Merge pull request #214 from markshikada/lane/houseclean-exec"
+          },
+          {
+            "sha": "1db501ac",
+            "at": "2026-10-08T20:59:01+01:00",
+            "subject": "Ops: houseclean execution, all four phases - phase 1 pointer-checked (2 moves, 1 blocked, 2 stopped), COMMAND filing rows and freeze line, wrap-guard wiring, creation ledger row, carryover line retired, handover regenerated"
+          },
+          {
+            "sha": "a4917713",
+            "at": "2026-10-08T20:51:29+01:00",
+            "subject": "Merge pull request #213 from markshikada/lane/houseclean-guard"
+          },
+          {
+            "sha": "9ead386d",
+            "at": "2026-10-08T20:50:38+01:00",
+            "subject": "Ops: houseclean phase 3, the estate wrap guard with five roots and its own liveness line"
+          },
+          {
+            "sha": "3b06fc26",
+            "at": "2026-10-08T20:04:49+01:00",
+            "subject": "Merge pull request #212 from markshikada/lane/houseclean-sheet"
+          },
+          {
+            "sha": "f8733e15",
+            "at": "2026-10-08T20:04:29+01:00",
+            "subject": "Intel: houseclean execution sheet for Ops - approved 20:01, four phases with verifications; carryover records the tap, handover regenerated"
+          },
+          {
+            "sha": "1d8869df",
+            "at": "2026-10-08T19:44:43+01:00",
+            "subject": "Merge pull request #211 from markshikada/lane/houseclean-visual"
+          },
+          {
+            "sha": "535c125d",
+            "at": "2026-10-08T19:44:24+01:00",
+            "subject": "Intel: houseclean review page for Mark - strategy as one visual, checked at 1440/768/390, links filed in note and carryover"
+          },
+          {
+            "sha": "2ad47e2f",
+            "at": "2026-10-08T19:13:05+01:00",
+            "subject": "Merge pull request #210 from markshikada/lane/houseclean-strategy"
+          },
+          {
+            "sha": "3835ea64",
+            "at": "2026-10-08T19:12:32+01:00",
+            "subject": "Intel: complete the houseclean wrap - corroboration note, carryover review line, handover regenerated"
+          },
+          {
+            "sha": "6c1afa28",
+            "at": "2026-10-08T19:12:08+01:00",
+            "subject": "Intel: houseclean strategy landed twice - withdraw duplicate note, corroboration note added, carryover progressed to review, handover regenerated"
+          },
+          {
+            "sha": "1439a226",
+            "at": "2026-10-08T19:05:54+01:00",
+            "subject": "Intel, house cleaning strategy proposed and trialled on W40+W41 output: 5/17 misfiled as spec'd, 0/17 proposed; carryover line progressed, handover regenerated"
+          },
+          {
+            "sha": "c5448e62",
+            "at": "2026-10-08T19:02:07+01:00",
+            "subject": "Merge pull request #209 from markshikada/lane/intel-houseclean-strategy"
+          },
+          {
+            "sha": "038dd03f",
+            "at": "2026-10-08T19:01:37+01:00",
+            "subject": "Intel: house cleaning and prevention strategy, plus the draft/carry method, measured"
+          },
+          {
+            "sha": "782b88c6",
+            "at": "2026-10-08T18:40:11+01:00",
+            "subject": "Merge pull request #208 from markshikada/lane/ops-houseclean-intel"
+          },
+          {
+            "sha": "0aa4158f",
+            "at": "2026-10-08T18:39:31+01:00",
+            "subject": "House cleaning audit sheet for Intel, carryover line, handover regenerated"
+          },
+          {
+            "sha": "3c51a673",
+            "at": "2026-10-08T17:19:35+01:00",
+            "subject": "Merge pull request #207 from markshikada/lane/intel-telemetry-off"
+          },
+          {
+            "sha": "28551850",
+            "at": "2026-10-08T17:19:19+01:00",
+            "subject": "Intel: the OpenAI check, and telemetry off with its evidence and undo"
+          },
+          {
+            "sha": "752b9fb4",
+            "at": "2026-10-08T16:49:40+01:00",
+            "subject": "Merge pull request #206 from markshikada/lane/intel-relay-close"
+          },
+          {
+            "sha": "d0ef0616",
+            "at": "2026-10-08T16:49:16+01:00",
+            "subject": "Intel: relay sheet addendum - three walls, three rulings, canvas live - plus two ledger rows"
+          },
+          {
+            "sha": "4626123c",
+            "at": "2026-10-08T16:47:03+01:00",
+            "subject": "Merge pull request #205 from markshikada/lane/langflow-round3-handover"
+          },
+          {
+            "sha": "69fcace2",
+            "at": "2026-10-08T16:46:45+01:00",
+            "subject": "Regenerate HANDOVER.md: carries the Langflow relay round three session note"
+          },
+          {
+            "sha": "1b2ae4fd",
+            "at": "2026-10-08T16:44:17+01:00",
+            "subject": "Merge pull request #204 from markshikada/lane/langflow-key-round3"
+          },
+          {
+            "sha": "d1043dc5",
+            "at": "2026-10-08T16:43:57+01:00",
+            "subject": "Session note, Langflow relay round three: OPENCODE_GO refreshed and the starter flow runs 200 with RELAY LIVE"
+          },
+          {
+            "sha": "59f81fda",
+            "at": "2026-10-08T16:35:39+01:00",
+            "subject": "Merge pull request #203 from markshikada/lane/langflow-ssrf-round2-handover"
+          },
+          {
+            "sha": "a01a1f64",
+            "at": "2026-10-08T16:35:19+01:00",
+            "subject": "Regenerate HANDOVER.md: carries the Langflow SSRF round two session note"
+          },
+          {
+            "sha": "20fe1e82",
+            "at": "2026-10-08T16:32:47+01:00",
+            "subject": "Merge pull request #202 from markshikada/lane/langflow-ssrf-round2"
+          },
+          {
+            "sha": "2b133c3c",
+            "at": "2026-10-08T16:32:30+01:00",
+            "subject": "Session note: Langflow SSRF allowlist landed on route (a), canvas reaches the relay, flow now stops on a 401 key error"
+          },
+          {
+            "sha": "b39b9db8",
+            "at": "2026-10-08T16:11:17+01:00",
+            "subject": "Merge pull request #201 from markshikada/lane/langflow-relay-note"
+          },
+          {
+            "sha": "b017e594",
+            "at": "2026-10-08T16:10:56+01:00",
+            "subject": "Session note: Langflow relay evidence (three of four lines pass, the canvas run stops at Langflow's SSRF policy) with the regenerated handover"
+          },
+          {
+            "sha": "ad9efb7b",
+            "at": "2026-10-08T15:53:33+01:00",
+            "subject": "Merge pull request #200 from markshikada/lane/langflow-relay"
+          },
+          {
+            "sha": "3fbdca80",
+            "at": "2026-10-08T15:53:04+01:00",
+            "subject": "Add the Langflow local relay on 127.0.0.1:8787: injects x-opencode-session and User-Agent langflow-relay/1.0, passes client Authorization through untouched, pipes responses straight through"
+          },
+          {
+            "sha": "11ed693c",
+            "at": "2026-10-08T15:40:53+01:00",
+            "subject": "Merge pull request #199 from markshikada/lane/design-seat-qwen-ruling-v2"
+          },
+          {
+            "sha": "a8d18d38",
+            "at": "2026-10-08T15:40:20+01:00",
+            "subject": "Handover regenerated with the seat-ruling addendum"
+          },
+          {
+            "sha": "34d9e2ae",
+            "at": "2026-10-08T15:39:53+01:00",
+            "subject": "Design seat kept on mimo by Mark after live re-measurement: prices, cache-write fee, affordability and the unmeasured quality axis recorded in VAULT.md with a revisit trigger"
+          },
+          {
+            "sha": "58ddedd7",
+            "at": "2026-10-08T15:40:03+01:00",
+            "subject": "Merge pull request #198 from markshikada/lane/intel-langflow-relay-sheet"
+          },
+          {
+            "sha": "b5741751",
+            "at": "2026-10-08T15:39:39+01:00",
+            "subject": "Intel: Langflow relay sheet for Ops, and the ledger line for the service"
+          },
+          {
+            "sha": "064b5490",
+            "at": "2026-10-08T15:33:37+01:00",
+            "subject": "Merge pull request #197 from markshikada/lane/intel-lang-estate-addendum"
+          },
+          {
+            "sha": "166eca46",
+            "at": "2026-10-08T15:33:26+01:00",
+            "subject": "Intel: restore Mark's exact words in the addendum quote"
+          },
+          {
+            "sha": "69b8cf0e",
+            "at": "2026-10-08T15:33:13+01:00",
+            "subject": "Intel: addendum - inference catalogue, wallet read, and what Mark still needs walked through"
+          },
+          {
+            "sha": "2df82238",
+            "at": "2026-10-08T15:10:16+01:00",
+            "subject": "Merge pull request #196 from markshikada/lane/close-out"
+          },
+          {
+            "sha": "59a6fe38",
+            "at": "2026-10-08T15:08:51+01:00",
+            "subject": "Close-out: what slowed the session, one fix, handover regenerated"
+          },
+          {
+            "sha": "74665127",
+            "at": "2026-10-08T15:03:16+01:00",
+            "subject": "Merge pull request #195 from markshikada/lane/pinterest-closeout"
+          },
+          {
+            "sha": "15b488c8",
+            "at": "2026-10-08T15:02:42+01:00",
+            "subject": "Closeout: operationally interactive is the bar, IBM LANG ecosystem is the next inspection; specimen PR 279 recorded"
+          },
+          {
+            "sha": "b5fcfe86",
+            "at": "2026-10-08T14:58:39+01:00",
+            "subject": "Merge pull request #194 from markshikada/lane/session-close"
+          },
+          {
+            "sha": "cbb31ac7",
+            "at": "2026-10-08T14:58:03+01:00",
+            "subject": "Watcher proved and seven screenshots archived; handover regenerated at close"
+          },
+          {
+            "sha": "d11e5813",
+            "at": "2026-10-08T14:55:46+01:00",
+            "subject": "Merge pull request #193 from markshikada/lane/design-wrap-research-pivot-v2"
+          },
+          {
+            "sha": "edba2af6",
+            "at": "2026-10-08T14:55:24+01:00",
+            "subject": "Merge pull request #192 from markshikada/lane/intel-lang-estate"
+          },
+          {
+            "sha": "c0936668",
+            "at": "2026-10-08T14:54:32+01:00",
+            "subject": "Intel: record that the Langflow wiring tap is parked, not reopened"
+          },
+          {
+            "sha": "29472d44",
+            "at": "2026-10-08T14:54:13+01:00",
+            "subject": "Session closed on the research-first verdict: prototypes recorded as rejected directions, carryover rewritten, starter prompt for the AAA/Awwwards research pass"
+          },
+          {
+            "sha": "8eea03c2",
+            "at": "2026-10-08T14:54:08+01:00",
+            "subject": "Merge pull request #191 from markshikada/lane/desktop-watch"
+          },
+          {
+            "sha": "eaef2cdc",
+            "at": "2026-10-08T14:53:41+01:00",
+            "subject": "Desktop watcher and archive default, both on Mark's taps; automations row and runbook"
+          },
+          {
+            "sha": "4550fe79",
+            "at": "2026-10-08T14:53:12+01:00",
+            "subject": "Intel: the Lang estate is two companies, and only Langflow is the canvas"
+          },
+          {
+            "sha": "f8f8be89",
+            "at": "2026-10-08T14:49:09+01:00",
+            "subject": "Merge pull request #190 from markshikada/lane/langflow-paused"
+          },
+          {
+            "sha": "4af22747",
+            "at": "2026-10-08T14:49:02+01:00",
+            "subject": "Langflow paused at Mark's tap, recorded so no session re-asks"
+          },
+          {
+            "sha": "21ad9e1c",
+            "at": "2026-10-08T14:46:34+01:00",
+            "subject": "Merge pull request #189 from markshikada/lane/langflow-installed"
+          },
+          {
+            "sha": "1897a954",
+            "at": "2026-10-08T14:46:27+01:00",
+            "subject": "Langflow Desktop installed, credential saved, and the one header that blocks the Go route"
+          },
+          {
+            "sha": "3fde890c",
+            "at": "2026-10-08T14:38:15+01:00",
+            "subject": "Merge pull request #188 from markshikada/lane/prototype-power-of-three-2026-10-08"
+          },
+          {
+            "sha": "511851b7",
+            "at": "2026-10-08T14:37:01+01:00",
+            "subject": "Prototype v3, power of three: side zones collapse to three header counts, three named layouts settle chat left, chat right, chat centre, note addendum"
+          },
+          {
+            "sha": "995795f6",
+            "at": "2026-10-08T14:29:18+01:00",
+            "subject": "Merge pull request #187 from markshikada/lane/inbox-retest"
+          },
+          {
+            "sha": "d22a2446",
+            "at": "2026-10-08T14:29:12+01:00",
+            "subject": "Re-test recorded: the wrong-picture fault did not reproduce in a fresh session"
+          },
+          {
+            "sha": "2859aa16",
+            "at": "2026-10-08T14:23:07+01:00",
+            "subject": "Merge pull request #186 from markshikada/lane/visual-workflow-go-endpoint"
+          },
+          {
+            "sha": "4c3ff332",
+            "at": "2026-10-08T14:22:43+01:00",
+            "subject": "Research note corrected: OpenCode Go Plus is an OpenAI-compatible endpoint these tools can use"
+          },
+          {
+            "sha": "891d4e71",
+            "at": "2026-10-08T14:19:55+01:00",
+            "subject": "Merge pull request #185 from markshikada/lane/session-wrap-handover"
+          },
+          {
+            "sha": "9e36d46d",
+            "at": "2026-10-08T14:19:33+01:00",
+            "subject": "Handover regenerated at session close: desktop screenshot inbox and the OCR rule"
+          },
+          {
+            "sha": "4b67b46a",
+            "at": "2026-10-08T14:15:50+01:00",
+            "subject": "Merge pull request #184 from markshikada/lane/screenshot-ocr"
+          },
+          {
+            "sha": "7703a374",
+            "at": "2026-10-08T14:15:34+01:00",
+            "subject": "Merge pull request #183 from markshikada/lane/prototype-hierarchy-2026-10-08"
+          },
+          {
+            "sha": "dadb4540",
+            "at": "2026-10-08T14:15:28+01:00",
+            "subject": "Track screenshot-ocr.swift so the standing rule points at a file a fresh clone has"
+          },
+          {
+            "sha": "27be57af",
+            "at": "2026-10-08T14:15:12+01:00",
+            "subject": "Prototype rail rebuilt to Mark's four questions: Go to field on top, Needs you by effort, then Changed, Running, Surfaces. Enter prefers a title match"
+          },
+          {
+            "sha": "5b785521",
+            "at": "2026-10-08T14:13:57+01:00",
+            "subject": "Merge pull request #182 from markshikada/lane/visual-workflow-research"
+          },
+          {
+            "sha": "1da4022c",
+            "at": "2026-10-08T14:13:41+01:00",
+            "subject": "Research note: visual nodal workflow frameworks, what is alive in October 2026"
+          },
+          {
+            "sha": "3a2bd30f",
+            "at": "2026-10-08T14:11:45+01:00",
+            "subject": "Merge pull request #181 from markshikada/lane/desktop-inbox"
+          },
+          {
+            "sha": "92ddad67",
+            "at": "2026-10-08T14:10:50+01:00",
+            "subject": "Desktop screenshot inbox: scanner, runbook, standing rule, and the seed batch read"
+          },
+          {
+            "sha": "37f17b0f",
+            "at": "2026-10-08T14:10:34+01:00",
+            "subject": "Merge pull request #180 from markshikada/lane/pinterest-decisions-record"
+          },
+          {
+            "sha": "4bd30900",
+            "at": "2026-10-08T14:09:49+01:00",
+            "subject": "Mark's two taps recorded: studies before specimens, gbrain full setup later (note amended, carryover lines added)"
+          },
+          {
+            "sha": "5042ced5",
+            "at": "2026-10-08T14:06:58+01:00",
+            "subject": "Merge pull request #179 from markshikada/lane/design-pivot-note-2026-10-08"
+          },
+          {
+            "sha": "b98a1ed9",
+            "at": "2026-10-08T14:02:12+01:00",
+            "subject": "Merge pull request #178 from markshikada/lane/pinterest-session-close"
+          },
+          {
+            "sha": "830d4bc4",
+            "at": "2026-10-08T14:01:52+01:00",
+            "subject": "Session note and carryover: the three eval repairs landed (PR 55), Mark's prototype-phase pivot, first front-door prototype filed"
+          },
+          {
+            "sha": "5c841e74",
+            "at": "2026-10-08T14:01:21+01:00",
+            "subject": "Session note: Pinterest default reference home and diagram reference pass; Creation Ledger line for the walkthrough page"
+          },
+          {
+            "sha": "e2ff02ec",
+            "at": "2026-10-08T13:02:44+01:00",
+            "subject": "Merge pull request #177 from markshikada/lane/ops-2026-10-08-prompt-power-of-3"
+          },
+          {
+            "sha": "1fee5d0a",
+            "at": "2026-10-08T13:02:27+01:00",
+            "subject": "Prompt protocol: replace four em dashes with allowed punctuation (no-em-dash rule)"
+          },
+          {
+            "sha": "7f2751f4",
+            "at": "2026-10-08T13:02:05+01:00",
+            "subject": "Merge pull request #176 from markshikada/lane/ops-2026-10-08-creation-ledger"
+          },
+          {
+            "sha": "9ca0f60a",
+            "at": "2026-10-08T13:02:00+01:00",
+            "subject": "Session note, settled carryover line removed, handover regenerated (Ops, 8 October 2026)"
+          },
+          {
+            "sha": "2fc4931e",
+            "at": "2026-10-08T13:01:48+01:00",
+            "subject": "Prompt protocol: three sections, Power of 3 (Mark, 8 October)"
+          },
+          {
+            "sha": "2c6573c0",
+            "at": "2026-10-08T12:59:09+01:00",
+            "subject": "Creation Ledger created and Intel's prompt extended in COMMAND (Mark's tap: Extend Intel instead, 8 October 2026)"
+          },
+          {
+            "sha": "e3613bcd",
+            "at": "2026-10-08T12:45:26+01:00",
+            "subject": "Merge pull request #175 from markshikada/lane/ops-2026-10-08-prompt-vault-line"
+          },
+          {
+            "sha": "8c4541aa",
+            "at": "2026-10-08T12:45:07+01:00",
+            "subject": "Prompt protocol: name the vault at the front of the prompt (Mark, 8 October)"
+          },
+          {
+            "sha": "93ec16b3",
+            "at": "2026-10-08T12:37:59+01:00",
+            "subject": "Merge pull request #174 from markshikada/lane/intel-ledger-oversight"
+          },
+          {
+            "sha": "8dcdac5c",
+            "at": "2026-10-08T12:37:39+01:00",
+            "subject": "Intel: identity audit, oversight ruling and the creation-ledger sheet (Mark, 8 October)"
+          },
+          {
+            "sha": "4477a3ae",
+            "at": "2026-10-08T12:32:15+01:00",
+            "subject": "Merge pull request #173 from markshikada/lane/ops-2026-10-08-seat-tick-close"
+          },
+          {
+            "sha": "5d682f59",
+            "at": "2026-10-08T12:31:36+01:00",
+            "subject": "Session close: Space Bunny 400s traced to the strength bench, snapshot-tick fixed for launchd"
+          }
+        ]
+      },
+      "register": {
+        "ok": true,
+        "label": "lane register",
+        "data": {
+          "lanes": [
+            {
+              "lane": "estate-integrity",
+              "scope": "",
+              "writes": ""
+            },
+            {
+              "lane": "the-house",
+              "scope": "",
+              "writes": ""
+            },
+            {
+              "lane": "visibility",
+              "scope": "",
+              "writes": ""
+            }
+          ],
+          "path": "/Users/sushi/Documents/Vaults/COMMAND/Operations/Development/lanes-live.md"
+        }
+      }
+    },
+    {
+      "name": "PERSONAL",
+      "path": "/Users/sushi/Documents/Vaults/PERSONAL",
+      "prs": {
+        "ok": true,
+        "label": "pull requests",
+        "data": []
+      },
+      "landed": {
+        "ok": true,
+        "label": "landed",
+        "data": [
+          {
+            "sha": "6becdc57",
+            "at": "2026-10-08T23:30:09+01:00",
+            "subject": "Merge pull request #40 from markshikada/lane/houseclean-carry"
+          },
+          {
+            "sha": "22619b50",
+            "at": "2026-10-08T23:24:23+01:00",
+            "subject": "Ops: houseclean stage 3 - carry index wiring in VAULT.md and the generated index in Mark Shikada/_data"
+          },
+          {
+            "sha": "2492ea68",
+            "at": "2026-10-08T23:17:28+01:00",
+            "subject": "Ops: houseclean stage 2 - _scratch/ ignored in PERSONAL, the folder VAULT.md already names"
+          },
+          {
+            "sha": "03abae10",
+            "at": "2026-10-08T23:17:28+01:00",
+            "subject": "Ops: houseclean stage 2 - carry-index row added to PERSONAL's filing table"
+          },
+          {
+            "sha": "24994141",
+            "at": "2026-10-08T23:09:07+01:00",
+            "subject": "Merge pull request #39 from markshikada/lane/hook-lane-push-policy"
+          },
+          {
+            "sha": "919cc3fb",
+            "at": "2026-10-08T23:09:00+01:00",
+            "subject": "Ops: the post-commit hook stops pushing lane branches, matching the section 3A decision recorded in COMMAND"
+          },
+          {
+            "sha": "eaa726a0",
+            "at": "2026-10-08T21:51:03+01:00",
+            "subject": "Merge pull request #38 from markshikada/lane/estate-wrap-guard"
+          },
+          {
+            "sha": "1c542bee",
+            "at": "2026-10-08T21:50:46+01:00",
+            "subject": "Ops: clear the wrap guard's PERSONAL red lines - W41 _output created, 10 loose iqon captures into the week's _output, both notes repointed"
+          },
+          {
+            "sha": "5464a3cf",
+            "at": "2026-10-08T20:43:38+01:00",
+            "subject": "Merge pull request #37 from markshikada/lane/houseclean-personal"
+          },
+          {
+            "sha": "0dab14b7",
+            "at": "2026-10-08T20:43:16+01:00",
+            "subject": "Ops: houseclean phases 2-3, PERSONAL permitted roots plus tool and runbook filing rows and the wrap-guard wiring"
+          },
+          {
+            "sha": "14d39895",
+            "at": "2026-10-08T14:58:18+01:00",
+            "subject": "Merge pull request #36 from markshikada/lane/session-close"
+          },
+          {
+            "sha": "bc388105",
+            "at": "2026-10-08T14:58:01+01:00",
+            "subject": "Session close: carryover notes the triggers landed, note gets its close-out, handover regenerated last"
+          },
+          {
+            "sha": "a440ae84",
+            "at": "2026-10-08T14:53:01+01:00",
+            "subject": "Merge pull request #35 from markshikada/lane/vault-wiki-triggers"
+          },
+          {
+            "sha": "a81597a9",
+            "at": "2026-10-08T14:52:43+01:00",
+            "subject": "VAULT.md: name the journal and CRM triggers under Session start, on Mark's tap"
+          },
+          {
+            "sha": "84667963",
+            "at": "2026-10-08T14:34:24+01:00",
+            "subject": "Merge pull request #34 from markshikada/lane/wiki-mark-rulings"
+          },
+          {
+            "sha": "d9f2c0ed",
+            "at": "2026-10-08T14:34:11+01:00",
+            "subject": "Wiki: Mark's two answers filed back, therapy questions page closed"
+          },
+          {
+            "sha": "5d418184",
+            "at": "2026-10-08T14:19:53+01:00",
+            "subject": "Merge pull request #33 from markshikada/lane/wiki-concept-pages"
+          },
+          {
+            "sha": "bbccc50f",
+            "at": "2026-10-08T14:19:34+01:00",
+            "subject": "Wiki: eight concept pages built from the lint's gaps, on Mark's tap"
+          },
+          {
+            "sha": "ba5432e8",
+            "at": "2026-10-08T14:02:57+01:00",
+            "subject": "Merge pull request #32 from markshikada/lane/carryover-lint-closed"
+          },
+          {
+            "sha": "61331fa3",
+            "at": "2026-10-08T14:02:41+01:00",
+            "subject": "Carryover closes the lint pass, handover regenerated and five ghost lines pruned"
+          },
+          {
+            "sha": "b08a4294",
+            "at": "2026-10-08T13:55:22+01:00",
+            "subject": "Merge pull request #31 from markshikada/lane/wiki-lint-pass"
+          },
+          {
+            "sha": "bce4d17d",
+            "at": "2026-10-08T13:55:06+01:00",
+            "subject": "Wiki: full lint pass over 33 pages, run on Mark's tap"
+          },
+          {
+            "sha": "4b07977a",
+            "at": "2026-10-08T13:38:20+01:00",
+            "subject": "Merge pull request #30 from markshikada/lane/handover-w41"
+          },
+          {
+            "sha": "9d7c9621",
+            "at": "2026-10-08T13:38:04+01:00",
+            "subject": "HANDOVER.md regenerated for PERSONAL, week Y26 W41 October 5"
+          },
+          {
+            "sha": "d1fbced3",
+            "at": "2026-10-08T13:34:49+01:00",
+            "subject": "Merge pull request #29 from markshikada/lane/llm-wiki-spec"
+          },
+          {
+            "sha": "a06853a1",
+            "at": "2026-10-08T13:34:27+01:00",
+            "subject": "Wiki: implement the LLM Wiki pattern in full per Karpathy spec and the journal/CRM walkthrough"
+          },
+          {
+            "sha": "43d5ba16",
+            "at": "2026-10-08T12:56:47+01:00",
+            "subject": "Merge pull request #28 from markshikada/lane/ops-2026-10-08-creation-ledger"
+          },
+          {
+            "sha": "83d11eeb",
+            "at": "2026-10-08T12:56:41+01:00",
+            "subject": "Intel keeps the Creation Ledger: creation-ledger paragraph appended to the prompt body, frontmatter untouched (Mark's tap, 8 October 2026)"
+          },
+          {
+            "sha": "14538e1e",
+            "at": "2026-10-08T12:32:38+01:00",
+            "subject": "Merge pull request #27 from markshikada/lane/ops-2026-10-08-handover"
+          },
+          {
+            "sha": "aaf67be5",
+            "at": "2026-10-08T12:31:53+01:00",
+            "subject": "Handover regenerated 8 October: temp-checkout ghosts pruned, prompt fragments retired"
+          }
+        ]
+      },
+      "register": null
+    }
+  ]
+}

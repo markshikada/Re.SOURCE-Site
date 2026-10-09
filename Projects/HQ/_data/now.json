@@ -1,0 +1,64 @@
+{
+  "stamp": "2026-10-07T22:03:37.237Z",
+  "week": "Y26 W41 October 05",
+  "vaults": {
+    "Re.SOURCE": {
+      "source": "origin/main:Weekly 2026/Y26 W40 September 28/CARRYOVER.md",
+      "items": [
+        {
+          "title": "The gesture lane's two hardware judgements",
+          "body": "(28 September, nothing blocks on them): how the 40px core swipe feels on a real phone, and whether the peek earns its place beside a card that already answers a tap."
+        },
+        {
+          "title": "Lane 3, Cards copy audit",
+          "body": "remains the next queue lane, subject to the live-Drive access check before anything is compared. Lane 22 stays a draft until it has a Solves line. The HQ tier pass folding lanes 24, 25 and 28 into the landed archive is still open."
+        },
+        {
+          "title": "The standing live view, one command on the Mac",
+          "body": "the workbench piece is built and committed (Projects/Design System/standing-view.cjs plus standing-view-setup.sh), and installs only when Mark runs bash \"Projects/Design System/standing-view-setup.sh\". It writes the login item, loads it, and prints as the Mac-only link. All three workbench decisions were ruled A and are settled below."
+        },
+        {
+          "title": "One Penpot file with the MCP plugin open (28 September)",
+          "body": "the Penpot AI Kit is installed end to end on Mark's rulings, quoted \"Install for OpenCode, remote\", \"On demand as skills\" and \"Key saved to a file\". The penpot MCP entry is live and verified, the key is in the config and its Desktop copy is deleted. The only thing left is his hands: open a Penpot file, launch the MCP plugin from its Plugins panel, and leave that tab open while a session works. Detail: W40 _notes/session-2026-09-28-penpot-ai-kit-install.md."
+        },
+        {
+          "title": "From W39, unchanged",
+          "body": "the COMMAND grant in the Arena app's repository list; the planner's task list and due dates as proposed or amended; the 9 trainer card fact checks and titles; three on the copy workbench (the 82-line corpus, the copywriter-trainer.html filename, who reads first); the URL law's format; the two lane 23 brief corrections; the Flower studio one-click save and title-variant swap; the voice-dictation grants and vocabulary; the Arena one-time sign-in; the WHEEL circle hit target; whether state.json is ever promoted to own live task state; parked: gesture-home placement, the iOS Safari look, and the W37 phone test. Open People stays parked on Mark's word."
+        }
+      ]
+    },
+    "COMMAND": {
+      "source": "origin/main:Weekly 2026/Y26 W40 September 28/CARRYOVER.md",
+      "items": [
+        {
+          "title": "Go Plus — done, settled 1 October, and closed for good on 2 October",
+          "body": "Not a waiting item any more; kept here one week so the next session does not read it as pending. Mark upgraded, then burned the weekly credits and half the monthly total in a single day, which is why the estate moved to the two free seats. On 2 October he ruled the free seats are the estate rather than a pause, so there is no credit reset to restore a ladder at and nothing needs topping up."
+        },
+        {
+          "title": "OmO provider login (his hands)",
+          "body": "OmO 5.1.7 installed at ~/.local/bin/omo, Penpot MCP carried across, auth.json cleaned to a single default account pinned to opencode-go, and the model is picked: the free seats carry the session, opencode-go/space-bunny-free primary and opencode-go/longcat-2.5-preview-free fallback (mimo-v2.6-pro held the seat from 30 September to 1 October and no longer can). Detail: W40 _notes/session-2026-09-30-omo-login.md."
+        },
+        {
+          "title": "Core HQ's Model Ladder panel, once",
+          "body": "The panel is written into Operations/Artifacts/Core-HQ.html, but the standing Core HQ link is a published copy that nothing in the system can republish any more, so the strip reaches that link only through a hand republish or the Arena-scoped Core HQ rebuild, which is already an open question. The Model Ladder page itself is live and standing at and needs nothing from him."
+        },
+        {
+          "title": "Zed, closed 2 October",
+          "body": "Not his hands any more. He opened the thread and got errors, which is the confirmation the item was waiting on: omo does start inside Zed. The errors were the 402 wall, cause found and fixed, detail in this week's _notes/session-2026-10-02-zed-402-wall-fix.md. The thread now starts on opencode-go/space-bunny-free."
+        },
+        {
+          "title": "Arena sign-in, once (24 September)",
+          "body": "The automation browser at arena.ai/agent has no session, so pipeline Stage 1's Arena path is manual until he signs in and clicks Connect on the GitHub bar once. The Playwright profile persists, so it is one grant, per his requirement, quoted: \"I only want to grant access once and not have to keep stepping in.\" Local lanes are unaffected and running."
+        },
+        {
+          "title": "The three design workbench decisions",
+          "body": "(28 September, on the Re.SOURCE decision page): what carries the workbench (standing canvas and desk view, recommended); what the public link may show (the working state too, recommended); what needs his hands (one command on the Mac, recommended). Page:"
+        }
+      ]
+    },
+    "PERSONAL": {
+      "count": 1,
+      "source": "origin/main:Weekly 2026/Y26 W40 September 28/CARRYOVER.md"
+    }
+  }
+}

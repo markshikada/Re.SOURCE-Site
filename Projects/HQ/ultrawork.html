@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ultrawork: what it actually changes</title>
+<style>
+  :root{
+    --black:#000000; --g06:#0D0D0D; --g12:#1A1A1A; --g24:#333333;
+    --g48:#555555; --g66:#888888; --g88:#CCCCCC; --white:#FFFFFF;
+    --tone:#99DD00; --flux:#FFD100; --flow:#FFB000; --meta:#6655FF;
+    --form:#2277FF; --type:#00BBDD; --life:#00D460; --fire:#FF0000;
+    --u:4px;
+    --fs-caption:12px; --fs-body:18px; --fs-h2:24px; --fs-h1:36px; --fs-display:48px;
+    --lh-caption:18px; --lh-body:30px; --lh-h2:36px;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--black); color:var(--white);
+    font-family:var(--mono); font-size:var(--fs-body); line-height:var(--lh-body);
+    padding:calc(var(--u)*8) calc(var(--u)*5); -webkit-font-smoothing:antialiased}
+  main{max-width:940px; margin:0 auto}
+  header{border-bottom:3px solid var(--g24); padding-bottom:calc(var(--u)*6); margin-bottom:calc(var(--u)*8)}
+  .kicker{font-size:var(--fs-caption); letter-spacing:.18em; text-transform:uppercase; color:var(--tone)}
+  h1{font-size:var(--fs-display); line-height:1.1; margin:calc(var(--u)*3) 0 calc(var(--u)*2); letter-spacing:-.02em}
+  .sub{font-size:var(--fs-h2); line-height:var(--lh-h2); color:var(--g88); margin:0}
+  h2{font-size:var(--fs-h2); line-height:var(--lh-h2); margin:calc(var(--u)*10) 0 calc(var(--u)*3); letter-spacing:-.01em}
+  h2 .num{color:var(--g48); margin-right:var(--u)}
+  p{margin:0 0 calc(var(--u)*4)}
+  .lede{font-size:var(--fs-h2); line-height:var(--lh-h2); color:var(--g88)}
+  strong{color:var(--white); font-weight:700}
+  em{color:var(--tone); font-style:normal}
+  code{font-family:var(--mono); background:var(--g12); border:1px solid var(--g24); padding:0 6px; font-size:var(--fs-caption)}
+  pre{background:var(--g06); border:3px solid var(--g24); border-left:3px solid var(--tone);
+      padding:calc(var(--u)*4); overflow-x:auto; font-size:var(--fs-caption); line-height:var(--lh-caption); margin:0 0 calc(var(--u)*4)}
+  .box{background:var(--g06); border:3px solid var(--g24); padding:calc(var(--u)*5); margin:0 0 calc(var(--u)*5)}
+  .box.hot{border-left-color:var(--flux)} .box.cool{border-left-color:var(--type)} .box.warn{border-left-color:var(--flow)}
+  .lbl{font-size:var(--fs-caption); letter-spacing:.16em; text-transform:uppercase; color:var(--g66); display:block; margin-bottom:var(--u)}
+  table{width:100%; border-collapse:collapse; margin:0 0 calc(var(--u)*5); font-size:var(--fs-caption); line-height:var(--lh-caption)}
+  th,td{text-align:left; padding:calc(var(--u)*2) calc(var(--u)*3); border-bottom:1px solid var(--g24); vertical-align:top}
+  th{color:var(--g66); font-weight:400; letter-spacing:.12em; text-transform:uppercase; font-size:11px}
+  td:first-child{color:var(--white)}
+  .yes{color:var(--life)} .no{color:var(--fire)} .mid{color:var(--flux)} .dim{color:var(--g66)}
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:calc(var(--u)*4); margin:0 0 calc(var(--u)*5)}
+  .col{background:var(--g06); border:3px solid var(--g24); padding:calc(var(--u)*4)}
+  .col.a{border-top:3px solid var(--tone)} .col.b{border-top:3px solid var(--g48)}
+  .col h3{margin:0 0 calc(var(--u)*3); font-size:var(--fs-body)}
+  ol,ul{margin:0 0 calc(var(--u)*4); padding-left:calc(var(--u)*5)} li{margin-bottom:var(--u)}
+  .bar{display:grid; grid-template-columns:200px 1fr; gap:var(--u); align-items:center; margin-bottom:var(--u)}
+  .track{background:var(--g12); height:22px; position:relative; border:1px solid var(--g24)}
+  .fill{position:absolute; top:0; left:0; height:100%}
+  footer{margin-top:calc(var(--u)*12); border-top:3px solid var(--g24); padding-top:calc(var(--u)*5); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--g66)}
+  @media (max-width:720px){
+    body{padding:calc(var(--u)*5) calc(var(--u)*3)}
+    h1{font-size:var(--fs-h1)} .sub{font-size:var(--fs-body); line-height:var(--lh-body)}
+    .cols{grid-template-columns:1fr} .bar{grid-template-columns:110px 1fr}
+  }
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/ultrawork.html</span>
+</nav>
+<main>
+
+<header>
+  <span class="kicker">Re.SOURCE &middot; measured, not described</span>
+  <h1>Ultrawork</h1>
+  <p class="sub">What it actually changes on this machine, measured against the sessions where it was off.</p>
+</header>
+
+<p class="lede">Ultrawork is <strong>one instruction file</strong>, 552 lines, that the agent reads instead of guessing how careful to be. It is not a smarter model and not new tools. So the only honest question is what it changes. That is answerable: <strong>96 sessions</strong> ran on this machine between 30 September and 3 October, and <strong>14</strong> of them had the directive engaged.</p>
+
+<div class="box hot">
+  <span class="lbl">The measured answer, first</span>
+  <p style="margin:0">Most of what the file asks for already happened without it. Phased checklists, file edits, evidence language, PASS and FAIL wording: <strong>all present in the sessions where ultrawork was off</strong>. Three things survive the comparison, and only the first is large: <strong>it registers a goal</strong> (79% against 25%), <strong>it batches edits into one call</strong> (36% against 4%), and <strong>it commits more</strong> (64% against 33%).</p>
+</div>
+
+<h2><span class="num">01</span>Engaged against not engaged, at equal size</h2>
+
+<p>Raw counts flatter the mode wildly, because engaged sessions are far bigger. Comparing only sessions with real work in them (20 or more tool calls: 14 engaged against 24 not engaged) is the honest cut.</p>
+
+<table>
+  <thead><tr><th>Signal</th><th>Engaged</th><th>Not engaged</th><th>Verdict</th></tr></thead>
+  <tbody>
+    <tr><td>Registered a goal</td><td>79%</td><td>25%</td><td class="yes">real, and large</td></tr>
+    <tr><td>Batched multi-file edits</td><td>36%</td><td>4%</td><td class="yes">real, and sharp</td></tr>
+    <tr><td>Ran a commit</td><td>64%</td><td>33%</td><td class="mid">real, about double</td></tr>
+    <tr><td>Phased todo list</td><td>100%</td><td>75%</td><td class="no">not the mode</td></tr>
+    <tr><td>Edited files</td><td>86%</td><td>79%</td><td class="no">not the mode</td></tr>
+    <tr><td>PASS / FAIL wording</td><td>93%</td><td>79%</td><td class="no">not the mode</td></tr>
+    <tr><td>Spawned a reviewer</td><td>1 of 14</td><td>0 of 24</td><td class="dim">rare either way</td></tr>
+  </tbody>
+</table>
+
+<div class="cols">
+  <div class="col a">
+    <h3>What it genuinely adds</h3>
+    <ul style="margin:0">
+      <li><strong>A contract.</strong> A goal with pass and fail criteria, written before the work, so "done" stops being a feeling.</li>
+      <li><strong>Batching.</strong> Independent changes go out as one call, which is why the feed shows one line instead of seven.</li> 
+      <li><strong>Landing it.</strong> Roughly twice the commit rate, so the work survives the session.</li>
+    </ul>
+  </div>
+  <div class="col b">
+    <h3>What it only asks for</h3>
+    <ul style="margin:0">
+      <li>Evidence, phased tracking, verification language, cleanup receipts, tier triage, no polling loops. All of it is house style already, enforced by the standing instructions whether or not this file was read.</li>
+    </ul>
+  </div>
+</div>
+
+<h2><span class="num">02</span>Is it worth it</h2>
+
+<p>Worth it when the work has <strong>an arguable definition of done</strong>: multi-file builds, migrations, refactors across a boundary, anything touching auth, sessions, permissions or money. Not worth it for a question, a lookup or a one-spot fix, and the file itself agrees: its LIGHT tier exists precisely so small work skips the heavy machinery. The cost is real too. It reads 552 lines, it plans before it acts, and on one occasion it produced <strong>process text instead of an artefact</strong> (session <code>01a10133</code>, 61 tool calls, zero commits, the promised work never done).</p>
+
+<h2><span class="num">03</span>How it is switched on</h2>
+
+<p>There is no configuration toggle anywhere: a search of <code>omo.jsonc</code> for ultrawork, ulw or directive returns nothing. It binds when that file has been read. A live process on this machine is running <code>omo ulw</code> as its own launch mode, which is the same thing arriving from the command line rather than the chat.</p>
+
+<h2><span class="num">04</span>Your default, as of 3 October 2026</h2>
+
+<p>Two instruction files already declared ultrawork the default. What was missing was any way to <em>execute</em> that, so the read never happened and you had to ask. Three defects, all fixed today:</p>
+
+<table>
+  <thead><tr><th>Defect</th><th>Was</th><th>Now</th></tr></thead>
+  <tbody>
+    <tr><td>Path to the file</td><td class="no">a literal <code>&lt;version&gt;</code> placeholder</td><td class="yes">resolved at run time</td></tr>
+    <tr><td>Runtime versions on disk</td><td class="no">six side by side (5.1.5 to 5.1.13), so a bare wildcard is ambiguous</td><td class="yes">the newest is picked deliberately</td></tr>
+    <tr><td>When to read it</td><td class="no">unspecified, so optional in practice</td><td class="yes">before any reply text, before the first tool call</td></tr>
+  </tbody>
+</table>
+
+<p>The rule lives in <code>~/.omo/agent/AGENTS.md</code>, which every session on this machine reads at start:</p>
+
+<pre>ls -d ~/.omo/binary-runtime/*/plugin/skills/ultrawork/SKILL.md | sort -V | tail -1</pre>
+
+<p>Verified here: that prints exactly one readable path, and the clauses are present on read-back. The instruction now also says that <strong>a prose mention is not compliance; the file has been read or it has not</strong>. You will not have to ask again.</p>
+
+<h2><span class="num">05</span>Two things found on the way</h2>
+
+<div class="box warn">
+  <p><strong>A claim that did not hold.</strong> Session <code>01a1019f</code> reported it had set the thinking level to high and closed with "done, high on both seats". The file now reads <code>low</code> for that seat. Something reset it after the session, and the report does not survive contact with the file.</p>
+  <p><strong>Evidence language is a false friend.</strong> The word "evidence" appears in every engaged session and in 63% of substantial unengaged ones. Its presence proves nothing about the mode.</p>
+</div>
+
+<footer>
+  Written 3 October 2026. Every number here comes from a full parse of 96 session transcripts under ~/.omo/agent/sessions (no sampling), with engagement detected from the assistant's own banner, cross-checked against a custom_message event: 14 sessions engaged. The banner grep alone would have said 15, because one session quotes the banner while explaining the mode. Counts are per session, not per message. Limitation worth stating: engagement is inferred from what the assistant wrote, so a session that engaged and said nothing is invisible to the count.
+</footer>
+
+</main>
+</body>
+</html>

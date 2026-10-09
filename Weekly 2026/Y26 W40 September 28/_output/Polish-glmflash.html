@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word DECK · Abstract REALM · twelve dealt</title>
+<!--
+  Word DECK polish build, lane 30. One self-contained file: no external fetches.
+  Tokens inlined from Projects/Design System/tokens/{greys,colours,space,typography,motion}.css,
+  read as written. Card data copied verbatim from Projects/Design System/data/deck-data.js.
+  The sheet's own law, from the master's checks (tests/deck-grid.cjs): one lattice, one gap,
+  a count that divides the deck, nothing stretched, no cell wider than its span, the card the
+  printed card at a scale (180 × 252 at half the 360 × 504 print).
+  Law: whole numbers only · radius 8/12/24 only · colour a stroke on a shape, never a fill
+  behind text · the twelve position colours and the greyscale only · type 12/18/24/36/48 with
+  leading on the 6px unit (30 the one exception) · tracking never declared · responsive at 390.
+-->
+<style>
+:root{
+  /* greys.css */
+  --black:#000000; --g06:#0D0D0D; --g12:#1A1A1A; --g24:#333333;
+  --g48:#555555; --g66:#888888; --g88:#CCCCCC; --white:#FFFFFF;
+  --surface-page:var(--black); --surface-card:var(--g06);
+  --surface-raised:var(--g12); --surface-border:var(--g24);
+  --text-primary:var(--white); --text-secondary:var(--g66); --text-dim:var(--g48);
+  /* colours.css · the twelve positions at 30 degree steps */
+  --cl-01-tone:#99DD00; --cl-02-flux:#FFD100; --cl-03-flow:#FFB000; --cl-04-love:#FF7700;
+  --cl-05-bond:#FF5500; --cl-06-fire:#FF0000; --cl-07-path:#E02888; --cl-08-time:#9933CC;
+  --cl-09-meta:#6655FF; --cl-10-form:#2277FF; --cl-11-type:#00BBDD; --cl-12-life:#00D460;
+  /* space.css · 2:3:6 on u = 4px, radius equals spacing */
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px; --space-xl:48px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+  /* typography.css · six sizes, leading on the 6px unit, body's 30 the one exception */
+  --fs-caption:12px; --fs-body:18px; --fs-h2:24px; --fs-h1:36px; --fs-display:48px;
+  --lh-caption:18px; --lh-body:30px; --lh-h2:36px; --lh-h1:48px; --lh-display:54px;
+  /* motion.css · the 60ms unit through 2:3:6, curves on handles, read as written */
+  --dur-sm:120ms; --dur-md:180ms; --dur-lg:360ms;
+  --ease-place:cubic-bezier(0.33,0,0.5,1);
+  --ease-arrive:cubic-bezier(0,0,0.5,1);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,"Cascadia Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--surface-page); color:var(--text-primary);
+  font-family:var(--sans); font-size:var(--fs-body); line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit; color:inherit; background:none; border:0; padding:0; cursor:pointer}
+p,h1,h2{margin:0}
+:focus{outline:0}
+:focus-visible{outline:2px solid var(--g88); outline-offset:3px}
+
+/* A 32px control row with its 44px hit area behind it (states law). */
+.ctl{
+  position:relative; z-index:0;
+  display:inline-flex; align-items:center; height:32px; padding:6px 12px;
+  font-family:var(--mono); font-size:var(--fs-caption); line-height:var(--lh-caption);
+  color:var(--text-primary); background:var(--surface-raised);
+  border:1px solid var(--surface-border); border-radius:var(--radius-sm);
+}
+.ctl::before{content:""; position:absolute; inset:-6px; z-index:-1}
+/* Restate of motion.css data-lift, the system's own hover: lift 2px, one step up the ramp. */
+[data-lift]{
+  transition:transform var(--dur-sm) var(--ease-place),
+    background-color var(--dur-sm) var(--ease-place),
+    border-color var(--dur-sm) var(--ease-place),
+    color var(--dur-sm) var(--ease-place);
+}
+[data-lift]:hover{transform:translateY(-2px); background-color:var(--surface-raised); border-color:var(--g66); color:var(--text-primary)}
+
+/* ——— Masthead ——— */
+.mast{display:flex; align-items:center; gap:var(--space-lg); flex-wrap:wrap;
+  padding:var(--space-xl) var(--space-xl) 0}
+.mast-brand{display:flex; align-items:center; gap:var(--space-md)}
+.deckmark{position:relative; width:22px; height:28px; flex:none}
+.deckmark span{position:absolute; border-radius:var(--radius-sm)}
+.deckmark span:nth-child(1){left:4px; top:0; width:18px; height:24px; border:2px solid var(--g24)}
+.deckmark span:nth-child(2){left:0; top:4px; width:18px; height:24px; border:2px solid var(--g66); background:var(--surface-card)}
+.mast-eyebrow{font-family:var(--mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-secondary)}
+.mast-copy{p-title:0}
+.mast-title{font-size:var(--fs-h1); line-height:var(--lh-h1); font-weight:700}
+.mast-side{margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:var(--space-xs)}
+.legend{font-family:var(--mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-dim); text-align:right}
+@media (pointer:coarse){.legend{display:none}}
+@media (max-width:1080px){.mast{padding:var(--space-lg) var(--space-lg) 0}
+  .legend{text-align:left}}
+@media (max-width:720px){.mast{padding:var(--space-md) var(--space-md) 0}
+  .mast-side{margin-left:0; align-items:flex-start}}
+
+/* ——— The deck sheet: one lattice, one gap, a count that divides the deck ——— */
+.stage{padding:0 var(--space-xl) var(--space-xl)}
+@media (max-width:1080px){.stage{padding:0 var(--space-lg) var(--space-lg)}}
+@media (max-width:720px){.stage{padding:0 var(--space-md) var(--space-md)}}
+.sheet{
+  display:grid; grid-auto-flow:dense; grid-auto-rows:276px;
+  gap:var(--space-lg); margin-top:var(--space-lg);
+}
+/* Twelve cards read as six two-slot holdings: the pair tucks by 6, the spacing
+   between holdings stays 24, and nothing stretches to fill anything. */
+.sheet[data-count="2"]{column-gap:6px}
+
+/* ——— The card: the printed card at half, 180 by 252 ——— */
+.tile{position:relative; display:grid; place-items:center}
+.tile:focus-visible{outline:0}
+.tile:focus-visible .card{outline:2px solid var(--g88); outline-offset:3px}
+.card{
+  width:180px; height:252px; display:flex; flex-direction:column; padding:var(--space-md);
+  background:var(--surface-card); border:1px solid var(--surface-border); border-radius:var(--radius-md);
+}
+.tile .card{
+  transition:transform var(--dur-sm) var(--ease-place),
+    background-color var(--dur-sm) var(--ease-place),
+    border-color var(--dur-sm) var(--ease-place);
+}
+.tile:hover .card{transform:translateY(-2px); background:var(--surface-raised); border-color:var(--g66)}
+.tile[aria-expanded="true"] .card{border-color:var(--white)}
+.card-eyebrow{font-family:var(--mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-secondary)}
+.card-mid{flex:1; display:flex; align-items:center}
+.card-title{color:var(--text-primary); font-weight:700}
+.card-title.one{font-size:var(--fs-h1); line-height:var(--lh-h1)}
+.card-title.two{font-size:var(--fs-h2); line-height:var(--lh-h2)}
+.card-title .xii{font-family:var(--mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-dim); padding:0 var(--space-xs)}
+.card-ticks{display:flex; gap:6px}
+.tick{width:6px; height:12px; border:2px solid var(--surface-border)}
+.tick.lit{border-color:var(--c)}
+
+/* ——— The read: a card of the same lattice, first in flow, the tiles dealt around it ——— */
+.read{
+  display:none; position:relative; min-height:0; padding:var(--space-lg);
+  background:var(--surface-card); border:1px solid var(--surface-border); border-radius:var(--radius-lg);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+.sheet[aria-open="true"] .read{display:flex; flex-direction:column}
+.sheet[data-count="6"] .read{grid-column:1 / span 3; grid-row:1 / span 2}
+.sheet[data-count="4"] .read{grid-column:1 / span 2; grid-row:1 / span 2}
+.sheet[data-count="3"] .read{grid-column:1 / span 2; grid-row:1 / span 3}
+/* A two or one column sheet: the open reading leaves the lattice for a bottom sheet,
+   head pinned, its scroll inside, control always in reach. */
+.sheet[data-count="2"][aria-open="true"] .read,
+.sheet[data-count="1"][aria-open="true"] .read{
+  position:fixed; left:var(--space-md); right:var(--space-md); bottom:var(--space-md);
+  max-height:50vh; z-index:10; padding-bottom:calc(var(--space-md) + env(safe-area-inset-bottom));
+}
+.read-head{display:flex; align-items:center; gap:var(--space-md); margin-bottom:var(--space-md)}
+.read-kicker{flex:1; font-family:var(--mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-secondary);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.read-close{flex:none}
+.read-scroll{overflow-y:auto; min-height:0; flex:1; display:flex; flex-direction:column; gap:var(--space-md); scrollbar-width:thin; scrollbar-color:var(--g24) transparent}
+.read-scroll::-webkit-scrollbar{width:8px}
+.read-scroll::-webkit-scrollbar-thumb{background:var(--g24)}
+.read-scroll::-webkit-scrollbar-track{background:transparent}
+.read-main{display:flex; flex-direction:column; gap:var(--space-md)}
+/* The wide read holds the card face beside its reading; compact reads stack it. */
+.sheet[data-count="6"] .read-main{display:grid; grid-template-columns:180px 1fr; gap:var(--space-lg); align-items:start}
+.read-face .card{border-color:var(--white)}
+.read-title{font-weight:800; font-size:var(--fs-h1); line-height:var(--lh-h1)}
+.read-title.wide{font-size:var(--fs-display); line-height:var(--lh-display)}
+/* The word is said once: the face card of the read holds it, in every count. The
+   title stays as the read's own heading for the reader, just not on the paint. */
+.read-title{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap}
+.read-title .xii{font-family:var(--mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-dim); padding:0 var(--space-sm)}
+.read-gloss{font-size:var(--fs-h2); line-height:var(--lh-h2); font-weight:600}
+.read-reading{color:var(--text-secondary)}
+.read-question .q-k{font-family:var(--mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-dim); margin-right:var(--space-sm)}
+.read-rel{display:grid; gap:var(--space-xs); margin-top:auto; padding-top:var(--space-md)}
+.rel-row{display:flex; align-items:center; gap:var(--space-sm); flex-wrap:wrap}
+.rel-k{font-family:var(--mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-dim); min-width:96px}
+.rel-mut{font-family:var(--mono); font-size:var(--fs-caption); line-height:var(--lh-caption); color:var(--text-dim); padding:6px 12px;
+  border:1px dashed var(--surface-border); border-radius:var(--radius-sm)}
+
+/* ——— Motion: the tokens' own curves and the 60ms stagger, collapsed under the preference ——— */
+@keyframes rs-rise-big{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.sheet.dealing .tile{animation:rs-rise-big var(--dur-lg) var(--ease-arrive) both; animation-delay:calc(var(--i) * 60ms)}
+.sheet[aria-open="true"] .read{animation:rs-rise-big var(--dur-lg) var(--ease-arrive) both}
+@media (prefers-reduced-motion:reduce){
+  .sheet.dealing .tile,.sheet[aria-open="true"] .read,.tile .card,[data-lift]{
+    animation-duration:1ms !important; animation-delay:0ms !important; transition-duration:1ms !important;}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Polish-glmflash.html</span>
+</nav>
+
+<header class="mast">
+  <div class="mast-brand">
+    <span class="deckmark" aria-hidden="true"><span></span><span></span></span>
+    <div class="mast-copy">
+      <p class="mast-eyebrow">Abstract REALM · 12 cards · one open</p>
+      <h1 class="mast-title">Word DECK</h1>
+    </div>
+  </div>
+  <div class="mast-side">
+    <button id="deal" class="ctl" data-lift type="button">Deal again</button>
+    <p class="legend">Enter or tap opens a card · Esc closes · D deals again</p>
+    <p class="legend" id="status" role="status" aria-live="polite">Dealing twelve</p>
+  </div>
+</header>
+
+<main class="stage">
+  <section class="sheet" id="sheet" data-count="6" aria-open="false" aria-label="Deck sheet, twelve cards">
+    <aside class="read" id="read" data-open="false" role="group" tabindex="-1">
+      <div class="read-head">
+        <p class="read-kicker" id="readKicker"></p>
+        <button class="ctl read-close" id="readClose" data-lift type="button" aria-label="Close card">×</button>
+      </div>
+      <div class="read-scroll">
+        <div class="read-main">
+          <div class="read-face" id="readFace" aria-hidden="true"></div>
+          <div class="read-text">
+            <h2 class="read-title" id="readTitle"></h2>
+            <p class="read-gloss" id="readGloss"></p>
+            <p class="read-reading" id="readReading"></p>
+            <p class="read-question"><span class="q-k">ASK</span><span id="readQuestion"></span></p>
+          </div>
+        </div>
+        <div class="read-rel" id="readRel"></div>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<script>
+(function(){
+"use strict";
+
+/* ——— Card data, copied verbatim from deck-data.js: the twelve this sheet deals ——— */
+var CARDS = [
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-set","holds":12,"row":"SET","type":"Set","titles":["REALM"],"picks":[0,1,2,3,4,5],"blendPicks":[0,1,2,3,4,5],"gloss":"The world a thing belongs to","reading":"Realm names the widest frame, with nobody in it. The answer stays true whether anyone is standing there or not.","question":"Where does this belong?","lastLabel":"","last":""},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-core","holds":0,"row":"CORE","type":"Core","titles":["ZONE"],"picks":[],"blendPicks":[],"gloss":"All potential, before orientation","reading":"Nothing here has taken a direction yet. What follows arises from this quiet centre, which carries no colour of its own because it is looking rather than being looked at.","question":"Is anything pointing anywhere yet?","lastLabel":"","last":""},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-triad-prime","holds":3,"row":"TRIAD","type":"Triad","titles":["PRIME"],"picks":[1,3,5],"blendPicks":[],"gloss":"A triangle, held in balance","reading":"No position here opposes another. The weight sits evenly rather than pulling to one side.","question":"Which of the three anchors holds your focus?","lastLabel":"Counter","last":"PART","counterId":"r-triad-part"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-triad-part","holds":3,"row":"TRIAD","type":"Triad","titles":["PART"],"picks":[0,2,4],"blendPicks":[],"gloss":"The triangle the first leaves","reading":"The positions the other arrangement passes over. Between them the structure closes.","question":"Which quieter anchor steadies the noise?","lastLabel":"Counter","last":"PRIME","counterId":"r-triad-prime"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-base","holds":6,"row":"BASE","type":"Base","titles":["BASE"],"picks":[0,1,2,3,4,5],"blendPicks":[],"gloss":"Where each circle is centred","reading":"These map the main outline. The rest take their bearings from them.","question":"Which centre are you standing on?","lastLabel":"Counter","last":"BLEND","counterId":"r-blend"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-blend","holds":6,"row":"BLEND","type":"Blend","titles":["BLEND"],"picks":[],"blendPicks":[0,1,2,3,4,5],"gloss":"Where two circles cross","reading":"Two overlapping fields make a third thing that belongs to neither. The geometry has a name for it before language does.","question":"Which meeting point are you at?","lastLabel":"Counter","last":"BASE","counterId":"r-base"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-single-12","holds":1,"row":"SINGLE","type":"Single","titles":["LIFE"],"picks":[0],"blendPicks":[],"gloss":"Raw animation, before intent","reading":"It beats without asking permission and continues whether or not anything is decided. The plainest sign of it is movement that nobody ordered.","question":"What is alive in this moment?","lastLabel":"Polar","last":"FIRE"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-single-06","holds":1,"row":"SINGLE","type":"Single","titles":["FIRE"],"picks":[3],"blendPicks":[],"gloss":"Energy that consumes to clear","reading":"It insists on full expression and takes the obsolete with it. What is left afterwards is heat and space.","question":"Where is the sudden spark coming from?","lastLabel":"Polar","last":"LIFE"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-single-01","holds":1,"row":"SINGLE","type":"Single","titles":["TONE"],"picks":[],"blendPicks":[0],"gloss":"The pitch a place is set at","reading":"A room is already saying its piece before anyone speaks in it, and whatever is said next is heard through it.","question":"Which tone dominates the current environment?","lastLabel":"Polar","last":"PATH"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-single-07","holds":1,"row":"SINGLE","type":"Single","titles":["PATH"],"picks":[],"blendPicks":[3],"gloss":"A line forward, made of steps","reading":"Each step narrows what comes next, which is what makes a direction out of a series. It is only visible once a few have been taken.","question":"What is opening up ahead?","lastLabel":"Polar","last":"TONE"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-pair-1206","holds":2,"row":"PAIR","type":"Pair","titles":["LIFE","FIRE"],"picks":[0,3],"blendPicks":[],"gloss":"Ground first, then the burning","reading":"Vitality keeps its footing while what is finished is consumed. Nothing essential goes with it.","question":"What survives the clearing?","lastLabel":"Polar","last":"FIRE \u2022 LIFE","counterId":"r-pair-0612"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-pair-0612","holds":2,"row":"PAIR","type":"Pair","titles":["FIRE","LIFE"],"picks":[3,0],"blendPicks":[],"gloss":"The clearing, then what remains","reading":"Something insists on burning, and what lies underneath keeps going. Renewal needs the order kept.","question":"What is asking to end?","lastLabel":"Polar","last":"LIFE \u2022 FIRE","counterId":"r-pair-1206"}
+];
+
+/* Position words are the words the dealt cards themselves carry; token stems stay labels. */
+var POS_WORDS = {12:"LIFE",1:"TONE",2:"FLUX",3:"FLOW",4:"LOVE",5:"BOND",6:"FIRE",7:"PATH",8:"TIME",9:"META",10:"FORM",11:"TYPE"};
+var POS_COLOUR = {12:"var(--cl-12-life)",1:"var(--cl-01-tone)",2:"var(--cl-02-flux)",3:"var(--cl-03-flow)",4:"var(--cl-04-love)",5:"var(--cl-05-bond)",6:"var(--cl-06-fire)",7:"var(--cl-07-path)",8:"var(--cl-08-time)",9:"var(--cl-09-meta)",10:"var(--cl-10-form)",11:"var(--cl-11-type)"};
+var BASE_ORDER = [12,2,4,6,8,10];    /* picks index into the six Base anchors */
+var BLEND_ORDER = [1,3,5,7,9,11];    /* blendPicks index into the six Blend anchors */
+var TICK_ORDER = [12,1,2,3,4,5,6,7,8,9,10,11];
+var ROMAN = {1:"I",2:"II",3:"III",4:"IV",5:"V",6:"VI",7:"VII",8:"VIII",9:"IX",10:"X",11:"XI",12:"XII"};
+
+function positionsOf(c){
+  var out = [];
+  c.picks.forEach(function(i){ out.push(BASE_ORDER[i]); });
+  c.blendPicks.forEach(function(i){ out.push(BLEND_ORDER[i]); });
+  return out;
+}
+var byId = {};
+CARDS.forEach(function(c){ byId[c.id] = c; });
+var singleByWord = {};
+CARDS.forEach(function(c){
+  if (c.row === "SINGLE"){ singleByWord[POS_WORDS[positionsOf(c)[0]]] = c; }
+});
+
+/* ——— Card anatomy: eyebrow, title, the twelve tick strip ——— */
+function romanTitleHTML(c){
+  var pos = positionsOf(c);
+  return c.titles.map(function(w,i){
+    return "<span>" + w + "</span>" + (i < c.titles.length - 1 ? "<span class='xii'>" + ROMAN[pos[i]] + "</span>" : "");
+  }).join("");
+}
+function cardHTML(c){
+  var pos = positionsOf(c);
+  var ticks = TICK_ORDER.map(function(p){
+    var lit = c.row !== "CORE" && pos.indexOf(p) !== -1;
+    return "<span class='tick" + (lit ? " lit" : "") + (lit ? "' style='--c:" + POS_COLOUR[p] : "") + "'></span>";
+  }).join("");
+  return "<div class='card'>" +
+    "<span class='card-eyebrow'>" + c.row + (c.row === "CORE" ? " · VOID" : "") + "</span>" +
+    "<div class='card-mid'><span class='card-title " + (c.titles.length > 1 ? "two" : "one") + "'>" + romanTitleHTML(c) + "</span></div>" +
+    (c.row === "CORE" ? "<span></span>" : "<span class='card-ticks'>" + ticks + "</span>") +
+  "</div>";
+}
+
+/* ——— Sheet build ——— */
+var sheet = document.getElementById("sheet");
+var readPanel = document.getElementById("read");
+var els = {
+  kicker:document.getElementById("readKicker"), face:document.getElementById("readFace"),
+  title:document.getElementById("readTitle"), gloss:document.getElementById("readGloss"),
+  reading:document.getElementById("readReading"), question:document.getElementById("readQuestion"),
+  rel:document.getElementById("readRel"), close:document.getElementById("readClose"),
+  status:document.getElementById("status"), deal:document.getElementById("deal")
+};
+
+var tile = {};
+CARDS.forEach(function(c){
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = "tile";
+  b.setAttribute("aria-expanded", "false");
+  b.setAttribute("aria-label", c.titles.join(" ") + " · " + c.row.toLowerCase() + " · holds " + c.holds);
+  b.innerHTML = cardHTML(c);
+  b.addEventListener("click", function(){ openCard(c.id, false); });
+  tile[c.id] = b;
+});
+
+/* The deal: holdings dealt whole, a card and its counter always together. */
+var HOLDINGS = [["r-set"],["r-core"],["r-triad-prime","r-triad-part"],["r-base","r-blend"],
+  ["r-single-12","r-single-06"],["r-single-01","r-single-07"],["r-pair-1206","r-pair-0612"]];
+
+function dealOrder(){
+  var h = HOLDINGS.slice();
+  for (var i = h.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = h[i]; h[i] = h[j]; h[j] = t;
+  }
+  var flat = [];
+  h.forEach(function(hold){ hold.forEach(function(id){ flat.push(id); }); });
+  flat.forEach(function(id, i){
+    tile[id].style.setProperty("--i", String(i));
+    sheet.appendChild(tile[id]);
+  });
+}
+
+function deal(){
+  closeRead(false);
+  dealOrder();
+  sheet.classList.remove("dealing");
+  void sheet.offsetWidth;
+  sheet.classList.add("dealing");
+  els.status.textContent = "New deal · twelve held, counters together";
+}
+els.deal.addEventListener("click", deal);
+
+/* ——— Fit: a count that divides the deck, one gap, the sheet never crossing the frame ——— */
+/* Count 6 reads twelve as two rows of six; four as three rows; three as four rows;
+   two as six rows of a single two-card holding; one as twelve. The open read is a
+   lattice card of its own: 3 × 2 at six, 2 × 2 at four, 2 × 3 at three — each fill exact. */
+function fit(){
+  var frame = Math.max(320, document.documentElement.clientWidth);
+  var pad = frame > 1080 ? 48 : frame > 720 ? 24 : 12;
+  var content = frame - pad * 2;
+  var picks = [[6,24],[4,24],[3,24],[2,6],[1,0]];
+  var cols = 1, gap = 0;
+  for (var i = 0; i < picks.length; i++){
+    if (picks[i][0] * 180 + (picks[i][0] - 1) * picks[i][1] <= content){ cols = picks[i][0]; gap = picks[i][1]; break; }
+  }
+  var slot = cols >= 3 ? Math.floor((content - gap * (cols - 1)) / cols) : 180;
+  sheet.style.gridTemplateColumns = "repeat(" + cols + ", " + slot + "px)";
+  sheet.dataset.count = String(cols);
+  if (currentId){
+    els.title.className = "read-title" + (cols === 6 ? " wide" : "");
+  }
+}
+window.addEventListener("resize", fit);
+
+/* ——— Relations: rows of chips where the sheet can answer, plain text where it cannot ——— */
+function relRow(label, items){
+  var row = document.createElement("div");
+  row.className = "rel-row";
+  var k = document.createElement("span");
+  k.className = "rel-k"; k.textContent = label;
+  row.appendChild(k);
+  items.forEach(function(it){
+    if (it.id){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "ctl"; b.setAttribute("data-lift", "");
+      b.textContent = it.label;
+      b.addEventListener("click", function(){ openCard(it.id, true); });
+      row.appendChild(b);
+    } else {
+      var m = document.createElement("span");
+      m.className = "rel-mut"; m.textContent = it.label;
+      row.appendChild(m);
+    }
+  });
+  return row;
+}
+
+function relationsOf(c){
+  var rows = [];
+  if (c.counterId && byId[c.counterId]){
+    var counter = byId[c.counterId];
+    rows.push("COUNTER", [{ id:counter.id, label:counter.titles.join(" ") }]);
+  }
+  if (c.row === "SINGLE" && c.last && singleByWord[c.last]){
+    var polar = singleByWord[c.last];
+    rows.push("POLAR", [{ id:polar.id, label:polar.titles[0] }]);
+  }
+  if (c.row !== "CORE" && c.row !== "SINGLE"){
+    var items = positionsOf(c).map(function(p){
+      var word = POS_WORDS[p];
+      var s = singleByWord[word];
+      return s ? { id:s.id, label:word } : { label:word };
+    });
+    rows.push("ANCHORS", items);
+  }
+  if (c.row === "CORE"){
+    rows.push("SET", [{ id:"r-set", label:byId["r-set"].titles[0] }]);
+  }
+  return rows;
+}
+
+/* ——— Open, swap, close: another card opens from an open one without a second click ——— */
+var currentId = null;
+var sourceTile = null;
+
+function openCard(id, fromRel){
+  var c = byId[id];
+  currentId = id;
+  sheet.setAttribute("aria-open", "true");
+  readPanel.dataset.open = "true";
+  readPanel.setAttribute("aria-label", "Open card: " + c.titles.join(" "));
+  Object.keys(tile).forEach(function(k){
+    tile[k].setAttribute("aria-expanded", String(k === id));
+  });
+  sourceTile = tile[id];
+  els.kicker.textContent = c.row + " · ABSTRACT REALM · HOLDS " + c.holds;
+  els.face.innerHTML = cardHTML(c);
+  els.title.innerHTML = romanTitleHTML(c);
+  els.title.className = "read-title" + (sheet.dataset.count === "6" ? " wide" : "");
+  els.gloss.textContent = c.gloss;
+  els.reading.textContent = c.reading;
+  document.getElementById("readQuestion").textContent = c.question;
+  els.rel.innerHTML = "";
+  var rels = relationsOf(c);
+  for (var i = 0; i < rels.length; i += 2){
+    els.rel.appendChild(relRow(rels[i], rels[i + 1]));
+  }
+  if (fromRel) els.close.focus();
+  restartReadAnim();
+  els.status.textContent = "Open: " + c.titles.join(" ") + " · " + c.row.toLowerCase() + " · holds " + c.holds;
+}
+
+function closeRead(refocus){
+  if (!currentId) return;
+  sheet.setAttribute("aria-open", "false");
+  Object.keys(tile).forEach(function(k){ tile[k].setAttribute("aria-expanded", "false"); });
+  if (refocus !== false && sourceTile) sourceTile.focus();
+  currentId = null;
+  els.status.textContent = "Closed";
+}
+
+function restartReadAnim(){
+  readPanel.style.animation = "none";
+  void readPanel.offsetWidth;
+  readPanel.style.animation = "";
+}
+
+els.close.addEventListener("click", function(){ closeRead(true); });
+
+/* A tap anywhere outside the read and outside a tile closes. No veil, the
+   lattice stays live: a tap on a card is the swap, not the close. */
+document.addEventListener("pointerdown", function(e){
+  if (!currentId) return;
+  if (e.target.closest(".read") || e.target.closest(".tile") || e.target.closest(".mast")) return;
+  closeRead(true);
+});
+
+/* Every key the surface answers is named in the legend: Enter and Space on the
+   native buttons, Esc here, D here. */
+window.addEventListener("keydown", function(e){
+  if (e.key === "Escape"){ if (currentId) closeRead(true); return; }
+  if ((e.key === "d" || e.key === "D") && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat){
+    deal();
+  }
+});
+
+/* Boot: fit, deal the holdings whole, lead with the open Set card */
+fit();
+window.addEventListener("load", function(){ fit(); });
+openCard("r-set", false);
+dealOrder();
+sheet.classList.add("dealing");
+setTimeout(function(){ sheet.classList.remove("dealing"); }, 1020);
+})();
+</script>
+</body>
+</html>

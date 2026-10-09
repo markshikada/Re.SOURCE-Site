@@ -1,0 +1,1122 @@
+{
+ "stamp": "2026-10-07T22:03:41.458Z",
+ "count": 124,
+ "tips": [
+  {
+   "id": "thinking-level",
+   "text": "Use /thinking <level> to set the thinking level, /thinking to pick one, or shift+tab to cycle through them.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791392335945
+  },
+  {
+   "id": "efforts-command",
+   "text": "Use /efforts <level> to set the reasoning effort for the current model; /efforts alone lists the levels it supports.",
+   "req": "efforts",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791392348241
+  },
+  {
+   "id": "favorite-model-rotation",
+   "text": "Rotate through favorite models with ctrl+p; go backward with shift+ctrl+p.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791392430599
+  },
+  {
+   "id": "model-selector-favorites",
+   "text": "Open the model selector with ctrl+l, then use ctrl+f to toggle the highlighted favorite.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791392438253
+  },
+  {
+   "id": "model-command-search",
+   "text": "Use /model to open the selector, or /model <pattern> to jump straight to a matching model.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791392499077
+  },
+  {
+   "id": "model-cycling-scope",
+   "text": "Start OmO with --models \"anthropic/*,gpt-5*\" to limit which models ctrl+p cycles through.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791392515575
+  },
+  {
+   "id": "thinking-budgets",
+   "text": "Set thinkingBudgets in settings.json to choose the token budget behind each thinking level.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791399575283
+  },
+  {
+   "id": "prompt-preset",
+   "text": "Set promptPreset in settings.json when a model does not auto-detect the system prompt you want.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791400808466
+  },
+  {
+   "id": "provider-login",
+   "text": "Use /login to add a subscription or API-key provider, and /logout to remove stored credentials.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403877952
+  },
+  {
+   "id": "fallback-chains-setting",
+   "text": "retry.fallbackChains in settings.json maps a model to ordered fallbacks, so a failed turn retries on the next one.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791397162259
+  },
+  {
+   "id": "fallback-command",
+   "text": "Use /fallback to inspect and manage the retry fallback chain for the current model.",
+   "req": "fallback",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791392763542
+  },
+  {
+   "id": "click-pending-question",
+   "text": "Click a pending question's option to answer. Use the displayed selection-bypass modifier to select terminal text, or disable terminal.mouse in /settings.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791393314887
+  },
+  {
+   "id": "queue-follow-up",
+   "text": "While the agent is working, use alt+enter to queue a follow-up for after it finishes.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791392815444
+  },
+  {
+   "id": "steering-message",
+   "text": "Press enter while the agent works to steer it after the current tool batch; alt+enter waits until all work is done.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791397873018
+  },
+  {
+   "id": "edit-queued-message",
+   "text": "Use alt+up to bring queued messages back for editing.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791398584165
+  },
+  {
+   "id": "interrupt-restores-queue",
+   "text": "Press escape to abort the current turn and restore queued messages to the editor.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791398636480
+  },
+  {
+   "id": "file-reference",
+   "text": "Type @ in the editor to fuzzy-search project files and insert their paths.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791399036060
+  },
+  {
+   "id": "path-completion",
+   "text": "Press tab to complete file paths while typing.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791398395713
+  },
+  {
+   "id": "shortcut-overlay",
+   "text": "Type ? in an empty editor to pop up the full shortcut grid.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791398814968
+  },
+  {
+   "id": "prompt-history",
+   "text": "Search prompt history across sessions with ctrl+r.",
+   "req": "history",
+   "reqOk": true,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791399653452
+  },
+  {
+   "id": "external-editor",
+   "text": "Open the current prompt in your external editor with ctrl+g.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791399806456
+  },
+  {
+   "id": "expand-tool-output",
+   "text": "Collapse or expand tool output with ctrl+o.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791401378404
+  },
+  {
+   "id": "thinking-blocks",
+   "text": "Collapse or expand thinking blocks with ctrl+t.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791402418210
+  },
+  {
+   "id": "paste-image",
+   "text": "Paste an image from the clipboard with ctrl+v.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791399459589
+  },
+  {
+   "id": "copy-message",
+   "text": "Copy the latest assistant message with ctrl+x.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791399464938
+  },
+  {
+   "id": "input-newline",
+   "text": "Insert a newline without sending with shift+enter/ctrl+j.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791399633591
+  },
+  {
+   "id": "bash-prefixes",
+   "text": "Prefix a prompt with ! to run bash, or !! to run bash without adding its output to model context.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404613889
+  },
+  {
+   "id": "drag-drop-files",
+   "text": "Drag and drop files into the terminal to add their paths to your prompt.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791399156303
+  },
+  {
+   "id": "answer-agent-question",
+   "text": "When the agent asks you a question, pick options with digits or arrows, press Enter to advance, and use the final Submit tab for a comment or partial answers; anything unanswered is reported back as unanswered.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791399641047
+  },
+  {
+   "id": "open-pending-question",
+   "text": "Pending questions queue above the editor. An empty-composer digit selects an option; alt+up/alt+a opens the shown request and alt+down cycles requests. /answer lists them.",
+   "req": null,
+   "reqOk": null,
+   "bindings": true,
+   "seen": true,
+   "ts": 1791399664576
+  },
+  {
+   "id": "favorite-models-command",
+   "text": "Use /favorite-models to choose and reorder the models in your rotation.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791399811423
+  },
+  {
+   "id": "tree-command",
+   "text": "Use /tree to revisit earlier points and switch between session branches.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791399887279
+  },
+  {
+   "id": "fork-command",
+   "text": "Use /fork to create a separate session from an earlier user message.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791401313728
+  },
+  {
+   "id": "clone-session",
+   "text": "Use /clone to duplicate the current branch into its own session before trying something risky.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402095779
+  },
+  {
+   "id": "continue-session",
+   "text": "Use /resume or /sessions to reopen a past session; from the shell, OmO -r opens the same picker and OmO -c continues the most recent one.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403609330
+  },
+  {
+   "id": "session-name",
+   "text": "Use /rename [name] to label a session so it is easy to spot in the footer and in /resume.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402041489
+  },
+  {
+   "id": "session-info",
+   "text": "Use /session to see the session file, id, message count, tokens, and cost.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791401389050
+  },
+  {
+   "id": "export-share",
+   "text": "Use /export to write the session to HTML or JSONL, or /share to upload it as a private gist link.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402048361
+  },
+  {
+   "id": "compact-command",
+   "text": "Use /compact to compact context now, or /compact <prompt> to tell the summarizer what to keep.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402071745
+  },
+  {
+   "id": "auto-compaction",
+   "text": "Auto-compaction is on by default - the (auto) marker in the footer shows it; tune it with compaction.* in settings.json.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402087666
+  },
+  {
+   "id": "help-command",
+   "text": "Use /help to see available commands and guidance.",
+   "req": "help",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402163393
+  },
+  {
+   "id": "keybindings-command",
+   "text": "Use /keybindings to review and customize keyboard shortcuts.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402267139
+  },
+  {
+   "id": "agents-md-context",
+   "text": "OmO loads AGENTS.md from your home directory, every parent folder, and the current folder as project instructions.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402121753
+  },
+  {
+   "id": "skills-and-prompts",
+   "text": "Skills run as /skill:name, and prompt templates in ~/.omo/agent/prompts expand as /templatename.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402130416
+  },
+  {
+   "id": "files-command",
+   "text": "Use /files to list every file this session read, wrote, or edited.",
+   "req": "files",
+   "reqOk": true,
+   "bindings": false,
+   "seen": false,
+   "ts": null
+  },
+  {
+   "id": "diff-command",
+   "text": "Use /diff to review this session's git changes and open them in a diff view.",
+   "req": "diff",
+   "reqOk": true,
+   "bindings": false,
+   "seen": false,
+   "ts": null
+  },
+  {
+   "id": "todo-command",
+   "text": "Use /todo to show or edit the todo list without leaving the session.",
+   "req": "todo",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402187634
+  },
+  {
+   "id": "goal-command",
+   "text": "Use /goal to set a persistent goal OmO keeps pursuing, then pause, resume, or clear it.",
+   "req": "goal",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402236209
+  },
+  {
+   "id": "btw-command",
+   "text": "Use /btw to ask a side question in a parallel session without disturbing this one.",
+   "req": "btw",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402275619
+  },
+  {
+   "id": "lookat-command",
+   "text": "Use /lookat to manage the vision-model chain the look_at tool uses for images and screenshots.",
+   "req": "lookat",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402327878
+  },
+  {
+   "id": "mcp-command",
+   "text": "Use /mcp to inspect and manage the MCP servers wired into this session.",
+   "req": "mcp",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404555927
+  },
+  {
+   "id": "rules-command",
+   "text": "Use /rules to see which rules are loaded, and /reload-rules to re-read them mid-session.",
+   "req": "rules",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404249323
+  },
+  {
+   "id": "hooks-command",
+   "text": "Use /hooks to list loaded hook sources and their diagnostics.",
+   "req": "hooks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404251409
+  },
+  {
+   "id": "websearch-command",
+   "text": "Use /websearch to check which web-search provider is currently active.",
+   "req": "websearch",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402297565
+  },
+  {
+   "id": "settings-locations",
+   "text": "Use /settings for common options; the rest live in settings.json, with .omo/settings.json overriding per project.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403591114
+  },
+  {
+   "id": "permission-preset",
+   "text": "Set permissionPreset to \"workspace\", \"read-only\", or \"ask\" to decide which tool calls need your approval.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402452192
+  },
+  {
+   "id": "packages-setting",
+   "text": "The packages setting loads skills, extensions, prompts, and themes from an npm or git package.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402754723
+  },
+  {
+   "id": "custom-themes",
+   "text": "Switch themes from /settings, and drop custom theme files in ~/.omo/agent/themes.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403599910
+  },
+  {
+   "id": "reload-resources",
+   "text": "Use /reload to re-read keybindings, extensions, skills, prompts, themes, and context files without restarting.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402803603
+  },
+  {
+   "id": "project-trust",
+   "text": "Use /trust to save a trust decision so this project's settings, skills, and extensions load next time.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403612584
+  },
+  {
+   "id": "tips-toggle",
+   "text": "Set \"tips\": false in settings.json to stop showing these tips.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402812658
+  },
+  {
+   "id": "print-mode",
+   "text": "OmO -p \"question\" answers without the TUI, and piped stdin is merged into the prompt.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403583639
+  },
+  {
+   "id": "tool-flags",
+   "text": "Limit a run's tools with -t read,bash, or drop a few with -xt write,edit.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403714487
+  },
+  {
+   "id": "workflow-skills.plan",
+   "text": "Trigger \"ulw plan\" to get an explored, decision-complete plan under .omo/plans/.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404160013
+  },
+  {
+   "id": "workflow-skills.start-work",
+   "text": "Trigger \"$start-work <plan-name>\" to execute a plan end-to-end in a fresh session.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404169093
+  },
+  {
+   "id": "workflow-skills.ultrawork",
+   "text": "Trigger \"ulw\" or \"ulw loop\" for a long, evidence-driven autonomous run in ultrawork mode.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403650629
+  },
+  {
+   "id": "workflow-skills.research",
+   "text": "Trigger \"ulw-research\" for a saturating, citation-backed investigation across the codebase, docs, and the web.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404740494
+  },
+  {
+   "id": "workflow-skills.hyperplan",
+   "text": "Trigger \"hyperplan\" to have adversarial reviewers attack a plan before you commit to it.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404290574
+  },
+  {
+   "id": "workflow-skills.review",
+   "text": "Trigger \"review work\" to run parallel goal, quality, security, and hands-on QA reviews.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404256713
+  },
+  {
+   "id": "workflow-skills.init-deep",
+   "text": "Trigger \"/init-deep\" to map a project and generate a hierarchical AGENTS.md knowledge base.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403624410
+  },
+  {
+   "id": "workflow-skills.debugging",
+   "text": "Trigger \"debug this\" for parallel hypotheses, a failing regression test, a minimal fix, and real-surface QA.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404595342
+  },
+  {
+   "id": "workflow-skills.refactor",
+   "text": "Trigger \"refactor\" for codebase-aware cleanup that pins behavior before changing structure.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404629268
+  },
+  {
+   "id": "workflow-skills.remove-ai-slops",
+   "text": "Trigger \"remove AI slop\" to lock behavior first, then strip generated-code smells without drive-by rewrites.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404637096
+  },
+  {
+   "id": "workflow-skills.visual-qa",
+   "text": "Trigger \"visual QA\" to capture browser or xterm evidence and review web or terminal interfaces.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404704487
+  },
+  {
+   "id": "workflow-skills.report-bug",
+   "text": "Hit a bug? Say \"report a bug\" - the report-bug skill finds the session, records the exact provider and model, routes it to the right repository, and files an evidence-backed issue only after you confirm.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404649227
+  },
+  {
+   "id": "subagent-categories",
+   "text": "Delegate by category - quick, deep, ultrabrain, architect, artistry, git, writing - each runs on its own model.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404720885
+  },
+  {
+   "id": "subagent-commands",
+   "text": "Use /tasks to see this session's background subagents, and /task-kill to stop one.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404817101
+  },
+  {
+   "id": "subagent-config",
+   "text": "~/.omo/omo.jsonc maps every subagent category to its model, reasoning effort, and fallback chain.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404671541
+  },
+  {
+   "id": "subagent-team",
+   "text": "Ask for a team when one task needs several agents at once: members share a tasklist and report back to you.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404696777
+  },
+  {
+   "id": "memory.persistent",
+   "text": "OmO remembers across sessions. Close the terminal, come back tomorrow, and the context is still there.",
+   "req": "memory",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791405894232
+  },
+  {
+   "id": "memory.remember-command",
+   "text": "Use /remember to save something you want kept - a preference, a decision, a fact worth reusing.",
+   "req": "remember",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404767522
+  },
+  {
+   "id": "memory.just-tell-it",
+   "text": "You can also just say it: \"remember that we deploy on Fridays\" is enough. No syntax, no file to open.",
+   "req": "remember",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404830266
+  },
+  {
+   "id": "memory.search-command",
+   "text": "Use /search to look through everything remembered so far, in plain words.",
+   "req": "search",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791405503172
+  },
+  {
+   "id": "memory.memory-command",
+   "text": "Use /memory to see what is currently remembered about you and this project.",
+   "req": "memory",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791405673233
+  },
+  {
+   "id": "memory.init-command",
+   "text": "Use /init to start memory for a new project, so it learns this codebase from the first session.",
+   "req": "init",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404809160
+  },
+  {
+   "id": "memory.people-command",
+   "text": "Use /people to keep notes on teammates - who owns what, who to ask, what they prefer.",
+   "req": "people",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791390041168
+  },
+  {
+   "id": "memory.reflect-command",
+   "text": "Use /reflect to have the session reviewed now and the parts worth keeping written down.",
+   "req": "reflect",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791405741952
+  },
+  {
+   "id": "memory.dream-command",
+   "text": "Memory tidies itself in the background between turns - /dream shows that work and lets you start it yourself.",
+   "req": "dream",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791408454285
+  },
+  {
+   "id": "memory.sleeptime-command",
+   "text": "Use /sleeptime to decide how often memory reorganizes itself while you are not looking.",
+   "req": "sleeptime",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391172176
+  },
+  {
+   "id": "memory.memfs-command",
+   "text": "Memory is plain files you own - browse them with /memfs and edit anything that looks wrong.",
+   "req": "memfs",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791390090532
+  },
+  {
+   "id": "memory.repository-command",
+   "text": "Every memory change is a git commit - use /memory-repository to see the history and undo a bad one.",
+   "req": "memory-repository",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791410034238
+  },
+  {
+   "id": "memory.doctor-command",
+   "text": "Use /doctor when memory feels off; it checks the setup and tells you what to fix.",
+   "req": "doctor",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791405767338
+  },
+  {
+   "id": "memory.facts-command",
+   "text": "Use /facts to see the individual things learned about you, and drop the ones that no longer hold.",
+   "req": "facts",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791409317882
+  },
+  {
+   "id": "memory.recompile-command",
+   "text": "Edited memory files by hand? Run /recompile so this session picks the changes up right away.",
+   "req": "recompile",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791410165258
+  },
+  {
+   "id": "memory.aha-moment",
+   "text": "Memory speaks up on its own: when something remembered would change the next step, an Aha moment! line surfaces it mid-task. Silence means nothing relevant was found.",
+   "req": "memory",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791390015870
+  },
+  {
+   "id": "memory.stop-repeating",
+   "text": "Explain your setup once. Memory means you stop re-explaining it at the start of every session.",
+   "req": "memory",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791390020979
+  },
+  {
+   "id": "dag.one-keyword-mastery",
+   "text": "One keyword makes you a master of graph engineering: say \"mass-ulw\" and your work becomes a dependency graph that schedules itself.",
+   "req": "dag",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791390049767
+  },
+  {
+   "id": "dag.what-it-is",
+   "text": "Trigger \"mass-ulw\" when some tasks must wait for others - describe the work, get a graph that runs in the right order.",
+   "req": "dag",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791390201774
+  },
+  {
+   "id": "dag.parallel-waves",
+   "text": "A graph run executes in waves: everything with no pending dependency starts at once, the rest starts the moment it is unblocked.",
+   "req": "dag",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791390031253
+  },
+  {
+   "id": "dag.depends-on",
+   "text": "Say what needs what - review after implementation, docs after both - and the ordering is enforced for you.",
+   "req": "dag",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791390289017
+  },
+  {
+   "id": "dag.categories",
+   "text": "Each node in the graph picks its own worker category, so cheap steps stay cheap and hard steps get the strong model.",
+   "req": "dag",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391497118
+  },
+  {
+   "id": "dag.status-view",
+   "text": "Use /dag to watch a run: which nodes finished, which are running, and which one failed.",
+   "req": "dag",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391192306
+  },
+  {
+   "id": "dag.resume",
+   "text": "Graph runs are journaled - if the session dies mid-run it resumes later and never redoes the nodes that already finished.",
+   "req": "dag",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391749671
+  },
+  {
+   "id": "dag.vs-parallel",
+   "text": "Fully independent jobs just need parallel subagents; reach for a graph when the ordering between them is the whole point.",
+   "req": "dag",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791390543586
+  },
+  {
+   "id": "dag.scale",
+   "text": "Stop hand-running steps in sequence. Describe the dependencies once and let a dozen agents fan out and rejoin on their own.",
+   "req": "dag",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391779175
+  },
+  {
+   "id": "computer.what-it-is",
+   "text": "Experimental: your agent can use native apps too: screenshots, windows, clicks and typing. Run /computer to see whether this machine is ready.",
+   "req": "computer",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391519819
+  },
+  {
+   "id": "computer.stop-chord",
+   "text": "Press Control+Option+Command+Escape at any moment to stop computer input. It stays stopped until you run /computer resume; the agent cannot resume it.",
+   "req": "computer",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391165045
+  },
+  {
+   "id": "computer.background-input",
+   "text": "Computer use clicks and types into the target app in the background, so your frontmost app, keyboard focus and cursor stay where you left them.",
+   "req": "computer",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391756594
+  },
+  {
+   "id": "computer.look-dont-touch",
+   "text": "Want the agent to look but not touch? Start with --permission computer:exec=deny: screenshots and accessibility reads still work, clicks and typing are refused.",
+   "req": "computer",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391791838
+  },
+  {
+   "id": "computer.permissions",
+   "text": "On macOS, computer use needs Screen Recording and Accessibility for the app you launch from. /computer status shows which one is missing.",
+   "req": "computer",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391804220
+  },
+  {
+   "id": "ethos.tuning-discipline",
+   "text": "gpt-5.6-sol used to turn a sprint into a marathon. We tuned the system prompt and killed that habit: 5-minute jobs take 5 minutes, 12-hour jobs take 12.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391917909
+  },
+  {
+   "id": "ethos.tools-transparent",
+   "text": "Don't study our tools. A tool that needs studying is a tool that failed. We just ride shotgun while you keep doing your actual job.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391906220
+  },
+  {
+   "id": "ethos.only-harness",
+   "text": "The only harness that actually knows how to drive gpt-5.6-sol. Same job, feels up to 30% faster. *we counted*",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391911457
+  },
+  {
+   "id": "ethos.spend-tokens",
+   "text": "Stop hoarding tokens. Spend them like they buy your hours back, because they do.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791392251985
+  },
+  {
+   "id": "ethos.deep-work",
+   "text": "Using our tools means your work is already the deep, valuable kind. Keep your eyes on the essence of your craft. The rest is our problem now, and we're great at problems.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791391947133
+  },
+  {
+   "id": "ethos.ulw-plan-sage",
+   "text": "Try ulw-plan on fable-5.1 xhigh. A patient sage obsessed with the essence does the agonizing for you and fills in every blank you were pretending not to see.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791392328964
+  },
+  {
+   "id": "ethos.ulw-loop-shallow",
+   "text": "For days when deep thought sounds awful, run the ulw loop with gpt-6-sol fast/medium. Fair warning: shallow thinking sends invoices.",
+   "req": "tasks",
+   "reqOk": true,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791392790477
+  },
+  {
+   "id": "ethos.monitor-subscribe",
+   "text": "Subscribe to a command's stdout and forget it. CI finishes, server boots, log line lands... you're mid-edit and the news finds *you*. No sleep loops, no polling, no re-reading context like a chump.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791397503525
+  },
+  {
+   "id": "ethos.cache-budget",
+   "text": "My harness knows the prompt cache's expiry to the second and never blocks past it. Cold re-read tax? *Refused on your behalf.* Other agents eat that cost, mine declines it.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791399350247
+  },
+  {
+   "id": "ethos.cache-hit-rate",
+   "text": "Live cache-hit rate in the footer, plus a running tab of misses, idle gaps, and model swaps. I can point at the exact moment cache broke and why. Watching tokens you never re-pay stack up? Smug doesn't cover it.",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791399342247
+  },
+  {
+   "id": "ethos.multimodal-vision",
+   "text": "Drop a screenshot, a PDF, a crusty whiteboard photo... OmO actually sees it, reads it, reasons about it. Your agent has eyes now. *Yes, really.*",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791402257977
+  },
+  {
+   "id": "ethos.oauth-multi-account",
+   "text": "Hit a rate limit, switch accounts. Wrong org, switch again. OmO treats your Claude logins like a roster, not a single lifeline. *Env vars could never.*",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403892198
+  },
+  {
+   "id": "ethos.agent-sdk-foundation",
+   "text": "Built on the official agent SDK, speaking the protocol natively. No reverse-engineered wrapper, no ToS gray zone, no \"will I get banned for this\" anxiety. *Sleep easy, ship loud.*",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791403752820
+  },
+  {
+   "id": "ethos.tool-call-repair",
+   "text": "OmO catches malformed tool calls on the wire, fixes them, and salvages the turn - claude's sloppy invokes, kimi k3's leaked XTML channels, all of it. Other harnesses retry the whole thing and bill you for the privilege. *table stakes, honestly*",
+   "req": null,
+   "reqOk": null,
+   "bindings": false,
+   "seen": true,
+   "ts": 1791404523209
+  }
+ ]
+}
