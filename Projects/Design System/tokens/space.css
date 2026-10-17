@@ -1,0 +1,31 @@
+/* Spacing and radius, 2:3:6 harmonic on u = 4px.
+   Radius values are the spacing values: radius-sm equals space-sm, and so on.
+   A pill is the documented exception, radius is height / 2. */
+:root{
+  --u:4px;
+
+  --space-xs:4px;    /* 1u  */
+  --space-sm:8px;    /* 2u  */
+  --space-md:12px;   /* 3u  */
+  --space-lg:24px;   /* 6u  */
+  --space-xl:48px;   /* 12u */
+  --space-2xl:96px;  /* 24u */
+
+  --radius-sm:8px;   /* 2u */
+  --radius-md:12px;  /* 3u */
+  --radius-lg:24px;  /* 6u */
+
+  /* Pill geometry. Height 6u, radius height / 2, width is the longest word
+     in the set times 3u, so width to height equals characters to 2. */
+  --pill-height:36px;
+  --pill-radius:18px;
+  --pill-char:18px;  /* 3u per character of the set's longest word */
+
+  /* Retired 5 September 2026: --ease was cubic-bezier(0.25,0,0,1) and --dur was 300ms, from before
+     the 60ms harmonic. Every component in components/ reads these two names, so they stay as
+     aliases onto the real values rather than being deleted out from under the component layer.
+     Motion itself lives in tokens/motion.css. New work names the curve it means. */
+  --ease:var(--ease-arrive); /* @kind other */
+  --dur:var(--dur-md); /* @kind other */
+  --dur-slow:var(--dur-lg); /* @kind other */
+}

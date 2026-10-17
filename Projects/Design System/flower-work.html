@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Master FLOWER: all nine lanes of work in one place, with their context and the briefs a session can start from cold.">
+  <title>Flower work · Re.SOURCE</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="lib/hq.css">
+  <link rel="stylesheet" href="lib/topbar.css">
+  <script src="lib/masters-nav.js" defer></script>
+  <script src="lib/hq.js" defer></script>
+<style>.rs-vault-only{border-bottom:1px dotted var(--surface-border,#555);cursor:help;text-decoration:none}</style></head>
+<body class="hq rs-topbar-page">
+  <a class="skip-link" href="#main">Skip to the work</a>
+  <!-- Universal top bar (compact law v11.1): the shared component, markup here,
+       styles in lib/topbar.css, switcher built by lib/masters-nav.js bar mode.
+       This page dispatches one master's work; it is not a master and does not
+       join the switcher's list. -->
+  <header class="rs-topbar" id="rsTopBar">
+    <div class="rs-topbar-inner" data-pad>
+      <a class="rs-topbar-brand" href="HQ.html" aria-label="Re.SOURCE HQ home">Re.SOURCE <span>Flower work</span></a>
+      <p class="rs-topbar-stamp"><span>W39</span><span class="rs-topbar-sep" aria-hidden="true">·</span><span>24 Sep</span></p>
+      <div class="rs-topbar-navrow">
+        <nav class="rs-topbar-context" aria-label="Page sections">
+          <a href="#stand">Where it stands</a>
+          <a href="#now">Now</a>
+          <a href="#next">Next</a>
+          <a href="#later">Later</a>
+          <a href="#waiting">Waiting</a>
+          <a href="#record">Record</a>
+        </nav>
+        <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a class="button" href="templates/colour-flower/ColourFlower.dc.html">Open the Flower</a></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="main" data-pad data-grid tabindex="-1">
+
+    <section class="intro" data-span="12" aria-labelledby="fw-title">
+      <div class="intro-copy">
+        <p class="eyebrow">Master FLOWER · the backlog, pulled together 22 September 2026</p>
+        <h1 id="fw-title">The Flower backlog, in one place.</h1>
+        <p>Nine Flower lanes, each with the context that makes it a task rather than a guess, and a brief a fresh session can start from cold. Completed and waiting work both stay visible, so the handoff keeps its history. Scope is the master only, as ruled: the standalone walkthrough app and the older Re.Focus FLOWER project are named at the foot and briefed nowhere here.</p>
+      </div>
+      <div class="edition">
+        <time datetime="2026-09-24">Updated 24 Sep · W39</time>
+      </div>
+    </section>
+
+    <!-- ============ Where the flower stands ============ -->
+    <section class="work-section" id="stand" data-sub data-span="12" aria-labelledby="stand-title">
+      <div class="section-heading">
+        <h2 id="stand-title">Where the flower stands</h2>
+        <span class="eyebrow">Read this before any brief below</span>
+      </div>
+      <div class="feature-grid" data-sub data-pair>
+
+<article class="task-card secondary" data-span="6" aria-labelledby="task-lane21-title">
+          <div class="card-topline"><span class="eyebrow">Lane 21 · Master FLOWER</span><span class="status">Done 23 Sep</span></div>
+          <h3 id="task-lane21-title">The gesture reference gets a home</h3>
+          <p>The flower answers to a lot: tap a word, shift-tap to add, drag to rotate, double-tap or F to flip, hold to chain, the lasso, arrows stepping a pick or turning a chapter, digits holding P01 to P12, Enter completing an axis, W leaving the tour, Esc letting go. Almost none of that is visible. The first-visit hint names three gestures and is then dismissed for good.</p>
+          <p class="caption task-note">Your ruling, 22 September: the full gesture reference gets a home, it does not stay off the surface. The candidate home named first, Notes.html, retired into HQ the day before, so the home is named in the flower work; the testbed app's help overlay &mdash; one file feeding both the binding and the documentation, so the two cannot drift &mdash; is the standing candidate.</p>
+          <div class="actions">
+            <button class="button" data-copy="lane21" data-press hidden>Copy the lane 21 brief</button>
+            <a class="text-link" href="templates/colour-flower/ColourFlower.dc.html">Open the master<span class="link-mark" aria-hidden="true"></span></a>
+          </div>
+          <details class="disclosure" id="lane21-details">
+            <summary>Done &mdash; brief &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane21" tabindex="0" aria-label="Lane 21, the gesture reference home, starting brief">LANE 21 · GESTURE SHEET · Master FLOWER · no fifth cluster button · one branch, stop at PR
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 21 from Projects/HQ/queue.md, the gesture reference's home on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md (the HUD law and the mobile layout rules) → notes/reasoning.md ("Input, touch first", "Why the interaction patterns stand", "What stands in for icons", and the compact law v11.1 entry) → notes/components-inventory.md ("Shared chrome") → the master's own key handling in templates/colour-flower/ColourFlower.dc.html (the onKey branch, the tour's keyboard law, the first-visit hint) → Projects/Re.Colour FLOWER/walkthrough/src/lib/keys.ts, the candidate pattern, read only (path retired 2026-09-23 to _Trash/walkthrough-retired-2026-09-23/; lane done, brief kept as ran).
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip; read the cluster numbers off lib/tweaks-drawer.js and templates/colour-flower/measurements.css (compact law v11.1: nav 20, Tweaks 60, Schematics 100, Walkthrough 140, Render 180, 40px steps, a sheet opens below the cluster); run node tests/flower-geometry.cjs and node tests/flower-parity.cjs; tests/flower-alignment.cjs needs a browser, and if there is none say so rather than claiming it green.
+
+Task, lane 21: the gesture reference's home. In order: (1) build the master's own gesture and key reference as one sheet, listing every gesture and every key the surface actually answers, touch-first on a touch device and keyboard-first on a desktop; (2) make it one source — the sheet reads from the same table that binds the keys, so what is bound and what is documented cannot drift, which is the whole point of the candidate pattern; (3) place it without growing the cluster: the recommendation is a 44px control inside the tour panel's header and inside the intro's slot, not a fifth fixed button on the stack, because the v11.1 stack is honest at four and a phone already carries a fold — argue the placement in the session note and, if you disagree, say why before you build it; (4) follow the sheet law — a sheet opened from the cluster opens below it, and on a narrow frame it is a bottom sheet at most half the frame with a scrolling body and its controls in reach; (5) it must be reachable from the artwork view as well as the tour, since most of the gestures belong to the artwork; (6) adopt it as a system element: AGENTS.md's HUD clause names it, notes/components-inventory.md lists it under "Shared chrome", notes/reasoning.md records the placement judgement with Mark's ruling quoted ("the reference gets a home, it does not stay off the surface").
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; the key bindings themselves (this lane documents them, it does not rebind them — a collision is a finding for the session note, not a change); the parked Tweaks rollout; other masters' files; the testbed app. No other flower lane runs in parallel.
+
+Done-when: geometry and parity green in node, alignment green in a browser if one exists and honestly reported if not; new checks for the sheet opening and closing by pointer, keyboard and tap, at 12/6/3 and in the folded state, with its body scrolling and its controls in reach; captures in this week's _output/ if a browser exists; the element adopted in all three registers; session note in this week's _notes/ ending with efficiency suggestions; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+              <p class="caption">Landed 23 September — the sheet is on the master and the pattern is written down. Record in the week's notes.</p>
+            </div>
+          </details>
+        </article>
+        <aside class="task-context" data-span="4" aria-labelledby="now-aside-title">
+          <span class="eyebrow">Why this one leads</span>
+          <h3 id="now-aside-title">You ruled it, and it documents the surface it lives on.</h3>
+          <p>Lane 22, the hover preview, is on hold: it states no purpose yet, and the artwork already answers hover with a lift while a click opens the real card. Lane 23, one step of undo, landed 24 September. Lane 24 is built on PR 147 and is not started again; the next prompt lands it, and it is the first keyword block in prompts.md.</p>
+          <div class="context-rule"></div>
+          <h4>What it must not become</h4>
+          <ul class="acceptance">
+            <li>A fifth fixed button on the stack. The v11.1 stack is honest at four, and a phone already carries a fold.</li>
+            <li>A rebind. It documents the keys the master already answers; a collision is a finding, not a change.</li>
+            <li>A second source. One table feeds the binding and the reference together.</li>
+            <li>A desktop-only sheet. It obeys the sheet law, and on a narrow frame it is a bottom sheet.</li>
+          </ul>
+        </aside>        <article class="task-card featured" aria-labelledby="stand-card-title">
+          <div class="card-topline"><span class="eyebrow">The master today</span><span class="status">Live on main</span></div>
+          <h3 id="stand-card-title">One instrument, three sets, two view modes.</h3>
+          <p><code>templates/colour-flower/ColourFlower.dc.html</code> is the live instrument and the edit surface, with <code>geometry.js</code> holding the analytic helpers, <code>measurements.css</code> its own styling on system tokens, and <code>support.js</code> a generated runtime nobody edits. Three sets sit on twelve positions from one seed: T = 60 &times; Flower Scale, thirteen equal circles to a set, the shared contacts at &radic;3T. Abstract REALM outer, Aspect STATE middle, Anchor TAG inner, and Arrow KEY assignable to any ring.</p>
+          <p>The right side is one harmonised cluster under the compact modern law v11.1, which landed on 22 September and is recorded below for the first time. Two view modes &mdash; Schematics, a construction view of the same geometry, and Walkthrough, a six-chapter tour &mdash; are mutually exclusive, sit in the cluster as toggles, and never enter the Tweaks drawer, which carries dialable values only. Shadow and glow live in their own artwork-only Render drawer.</p>
+          <p class="caption task-note">The tour reads live off the position table, so a word move in the Sheet renames a chapter by itself. <code>walkthroughMode</code> defaults false: the artwork view is still the opening state, untouched.</p>
+          <div class="actions">
+            <a class="button button-primary" href="templates/colour-flower/ColourFlower.dc.html">Open Master FLOWER</a>
+            <span class="rs-vault-only" title="Vault-only note, not published to the public site">The shared facts<span class="link-mark" aria-hidden="true"></span></span>
+          </div>
+          <details class="disclosure" id="stand-details">
+            <summary>The numbers a brief must not get wrong<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <ul class="acceptance">
+                <li><strong>The cluster, compact law v11.1.</strong> Nav pill at 20, Tweaks at 60, Schematics at 100, Walkthrough at 140, Render at 180 &mdash; 40px steps, 32px rows, 6px 10px padding, 11px mono, 8px radius, safe-area insets, subtle shadow. Older records say 68 / 112 / 156 / 200; those numbers are out of date, corrected everywhere this session.</li>
+                <li><strong>The fold.</strong> Below the field's 720, and on any frame shorter than 576, the cluster folds to one Options chip so the top of a phone returns to the instrument. A panel opens below the chip, never under it.</li>
+                <li><strong>The card.</strong> 360 &times; 504, one component at a scale. It takes the lower corner on a desktop and becomes a bottom sheet below 720: a peek, a lift to the whole card on its handle, a drop on a tap of the flower. No card at rest.</li>
+                <li><strong>The clear band.</strong> The artwork is fitted to the space between the chrome above and whatever sheet is at the foot, measured after render, and every chapter zoom is capped by it.</li>
+                <li><strong>The tests.</strong> <code>flower-geometry.cjs</code> (320 spacing and scale families) runs in node. <code>flower-alignment.cjs</code> needs a real browser at twelve widths; the offline recipe is in <code>github.md</code>.</li>
+              </ul>
+              <p class="caption">The session that wrote this page had no browser at all, so its claims are node-verified only &mdash; nothing on this page claims otherwise. Lane 20 (22 September) ran the browser suite green; its record in the fold below is the first browser-verified one.</p>
+            </div>
+          </details>
+        </article>
+        <aside class="task-context" data-span="4" aria-labelledby="order-title">
+          <span class="eyebrow">The order</span>
+          <h3 id="order-title">One flower lane<br>at a time.</h3>
+          <p>Lanes 20 to 27 land in the same master file. Two of those in parallel would be two branches fighting one instrument, so they queue: features first, then the two sweeps that touch everything, then the hardware pass. Lane 28 is card-side and may run beside them.</p>
+          <div class="context-rule"></div>
+          <h4>Why this order</h4>
+          <ul class="acceptance">
+            <li>Lanes 20 to 24 each add one thing and can be taken in any order, one after another.</li>
+            <li>Lane 20 landed 22 September &mdash; the hover read is on the master and the pattern is written down, record in the fold below.</li>
+            <li>Lane 21 landed 23 September &mdash; the sheet is on the master and the pattern is written down.</li>
+            <li>Lane 22 is on hold: it states no purpose yet.</li>
+            <li>Lane 23 landed 24 September &mdash; Z or the Undo control takes back the last pick or chapter turn, camera included, once.</li>
+            <li>Lane 24 built and checked 24 September &mdash; the URL law was proposed and argued first, then built: a link opens the view and the chapter it names, and a bad link opens at rest. PR 147 awaits a review; lane 25 leads once it lands.</li>
+            <li>Lanes 25 and 26 sweep every transition and every string, so they run alone, after the features.</li>
+            <li>Lane 27 needs a screen reader and an iPhone. No sandbox can fake it.</li>
+            <li>Lane 28 is yours in ruling but lands on the card side, so a card session takes it.</li>
+          </ul>
+          <a class="text-link" href="#record">What already landed<span class="link-mark" aria-hidden="true"></span></a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ Now ============ -->
+    <section class="work-section" id="now" data-sub data-span="12" aria-labelledby="now-title">
+      <div class="section-heading">
+        <h2 id="now-title">Now</h2>
+        <span class="eyebrow">Approved, actionable, no decision needed to start</span>
+      </div>
+      <div class="feature-grid" data-sub data-pair>
+        
+        
+      </div>
+    </section>
+
+    <!-- ============ Next ============ -->
+    <section class="work-section" id="next" data-sub data-span="12" aria-labelledby="next-title">
+      <div class="section-heading">
+        <h2 id="next-title">Next</h2>
+        <span class="eyebrow">Lanes 23 and 24 next · lane 22 held for a purpose</span>
+      </div>
+      <div class="secondary-grid" data-grid>
+
+        
+
+        <article class="task-card featured" aria-labelledby="task-lane22-title">
+          <div class="card-topline"><span class="eyebrow">Lane 22 · Master FLOWER</span><span class="status">On hold</span></div>
+          <h3 id="task-lane22-title">Hover previews the card</h3>
+          <p>Pointing at a position in the artwork view should show what you are about to open: its card, at reduced strength, in the slot the tour panel uses. Move away and it goes. Click and the real card takes over, unchanged.</p>
+          <p class="caption task-note">Context: the card is 360 &times; 504 and always the same component at a scale; nothing is open at rest; a pick or a core hold opens it. The preview must never become a second card, never fire on touch (a tap already opens the real one), and never compete with a card that is already open. On a phone the printed card is a bottom sheet, so the preview has no slot there &mdash; that is a finding to record, not a layout to force.</p>
+          <div class="actions">
+            <button class="button" data-copy="lane22" data-press hidden>Copy the lane 22 brief</button>
+            <a class="text-link" href="components/core/AspectCard.jsx">The card component<span class="link-mark" aria-hidden="true"></span></a>
+          </div>
+          <details class="disclosure" id="lane22-details">
+            <summary>Done &mdash; brief &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane22" tabindex="0" aria-label="Lane 22, hover ghost card, starting brief">LANE 22 · HOVER PREVIEW · Master FLOWER · never steals a click · one branch, stop at PR
+
+HELD 23 September 2026 – draft, do not start. This brief states no purpose and names no failure mode, and the artwork view already answers hover with a lift while a click opens the real card. It starts only once it carries a Solves line. See lane 22 in Projects/HQ/queue.md.
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 22 from Projects/HQ/queue.md, the hover card preview on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md (the HUD law, the mobile layout rules) → notes/flower-alignment-review.md ("Shared facts", the printed card and its placement) → notes/reasoning.md ("Mobile layout rules for the masters", the compact law v11.1 entry) → the master's card path in templates/colour-flower/ColourFlower.dc.html (cardOn, blankOn, the sheet behaviour, the tour panel's slot) → components/core/AspectCard.jsx.
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip; read the cluster numbers off lib/tweaks-drawer.js and measurements.css (v11.1: nav 20, Tweaks 60, Schematics 100, Walkthrough 140, Render 180); run node tests/flower-geometry.cjs; alignment needs a browser, report honestly if there is none.
+
+Task, lane 22: the hover card preview. In order: (1) hovering a position in the artwork view previews that position's card in the walkthrough panel's slot at reduced strength, using a token-driven value from the greyscale or an existing opacity law — never a new magic number, and never a second card component; (2) it never steals a click: the pick, the hit targets, the drag-to-rotate and the core hold all behave exactly as before, and the preview is not a selection; (3) it never fires on touch and never appears while a real card is open, while a pick is held, while the intro is active, or in Schematics; (4) reduced motion holds the change at 1ms rather than deleting it; (5) on a narrow frame, where the printed card is a bottom sheet, decide and record whether the preview exists at all — the recommendation is that it does not, since a tap already opens the real card and a half-frame sheet has no room for a ghost; (6) if a position has no card, the preview shows the blank slot's own line rather than nothing, so the two states stay distinguishable.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; the card's size, its placement law and the sheet behaviour; the parked Tweaks rollout; other masters' files. No other flower lane runs in parallel.
+
+Done-when: geometry green in node, alignment green in a browser if one exists and honestly reported if not; new checks for hover on and off, no-fire on touch, no-fire with a card open, reduced motion, and the blank-slot case; captures at 12/6/3 in this week's _output/ if a browser exists; anything that becomes a rule written into AGENTS.md and notes/reasoning.md; session note in this week's _notes/ ending with efficiency suggestions; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+              <p class="caption">Small, self-contained, and desktop-shaped. A good first lane for a session that wants a clean win.</p>
+            </div>
+          </details>
+        </article>
+
+        <article class="task-card secondary" data-span="6" aria-labelledby="task-lane23-title">
+          <div class="card-topline"><span class="eyebrow">Lane 23 · Master FLOWER</span><span class="status">Done 24 Sep</span></div>
+          <h3 id="task-lane23-title">One step back</h3>
+          <p>A pick is a commit today. Change your mind and the only way back is Esc, which lets everything go, and then re-pick from nothing. One step of undo for picks and chapter turns closes that gap without touching the keyboard law.</p>
+          <p class="caption task-note">Context: the law is settled and stays &mdash; Esc clears, arrows lead, F flips every pick six steps, C holds the core, digits hold positions, Enter completes the axis, W leaves the tour. Undo sits inside that law, not across it. Z appears free on the master, but verify against the master's own key map before wiring anything, and check the tour's map too, since the tour owns the keyboard while it is on.</p>
+          <div class="actions">
+            <button class="button" data-copy="lane23" data-press hidden>Copy the lane 23 brief</button>
+            <span class="rs-vault-only" title="Vault-only note, not published to the public site">Why the patterns stand<span class="link-mark" aria-hidden="true"></span></span>
+          </div>
+          <details class="disclosure" id="lane23-details">
+            <summary>Done &mdash; brief &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane23" tabindex="0" aria-label="Lane 23, one step of undo, starting brief">LANE 23 · ONE-STEP UNDO · Master FLOWER · keep the key law whole · one branch, stop at PR
+
+Solves: a pick is a commit today, and the only way back is Esc, which drops everything, so changing your mind costs the whole selection.
+Must not: alter or shadow the existing key law (Esc clears, arrows lead, F flips, C holds the core, digits hold positions, Enter completes the axis, W leaves the tour).
+Extends: the pick and chapter-turn gestures. It adds one reverse step; it does not replace Esc.
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 23 from Projects/HQ/queue.md, one step of undo on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md (the HUD law) → notes/reasoning.md ("Input, touch first", "Why the interaction patterns stand") → the master's key handling and pick state in templates/colour-flower/ColourFlower.dc.html, including the tour's own keyboard branch and its chapter stepping.
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip; list every key the master already answers, in the artwork view and in the tour, and put that list in the session note before choosing a binding; run node tests/flower-geometry.cjs; alignment needs a browser, report honestly if there is none.
+
+Task, lane 23: one step of undo. In order: (1) one step of undo for picks — a pick, an add, a flip, an axis completion and a core hold each become reversible once; (2) one step of undo for chapter turns in the tour; (3) bind it to a key that provably does not collide, and add a visible control wherever the keyboard law is documented on the surface, so the binding is discoverable rather than memorised; (4) keep the existing law whole: Esc still clears everything, arrows still lead, F still flips, and undo never becomes a deep stack unless it costs nothing to keep one; (5) undo restores the camera as well as the selection, since the tour's camera glides on the master's own values and a chapter step moves it; (6) announce the restored state through the existing status region so a screen reader hears the same thing a sighted reader sees.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; the existing bindings; the geometry; the parked Tweaks rollout; other masters' files. No other flower lane runs in parallel.
+
+Done-when: geometry green in node, alignment green in a browser if one exists and honestly reported if not; new checks for undo after each of the five pick actions, undo after a chapter turn, undo with nothing to undo, the camera restored, and the status announcement; the binding recorded in the session note with the collision check that justified it; session note in this week's _notes/ ending with efficiency suggestions; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+              <p class="caption">Pairs naturally with lane 22 if one session wants two small wins, but not in two branches.</p>
+            </div>
+          </details>
+        </article>
+
+        <article class="task-card secondary" data-span="6" aria-labelledby="task-lane24-title">
+          <div class="card-topline"><span class="eyebrow">Lane 24 · Master FLOWER</span><span class="status">Done 24 Sep</span></div>
+          <h3 id="task-lane24-title">A link that opens where you left it</h3>
+          <p>Send yourself a chapter, or a view, and have the master open there. The format was proposed and argued first, as the lane required, and then wired: <code>?view=</code> and <code>chapter=</code> only, a link the law refuses refused whole onto the artwork view at rest, and a Copy link control beside the chapter it copies.</p>
+          <p class="caption task-note">Context: the retired testbed app had a working law &mdash; <code>?phase=explore&amp;sel=12,06&amp;core=1</code>, commas unencoded, a refresh kept its place. The master deliberately persists nothing: its file owns the values, and a remembered tweak would be a second source of truth, which is exactly the drift the August audit was about. So the open question is whether a URL may carry anything beyond a view and a chapter. The recommendation is no &mdash; view and chapter only, never dialled values &mdash; and that judgement needs writing down with its reason.</p>
+          <div class="actions">
+            <button class="button" data-copy="lane24" data-press hidden>Copy the lane 24 brief</button>
+            <span class="rs-vault-only" title="Vault-only note, not published to the public site">The no-persistence rule<span class="link-mark" aria-hidden="true"></span></span>
+          </div>
+          <details class="disclosure" id="lane24-details">
+            <summary>Done &mdash; brief &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane24" tabindex="0" aria-label="Lane 24, the URL law and deep links, starting brief">LANE 24 · SHARE LINK · Master FLOWER · URL law · one branch, stop at PR
+
+Solves: there is no way to send someone a view or a chapter; the master opens at rest every time.
+Must not: let a URL carry dialled values, which would make it a second source of truth beside the file.
+Extends: the view toggles and the tour's chapter state. It adds a way in; it changes neither.
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 24 from Projects/HQ/queue.md, the master's URL law and a share link, on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md (the HUD law) → notes/reasoning.md (the no-persistence judgement behind the Tweaks drawer, and the compact law v11.1 entry) → the master's view-mode wiring in templates/colour-flower/ColourFlower.dc.html (walkthroughMode, schematicMode, the tour chapter state, the rf-view-exit handshake) → lib/tweaks-drawer.js (VIEW_MODES and how a payload replaces props wholesale) → the master's tour keyboard law in templates/colour-flower/ColourFlower.dc.html (the onKey branch; the tour owns the keyboard while on).
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip; run node tests/flower-geometry.cjs; alignment needs a browser, report honestly if there is none.
+
+Task, lane 24: the master URL law and a share link, and the first step is a document, not code. In order: (1) propose the URL format in the session note and stop there until it is argued — the candidate is ?view=walkthrough&amp;chapter=N, with view=artwork and view=schematics for the other two states; name what a URL may carry and what it may never carry, and give the reason: the master persists nothing by design because its file owns the values, so a URL that carries dialled tweaks would be a second source of truth; (2) once the format is written, make the master read it on load and restore the view and the chapter, with the tour's camera landing where that chapter lands; (3) an unknown or malformed value falls back to the artwork view at rest, never to a broken state, and says nothing; (4) add a copy-link control in the tour panel that copies the current view and chapter using the page's existing toast pattern, and make the copied link open the same place on a phone and on a desktop; (5) check the restored state against the fold: a deep link opened on a narrow frame obeys the sheet law, the folded cluster and the clear band like any other entry; (6) write the law where laws live — AGENTS.md if it generalises to the other masters, notes/reasoning.md for the judgement, and the components inventory if a new element appears.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; the declared data-props defaults (a deep link changes the session, never the file); the parked Tweaks rollout; other masters' files; the walkthroughMode law already landed. No other flower lane runs in parallel.
+
+Done-when: the format proposed and argued in the session note before any wiring; geometry green in node, alignment green in a browser if one exists and honestly reported if not; new checks for restore of each view, an out-of-range chapter, a malformed query, a copy-link round trip, and a narrow-frame restore; captures in this week's _output/ if a browser exists; the law written down with its reason; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+              <p class="caption">The proposal is the point. A session that wires a format it invented on the spot has missed the lane.</p>
+            </div>
+          </details>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============ Later ============ -->
+    <section class="work-section" id="later" data-sub data-span="12" aria-labelledby="later-title">
+      <div class="section-heading">
+        <h2 id="later-title">Later, and blocked</h2>
+        <span class="eyebrow">Sweeps run alone · the hardware pass needs your hands</span>
+      </div>
+      <div class="secondary-grid" data-grid>
+
+        <article class="task-card secondary" data-span="6" aria-labelledby="task-lane25-title">
+          <div class="card-topline"><span class="eyebrow">Lane 25 · Master FLOWER</span><span class="status">After the features</span></div>
+          <h3 id="task-lane25-title">Motion sweep</h3>
+          <p>Every transition on the master, named and checked against the tokens: the tour's chapter camera, the card sheet's rise and drop, the cluster's fold, the drawers' open and close, hover and pressed states, the construction view's changes, the blend dots' shadow. Durations and curves come from <code>tokens/motion.css</code> &mdash; 120, 180, 360 &mdash; and are never invented per surface.</p>
+          <p class="caption task-note">Runs alone, after lanes 20 to 24, because it touches everything they add. Standing rule: motion is derived here, not adopted; reduced motion holds a change at 1ms rather than deleting it. The sweep produces a table &mdash; each motion, its duration, its curve, derived or invented &mdash; and fixes the invented ones.</p>
+          <div class="actions">
+            <button class="button" data-copy="lane25" data-press hidden>Copy the lane 25 brief</button>
+            <a class="text-link" href="tokens/motion.css">The motion tokens<span class="link-mark" aria-hidden="true"></span></a>
+          </div>
+          <details class="disclosure" id="lane25-details">
+            <summary>Done &mdash; brief &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane25" tabindex="0" aria-label="Lane 25, the motion sweep, starting brief">LANE 25 · MOTION SWEEP · Master FLOWER · tokens only, never invent · one branch, stop at PR
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 25 from Projects/HQ/queue.md, the motion sweep on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md (the HUD law's type and motion clause) → tokens/motion.css → notes/reasoning.md ("Motion is derived here, not adopted, 2026-09-05", the mobile layout rules, the compact law v11.1 entry) → notes/research/motion-inventory-2026-09-05.md if it exists → the master's transitions in templates/colour-flower/ColourFlower.dc.html, measurements.css, lib/tweaks-drawer.js.
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip; confirm no other flower lane is open, since this sweep touches the whole master; run node tests/flower-geometry.cjs; alignment needs a browser, report honestly if there is none.
+
+Task, lane 25: the motion sweep. In order: (1) inventory every transition and animation the master carries — the tour's chapter camera on glideRot and glideZoom, the card sheet's rise and drop and peek, the cluster's fold to one chip, the Tweaks and Render drawers, the view toggles' states, hover and pressed treatments, the Schematics construction view's changes, the blend dots' shadow toggle, the first-visit hint — and put the list in the session note before changing anything; (2) for each one record its duration, its curve, and whether it is derived from tokens/motion.css or invented locally; (3) bring every invented value onto the tokens, or record why it must stay its own, in notes/reasoning.md; (4) check the tour's camera timing against the time its chapter copy takes to read — a camera that arrives after the reader has finished the sentence is a defect, and so is one that lands before the sentence starts; (5) verify reduced motion end to end: every change holds at 1ms rather than disappearing, including the camera, the sheets and the fold; (6) publish the resulting motion table where the rules live, so the next master inherits a table rather than a guess.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; tokens/motion.css itself (a new token is a ruling, not a sweep); the geometry; the parked Tweaks rollout; other masters' files.
+
+Done-when: the inventory and the table in the session note; every value derived or its exception argued; geometry green in node, alignment green in a browser if one exists and honestly reported if not; a reduced-motion check added if one does not exist; captures of the camera and the sheets at 12/6/3 if a browser exists; the table written into notes/reasoning.md and AGENTS.md if it generalises; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+              <p class="caption">One sweep, one branch, nothing else running on the flower.</p>
+            </div>
+          </details>
+        </article>
+
+        <article class="task-card secondary" data-span="6" aria-labelledby="task-lane26-title">
+          <div class="card-topline"><span class="eyebrow">Lane 26 · Master FLOWER</span><span class="status">Done · 24 Sep · PR #158 merged</span></div>
+          <h3 id="task-lane26-title">Copy sweep</h3>
+          <p>Every string the master shows, read against the voice: the six chapter titles and bodies, the sitting questions folded into them, the intro's three prompts, the first-visit hint, the blank slot's line, the status announcements, the Schematics labels and spacing names, the Render labels, the set names.</p>
+          <p class="caption task-note">Context: the voice is a fellow traveller, never an authority. Chapters two and three are titled by live words in telling order &mdash; Mind, Body, Soul; Self, Will, High &mdash; read off the position table, with the static titles only as a fallback, so a sweep must never retitle by hand anything that reads live. Chapter four opens on the Self&ndash;Soul axis as of PR 115. Runs alone, and after the features, because lanes 20 to 24 all add strings.</p>
+          <div class="actions">
+            <button class="button" data-copy="lane26" data-press hidden>Copy the lane 26 brief</button>
+            <span class="rs-vault-only" title="Vault-only note, not published to the public site">Voice and copy<span class="link-mark" aria-hidden="true"></span></span>
+          </div>
+          <details class="disclosure" id="lane26-details">
+            <summary>Done &mdash; brief &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane26" tabindex="0" aria-label="Lane 26, the copy sweep, starting brief">LANE 26 · COPY SWEEP · Master FLOWER · never retitle a live word · one branch, stop at PR
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 26 from Projects/HQ/queue.md, the copy sweep on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md → notes/reasoning.md ("Voice and copy", "Words means real words, learned 2026-09-01, twice", "What the flower means") → the tour's copy in templates/colour-flower/ColourFlower.dc.html (TOUR_TITLES, TOUR_BODIES, the live-word splices, the status region) → the Schematics card's labels and the spacing names → research/set-pages-copy.md.
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip; confirm no other flower lane is open; run node tests/flower-geometry.cjs; alignment needs a browser, report honestly if there is none.
+
+Task, lane 26: the copy sweep. In order: (1) list every string the master shows, in the session note, before editing any of them — the six chapter titles and bodies, the sitting questions inside the bodies, the intro's prompts, the first-visit hint, the blank slot's line, the status announcements, the Schematics card's labels and its four spacing names, the Render drawer's labels, the set names and their short forms; (2) mark each one live or static: anything that reads off the position table is live and must not be retitled by hand, because a word move in the Sheet renames it by itself; (3) read the static ones against the voice — a fellow traveller, never an authority, sentences rather than fragments, real words, nothing that leans on a word that could move; (4) fix drift, and where a line is better left alone say so and why, since a sweep that rewrites everything has no judgement in it; (5) check the announced strings for a screen reader: what is spoken and what is seen must say the same thing, and neither should read out markup or numbers without units; (6) check the copy at 12/6/3 — a line that fits a desktop card and overflows a phone sheet is a defect, and so is a chapter body that cannot be read inside half a frame.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; data/deck-data.js (the deck's own copy is a card session's, and lane 3 audits it); the live word assignments, which come from the Sheet and are never hardcoded; the geometry; other masters' files.
+
+Done-when: the string list in the session note with a live or static mark and a keep or change verdict on each; geometry green in node, alignment green in a browser if one exists and honestly reported if not; a check added for any string that could overflow at three columns; captures at 12/6/3 if a browser exists; anything that becomes a voice rule written into notes/reasoning.md; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+              <p class="caption">A sweep with a verdict per line, not a rewrite.</p>
+            </div>
+          </details>
+        </article>
+
+        <article class="task-card secondary" data-span="6" aria-labelledby="task-lane27-title">
+          <div class="card-topline"><span class="eyebrow">Lane 27 · Master FLOWER</span><span class="status">Blocked · needs hardware</span></div>
+          <h3 id="task-lane27-title">Screen reader and iPhone pass</h3>
+          <p>A real VoiceOver or TalkBack pass on the tour panel, the view toggles, the folded Options chip and the card sheet; a keyboard-only walk of all six chapters; and one look in iOS Safari, which the 22 September phone pass never named.</p>
+          <p class="caption task-note">Blocked, not parked: it needs hands and hardware, or a browser-equipped lane. What exists already is real but partial &mdash; the chapter is announced through a status region, the toggles carry <code>aria-pressed</code>, hit targets are 44px, focus is a 2px ring offset 3px, fixed chrome respects safe-area insets, and automated scans passed for the Schematics card and the Render drawer. That scan was explicitly not a full accessibility audit of the master. Your own verdict on hardware, 22 September: &ldquo;phone looks much improved overall&rdquo;, with no faults named.</p>
+          <div class="actions">
+            <button class="button" data-copy="lane27" data-press hidden>Copy the lane 27 brief</button>
+            <span class="rs-vault-only" title="Vault-only note, not published to the public site">What was tested<span class="link-mark" aria-hidden="true"></span></span>
+          </div>
+          <details class="disclosure" id="lane27-details">
+            <summary>Done &mdash; brief &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane27" tabindex="0" aria-label="Lane 27, the hardware accessibility pass, starting brief">LANE 27 · ACCESS PASS · Master FLOWER · no browser, no done mark · one branch, stop at PR
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 27 from Projects/HQ/queue.md, the hardware accessibility and iOS Safari pass on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md (the HUD law's states clause: aria-pressed, 44px targets, the focus ring, safe-area insets, reduced motion) → notes/flower-alignment-review.md (its Verification section says plainly what was and was not tested) → Weekly 2026/Y26 W39 September 21/_notes/session-2026-09-22-phone-pass.md (Mark's verdicts and the five rulings) → the master's aria markup in templates/colour-flower/ColourFlower.dc.html.
+
+Before starting: this lane needs hardware or a browser-equipped session. If you have neither, stop and say so in one numbered point rather than emulating your way to a done mark — the vault's rule is that a check that cannot be run is reported as not run.
+
+Task, lane 27: the hardware accessibility and iOS Safari pass. In order: (1) a real screen-reader pass, VoiceOver or TalkBack on hardware, or ChromeVox emulation only as a named fallback: the tour panel and its status announcements, the two view toggles and their pressed states, the folded Options chip on a narrow frame, the card sheet's peek and lift, the Schematics corner card's scrolling body, and the artwork's hit targets, which carry no aria of their own; (2) a keyboard-only walk of all six chapters, entering and leaving the tour without a pointer, and confirming that the tour owns the keyboard while it is on and gives it back when it ends; (3) one iOS Safari look at the master, since the 22 September hardware pass never named its browser: the fold, the clear band, the sheet, the landscape triptych, and the safe-area insets, which are declared but have never been seen on a device with a notch; (4) record what passes and what fails, per item, with the device and the browser named; (5) fix what can be fixed in the master's markup and styling, and open a lane for anything structural; (6) write the results where they will be read: the session note in full, the queue row updated, and one numbered point per finding in chat.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; the geometry; the parked Tweaks rollout; other masters' files. No other flower lane runs in parallel.
+
+Done-when: every item above has a pass, a fail or an honest not-run, with the device and browser named; any fix landed with a check; geometry still green in node; session note in this week's _notes/; HANDOVER.md rewritten; the HQ queue row updated; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+              <p class="caption">The one lane no sandbox can close. It is yours, or a browser-equipped session's.</p>
+            </div>
+          </details>
+        </article>
+
+        <article class="task-card secondary" data-span="6" aria-labelledby="task-lane28-title">
+          <div class="card-topline"><span class="eyebrow">Lane 28 · card side</span><span class="status">Ruled · out of master scope</span></div>
+          <h3 id="task-lane28-title">The word's own readings, ported to the card</h3>
+          <p>The master stores a gloss, a pair reading, a shape reading and a position reading for every word &mdash; written copy that survived the retirement of the readout sheet that used to show them. They have no on-screen home. The card reads the deck's own store instead.</p>
+          <p class="caption task-note">Your ruling, 22 September: port them to the card side. The stored values were never cut and are not to be cut. Listed here so the ruling is not lost, but it lands on <code>components/core/AspectCard.jsx</code> and <code>data/deck-data.js</code>, so it is a card session's lane rather than a flower one, and it should read lane 3's copy audit first if that audit has run.</p>
+          <div class="actions">
+            <button class="button" data-copy="lane28" data-press hidden>Copy the lane 28 brief</button>
+            <span class="rs-vault-only" title="Vault-only note, not published to the public site">The recorded ruling<span class="link-mark" aria-hidden="true"></span></span>
+          </div>
+          <details class="disclosure" id="lane28-details">
+            <summary>Done &mdash; brief &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane28" tabindex="0" aria-label="Lane 28, the readings ported to the card side, starting brief">LANE 28 · READINGS PORT · card side · master values never cut · one branch, stop at PR
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 28 from Projects/HQ/queue.md, the word's own readings ported to the card side.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md → github.md, the Open-for-a-ruling entry that records Mark's ruling of 22 September ("port to the card side"; the values stay stored, never cut) → notes/reasoning.md ("Voice and copy") → the master's stored readings in templates/colour-flower/ColourFlower.dc.html (GLOSS, PAIR, SHAPE, POS.read) → components/core/AspectCard.jsx and its .d.ts → data/deck-data.js → Projects/HQ/queue.md lane 3, the card copy audit, and read its delta table if it has run.
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip; check whether lane 3's audit has landed, since a port that contradicts a fresh audit wastes both; run node tests/flower-geometry.cjs and node tests/deck-grid.cjs; the browser suites need the offline recipe in github.md.
+
+Task, lane 28: the readings ported to the card side. In order: (1) map every stored reading in the master to the card it belongs on, by position number and never by word, and put the map in the session note before moving any copy; (2) where the deck's own store already holds a reading for that card, compare the two and name which is better, rather than overwriting quietly — the master's readings are written copy and were kept deliberately; (3) port the readings onto the card side so the card carries them, keeping the master's stored values in place and untouched; (4) nothing hardcoded and nothing keyed to a word that could move: the Sheet stays canonical for assignments; (5) if the port needs a new field on the card component, that is a system change — write it into the component's .d.ts contract and the inventory, and say so in chat as a numbered point; (6) keep the voice: a fellow traveller, never an authority.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; the live Google Sheet; the master's stored readings (they stay as values, per the ruling); the geometry; other masters' files.
+
+Done-when: the map and the better-line verdicts in the session note; deck-grid and geometry green in node, the browser suites green if a browser exists and honestly reported if not; the card component's contract updated if it changed; captures of the affected cards at their printed size if a browser exists; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+              <p class="caption">Kept on this page so the ruling survives, but a card session owns it.</p>
+            </div>
+          </details>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============ Waiting ============ -->
+    <section class="work-section" id="waiting" data-sub data-span="12" aria-labelledby="waiting-title">
+      <div class="section-heading">
+        <h2 id="waiting-title">Waiting on you</h2>
+        <span class="eyebrow">Three things, none of them a task a session can take</span>
+      </div>
+      <div class="secondary-grid" data-grid>
+        <article class="task-card secondary" data-span="12" aria-labelledby="waiting-card-title">
+          <div class="card-topline"><span class="eyebrow">Your calls</span><span class="status">No session can close these</span></div>
+          <h3 id="waiting-card-title">One look, one placement, one purpose.</h3>
+          <details class="disclosure" id="waiting-details" open>
+            <summary>What each one is<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <ul class="acceptance">
+                <li><strong>An iPhone look.</strong> Your hardware pass on 22 September said &ldquo;phone looks much improved overall&rdquo; and &ldquo;Style is fine&rdquo;, and named no faults, but it never named its browser. One fresh look at the Flower in iOS Safari closes the last residual of the mobile wave. Lane 27 carries it.</li>
+                <li><strong>Where the gesture reference lives.</strong> Decided and built 23 September: a 44px Keys control in the tour panel's header and the intro's slot, the ? key everywhere, no fifth cluster button. The sheet is on the master.</li>
+                <li><strong>The Realm card's purpose.</strong> Scrapped today, on your words: &ldquo;I don't know what the intent of this even is, so scrap it until its purpose is made more clear to me.&rdquo; Nothing was built for it and nothing is queued. It is recorded in the archive below with the only two traces the vault held, so it can come back if the purpose does.</li>
+              </ul>
+              <p class="caption">Still open elsewhere and deliberately not on this page: the LINGO rescore signal 3, the near-synonym pairs, the cold strand at position 10, and the W37 Feedback carry. They live in HQ's own Waiting section.</p>
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ Out of scope ============ -->
+    <section class="work-section" id="scope" data-sub data-span="12" aria-labelledby="scope-title">
+      <div class="section-heading">
+        <h2 id="scope-title">Named, not briefed</h2>
+        <span class="eyebrow">Flower-adjacent work outside the master</span>
+      </div>
+      <div class="secondary-grid" data-grid>
+        <article class="task-card secondary" data-span="12" aria-labelledby="scope-card-title">
+          <div class="card-topline"><span class="eyebrow">Out of scope, still live</span><span class="status">Elsewhere</span></div>
+          <h3 id="scope-card-title">Two other flower homes, and one conflict worth naming.</h3>
+          <details class="disclosure" id="scope-details" open>
+            <summary>What they are, and why they are not here<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <ul class="acceptance">
+                <li><strong>The standalone walkthrough app</strong> (<code>Projects/Re.Colour FLOWER/walkthrough/</code>) retired to <code>_Trash/</code> 2026-09-23, excluding <code>node_modules/</code>, with the parity test retired beside it. It was not briefed here because you scoped this backlog to the master. Ruling that settled the tension, Mark 2026-09-23: retire now. The help-overlay pattern is already ported (lane 21 done) and the keyboard law lives in the master tour, so nothing live depended on the app except the parity lock.</li>
+                <li><strong>Your corner-card ruling of the same day</strong> &mdash; the walkthrough adopts the master&rsquo;s corner card, closing the W38 rail-versus-corner genre question &mdash; is app-side for the same reason, and is arguably mooted by that retirement. Recorded here so the ruling is not lost between the two.</li>
+                <li><strong>Re.Focus FLOWER</strong>, the older diagram project, still carries two questions the copy session asked the design session on 6 August and never had answered: whether the build can read <code>flower-content.json</code> instead of holding its own static copy, and which existing build lines are better than the drafted ones. Its draft also has no reading for a pick that crosses sets, since a cross-set pick has no card tier yet. Not briefed here for the same reason &mdash; different project, different file &mdash; but they are live and they are old.</li>
+                <li><strong>Not flower, but adjacent:</strong> Colour WHEEL's direct circle hit target, occluded by its own SVG text, recorded as a follow-up when lane 16 closed.</li>
+              </ul>
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ Record ============ -->
+    <section class="work-section" id="record" data-sub data-span="12" aria-labelledby="record-title">
+      <div class="section-heading">
+        <h2 id="record-title">Landed, folded away</h2>
+        <span class="eyebrow">The flower's record · weeks 38 and 39</span>
+      </div>
+      <p class="landed-lede">What the briefs above are built on. Open a row for the recap and, where a prompt ran, the prompt as it ran.</p>
+      <div class="landed-list">
+        <details class="disclosure landed-record" id="landed-lane20">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 20 · 22 Sep</span><h3>The Schematics hover inspector, and the pattern written down</h3><span class="status">Done</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>The Schematics corner card read the sets; now a position answers for itself. While the pointer rests on a position's circles in the construction view, the card carries that position's own read above the set rows &mdash; its angle, the circles that meet there, the crossing values that place it, the focused set's slot &mdash; and the read goes when the pointer goes. Hover is desktop only, so touch and keyboard carry the same read from a held pick, labelled as held; a hover is never a selection, and the all-hidden scene keeps its honest empty state. The pattern is written in all three registers with your instruction quoted, and the judgement is recorded in <code>notes/reasoning.md</code>.</p>
+            <p class="caption">Record in this week's notes: <code>session-2026-09-22-schematics-hover-lane20.md</code>. The alignment suite is green in a browser with new checks at 12/6/3, in the folded narrow state and against a held pick; captures are in the week's _output/.</p>
+            <div>
+              <p class="caption">Read-only record. prompts.md folds finished prompts away with their work.</p>
+              <details class="disclosure" id="lane20-record">
+            <summary>Done &mdash; brief &amp; scope<span class="chevron" aria-hidden="true"></span></summary>
+            <div class="disclosure-body">
+              <pre class="prompt" id="prompt-lane20" tabindex="0" aria-label="Lane 20, Schematics hover inspector, the prompt as it ran">LANE 20 · HOVER READ · Master FLOWER · one fact, three registers · one branch, stop at PR
+
+Work in Projects/Design System on markshikada/Re.SOURCE. One lane, one branch: lane 20 from Projects/HQ/queue.md, the Schematics hover inspector on Master FLOWER.
+
+Read in order: VAULT.md at repo root → HANDOVER.md → Projects/Design System/AGENTS.md ("One HUD language across every master", where the corner inspector card is law) → notes/flower-alignment-review.md (the Schematics and rendering separation, and the shared facts) → notes/components-inventory.md ("Shared chrome") → notes/reasoning.md ("One HUD language and the Schematics corner card", "Schematics is a construction view, not a second page") → the master: templates/colour-flower/ColourFlower.dc.html with measurements.css and geometry.js.
+
+Before starting: playbook §8 preflight — git fetch origin main and confirm the tip. Read the cluster numbers off lib/tweaks-drawer.js and templates/colour-flower/measurements.css, never off an older record: compact law v11.1 puts the nav at 20, Tweaks at 60, Schematics at 100, Walkthrough at 140, Render at 180, on 40px steps, with a sheet opening below the cluster. Run node tests/flower-geometry.cjs and node tests/flower-parity.cjs. tests/flower-alignment.cjs needs a real browser; the offline recipe is in github.md, and if no browser exists say so plainly rather than reporting it green.
+
+Task, lane 20: the Schematics hover inspector, and the pattern written down. In order: (1) hovering a position in the Schematics construction view adds that position's own read to the corner inspector card — its angle, which circles meet there, the crossing values that place it, and its set's radius and centre distance for that slot — as a block that sits above the set rows while hovered and leaves no permanent change when the pointer goes; (2) it never steals a click: the existing picks, hit targets and set selection behave exactly as before, and a hovered read is not a selection; (3) hover is desktop-only, so touch and keyboard get the same read from a held pick, and the read says which of the two produced it; (4) the all-hidden scene keeps its honest empty state — no fake geometry, no invented read; (5) write the pattern up so the next master adopts it: the corner-inspector-card clause in AGENTS.md gains the hover read, notes/components-inventory.md names it under "Shared chrome", notes/session-playbook.md §7 carries the mechanics, and notes/reasoning.md records the judgement. One fact, three registers, nothing restated.
+
+Don't-touch: generated support.js runtimes and _ds_bundle.js; the geometry solver's values; the parked Tweaks rollout (DS queue item 8); other masters' files; the walkthroughMode law already landed. No other flower lane runs in parallel — the master is one file.
+
+Done-when: geometry and parity green in node, alignment green in a browser if one exists and honestly reported if not; new checks covering the hover read at 12/6/3, in the folded narrow state, and against a held pick; captures in this week's _output/ if a browser exists; the pattern written in all three registers with your instruction quoted; session note in this week's _notes/ ending with efficiency suggestions for the next agent; HANDOVER.md rewritten; the HQ queue row set to done and prompts.md re-led; commit, push, PR, merge your own PR. Report to Mark as short numbered points, never file paths.</pre>
+              <p class="caption">Judgement lane. Stays on Arena, not the cheap driver.</p>
+            </div>
+          </details>
+            </div>
+          </div>
+        </details>
+
+        <details class="disclosure landed-record" id="landed-v111">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Compact law v11.1 · 22 Sep</span><h3>The right-side menus fix</h3><span class="status">Recorded after the fact</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>The whole right side went compact and safe-area aware: the nav pill, the Tweaks trigger, both view toggles and the Render drawer now share one treatment &mdash; 32px rows, 6px 10px padding, 11px mono at 0.02em, <code>surface-card</code> on <code>surface-border</code>, 8px radius, a subtle shadow instead of a glow, and safe-area insets on every fixed edge. The stack tightened from 44px steps to 40: nav 20, Tweaks 60, Schematics 100, Walkthrough 140, Render 180. The blend dots' shadow went off, so the two shadows no longer fight. Desktop and phone are identical in density now; only the fold differs.</p>
+            <p class="caption">This row is the record that was missing. The lane landed on main with no queue row, no session note and no HQ card, and the queues still cited the old 68 / 112 / 156 / 200 numbers. Both were repaired on 22 September; the law itself is written in <code>AGENTS.md</code> and <code>notes/reasoning.md</code>, and reconstructed from the code and the merge message rather than invented.</p>
+          </div>
+        </details>
+
+        <details class="disclosure landed-record" id="landed-pr115">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">PR 115 · 22 Sep</span><h3>The tour's storyboard</h3><span class="status">Done</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>Chapter four now opens on the Self&ndash;Soul axis, and stepping opens every other axis from there. Chapters two and three are titled by live words in common telling order &mdash; Mind, Body, Soul; Self, Will, High &mdash; read off the position table, so a Sheet move renames the chapter by itself. The sitting questions folded into the body copy rather than becoming a new element: which of the three is loudest, which corner needs steadying, step through the other axes from here.</p>
+            <p class="caption">Node suites green (geometry 320 families, parity 20 checks). The browser suite and screenshots were not run in that session, and no test asserts a tour title or body &mdash; which is part of why lane 26 exists.</p>
+          </div>
+        </details>
+
+        <details class="disclosure landed-record" id="landed-lane19">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 19 · 22 Sep</span><h3>The testbed app and the live site</h3><span class="status">Done</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>The last surface of the mobile wave: the walkthrough app took the master's phone layout, the parity lock extended to its numbers, and the public site was republished and looked at on the live address at five frames. The wave is complete; what remains of it is your physical-phone pass.</p>
+            <p class="caption">Folded here from HQ's featured card, which was still offering it as next work.</p>
+          </div>
+        </details>
+
+        <details class="disclosure landed-record" id="landed-mobile">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">21 Sep · PR 105</span><h3>The mobile layout law</h3><span class="status">Done</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>The Flower led it: the cluster folds to one chip on narrow and short frames, the artwork is drawn to the clear band with chapter zooms capped by it, the printed card becomes a bottom sheet with a peek, the chapter sheet takes at most half the frame with its body scrolling, a phone on its side is a triptych, and the 400px zoom rule is gone. Published as eight rule-and-reason pairs in Brand STYLE section 07, in <code>AGENTS.md</code> for agents, and in <code>notes/reasoning.md</code> &mdash; one fact, three registers. You asked whether it wanted a new devices master; the ruling was no.</p>
+            <p class="caption">Verified on your phone on 22 September: &ldquo;phone looks much improved overall&rdquo;.</p>
+          </div>
+        </details>
+
+        <details class="disclosure landed-record" id="landed-lane9">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lane 9 · PR 100</span><h3>Walkthrough into the master</h3><span class="status">Done</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>The tour became a view mode rather than a page: <code>walkthroughMode</code> declared in the master's own props, the shared drawer lib generalised to a labelled map of view modes with one toggle each, mutually exclusive, complete payloads, and an <code>rf-view-exit</code> handshake so a master can leave its own view. Six chapters walk the middle ring whatever set it holds, with picks, copy and card all read live off the position table; the camera rides the master's own glide values with a snapshot and restore; the tour owns the keyboard while it is on.</p>
+            <p class="caption">Proving the sheet law at phone widths retired the 320px click anomaly the alignment suite had been carrying as a caveat for a week: it was real geometry all along, a close button under the Tweaks trigger.</p>
+          </div>
+        </details>
+
+        <details class="disclosure landed-record" id="landed-lane8">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Lanes 7 and 8 · PR 77 to 83</span><h3>One geometry, one HUD language</h3><span class="status">Done · 19 Sep</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>All thirteen circles in a set share that set's radius, State is solved from Tags' contact geometry rather than dialled, and the Core stopped being 15.5% too big. Schematic mode left the Tweaks drawer and became a view toggle, so the drawer carries dialable values only and shadow and glow moved to an artwork-only Render drawer. The shared facts were named once for both live flower surfaces, and the HUD law was written into <code>AGENTS.md</code> with the Flower as its reference implementation.</p>
+            <p class="caption">Your words behind it: &ldquo;I want both flowers to share the same sizing and positioning. All views and modes to share same UI and consistency too, like a AAA game HUD.&rdquo;</p>
+          </div>
+        </details>
+
+        <details class="disclosure landed-record" id="landed-realm">
+          <summary>
+            <span class="landed-line"><span class="eyebrow">Scrapped · 22 Sep</span><h3>The Realm card treatment</h3><span class="status">No purpose on record</span></span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure-body">
+            <p>It arrived on the approved-and-waiting list as &ldquo;Realm Reader card&rdquo;, and the only other trace in the whole vault was one line: &ldquo;Realm card treatment: Reader first (recommended), Compare next, Draft only if wanted.&rdquo; No brief, no ruling, no session note, and nothing in the master that answers to it. Asked what it meant, your answer was to scrap it until its purpose is clearer.</p>
+            <p class="caption">Kept as a row rather than deleted, so the two traces survive if the purpose comes back. Nothing was built for it, and no lane is queued.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <footer class="footer" data-span="12">
+      <p class="caption">Built from the Re.SOURCE design system, on its own tokens and nothing else.</p>
+      <div class="footer-links"><a href="HQ.html">HQ</a><a href="Masters.html">Browse masters</a><a href="templates/colour-flower/ColourFlower.dc.html">Open the Flower</a><a href="#main">Back to top</a></div>
+      <details class="disclosure source-details">
+        <summary>Source notes for agents<span class="chevron" aria-hidden="true"></span></summary>
+        <div class="disclosure-body"><p class="caption">This page is the readable face of the Flower backlog; the dispatch lives in <span class="rs-vault-only" title="Vault-only note, not published to the public site">the vault queue</span> (lanes 20 to 28) and <span class="rs-vault-only" title="Vault-only note, not published to the public site">the starting prompts</span>, and the Design System's own detail is in <span class="rs-vault-only" title="Vault-only note, not published to the public site">notes/queue.md</span>. Read <span class="rs-vault-only" title="Vault-only note, not published to the public site">vault rules</span>, <span class="rs-vault-only" title="Vault-only note, not published to the public site">the handover</span>, <span class="rs-vault-only" title="Vault-only note, not published to the public site">the HUD law</span>, <span class="rs-vault-only" title="Vault-only note, not published to the public site">the reasoning</span>, <span class="rs-vault-only" title="Vault-only note, not published to the public site">the shared flower facts</span>, <span class="rs-vault-only" title="Vault-only note, not published to the public site">the components inventory</span>, <span class="rs-vault-only" title="Vault-only note, not published to the public site">the session playbook</span> and <span class="rs-vault-only" title="Vault-only note, not published to the public site">the repository record</span>. One master lane at a time for lanes 20 to 27; lane 28 is card-side. Statuses are edited snapshots, not connected to live session or GitHub activity.</p></div>
+      </details>
+    </footer>
+  </main>
+  <div class="toast" id="hqToast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p class="noscript-note shell" data-pad>Open a brief and select its text to copy. Every disclosure and link works without JavaScript.</p></noscript>
+</body>
+</html>

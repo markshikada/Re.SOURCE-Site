@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy policy — Mark Shikada</title>
+<meta name="description" content="Privacy policy for the personal Pinterest API application operated by Mark Shikada for a single account.">
+<meta name="robots" content="index,follow">
+<!--
+  Source of truth for https://markshikada.github.io/Re.SOURCE-Site/Projects/HQ/privacy.html
+  Colour and type values are copied verbatim from
+  ../Design System/tokens/ (greys.css, typography.css, space.css, fonts.css).
+  No value is invented beside those files.
+-->
+<style>
+  :root{
+    --surface-page:#000000;
+    --surface-card:#0D0D0D;
+    --surface-raised:#1A1A1A;
+    --surface-border:#333333;
+    --text-primary:#FFFFFF;
+    --text-secondary:#888888;
+    --text-dim:#555555;
+    --space-sm:8px;
+    --space-md:12px;
+    --space-lg:24px;
+    --radius-md:12px;
+    --fs-body:18px;
+    --fs-h1:36px;
+    --fs-caption:12px;
+    --font-sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--surface-page);color:var(--text-primary);
+    font-family:var(--font-sans);font-size:var(--fs-body);line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:calc(var(--space-lg)*2) var(--space-lg) calc(var(--space-lg)*4)}
+  .stamp{
+    font-family:var(--font-mono);font-size:var(--fs-caption);letter-spacing:.06em;
+    text-transform:uppercase;color:var(--text-secondary);
+    padding-bottom:var(--space-md);border-bottom:1px solid var(--surface-border);
+    margin-bottom:var(--space-lg);
+  }
+  h1{font-size:var(--fs-h1);line-height:1.15;margin:0 0 var(--space-lg);letter-spacing:-.01em}
+  h2{font-size:24px;line-height:1.25;margin:calc(var(--space-lg)*1.5) 0 var(--space-md);color:var(--text-primary)}
+  p{margin:0 0 var(--space-md);color:var(--text-secondary)}
+  p strong,li strong{color:var(--text-primary);font-weight:600}
+  ul{margin:0 0 var(--space-md);padding-left:1.1em;color:var(--text-secondary)}
+  li{margin-bottom:var(--space-sm)}
+  a{color:var(--text-primary);text-underline-offset:3px}
+  .card{
+    background:var(--surface-card);border:1px solid var(--surface-border);
+    border-radius:var(--radius-md);padding:var(--space-lg);margin:var(--space-lg) 0;
+  }
+  .card p:last-child{margin-bottom:0}
+  footer{
+    margin-top:calc(var(--space-lg)*2);padding-top:var(--space-md);
+    border-top:1px solid var(--surface-border);
+    font-family:var(--font-mono);font-size:var(--fs-caption);
+    letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);
+  }
+  @media (max-width:560px){
+    h1{font-size:28px}
+    .wrap{padding-left:var(--space-md);padding-right:var(--space-md)}
+  }
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/privacy.html</span>
+</nav>
+<main class="wrap">
+
+  <p class="stamp">Privacy policy &middot; Last updated 16 October 2026</p>
+
+  <h1>Privacy policy</h1>
+
+  <p>This policy covers one thing: a personal application, registered by <strong>Mark Shikada</strong>, that connects to the Pinterest API for a <strong>single account</strong> &mdash; his own.</p>
+
+  <div class="card">
+    <p><strong>In short.</strong> One person, one account. Nothing is sold, shared, advertised against, or passed to anyone else. Nothing is built for other users, because there are none.</p>
+  </div>
+
+  <h2>What the application accesses</h2>
+  <ul>
+    <li><strong>Reads</strong> the account owner&rsquo;s own Pinterest boards and standard Pins, and only those.</li>
+    <li><strong>Saves</strong> curated public Pins to boards the account owner owns &mdash; curation of existing content, not the publishing of new content.</li>
+    <li><strong>Never</strong> accesses other people&rsquo;s Pins or boards, never comments, follows, messages, or edits an existing board.</li>
+  </ul>
+
+  <h2>How access is held</h2>
+  <ul>
+    <li>Access is by a <strong>scoped access token</strong> stored in the macOS keychain on the owner&rsquo;s own machine.</li>
+    <li><strong>No password is ever stored</strong> by the application or by anyone acting for it. Sign-in is performed by the account owner, by hand.</li>
+    <li>The token is limited to four permissions &mdash; <code>boards:read</code>, <code>boards:write</code>, <code>pins:read</code>, <code>pins:write</code> &mdash; and can be revoked by the owner at any time.</li>
+    <li>Data returned by the Pinterest API is used to complete a request and is <strong>not retained server-side</strong>.</li>
+  </ul>
+
+  <h2>What is stored, and where</h2>
+  <ul>
+    <li>Reference notes &mdash; the source address of an image, its credit, and the owner&rsquo;s own note &mdash; are kept in a <strong>private local library</strong> on the owner&rsquo;s machine.</li>
+    <li>That library is not published, not shared, and not sold. It exists so the owner can find again what he chose to keep.</li>
+    <li>There is no account system, no analytics, no advertising, and no third-party tracking in anything described here.</li>
+  </ul>
+
+  <h2>Sharing</h2>
+  <p>No personal data is sold, rented, or exchanged. Data is disclosed only where the law requires it.</p>
+
+  <h2>Your rights</h2>
+  <p>Because everything sits on the owner&rsquo;s own device under the owner&rsquo;s own account, access, correction and deletion are available by asking directly.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy: <a href="mailto:info@markshikada.com">info@markshikada.com</a>.</p>
+
+  <footer>Mark Shikada &middot; London &middot; Updated 16 October 2026</footer>
+
+</main>
+</body>
+</html>

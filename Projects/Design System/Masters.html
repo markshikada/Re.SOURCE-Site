@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Brand MASTERS</title><link rel="stylesheet" href="styles.css"><script src="lib/masters-nav.js"></script>
+
+<link rel="stylesheet" href="lib/topbar.css">
+<link rel="stylesheet" href="lib/hubs.css">
+</head><body class="rs-topbar-page hub-page hub-masters">
+<a class="hub-skip" href="#main">Skip to content</a>
+<header class="rs-topbar" id="rsTopBar">
+  <div class="rs-topbar-inner" data-pad>
+    <a class="rs-topbar-brand" href="HQ.html">Re.SOURCE <span>Masters</span></a>
+    <p class="rs-topbar-stamp">W39</p>
+    <div class="rs-topbar-navrow">
+      <nav class="rs-topbar-context" aria-label="Design System pages">
+        <a href="HQ.html#words">Words</a>
+        <a href="HQ.html">HQ</a>
+      </nav>
+      <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a href="Masters.html">Open masters</a></div>
+    </div>
+  </div>
+</header>
+<main id="main" data-pad="" data-grid="">
+<h1>Brand masters</h1>
+<p class="lede" data-narrow="">Seven masters. Named ‹Subject› ARTEFACT in full, and Master ARTEFACT in ordinary reference. Re. belongs to Re.SOURCE itself and is not repeated on the artefacts inside it. A master is always the latest version, so anything that disagrees with one is out of date rather than a variant. Open a card to visit its master. The shared switcher takes you between masters and hub pages.</p>
+<ul class="master-cards" data-sub="">
+<li data-span="4"><a class="card" href="templates/colour-flower/ColourFlower.dc.html"><span class="shot"><iframe src="templates/colour-flower/ColourFlower.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Colour FLOWER preview"></iframe></span><span class="body"><span class="name">Colour FLOWER</span><span class="desc">The live instrument. Three sets on twelve positions, cards floating over the diagram.</span><span class="path">templates/colour-flower/ColourFlower.dc.html</span></span></a></li>
+<li data-span="4"><a class="card" href="templates/colour-lingo/ColourLingo.dc.html"><span class="shot"><iframe src="templates/colour-lingo/ColourLingo.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Colour LINGO preview"></iframe></span><span class="body"><span class="name">Colour LINGO</span><span class="desc">The source of record for the words: thirteen positions against every set, editable inline, duplicate-checked, readable as a wheel.</span><span class="path">templates/colour-lingo/ColourLingo.dc.html</span></span></a></li>
+<li data-span="4"><a class="card" href="templates/colour-wheel/ColourWheel.dc.html"><span class="shot"><iframe src="templates/colour-wheel/ColourWheel.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Colour WHEEL preview"></iframe></span><span class="body"><span class="name">Colour WHEEL</span><span class="desc">The ground-truth wheel diagram: twelve positions, both triangles, the spectrum ring.</span><span class="path">templates/colour-wheel/ColourWheel.dc.html</span></span></a></li>
+<li data-span="4"><a class="card" href="templates/word-card/WordCard.dc.html"><span class="shot"><iframe src="templates/word-card/WordCard.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Word CARD preview"></iframe></span><span class="body"><span class="name">Word CARD</span><span class="desc">One card at its printed size, 360 × 504. Every other card in the system is this component at a scale.</span><span class="path">templates/word-card/WordCard.dc.html</span></span></a></li>
+<li data-span="4"><a class="card" href="templates/word-deck/WordDeck.dc.html"><span class="shot"><iframe src="templates/word-deck/WordDeck.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Word DECK preview"></iframe></span><span class="body"><span class="name">Word DECK</span><span class="desc">All ninety cards on one adjustable grid, drawn by the master card.</span><span class="path">templates/word-deck/WordDeck.dc.html</span></span></a></li>
+<li data-span="4"><a class="card" href="templates/brand-logo/BrandLogo.dc.html"><span class="shot"><iframe src="templates/brand-logo/BrandLogo.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Brand LOGO preview"></iframe></span><span class="body"><span class="name">Brand LOGO</span><span class="desc">The signature at every size: mark, wordmark, lockups and the size ladder, drawn by the same component the cards use.</span><span class="path">templates/brand-logo/BrandLogo.dc.html</span></span></a></li>
+<li data-span="4"><a class="card" href="templates/brand-style/BrandStyle.dc.html"><span class="shot"><iframe src="templates/brand-style/BrandStyle.dc.html" loading="lazy" tabindex="-1" scrolling="no" title="Brand STYLE preview"></iframe></span><span class="body"><span class="name">Brand STYLE</span><span class="desc">The brand book, long form: 960px measure, sticky jump menu, specimen sections, and the position and card studies.</span><span class="path">templates/brand-style/BrandStyle.dc.html</span></span></a></li>
+</ul>
+</main>
+<script>function fitShots(){document.querySelectorAll('.shot').forEach(function(s){var f=s.querySelector('iframe');if(f)f.style.transform='scale('+(s.clientWidth/1440)+')'})}new ResizeObserver(fitShots).observe(document.querySelector('.master-cards'));fitShots();addEventListener('load',fitShots);</script>
+</body></html>

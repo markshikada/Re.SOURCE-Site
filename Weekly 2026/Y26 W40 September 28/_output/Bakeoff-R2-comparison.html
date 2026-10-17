@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Bakeoff, component round – five builds, one held</title>
+<style>
+/* Tokens, exact values from Projects/Design System/tokens/ (colours, greys,
+   space, typography). Whole numbers only. Radius 8 / 12 / 24. Colour is a
+   stroke, never a fill behind text. No letter-spacing declared.
+   Rhythm, one pass over the whole page: section gap 24, item gap 12,
+   inner gap 8. Nothing sits further than 24 from its neighbour. */
+:root{
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --white:#FFFFFF;
+  --cl-10-form:#2277FF;
+  --stroke:3px;
+
+  --fs-caption:12px; --lh-caption:18px; --fw-caption:300;
+  --fs-body:18px;    --lh-body:30px;    --fw-body:400;
+  --fs-h2:24px;      --lh-h2:36px;      --fw-h2:600;
+  --fs-h1:36px;      --lh-h1:48px;      --fw-h1:700;
+
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px; --space-xl:48px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--black);
+  color:var(--white);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+}
+img{max-width:100%}
+.wrap{max-width:1280px;margin:0 auto;padding:var(--space-lg) var(--space-md)}
+
+/* --- head --- */
+.kicker{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:0}
+h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);margin:var(--space-sm) 0 0}
+.stamp{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g48);margin:var(--space-md) 0 0}
+.lede{margin:var(--space-md) 0 0;max-width:44ch}
+.lede + .lede{margin-top:var(--space-sm);color:var(--g66)}
+.finding{
+  margin:var(--space-md) 0 0;
+  padding:var(--space-sm) 0 var(--space-sm) var(--space-md);
+  border-left:var(--stroke) solid var(--cl-10-form);
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);
+  max-width:32ch;
+}
+
+/* --- sections: section gap 24, heading to content 12 --- */
+section{margin-top:var(--space-lg)}
+h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-md)}
+.note{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:var(--space-md) 0 0;max-width:52ch}
+
+/* --- ranked table: two short lines per build on a phone, one line from 720.
+       No label-over-value pairs: the values carry the line, the verdict takes
+       a line of its own so nothing is pushed off the edge. --- */
+table{width:100%;border-collapse:collapse;margin:0}
+thead{display:none}
+tbody tr{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  column-gap:var(--space-sm);
+  row-gap:var(--space-md);
+  background:var(--g06);
+  border:1px solid var(--g24);
+  border-radius:var(--radius-sm);
+  padding:var(--space-md);
+  margin-bottom:var(--space-md);
+}
+tbody tr:last-child{margin-bottom:0}
+tbody tr.win{border-color:var(--cl-10-form)}
+td{
+  display:block;
+  padding:0;
+  margin:0;
+  white-space:nowrap;
+}
+td::before{content:none}
+td.build{
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h1);
+  white-space:normal;
+}
+td.verdict{
+  flex:0 0 100%;
+  font-size:var(--fs-body);line-height:var(--lh-body);font-weight:600;
+}
+
+/* --- builds: one column, two columns from 900 --- */
+.builds{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-md)}
+.strip-group{min-width:0}
+.strip-group > p{
+  margin:var(--space-md) 0 0;
+  font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+  color:var(--g66);
+}
+
+/* --- capture strip: the pair shares one height, so the two captures read
+       together instead of one small beside one enormous. The height walks
+       down with the column, so a pair never overflows its cell. --- */
+.shots{display:flex;gap:var(--space-md);container-type:inline-size}
+figure{margin:0;min-width:0;flex:0 1 auto}
+.shot{
+  display:block;
+  height:240px;
+  height:min(240px,53cqw);
+  border:1px solid var(--g24);
+  border-radius:var(--radius-sm);
+  background:var(--g06);
+  overflow:hidden;
+}
+.shot:hover,.shot:focus-visible{border-color:var(--g66)}
+.shot img{
+  display:block;
+  height:100%;
+  width:auto;
+  max-width:100%;
+  object-fit:contain;
+  object-position:center;
+}
+figcaption{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);padding-top:var(--space-xs)}
+
+/* --- per build review --- */
+.reviews{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-md)}
+.review{
+  background:var(--g06);
+  border:1px solid var(--g24);
+  border-radius:var(--radius-md);
+  padding:var(--space-md);
+  min-width:0;
+}
+.review h3{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0}
+.review h3 .score{color:var(--g66);font-weight:var(--fw-caption);font-size:var(--fs-caption);line-height:var(--lh-caption);display:block}
+.call{margin-top:var(--space-md)}
+.call + .call{margin-top:var(--space-md)}
+.call p{margin:0 0 var(--space-sm);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66)}
+.call ul{list-style:none;margin:0;padding:0}
+.call li{
+  position:relative;
+  padding-left:16px; /* marker 8 + inner gap 8 */
+  margin-bottom:var(--space-sm);
+  font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+}
+.call li:last-child{margin-bottom:0}
+.call li::before{
+  content:"";position:absolute;left:0;top:5px;
+  width:8px;height:8px;border:var(--stroke) solid var(--g48);
+}
+.call.good li::before{border-color:var(--cl-10-form)}
+
+/* --- caveats --- */
+.caveats{
+  border:1px solid var(--g24);
+  border-radius:var(--radius-md);
+  padding:var(--space-md);
+  background:var(--g12);
+}
+.caveats ul{list-style:none;margin:0;padding:0}
+.caveats li{position:relative;padding-left:16px;margin-bottom:var(--space-md);color:var(--g66)}
+.caveats li:last-child{margin-bottom:0}
+.caveats li::before{content:"";position:absolute;left:0;top:11px;width:8px;height:1px;background:var(--g48)}
+
+/* --- from 720: page margin steps up, the ranking becomes one line --- */
+@media (min-width:720px){
+  .wrap{padding:var(--space-lg)}
+  h1{font-size:48px;line-height:54px}
+
+  thead{display:table-header-group}
+  thead th{
+    text-align:left;
+    font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+    color:var(--g66);
+    padding:0 var(--space-md) var(--space-sm);
+    border-bottom:1px solid var(--g24);
+    white-space:nowrap;
+  }
+  thead th:first-child{padding-left:var(--space-md);width:1%}
+  thead th:last-child{padding-right:0;text-align:right;width:1%}
+
+  tbody tr{
+    display:table-row;
+    background:none;
+    border:none;
+    border-bottom:1px solid var(--g24);
+    border-radius:0;
+    padding:0;
+    margin:0;
+  }
+  tbody tr:last-child{margin-bottom:0}
+  tbody tr.win{border-color:var(--g24)}
+  td{
+    display:table-cell;
+    vertical-align:baseline;
+    padding:var(--space-sm) var(--space-md);
+  }
+  td:first-child{padding-left:var(--space-md)}
+  td:last-child{padding-right:0;text-align:right}
+  tbody tr.win td:first-child{box-shadow:inset var(--stroke) 0 0 0 var(--cl-10-form)}
+}
+
+/* --- from 390 (the phone): the pair holds the full shared height --- */
+@media (min-width:390px){
+  .shot{height:240px}
+}
+
+/* --- from 900: the builds take a two-column grid, and each review splits
+       its strengths against its defects --- */
+@media (min-width:900px){
+  .builds{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .reviews{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+  .review{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    column-gap:var(--space-md);
+    row-gap:var(--space-md);
+    align-items:start;
+  }
+  .review h3{grid-column:1 / -1}
+  .review .call{margin-top:0}
+
+  .shot{height:320px}
+  .shot{height:min(320px,53cqw)}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-comparison.html</span>
+</nav>
+<main class="wrap">
+
+  <header>
+    <p class="kicker">Bakeoff · round 2 · component · blind scoring</p>
+    <h1>Five builds of one component</h1>
+    <p class="stamp">Updated 28 September 2026, 23:10</p>
+    <p class="lede">Six models were given one brief: the printed Word CARD at 360 × 504 in three states, at rest, opened, and as a bottom sheet at 390. Five ran on 28 September 2026. Fable 5.1 never ran; the bake-off closed at five models on 29 September.</p>
+    <p class="lede">Each build was scored blind on seven laws and on seven visual axes out of 70, then captured at 1440 and at 390.</p>
+    <p class="finding">The cheapest model won the component round. The AAA tier came fourth.</p>
+  </header>
+
+  <section aria-labelledby="rank">
+    <h2 id="rank">The ranking</h2>
+    <p class="note">Models are listed everywhere in ladder order, strongest to weakest: qwen3.8-max, mimo-v2.6-flash, minimax-m3, glm-5.3-flash, mimo-v2.6-pro. This table and this strip are sorted by this round's own score, because here the position is the result.</p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Build</th>
+          <th scope="col">Visual / 70</th>
+          <th scope="col">Law</th>
+          <th scope="col">Cost tier</th>
+          <th scope="col">Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="win">
+          <td class="build">mimo-v2.6-flash</td>
+          <td>56</td>
+          <td>7 of 7</td>
+          <td>cheapest</td>
+          <td class="verdict">Ship it</td>
+        </tr>
+        <tr>
+          <td class="build">minimax-m3</td>
+          <td>55.5</td>
+          <td>6 of 7</td>
+          <td>cheap</td>
+          <td class="verdict">Second of five</td>
+        </tr>
+        <tr>
+          <td class="build">mimo-v2.6-pro</td>
+          <td>52</td>
+          <td>7 of 7</td>
+          <td>cheap</td>
+          <td class="verdict">Third of five</td>
+        </tr>
+        <tr>
+          <td class="build">qwen3.8-max</td>
+          <td>51</td>
+          <td>7 of 7</td>
+          <td>dear</td>
+          <td class="verdict">Fourth of five</td>
+        </tr>
+        <tr>
+          <td class="build">glm-5.3-flash</td>
+          <td>32.5</td>
+          <td>7 of 7</td>
+          <td>cheap</td>
+          <td class="verdict">Send back</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">The one law failure is minimax-m3: a border-radius of 0 outside 8, 12 and 24. The other four pass all seven.</p>
+  </section>
+
+  <section aria-labelledby="strip">
+    <h2 id="strip">The strip, ten captures</h2>
+    <p class="note">Desktop at 1440 beside phone at 390, one pair per build, ranked order. Tap any capture to open it full size, or use <a href="Bakeoff-zoom.html">the full-size viewer</a> to pan and pinch. To flip between the five live builds, use <a href="Bakeoff-preview.html">the preview bench</a>.</p>
+
+    <div class="builds">
+
+      <div class="strip-group">
+        <div class="shots">
+          <figure>
+            <a class="shot" href="Bakeoff-R2-E-1440.png" target="_blank" rel="noopener">
+              <img src="Bakeoff-R2-E-1440.png" width="1440" height="950" loading="lazy" decoding="async" alt="mimo-v2.6-flash, desktop capture at 1440 wide">
+            </a>
+            <figcaption>Desktop 1440</figcaption>
+          </figure>
+          <figure>
+            <a class="shot" href="Bakeoff-R2-E-390.png" target="_blank" rel="noopener">
+              <img class="phone" src="Bakeoff-R2-E-390.png" width="390" height="2042" loading="lazy" decoding="async" alt="mimo-v2.6-flash, phone capture at 390 wide">
+            </a>
+            <figcaption>Phone 390</figcaption>
+          </figure>
+        </div>
+        <p>mimo-v2.6-flash · 56 · cheapest</p>
+      </div>
+
+      <div class="strip-group">
+        <div class="shots">
+          <figure>
+            <a class="shot" href="Bakeoff-R2-C-1440.png" target="_blank" rel="noopener">
+              <img src="Bakeoff-R2-C-1440.png" width="1440" height="908" loading="lazy" decoding="async" alt="minimax-m3, desktop capture at 1440 wide">
+            </a>
+            <figcaption>Desktop 1440</figcaption>
+          </figure>
+          <figure>
+            <a class="shot" href="Bakeoff-R2-C-390.png" target="_blank" rel="noopener">
+              <img class="phone" src="Bakeoff-R2-C-390.png" width="390" height="1948" loading="lazy" decoding="async" alt="minimax-m3, phone capture at 390 wide">
+            </a>
+            <figcaption>Phone 390</figcaption>
+          </figure>
+        </div>
+        <p>minimax-m3 · 55.5 · cheap</p>
+      </div>
+
+      <div class="strip-group">
+        <div class="shots">
+          <figure>
+            <a class="shot" href="Bakeoff-R2-D-1440.png" target="_blank" rel="noopener">
+              <img src="Bakeoff-R2-D-1440.png" width="1440" height="2009" loading="lazy" decoding="async" alt="mimo-v2.6-pro, desktop capture at 1440 wide">
+            </a>
+            <figcaption>Desktop 1440</figcaption>
+          </figure>
+          <figure>
+            <a class="shot" href="Bakeoff-R2-D-390.png" target="_blank" rel="noopener">
+              <img class="phone" src="Bakeoff-R2-D-390.png" width="390" height="2683" loading="lazy" decoding="async" alt="mimo-v2.6-pro, phone capture at 390 wide">
+            </a>
+            <figcaption>Phone 390</figcaption>
+          </figure>
+        </div>
+        <p>mimo-v2.6-pro · 52 · cheap</p>
+      </div>
+
+      <div class="strip-group">
+        <div class="shots">
+          <figure>
+            <a class="shot" href="Bakeoff-R2-A-1440.png" target="_blank" rel="noopener">
+              <img src="Bakeoff-R2-A-1440.png" width="1440" height="1040" loading="lazy" decoding="async" alt="qwen3.8-max, desktop capture at 1440 wide">
+            </a>
+            <figcaption>Desktop 1440</figcaption>
+          </figure>
+          <figure>
+            <a class="shot" href="Bakeoff-R2-A-390.png" target="_blank" rel="noopener">
+              <img class="phone" src="Bakeoff-R2-A-390.png" width="390" height="2126" loading="lazy" decoding="async" alt="qwen3.8-max, phone capture at 390 wide">
+            </a>
+            <figcaption>Phone 390</figcaption>
+          </figure>
+        </div>
+        <p>qwen3.8-max · 51 · dear</p>
+      </div>
+
+      <div class="strip-group">
+        <div class="shots">
+          <figure>
+            <a class="shot" href="Bakeoff-R2-B-1440.png" target="_blank" rel="noopener">
+              <img src="Bakeoff-R2-B-1440.png" width="1440" height="1130" loading="lazy" decoding="async" alt="glm-5.3-flash, desktop capture at 1440 wide">
+            </a>
+            <figcaption>Desktop 1440</figcaption>
+          </figure>
+          <figure>
+            <a class="shot" href="Bakeoff-R2-B-390.png" target="_blank" rel="noopener">
+              <img class="phone" src="Bakeoff-R2-B-390.png" width="390" height="2286" loading="lazy" decoding="async" alt="glm-5.3-flash, phone capture at 390 wide">
+            </a>
+            <figcaption>Phone 390</figcaption>
+          </figure>
+        </div>
+        <p>glm-5.3-flash · 32.5 · cheap</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="review">
+    <h2 id="review">What the reviewer named</h2>
+
+    <div class="reviews">
+
+      <article class="review">
+        <h3>mimo-v2.6-flash <span class="score">56 of 70 · 7 of 7 laws · cheapest</span></h3>
+        <div class="call good">
+          <p>Strengths</p>
+          <ul>
+            <li>the oval position ticker (12 dots, 10th lit) is a systematic motif carried through all three states</li>
+            <li>the bottom-sheet column tells the scrim story with the content underneath abstracted</li>
+            <li>composition balanced at both viewports</li>
+          </ul>
+        </div>
+        <div class="call">
+          <p>Defects</p>
+          <ul>
+            <li>the three grey skeleton bars read as unfinished panels rather than a deliberate redaction system</li>
+            <li>the QUESTION label nearly touches its question text</li>
+            <li>the question is set at the same weight as body copy, so the payoff line loses its punch</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="review">
+        <h3>minimax-m3 <span class="score">55.5 of 70 · 6 of 7 laws · cheap</span></h3>
+        <div class="call good">
+          <p>Strengths</p>
+          <ul>
+            <li>the only bottom sheet that behaves like a real component, with app bar, close affordance and HOLD/OPEN</li>
+            <li>the READING/QUESTION divider echoes the border for a print-card feel</li>
+            <li>the question text has the best optical weight of the five</li>
+          </ul>
+        </div>
+        <div class="call">
+          <p>Defects</p>
+          <ul>
+            <li>at 390 the sheet floats unanchored with a dead gap and no phone frame</li>
+            <li>the slot strip shows seven slots with the fourth lit while the card claims position 10, a visible data contradiction</li>
+            <li>the "10" badge and the "POSITION 10 | FORM" line say the same thing twice</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="review">
+        <h3>mimo-v2.6-pro <span class="score">52 of 70 · 7 of 7 laws · cheap</span></h3>
+        <div class="call good">
+          <p>Strengths</p>
+          <ul>
+            <li>the most convincing print-card conceit, with a footer rule reading "READING AND QUESTION INSIDE"</li>
+            <li>the dimmed gloss card glimpsed behind the sheet is the sharpest storytelling of the lot</li>
+            <li>the type discipline is the most sophisticated</li>
+          </ul>
+        </div>
+        <div class="call">
+          <p>Defects</p>
+          <ul>
+            <li>the 780px content column leaves both flanks of a 1440 frame dead and the row breaks into loose islands</li>
+            <li>at 390 the instruction metas wrap to orphan words</li>
+            <li>the tonal greys leave the blue as the only life, which tips flat</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="review">
+        <h3>qwen3.8-max <span class="score">51 of 70 · 7 of 7 laws · dear</span></h3>
+        <div class="call good">
+          <p>Strengths</p>
+          <ul>
+            <li>clean unambiguous hierarchy in every state</li>
+            <li>the bottom sheet correctly carries the opened content including the gloss</li>
+            <li>nothing misrenders at either viewport</li>
+          </ul>
+        </div>
+        <div class="call">
+          <p>Defects</p>
+          <ul>
+            <li>an unexplained aperture glyph at the bottom-right of the at-rest card reads as a voice button with no stated meaning and appears nowhere else</li>
+            <li>the opened card re-prints the gloss instead of the brief's reading-plus-question opening</li>
+            <li>a large dead band eats the lower-left of the 1440 sheet</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="review">
+        <h3>glm-5.3-flash <span class="score">32.5 of 70 · 7 of 7 laws · cheap</span></h3>
+        <div class="call good">
+          <p>Strengths</p>
+          <ul>
+            <li>the position-dial arc with the blue tenth dot is the most poetic position metaphor</li>
+            <li>on 390 the at-rest card's counter change is the strongest single moment in the bake-off</li>
+          </ul>
+        </div>
+        <div class="call">
+          <p>Defects</p>
+          <ul>
+            <li>at 1440 state 1 is clipped in half at the left edge and state 3 sheared off the right</li>
+            <li>inside the 390 bottom sheet the card is squeezed to about a third of the frame width, wrapping one or two words per line and clipping the question's last line</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="caveats">
+    <h2 id="caveats">Caveats, all four</h2>
+    <div class="caveats">
+      <ul>
+        <li>One round, on one artefact. Nothing here is a stage answer yet.</li>
+        <li>The reviewer runs on glm-5.3-flash, which is the glm-5.3-flash build on this page, and it ranked its own build last.</li>
+        <li>The brief rewarded decorative widgets it never asked for.</li>
+        <li>The blind rule was dropped on 29 September, Mark quoted: "No need to blind test, let's just get through this to calibrate models to use for what, and when", so every build is named here.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Re.Source · word card at rest · bakeoff R1 D</title>
+<style>
+/* ================= tokens, read from the masters =================
+   colours.css : twelve position colours + the 3px stroke law
+   greys.css   : the ramp, the three text colours, the surfaces
+   space.css   : 2:3:6 on u = 4px, radius 8 / 12 / 24
+   typography.css : 12 / 18 / 24 / 36 / 48, leading 18 / 30 / 36 / 48 / 54 */
+:root{
+  --cl-01-tone:#99DD00;
+  --cl-02-flux:#FFD100;
+  --cl-03-flow:#FFB000;
+  --cl-04-love:#FF7700;
+  --cl-05-bond:#FF5500;
+  --cl-06-fire:#FF0000;
+  --cl-07-path:#E02888;
+  --cl-08-time:#9933CC;
+  --cl-09-meta:#6655FF;
+  --cl-10-form:#2277FF;
+  --cl-11-type:#00BBDD;
+  --cl-12-life:#00D460;
+
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+
+  --surface-page:#000000;
+  --surface-card:#0D0D0D;
+  --surface-raised:#1A1A1A;
+  --surface-border:#333333;
+
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:24px;
+  --space-xl:48px;
+  --space-2xl:96px;
+
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:24px;
+
+  --fs-caption:12px; --lh-caption:18px; --fw-caption:300;
+  --fs-body:18px;    --lh-body:30px;    --fw-body:400;
+  --fs-h2:24px;      --lh-h2:36px;      --fw-h2:600;
+  --fs-h1:36px;      --lh-h1:48px;      --fw-h1:700;
+  --fs-display:48px; --lh-display:54px; --fw-display:800;
+
+  --stroke:3px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--surface-page);
+  color:var(--white);
+  font-family:-apple-system,"SF Pro Text",system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+}
+
+/* page head */
+.head{padding:var(--space-lg) var(--space-md) var(--space-lg)}
+@media (min-width:720px){.head{padding:var(--space-xl) var(--space-xl) var(--space-xl)}}
+.head .kicker{color:var(--g66)}
+.head h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);margin-top:var(--space-xs)}
+.head .sub{color:var(--g48);margin-top:var(--space-xs)}
+
+/* bands */
+.band{border-top:1px solid var(--surface-raised);padding:var(--space-lg) var(--space-md) var(--space-xl)}
+@media (min-width:720px){.band{padding:var(--space-xl) var(--space-xl) var(--space-2xl)}}
+
+.wrap1{max-width:560px;margin:0 auto}
+.wrap2{max-width:816px;margin:0 auto}
+.wrap3{max-width:720px;margin:0 auto}
+
+.klabel{color:var(--white);font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+  margin-bottom:var(--space-md)}
+.klabel .kidea{color:var(--g48)}
+.klabel .sep{margin:0 var(--space-sm);color:var(--g24)}
+
+.hairline{border-top:1px solid var(--surface-raised);margin:var(--space-lg) 0}
+
+.card{background:var(--surface-card);border:1px solid var(--surface-border);border-radius:var(--radius-md);padding:var(--space-lg)}
+
+/* type utilities on the scale */
+.w-caption{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption)}
+.w-body{font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-body)}
+.w-h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2)}
+.w-h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1)}
+.w-display{font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display)}
+
+/* ===================== DIRECTION 1 · the dial ===================== */
+.d1card .word{margin-bottom:var(--space-sm)}
+.d1card .gloss{max-width:440px}
+.dialrow{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-lg);margin-top:var(--space-lg)}
+
+.dial{position:relative;width:160px;height:160px;flex:none}
+.dpi{position:block;position:absolute;left:72px;top:0;width:16px;height:16px;
+  background:var(--black);border:1px solid var(--g48);border-radius:var(--radius-sm);
+  transform-origin:8px 80px}
+.dpi-f{left:68px;top:-4px;width:24px;height:24px;border:3px solid var(--cl-10-form);
+  border-radius:var(--radius-sm);transform-origin:12px 84px}
+.r-0{transform:rotate(0deg)}.r-30{transform:rotate(30deg)}.r-60{transform:rotate(60deg)}
+.r-90{transform:rotate(90deg)}.r-120{transform:rotate(120deg)}.r-150{transform:rotate(150deg)}
+.r-180{transform:rotate(180deg)}.r-210{transform:rotate(210deg)}.r-240{transform:rotate(240deg)}
+.r-270{transform:rotate(270deg)}.r-300{transform:rotate(300deg)}.r-330{transform:rotate(330deg)}
+
+.dial-row-meta .pos{margin-top:0}
+.sub{color:var(--g66)}
+.read{color:var(--g66);margin-top:var(--space-md)}
+
+/* the question, three different houses */
+.q1{background:var(--black);border:1px solid var(--surface-border);
+  border-left:3px solid var(--cl-10-form);border-radius:var(--radius-md);
+  padding:var(--space-md) var(--space-lg);margin-top:var(--space-lg)}
+
+/* ==================== DIRECTION 2 · the ruler ==================== */
+.d2card{border-radius:var(--radius-lg)}
+.ruler{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--space-xs)}
+.tcell{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:var(--space-xs);height:72px}
+.tick{width:12px;height:24px;background:var(--surface-raised);border:1px solid var(--surface-border)}
+.tick-f{width:12px;height:48px;background:var(--black);border:3px solid var(--cl-10-form)}
+.ti{color:var(--g48);border-top:none}
+.ti-f{color:var(--white)}
+.rcap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space-xs);margin-top:var(--space-sm)}
+.rcap span{color:var(--g48)}
+.mid{display:flex;flex-direction:column;gap:var(--space-md)}
+.mid .num{margin-bottom:0}
+.mid .lab{color:var(--g48);margin-top:var(--space-xs)}
+.mid .gloss{max-width:440px}
+.mid .read{margin-top:var(--space-sm)}
+.q2{background:var(--black);border:1px solid var(--surface-border);border-radius:var(--radius-md);
+  padding:var(--space-lg);margin-top:var(--space-lg);text-align:center}
+
+/* =================== DIRECTION 3 · the bloom ==================== */
+.prompt{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);
+  margin-bottom:var(--space-md);max-width:560px}
+.d3card{border-radius:var(--radius-lg)}
+.dial-big{position:relative;width:216px;height:216px;margin:0 auto}
+.dpi2{position:absolute;left:100px;top:0;width:16px;height:16px;
+  background:var(--black);border:1px solid var(--g48);border-radius:var(--radius-sm);
+  transform-origin:8px 108px}
+.dpi2-f{left:84px;top:-12px;width:48px;height:48px;border:3px solid var(--cl-10-form);
+  border-radius:var(--radius-lg);transform-origin:24px 120px;
+  display:flex;align-items:center;justify-content:center}
+.dnum{font-size:var(--fs-body);line-height:var(--lh-caption);font-weight:var(--fw-body)}
+.void{position:absolute;top:96px;left:0;width:216px;text-align:center;color:var(--g48)}
+.dial2{display:flex;flex-direction:column;align-items:center}
+.dial2 .sub{margin-top:var(--space-sm);text-align:center;max-width:216px}
+.b3col{margin-top:var(--space-lg)}
+.b3col .word{margin-bottom:var(--space-sm)}
+.b3col .gloss{max-width:440px}
+.b3col .read{margin-top:var(--space-md)}
+
+@media (min-width:720px){
+  .mid{display:grid;grid-template-columns:96px minmax(0,1fr) minmax(0,2fr);gap:var(--space-lg)}
+  .d3card{display:grid;grid-template-columns:264px minmax(0,1fr)}
+  .b3col{margin-top:0;border-left:1px solid var(--surface-border);padding-left:var(--space-xl)}
+  .q1 .w-body{max-width:440px}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R1-D.html</span>
+</nav>
+
+<header class="head">
+  <p class="w-caption kicker">Re.Source · the word card, at rest</p>
+  <h1>Position 10 · the word card, three directions</h1>
+  <p class="w-caption sub">Sketch round · each band is one direction of the same card.</p>
+</header>
+
+<!-- ======================= DIRECTION 1 ======================= -->
+<section class="band" id="d1">
+  <div class="wrap1">
+    <p class="klabel">Direction 1<span class="sep">·</span><span class="kidea">word first, the wheel kept as a small dial</span></p>
+    <article class="card d1card">
+      <h1 class="w-display word">FORM</h1>
+      <p class="w-body gloss">Form is the shape a thing takes when it holds together.</p>
+      <div class="hairline"></div>
+      <div class="dialrow">
+        <div class="dial" aria-hidden="true">
+          <span class="dpi r-0"></span>
+          <span class="dpi r-30"></span>
+          <span class="dpi r-60"></span>
+          <span class="dpi r-90"></span>
+          <span class="dpi r-120"></span>
+          <span class="dpi r-150"></span>
+          <span class="dpi r-180"></span>
+          <span class="dpi r-210"></span>
+          <span class="dpi r-240"></span>
+          <span class="dpi r-270"></span>
+          <span class="dpi dpi-f r-300"></span>
+          <span class="dpi r-330"></span>
+        </div>
+        <div class="dial-row-meta">
+          <p class="w-h2 pos">Position 10</p>
+          <p class="w-caption sub">300 degrees clockwise</p>
+        </div>
+      </div>
+      <p class="w-caption read">The card reads the shape, the pair and the position, in that order.</p>
+      <div class="q1"><p class="w-body">What is holding your shape together right now?</p></div>
+    </article>
+  </div>
+</section>
+
+<!-- ======================= DIRECTION 2 ======================= -->
+<section class="band" id="d2">
+  <div class="wrap2">
+    <p class="klabel">Direction 2<span class="sep">·</span><span class="kidea">position first, the wheel flattened to a ruler</span></p>
+    <article class="card d2card">
+      <div class="ruler" aria-hidden="true">
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">1</span></div>
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">2</span></div>
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">3</span></div>
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">4</span></div>
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">5</span></div>
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">6</span></div>
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">7</span></div>
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">8</span></div>
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">9</span></div>
+        <div class="tcell"><span class="tick tick-f"></span><span class="w-caption ti ti-f">10</span></div>
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">11</span></div>
+        <div class="tcell"><span class="tick"></span><span class="w-caption ti">12</span></div>
+      </div>
+      <div class="w-caption rcap">
+        <span>The wheel, flattened</span>
+        <span>1 to 12, clockwise</span>
+      </div>
+      <div class="hairline"></div>
+      <div class="mid">
+        <div>
+          <p class="w-display">10</p>
+          <p class="w-caption lab">Position</p>
+        </div>
+        <div>
+          <h1 class="w-h1">FORM</h1>
+          <p class="w-caption lab">Word</p>
+        </div>
+        <div>
+          <p class="w-body gloss">Form is the shape a thing takes when it holds together.</p>
+          <p class="w-caption read">The card reads the shape, the pair and the position, in that order.</p>
+        </div>
+      </div>
+      <div class="q2"><p class="w-h2">What is holding your shape together right now?</p></div>
+    </article>
+  </div>
+</section>
+
+<!-- ======================= DIRECTION 3 ======================= -->
+<section class="band" id="d3">
+  <div class="wrap3">
+    <p class="klabel">Direction 3<span class="sep">·</span><span class="kidea">question first, the wheel in bloom and the word held to it</span></p>
+    <p class="prompt">What is holding your shape together right now?</p>
+    <article class="card d3card">
+      <div class="dial2">
+        <div class="dial-big" aria-hidden="true">
+          <span class="dpi2 r-0"></span>
+          <span class="dpi2 r-30"></span>
+          <span class="dpi2 r-60"></span>
+          <span class="dpi2 r-90"></span>
+          <span class="dpi2 r-120"></span>
+          <span class="dpi2 r-150"></span>
+          <span class="dpi2 r-180"></span>
+          <span class="dpi2 r-210"></span>
+          <span class="dpi2 r-240"></span>
+          <span class="dpi2 r-270"></span>
+          <span class="dpi2 dpi2-f r-300"><span class="dnum">10</span></span>
+          <span class="dpi2 r-330"></span>
+          <span class="w-caption void">00</span>
+        </div>
+        <p class="w-caption sub">Wheel · position 10 · 300 degrees clockwise</p>
+      </div>
+      <div class="b3col">
+        <h1 class="w-display word">FORM</h1>
+        <p class="w-body gloss">Form is the shape a thing takes when it holds together.</p>
+        <p class="w-caption read">The card reads the shape, the pair and the position, in that order.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+</body>
+</html>

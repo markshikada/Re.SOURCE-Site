@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="The Zed console: every key and every omO agent on one card, so the editor and the three commanders are a lookup rather than a memory test.">
+  <title>Zed console · Re.SOURCE</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="lib/hq.css">
+  <link rel="stylesheet" href="lib/topbar.css">
+  <script src="lib/masters-nav.js" defer></script>
+  <style>
+  /* Zed console. Tokens only — styles.css carries every value; this block
+     declares no colour, size or spacing of its own. The page is a lookup card,
+     so the field is spent on rows: one row per thing Mark can press, each row
+     a key, a name and one line saying what happens. Nothing here is a
+     tutorial; the guide lives in the repo at omo-console/ZED-GUIDE.md. */
+
+  .zc-keys { display: grid; grid-template-columns: subgrid; grid-column: 1/-1; column-gap: var(--space-lg); row-gap: var(--space-sm); }
+  .zc-row {
+    grid-column: 1/-1;
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--space-lg);
+    padding: var(--space-md) 0;
+    border-top: 1px solid var(--surface-border);
+  }
+  .zc-row:last-child { border-bottom: 1px solid var(--surface-border); }
+  .zc-key { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  .zc-key span {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    letter-spacing: 0.02em;
+    padding: 2px var(--space-sm);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+  .zc-what strong { display: block; font-weight: 600; }
+  .zc-what p { margin: 0; color: var(--text-secondary); }
+
+  .zc-cards { display: grid; grid-template-columns: subgrid; grid-column: 1/-1; column-gap: var(--space-lg); row-gap: var(--space-md); }
+  .zc-card {
+    grid-column: span 4;
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+  }
+  .zc-card h3 { margin: 0 0 var(--space-sm); font-size: var(--fs-h2); line-height: var(--lh-h2); }
+  .zc-card p { margin: 0 0 var(--space-md); color: var(--text-secondary); }
+  .zc-card p:last-child { margin-bottom: 0; }
+  .zc-card .zc-do { color: var(--text-primary); }
+
+  .zc-note { grid-column: span 12; color: var(--text-secondary); }
+  .zc-note strong { color: var(--text-primary); font-weight: 600; }
+
+  /* The field drops from twelve columns to six below 1081 and to three below
+     721 (tokens/grid.css), so the span follows the count rather than the
+     width: four of twelve above, three of six below it, and the full three at
+     the narrowest, where a card sharing a row would be unreadable. */
+  @media (max-width: 1080px) {
+    .zc-card { grid-column: span 3; }
+    .zc-row { grid-template-columns: 120px minmax(0, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .zc-card { grid-column: 1/-1; }
+    .zc-row { grid-template-columns: 1fr; gap: var(--space-sm); }
+  }
+  </style>
+</head>
+<body class="hq rs-topbar-page">
+  <a class="skip-link" href="#main">Skip to the keys</a>
+  <header class="rs-topbar" id="rsTopBar">
+    <div class="rs-topbar-inner" data-pad>
+      <a class="rs-topbar-brand" href="HQ.html" aria-label="Re.SOURCE HQ home">Re.SOURCE <span>Zed console</span></a>
+      <p class="rs-topbar-stamp"><span>W40</span><span class="rs-topbar-sep" aria-hidden="true">&middot;</span><span>2 Oct</span></p>
+      <div class="rs-topbar-navrow">
+        <nav class="rs-topbar-context" aria-label="Page sections">
+          <a href="#keys">Keys</a>
+          <a href="#agents">Agents</a>
+          <a href="#estate">Estate</a>
+        </nav>
+        <div class="rs-topbar-switcher" id="rsTopbarSwitcher"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="main" data-pad data-grid tabindex="-1">
+    <section class="intro" data-span="12" aria-labelledby="zc-title">
+      <div class="intro-copy">
+        <p class="eyebrow">The editor</p>
+        <h1 id="zc-title">Everything Zed does for you, on one card.</h1>
+        <p>Six keys run this workspace. Each one opens a different agent, and each agent has one job. If a key does not fire, the palette does: <kbd>cmd-shift-p</kbd>, then type the action name.</p>
+      </div>
+    </section>
+
+    <section class="work-section" id="keys" data-sub data-span="12" aria-labelledby="keys-title">
+      <div class="section-heading">
+        <h2 id="keys-title">The six keys</h2>
+        <span class="eyebrow">alt-1 to alt-4 are the four agents</span>
+      </div>
+      <div class="zc-keys">
+        <div class="zc-row">
+          <p class="zc-key"><span>alt-1</span></p>
+          <div class="zc-what">
+            <strong>Intel</strong>
+            <p>Judgement and research. Reads the vault first, then brings you options with a recommendation. Never guesses where a person must rule.</p>
+          </div>
+        </div>
+        <div class="zc-row">
+          <p class="zc-key"><span>alt-2</span></p>
+          <div class="zc-what">
+            <strong>Ops</strong>
+            <p>Mechanical execution. Audits, sweeps, publishing, quota, repo hygiene. Routes judgement calls back to you rather than making them.</p>
+          </div>
+        </div>
+        <div class="zc-row">
+          <p class="zc-key"><span>alt-3</span></p>
+          <div class="zc-what">
+            <strong>Design</strong>
+            <p>Craft and visual work. Pages, specimens, motion, responsive passes. Researches first, drafts only once told to.</p>
+          </div>
+        </div>
+        <div class="zc-row">
+          <p class="zc-key"><span>alt-4</span></p>
+          <div class="zc-what">
+            <strong>Design review</strong>
+            <p>The critic's eye. Checks a named surface against the masters and reports findings in severity order. Cannot edit.</p>
+          </div>
+        </div>
+        <div class="zc-row">
+          <p class="zc-key"><span>alt-o</span></p>
+          <div class="zc-what">
+            <strong>Carry on</strong>
+            <p>Reopens whatever you were doing in this folder, in the same session. <span class="zc-do">alt-shift-o</span> runs that last command again.</p>
+          </div>
+        </div>
+        <div class="zc-row">
+          <p class="zc-key"><span>cmd-shift-p</span></p>
+          <div class="zc-what">
+            <strong>The palette, which finds everything</strong>
+            <p>Every action Zed has, searchable by name. Start here whenever a key does not do what this card says.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="work-section" id="agents" data-sub data-span="12" aria-labelledby="agents-title">
+      <div class="section-heading">
+        <h2 id="agents-title">How work moves</h2>
+        <span class="eyebrow">One sentence each, and who to ask</span>
+      </div>
+      <div class="zc-cards">
+        <article class="zc-card">
+          <h3>Intel decides</h3>
+          <p>Anything asking <em>what should this be</em>, <em>what does the evidence say</em>, or <em>write the brief</em>.</p>
+          <p class="zc-do">Give it the question, not the answer you want.</p>
+        </article>
+        <article class="zc-card">
+          <h3>Ops does</h3>
+          <p>Anything asking <em>sweep</em>, <em>audit</em>, <em>publish</em>, <em>check the quota</em>, <em>fix the repo</em>.</p>
+          <p class="zc-do">Tight briefs. One cohesive ask beats five small ones.</p>
+        </article>
+        <article class="zc-card">
+          <h3>Design makes</h3>
+          <p>Anything asking <em>build this page</em>, <em>try that direction</em>, <em>make it feel right</em>.</p>
+          <p class="zc-do">It looks at its own work at 12, 6 and 3 columns before showing you.</p>
+        </article>
+      </div>
+      <p class="zc-note" data-span="12" style="margin-top: var(--space-lg);">
+        <strong>Both seats are free.</strong> LongCat leads, SpaceBunny is the fallback, and no paid model is reachable from any of these keys &mdash; which is why nothing here can end in an insufficient-funds error.
+      </p>
+    </section>
+
+    <section class="work-section" id="estate" data-sub data-span="12" aria-labelledby="estate-title">
+      <div class="section-heading">
+        <h2 id="estate-title">The estate checks</h2>
+        <span class="eyebrow">In the palette, under Estate</span>
+      </div>
+      <div class="zc-keys">
+        <div class="zc-row">
+          <p class="zc-key"><span>Estate</span></p>
+          <div class="zc-what">
+            <strong>The honest snapshot</strong>
+            <p>Every lane, its spend and its pin, plus what is drifting. Read this before re-pinning anything.</p>
+          </div>
+        </div>
+        <div class="zc-row">
+          <p class="zc-key"><span>Estate</span></p>
+          <div class="zc-what">
+            <strong>The model ladder and quota</strong>
+            <p>Which seats answer, which are capped, and what each one costs. The printed list of retired models lives beside it.</p>
+          </div>
+        </div>
+        <div class="zc-row">
+          <p class="zc-key"><span>Estate</span></p>
+          <div class="zc-what">
+            <strong>The control room in a browser</strong>
+            <p>Opens the standing view, which is already running. Its address is this machine only &mdash; it does not open on your phone.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer-links" data-span="12">
+      <a href="HQ.html">HQ</a>
+      <a href="control-room.html">Control room</a>
+      <a href="../HQ/quota-watch.cjs">Quota watch</a>
+    </footer>
+  </main>
+</body>
+</html>

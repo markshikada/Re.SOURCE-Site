@@ -1,0 +1,59 @@
+/* Type scale, harmonic on u = 6px. Five sizes, every one a whole even
+   multiple of the unit, every multiplier a factor of 12.
+   Leading is whole px on the same unit, never a ratio.
+   Letter spacing is never declared. It is left to the font. */
+:root{
+  --u-type:6px;
+
+  --fs-caption:12px;  /* 2u · weight 300 */
+  --fs-body:18px;     /* 3u · weight 400 */
+  --fs-h2:24px;       /* 4u · weight 600 */
+  --fs-h1:36px;       /* 6u · weight 700 */
+  --fs-display:48px;  /* 8u · weight 800 */
+
+  --lh-caption:18px;  /* 3u  */
+  --lh-body:30px;     /* 5u  */
+  --lh-h2:36px;       /* 6u  */
+  --lh-h1:48px;       /* 8u  */
+  --lh-display:54px;  /* 9u  */
+
+  --fw-caption:300; /* @kind font */
+  --fw-body:400; /* @kind font */
+  --fw-h2:600; /* @kind font */
+  --fw-h1:700; /* @kind font */
+  --fw-display:800; /* @kind font */
+
+  /* The three title styles a diagram word can carry, largest first. A title variant names one
+     of them rather than restating a size: H1 is the Edge title, H2 the Inner title, H3 the
+     Outer title (2026-09-23). Sizes are the scale's own display / h1 / h2. */
+  --title-1-size:48px; --title-1-weight:800;
+  --title-2-size:36px; --title-2-weight:700;
+  --title-3-size:24px; --title-3-weight:600;
+
+  /* Halo, for the case where a label must cross a colour. Round joins,
+     paint-order stroke fill, in SVG only.
+
+     There are two halos, and they are not the same width, ruled 19 August 2026
+     after the Flower and the token disagreed by more than double.
+
+     1. Text on a surface: stroke is size / 6. A word crossing a bar, a stroke
+        or a single node on an otherwise dark ground. */
+  --halo-caption:2px;
+  --halo-body:3px;
+  --halo-h2:4px;
+  --halo-h1:6px;
+  --halo-display:8px;
+
+  /* 2. A label crossing geometry: stroke is size x 0.38. A word laid over the
+        flower, where several coloured rings cross under it and size / 6 leaves
+        the word unreadable. Tuned by eye at real size on the diagram, which is
+        why it is not a unit multiple. Realm labels, sitting further out on a
+        thinner ring, take 0.34. */
+  --halo-geo:0.38; /* @kind other */
+  --halo-geo-outer:0.34; /* @kind other */
+
+  /* 3. A marker crossing rings is a third case and not a text halo at all:
+        a triangle or dot on the mark haloes at ring radius x 0.18, floored at
+        3px, because it scales with the geometry rather than with any type. */
+  --halo-marker:0.18; /* @kind other */
+}

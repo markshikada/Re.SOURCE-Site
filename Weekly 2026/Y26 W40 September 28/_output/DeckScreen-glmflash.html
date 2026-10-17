@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>Word DECK — twelve cards dealt</title>
+<style>
+/* Tokens, copied verbatim from Projects/Design System/tokens.
+   colours.css · greys.css · space.css · typography.css */
+:root{
+  /* Twelve positions at 30 degree steps on a 360 degree wheel.
+     Position 00 is the core, a void, and carries no colour. */
+  --cl-01-tone:#99DD00; --cl-02-flux:#FFD100; --cl-03-flow:#FFB000;
+  --cl-04-love:#FF7700; --cl-05-bond:#FF5500; --cl-06-fire:#FF0000;
+  --cl-07-path:#E02888; --cl-08-time:#9933CC; --cl-09-meta:#6655FF;
+  --cl-10-form:#2277FF; --cl-11-type:#00BBDD; --cl-12-life:#00D460;
+  --stroke:3px;
+  /* The ramp: every surface and every text colour points at one of these. */
+  --black:#000000; --g06:#0D0D0D; --g12:#1A1A1A; --g24:#333333;
+  --g48:#555555; --g66:#888888; --g88:#CCCCCC; --white:#FFFFFF;
+  --text-primary:var(--white); --text-secondary:var(--g66); --text-dim:var(--g48);
+  --surface-page:var(--black); --surface-card:var(--g06);
+  --surface-raised:var(--g12); --surface-border:var(--g24);
+  /* Spacing and radius, 2:3:6 harmonic on u = 4px. Radius values are the spacing values. */
+  --u:4px;
+  --space-xs:4px; --space-sm:8px; --space-md:12px;
+  --space-lg:24px; --space-xl:48px; --space-2xl:96px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+  /* Five sizes, whole-px leading, weights 300/400/600/700/800.
+     Letter spacing is never declared. */
+  --fs-caption:12px; --fs-body:18px; --fs-h2:24px; --fs-h1:36px; --fs-display:48px;
+  --lh-caption:18px; --lh-body:30px; --lh-h2:36px; --lh-h1:48px; --lh-display:54px;
+  --fw-caption:300; --fw-body:400; --fw-h2:600; --fw-h1:700; --fw-display:800;
+  --sans:"Figtree","Avenir Next",Avenir,"Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--surface-page);color:var(--text-primary)}
+body{font-family:var(--sans);font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-body)}
+
+/* One gap everywhere: 12px inside a cell, between cells and between rows. */
+.deck{max-width:1040px;margin:0 auto;padding:var(--space-xl) var(--space-lg) var(--space-2xl)}
+.kick{font:var(--fw-caption) var(--fs-caption)/var(--lh-caption) var(--mono);color:var(--g48)}
+.band{margin-top:var(--space-md)}
+.cap{margin-bottom:var(--space-md);
+  font:var(--fw-caption) var(--fs-caption)/var(--lh-caption) var(--mono);color:var(--g48)}
+
+/* The lattice: one system of tracks; every band a grid on the same tracks;
+   every cell spanning whole slots. Column count: 6 · 2 · 1, the widest that fits. */
+.band-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-md);align-items:start}
+@media (min-width:721px){
+  .band-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:1081px){
+  .band-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .span2{grid-column:span 2}
+  .span3{grid-column:span 3}
+}
+
+/* The card: black fill, coloured stroke, white text. Colour is a stroke on a
+   shape, never a fill behind text. The stroke is 3px. */
+.card{background:var(--surface-card);border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-md);padding:var(--space-lg);cursor:pointer;
+  align-self:start;transition:background-color 120ms ease}
+.card:hover{background:var(--surface-raised)}
+.card:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+.card.is-open{background:var(--surface-raised)}
+.card.is-open .gloss{display:none}
+
+.head{display:flex;gap:var(--space-md);
+  font:var(--fw-caption) var(--fs-caption)/var(--lh-caption) var(--mono)}
+.head .setname{color:var(--g48)}
+.head .rowname{margin-left:auto;color:var(--g66)}
+
+.chips{display:flex;flex-wrap:wrap;gap:var(--space-md);margin-top:var(--space-md)}
+.chip{display:inline-flex;flex-direction:column;background:var(--surface-page);
+  border:var(--stroke) solid var(--surface-border);border-radius:var(--radius-sm);
+  padding:var(--space-sm) var(--space-md)}
+.chip .w{color:var(--text-primary)}
+.chip--void .w{color:var(--text-secondary)}
+.chip .n{font:var(--fw-caption) var(--fs-caption)/var(--lh-caption) var(--mono);color:var(--g48)}
+.chip .w-xl{font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display)}
+.chip .w-lg{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1)}
+.chip .w-md{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2)}
+.chip .w-sm{font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-body)}
+
+.gloss{margin:var(--space-md) 0 0;max-width:640px;color:var(--text-secondary);
+  font-size:var(--fs-body);line-height:var(--lh-body)}
+.reading{display:none;margin:var(--space-md) 0 0;max-width:640px;
+  color:var(--text-secondary);font-size:var(--fs-body);line-height:var(--lh-body)}
+.card.is-open .reading{display:block}
+.rule{display:none;margin:var(--space-md) 0 0;border:0;border-top:1px solid var(--surface-border)}
+.card.is-open .rule{display:block}
+.question{display:none;margin:var(--space-md) 0 0;max-width:640px;
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);color:var(--text-primary)}
+.card.is-open .question{display:block}
+
+.last{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-md);margin-top:var(--space-md);
+  font:var(--fw-body) var(--fs-caption)/var(--lh-caption) var(--mono)}
+.last .lbl{color:var(--g48)}
+.last .word{color:var(--g66)}
+.pips{display:flex;flex-wrap:wrap;gap:var(--space-md)}
+.pip{width:12px;height:12px;flex:none;background:var(--surface-page);
+  border:var(--stroke) solid var(--surface-border);border-radius:var(--radius-sm)}
+
+/* Phone: the open card becomes a bottom sheet, at most half the frame,
+   its head pinned and its body the one part that scrolls. */
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface-raised);
+  border:var(--stroke) solid var(--surface-border);border-bottom:0;
+  border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  padding:var(--space-lg) var(--space-lg) calc(var(--space-lg) + env(safe-area-inset-bottom,0px));
+  max-height:50%;display:flex;flex-direction:column;gap:var(--space-md);
+  visibility:hidden;opacity:0;transition:opacity 180ms ease,visibility 180ms ease}
+#sheet.is-open{visibility:visible;opacity:1}
+#sheet .chips{margin-top:0}
+#sheet .scroll{overflow:auto;min-height:0;max-width:640px}
+#sheet .reading{display:block;margin-top:0}
+#sheet .question{display:block}
+#sheet .foot{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-md)}
+#sheet .foot .last{margin-top:0}
+#sheet .close{appearance:none;margin-left:auto;flex:none;background:var(--surface-card);
+  border:1px solid var(--surface-border);border-radius:var(--radius-sm);
+  color:var(--g66);font:var(--fw-caption) var(--fs-caption)/var(--lh-caption) var(--mono);
+  min-height:32px;padding:var(--space-xs) var(--space-md);cursor:pointer;
+  transition:background-color 120ms ease,border-color 120ms ease,color 120ms ease}
+#sheet .close:hover,#sheet .close:active{background:var(--surface-raised);
+  border-color:var(--g88);color:var(--white)}
+#sheet .close:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){
+  .card,#sheet,#sheet .close{transition-duration:1ms}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/DeckScreen-glmflash.html</span>
+</nav>
+<main class="deck" aria-label="Word deck">
+  <p class="kick">Word DECK · twelve cards · three sets</p>
+  <div id="table"></div>
+</main>
+
+<!-- Phone: the open card, as a bottom sheet -->
+<section id="sheet" aria-label="Open card">
+  <div id="s-head" class="head"></div>
+  <div id="s-chips" class="chips"></div>
+  <div class="scroll">
+    <p id="s-reading" class="reading"></p>
+    <hr id="s-rule" style="border:0;border-top:1px solid var(--surface-border);margin:12px 0 0">
+    <p id="s-question" class="question"></p>
+  </div>
+  <div class="foot">
+    <div id="s-last" class="last"></div>
+    <button id="s-close" class="close" type="button">Close</button>
+  </div>
+</section>
+
+<script>
+/* The card store, embedded verbatim from Projects/Design System/data/deck-data.js.
+   Twelve records, real copy, never rewritten. */
+const STORE=[
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-core","holds":0,"row":"CORE","type":"Core","titles":["ZONE"],"picks":[],"blendPicks":[],"gloss":"All potential, before orientation","reading":"Nothing here has taken a direction yet. What follows arises from this quiet centre, which carries no colour of its own because it is looking rather than being looked at.","question":"Is anything pointing anywhere yet?","lastLabel":"","last":"","drafted":true},
+{"set":"Aspect STATE","setKey":"s","ring":"mid","id":"s-core","holds":0,"row":"CORE","type":"Core","titles":["HERE"],"picks":[],"blendPicks":[],"gloss":"Still, under every passing mood","reading":"Nothing has to be felt for this to be present. It sits behind whatever passes, unchanged by any of it.","question":"What is here when the feeling goes?","lastLabel":"","last":"","drafted":true},
+{"set":"Anchor TAG","setKey":"t","ring":"inner","id":"t-core","holds":0,"row":"CORE","type":"Core","titles":["YOU"],"picks":[],"blendPicks":[],"gloss":"Witness with no label attached","reading":"Perception arrives before naming does. This is the point that observes and takes no category of its own.","question":"Who is doing the looking?","lastLabel":"","last":"","drafted":true},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-single-10","holds":1,"row":"SINGLE","type":"Single","titles":["FORM"],"picks":[5],"blendPicks":[],"gloss":"The edge that makes a thing","reading":"Nothing can be handled until it has a limit. Definition is the price of being recognisable.","question":"What gives this its shape?","lastLabel":"Polar","last":"LOVE","drafted":true},
+{"set":"Aspect STATE","setKey":"s","ring":"mid","id":"s-single-08","holds":1,"row":"SINGLE","type":"Single","titles":["MIND"],"picks":[4],"blendPicks":[],"gloss":"Attention working on something, turning it over","reading":"The working space of logic and strategy. It seeks to understand in order to control.","question":"Which idea is being assembled?","lastLabel":"Polar","last":"HIGH","drafted":true},
+{"set":"Anchor TAG","setKey":"t","ring":"inner","id":"t-single-03","holds":1,"row":"SINGLE","type":"Single","titles":["ART"],"picks":[],"blendPicks":[1],"gloss":"Experience, turned into form","reading":"A medium worked on purpose until it carries meaning. What was private becomes something others can hold.","question":"What pattern are you consciously shaping here?","lastLabel":"Polar","last":"AIM","drafted":true},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-pair-0410","holds":2,"row":"PAIR","type":"Pair","titles":["LOVE","FORM"],"picks":[2,5],"blendPicks":[],"gloss":"Attraction, then the vessel","reading":"What gathers decides the shape that ends up holding it. Structure is the consequence, not the cause.","question":"What is being drawn together here?","lastLabel":"Polar","last":"FORM • LOVE","drafted":true,"counterId":"r-pair-1004"},
+{"set":"Aspect STATE","setKey":"s","ring":"mid","id":"s-pair-0511","holds":2,"row":"PAIR","type":"Pair","titles":["NEED","MODE"],"picks":[],"blendPicks":[2,5],"gloss":"The requirement resets the method","reading":"A deficit overrides preference and the way of working reconfigures around it. Comfort is dropped first.","question":"What must be met before anything else?","lastLabel":"Polar","last":"MODE • NEED","drafted":true,"counterId":"s-pair-1105"},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-triad-prime","holds":3,"row":"TRIAD","type":"Triad","titles":["PRIME"],"picks":[1,3,5],"blendPicks":[],"grid":[{"w":"FLUX","col":"#FFD100"},{"w":"FIRE","col":"#FF0000"},{"w":"FORM","col":"#2277FF"}],"gloss":"A triangle, held in balance","reading":"No position here opposes another. The weight sits evenly rather than pulling to one side.","question":"Which of the three anchors holds your focus?","lastLabel":"Counter","last":"PART","counterId":"r-triad-part","drafted":true},
+{"set":"Anchor TAG","setKey":"t","ring":"inner","id":"t-triad-part","holds":3,"row":"TRIAD","type":"Triad","titles":["PART"],"picks":[0,2,4],"blendPicks":[],"grid":[{"w":"ECO","col":"#00D460"},{"w":"GOD","col":"#FF7700"},{"w":"WIT","col":"#9933CC"}],"gloss":"The subtler marks, easily missed","reading":"They handle what falls between the obvious ones, and ground what those leave open.","question":"Which subtle mark grounds this?","lastLabel":"Counter","last":"PRIME","counterId":"t-triad-prime","drafted":true},
+{"set":"Abstract REALM","setKey":"r","ring":"outer","id":"r-base","holds":6,"row":"BASE","type":"Base","titles":["BASE"],"picks":[0,1,2,3,4,5],"blendPicks":[],"grid":[{"w":"LIFE","col":"#00D460"},{"w":"FLUX","col":"#FFD100"},{"w":"LOVE","col":"#FF7700"},{"w":"FIRE","col":"#FF0000"},{"w":"TIME","col":"#9933CC"},{"w":"FORM","col":"#2277FF"}],"gloss":"Where each circle is centred","reading":"These map the main outline. The rest take their bearings from them.","question":"Which centre are you standing on?","lastLabel":"Counter","last":"BLEND","counterId":"r-blend","drafted":true},
+{"set":"Aspect STATE","setKey":"s","ring":"mid","id":"s-blend","holds":6,"row":"BLEND","type":"Blend","titles":["BLEND"],"picks":[],"blendPicks":[0,1,2,3,4,5],"grid":[{"w":"MOOD","col":"#99DD00"},{"w":"TRUE","col":"#FFB000"},{"w":"NEED","col":"#FF5500"},{"w":"WANT","col":"#E02888"},{"w":"VIEW","col":"#6655FF"},{"w":"MODE","col":"#00BBDD"}],"gloss":"The states found only in transit","reading":"Each one sits on the way to somewhere else, rarely a place to stop. Brief, and easy to mistake for the state just left.","question":"Which in-between are you in today?","lastLabel":"Counter","last":"BASE","counterId":"s-base","drafted":true}
+];
+
+/* Position numbers on the two axes the store itself runs: a card's picks read
+   the even positions 12/02/04/06/08/10, its blendPicks the odd 01/03/05/07/09/11.
+   The hex for each position is the value colours.css gives it — position 00,
+   the core, carries no colour (the void). */
+const EQUIV=["12","02","04","06","08","10"];
+const ODDIV=["01","03","05","07","09","11"];
+const EVEN_HEX={"12":"var(--cl-12-life)","02":"var(--cl-02-flux)","04":"var(--cl-04-love)","06":"var(--cl-06-fire)","08":"var(--cl-08-time)","10":"var(--cl-10-form)"};
+const ODD_HEX={"01":"var(--cl-01-tone)","03":"var(--cl-03-flow)","05":"var(--cl-05-bond)","07":"var(--cl-07-path)","09":"var(--cl-09-meta)","11":"var(--cl-11-type)"};
+function posForIndex(c,i){
+  return (c.picks.length?EQUIV[i]:ODDIV[i]);
+}
+function hexForPos(p){return p===null?null:(EQUIV.indexOf(p)>=0?EVEN_HEX[p]:ODD_HEX[p])}
+
+/* A card's chips: its own word list, in store order, each with its position. */
+function chipsFor(c){
+  if(c.type==="Core")return [{w:c.titles[0],pos:"00",col:null}];
+  const idxs=(c.picks.length?c.picks:c.blendPicks).map(i=>posForIndex(c,i));
+  if(c.grid)return c.grid.map((g,i)=>({w:g.w,pos:hexPos(g.col),col:g.col}));
+  return c.titles.map((w,i)=>({w:w,pos:idxs[i],col:hexForPos(idxs[i])}));
+}
+/* The store's grid rows carry a colour; the position table reads it back. */
+const COL_TO_POS={"#00D460":"12","#99DD00":"01","#FFD100":"02","#FFB000":"03","#FF7700":"04","#FF5500":"05","#FF0000":"06","#E02888":"07","#9933CC":"08","#6655FF":"09","#2277FF":"10","#00BBDD":"11"};
+function hexPos(hex){return COL_TO_POS[hex]}
+
+/* What each card points at, with the marks of what it names. The pips take the
+   position colours of the pointed words, in the order the store's copy lists
+   them — a polar names the word across the wheel, a counter names the other
+   holding, a base names the blend and a blend the base. */
+const LAST_PIPS={
+ "r-single-10":["#FF7700"],
+ "s-single-08":["#FFD100"],
+ "t-single-03":["#6655FF"],
+ "r-pair-0410":["#2277FF","#FF7700"],
+ "s-pair-0511":["#00BBDD","#FF5500"],
+ "r-triad-prime":["#00D460","#FF7700","#9933CC"],
+ "t-triad-part":["#FFD100","#FF0000","#2277FF"],
+ "r-base":["#99DD00","#FFB000","#FF5500","#E02888","#6655FF","#00BBDD"],
+ "s-blend":["#00D460","#FFD100","#FF7700","#FF0000","#9933CC","#2277FF"]
+};
+
+/* The five bands, in deal order; each is a grid on the same tracks. The span
+   classes land on whole slots at the six-column count. */
+const BANDS=[
+ {cap:"CORE",ids:["r-core","s-core","t-core"],span:"span2"},
+ {cap:"SINGLE",ids:["r-single-10","s-single-08","t-single-03"],span:"span2"},
+ {cap:"PAIR",ids:["r-pair-0410","s-pair-0511"],span:"span3"},
+ {cap:"TRIAD",ids:["r-triad-prime","t-triad-part"],span:"span3"},
+ {cap:"COUNTER",ids:["r-base","s-blend"],span:"span3"}
+];
+const BY_ID={}; STORE.forEach(c=>BY_ID[c.id]=c);
+
+function el(tag,cls,txt){
+  const n=document.createElement(tag);
+  if(cls)n.className=cls;
+  if(txt!==undefined)n.textContent=txt;
+  return n;
+}
+
+/* The word classes a card holds: one word speaks at display, two at h1,
+   three at h2, six at body. The size gradient is the holds count itself. */
+function wordSize(c){
+  return {0:"w-lg",1:"w-xl",2:"w-lg",3:"w-md",6:"w-sm"}[c.holds];
+}
+
+function buildChips(c){
+  const size=wordSize(c);
+  const wrap=el("div","chips");
+  chipsFor(c).forEach(s=>{
+    const chip=el("div","chip"+(s.col?"":" chip--void"));
+    if(s.col)chip.style.borderColor=s.col;
+    chip.appendChild(el("span","w "+size,s.w));
+    chip.appendChild(el("span","n",s.pos));
+    wrap.appendChild(chip);
+  });
+  return wrap;
+}
+
+function buildLast(c){
+  if(!c.lastLabel)return null;
+  const line=el("div","last");
+  line.appendChild(el("span","lbl",c.lastLabel));
+  line.appendChild(el("span","word",c.last));
+  const pips=LAST_PIPS[c.id];
+  if(pips){
+    const pr=el("span","pips");
+    pips.forEach(hex=>{
+      const pip=el("span","pip");
+      pip.style.borderColor=hex;
+      pr.appendChild(pip);
+    });
+    line.appendChild(pr);
+  }
+  return line;
+}
+
+function buildCard(c){
+  const card=el("article","card");
+  if(c.type==="Single")card.style.borderColor=hexForPos(chipsFor(c)[0].pos);
+  card.setAttribute("role","button");
+  card.setAttribute("tabindex","0");
+  card.setAttribute("aria-pressed","false");
+  card.dataset.id=c.id;
+
+  const head=el("div","head");
+  head.appendChild(el("span","setname",c.set));
+  head.appendChild(el("span","rowname",c.row));
+  card.appendChild(head);
+  card.appendChild(buildChips(c));
+  card.appendChild(el("p","gloss",c.gloss));
+  card.appendChild(el("p","reading",c.reading));
+  card.appendChild(el("hr","rule"));
+  card.appendChild(el("p","question",c.question));
+  const last=buildLast(c);
+  if(last)card.appendChild(last);
+
+  card.addEventListener("click",()=>{toggle(c.id)});
+  card.addEventListener("keydown",e=>{
+    if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(c.id)}
+  });
+  return card;
+}
+
+function buildTable(){
+  const host=document.getElementById("table");
+  BANDS.forEach(b=>{
+    const band=el("section","band");
+    band.appendChild(el("div","cap",b.cap));
+    const grid=el("div","band-grid");
+    b.ids.forEach(id=>{
+      const card=buildCard(BY_ID[id]);
+      if(b.span)card.classList.add(b.span);
+      grid.appendChild(card);
+    });
+    band.appendChild(grid);
+    document.getElementById("table").appendChild(band);
+  });
+}
+
+/* One card open at a time. On a phone the open card is the bottom sheet. */
+const phone=window.matchMedia("(max-width:720px)");
+let openId=null;
+
+function toggle(id){
+  const already=phone.matches?openId===id:!!document.querySelector(".card.is-open");
+  closeAll();
+  if(!already)openCard(id);
+}
+
+function openCard(id){
+  openId=id;
+  const c=BY_ID[id];
+  if(phone.matches){
+    const head=document.getElementById("s-head");
+    head.innerHTML="";
+    head.appendChild(el("span","setname",c.set));
+    head.appendChild(el("span","rowname",c.row));
+    document.getElementById("s-chips").innerHTML="";
+    document.getElementById("s-chips").appendChild(buildChips(c));
+    document.getElementById("s-reading").textContent=c.reading;
+    document.getElementById("s-question").textContent=c.question;
+    const slot=document.getElementById("s-last");
+    slot.innerHTML="";slot.style.display="none";
+    const last=buildLast(c);
+    if(last){slot.appendChild(last);slot.style.display="block"}
+    const solo=c.type==="Single";
+    document.getElementById("sheet").style.borderTopColor=
+      solo?hexForPos(chipsFor(c)[0].pos):"var(--surface-border)";
+    document.getElementById("sheet").classList.add("is-open");
+    document.getElementById("s-close").focus();
+  }else{
+    const card=document.querySelector('.card[data-id="'+id+'"]');
+    card.classList.add("is-open");
+    card.setAttribute("aria-pressed","true");
+  }
+}
+
+function closeAll(){
+  openId=null;
+  document.querySelectorAll(".card.is-open").forEach(n=>{
+    n.classList.remove("is-open");
+    n.setAttribute("aria-pressed","false");
+  });
+  document.getElementById("sheet").classList.remove("is-open");
+}
+
+buildTable();
+document.getElementById("s-close").addEventListener("click",closeAll);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAll()});
+phone.addEventListener("change",closeAll);
+/* The deck is dealt with one card open: the pair that names both of its own words. */
+openCard("r-pair-0410");
+</script>
+</body>
+</html>

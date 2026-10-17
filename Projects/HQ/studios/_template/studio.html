@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Studio template: the pattern every Re.SOURCE HQ studio page is copied from. Tokens, top bar, twelve-column field, honest controls.">
+  <title>Studio Template · Re.SOURCE HQ</title>
+  <!-- Design system, three levels up to Projects/ from this template's own folder.
+       Depth rule: this file sits one level deeper than a live studio
+       (studios/_template/studio.html against studios/<name>.html), so every
+       relative path here is one ../ longer than a copied studio needs:
+         ../../../Design System/...  becomes  ../../Design System/...
+         ../../HQ.html               becomes  ../HQ.html
+       The eight-step path from copy to publish is in ../README.md. -->
+  <link rel="stylesheet" href="../../../Design System/styles.css">
+  <link rel="stylesheet" href="../../../Design System/lib/topbar.css">
+  <script src="../../../Design System/lib/masters-nav.js" defer></script>
+  <style>
+    /* Studio chrome. Every value is a design token: colour from tokens/greys.css,
+       space and radius from tokens/space.css, type from tokens/typography.css,
+       motion from tokens/motion.css, the field from tokens/grid.css. A copied
+       studio extends this block with tokens; it never hardcodes a hex, a size
+       off the type scale, or a radius off 8/12/24. */
+
+    /* Content starts below the fixed bar; --rs-topbar-h is owned by lib/topbar.css. */
+    .shell {
+      padding-top: calc(var(--rs-topbar-h) + var(--space-xl));
+      padding-bottom: var(--space-2xl);
+      row-gap: var(--space-2xl);
+    }
+    section[id] { scroll-margin-top: calc(var(--rs-topbar-h) + var(--space-md)); }
+
+    .skip-link {
+      position: fixed;
+      top: var(--space-sm);
+      left: var(--space-sm);
+      z-index: 20;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--text-primary);
+      color: var(--black);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transform: translateY(calc(-100% - var(--space-lg)));
+      transition: transform var(--dur-md) var(--ease-arrive);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .eyebrow {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      font-weight: var(--fw-caption);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    .intro h1 {
+      margin: var(--space-sm) 0 var(--space-md);
+      font-size: var(--fs-display);
+      line-height: var(--lh-display);
+      font-weight: var(--fw-display);
+    }
+    .lede {
+      margin: 0 0 var(--space-md);
+      max-width: 60ch;
+      color: var(--text-secondary);
+    }
+    .stamp-line {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    .section-heading { margin-bottom: var(--space-lg); }
+    .section-heading h2 {
+      margin: 0;
+      font-size: var(--fs-h1);
+      line-height: var(--lh-h1);
+      font-weight: var(--fw-h1);
+    }
+    .studio-card h3 {
+      margin: 0;
+      font-size: var(--fs-h2);
+      line-height: var(--lh-h2);
+      font-weight: var(--fw-h2);
+    }
+    .studio-card p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+    }
+
+    /* One glyph per thing: the mark is graphic only, aria-hidden, and the title
+       beside it always carries the meaning in words. */
+    .card-glyph {
+      font-size: var(--fs-h1);
+      line-height: var(--lh-h1);
+    }
+    .card-meta {
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    .studio-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-raised);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .button-primary {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: var(--black);
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .honest-note {
+      margin: 0;
+      padding: var(--space-md);
+      background: var(--surface-card);
+      border-left: 2px solid var(--g48);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+    }
+
+    .disclosure summary {
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    .disclosure-body { padding-top: var(--space-md); }
+    .disclosure-body ul {
+      margin: 0;
+      padding-left: var(--space-lg);
+      color: var(--text-secondary);
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+    }
+
+    .colophon {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-caption);
+      line-height: var(--lh-caption);
+      color: var(--text-dim);
+    }
+
+    /* Narrow frames: the field itself collapses by orientation (tokens/grid.css);
+       this only tightens rhythm and the display size for a phone portrait. */
+    @media (max-width: 720px) {
+      .shell { row-gap: var(--space-xl); }
+      .studio-card { padding: var(--space-md); }
+      .intro h1 {
+        font-size: var(--fs-h1);
+        line-height: var(--lh-h1);
+      }
+    }
+  </style>
+</head>
+<body class="rs-topbar-page">
+  <a class="skip-link" href="#main">Skip to work</a>
+
+  <!-- Universal top bar: one shared component. Markup here, styles in
+       lib/topbar.css, switcher built by lib/masters-nav.js bar mode (the static
+       link in the switcher zone is its fallback). A copied studio renames the
+       brand span, the context links and the stamp to its own sections. -->
+  <header class="rs-topbar" id="rsTopBar">
+    <div class="rs-topbar-inner" data-pad>
+      <a class="rs-topbar-brand" href="../../HQ.html" aria-label="Estate HQ home">Re.SOURCE <span>Studio</span></a>
+      <p class="rs-topbar-stamp"><span>Template</span><span class="rs-topbar-sep" aria-hidden="true">·</span><span>v1</span></p>
+      <div class="rs-topbar-navrow">
+        <nav class="rs-topbar-context" aria-label="Studio sections">
+          <a href="#conventions">Conventions</a>
+          <a href="#controls">Controls</a>
+          <a href="#data">Data</a>
+        </nav>
+        <div class="rs-topbar-switcher" id="rsTopbarSwitcher"><a class="button" href="../../../Design System/Masters.html">Open masters</a></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="main" data-pad data-grid tabindex="-1">
+    <section class="intro" data-span="12" aria-labelledby="studio-title">
+      <p class="eyebrow">Studio template</p>
+      <h1 id="studio-title">Start every studio here.</h1>
+      <p class="lede">One pattern carries the tokens, the top bar and the twelve-column field into every studio page. Replace the specimens below with the studio's own work; keep the chrome, the honest-controls law and the card conventions as they are.</p>
+      <p class="stamp-line">Static page · no live fetches · snapshot data only</p>
+    </section>
+
+    <section id="conventions" data-sub data-span="12" aria-labelledby="conventions-title">
+      <div class="section-heading">
+        <h2 id="conventions-title">Card conventions</h2>
+        <p class="eyebrow">One glyph per thing · the title always says in words what the mark only shows</p>
+      </div>
+      <div class="card-row" data-sub>
+        <article class="studio-card" data-span="4" data-lift aria-labelledby="card-data-title">
+          <span class="card-glyph" aria-hidden="true">📊</span>
+          <h3 id="card-data-title">Snapshot data</h3>
+          <p class="card-meta">_data/*.json · hq-data.cjs</p>
+          <p>Machine facts arrive as JSON snapshots written beside the page, never as a live call. A missing snapshot renders an honest empty state, not a spinner.</p>
+        </article>
+        <article class="studio-card" data-span="4" data-lift aria-labelledby="card-controls-title">
+          <span class="card-glyph" aria-hidden="true">🎛️</span>
+          <h3 id="card-controls-title">Honest controls</h3>
+          <p class="card-meta">link · disclosure · note</p>
+          <p>A static page navigates, discloses and displays. When a job needs a session, the page says so in words and points back to chat; it never renders a dead button.</p>
+        </article>
+        <article class="studio-card" data-span="4" data-lift aria-labelledby="card-qa-title">
+          <span class="card-glyph" aria-hidden="true">📷</span>
+          <h3 id="card-qa-title">Capture QA</h3>
+          <p class="card-meta">law-sweep · 390 · 1440</p>
+          <p>Every studio passes the seven design laws and is captured at both widths before it commits. A render proves it paints; only a look proves it is right.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- HONEST CONTROLS, the standing law for every studio page.
+         A studio is static: it can navigate, disclose and display snapshot data,
+         and that is all. Three control kinds are permitted:
+           1. link        navigates to a page that exists in the staged site
+           2. disclosure  expands content already in the page (<details>)
+           3. note        names an action that needs a session, in plain words,
+                          with no fake control beside it
+         Forbidden: live fetches, buttons wired to nothing, refresh theatre, and
+         any control whose label promises what the page cannot do. Mark's rule:
+         be honest about what a button can do, and where one press cannot
+         execute, say so in one line and give the closest thing that can. -->
+    <section id="controls" data-sub data-span="12" aria-labelledby="controls-title">
+      <div class="section-heading">
+        <h2 id="controls-title">Controls</h2>
+        <p class="eyebrow">The three permitted kinds, one of each below</p>
+      </div>
+      <div class="actions">
+        <a class="button button-primary" data-lift href="../../../Design System/HQ.html">Open Design System HQ</a>
+        <details class="disclosure">
+          <summary>What a studio may do</summary>
+          <div class="disclosure-body">
+            <ul>
+              <li>Link to pages the staged site actually serves</li>
+              <li>Disclose content already inside the page</li>
+              <li>Display snapshot data with its stamp</li>
+              <li>Name, in words, any job that needs a session</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+      <p class="honest-note">Refreshing data needs a session: ask in chat to run hq-data.cjs, then reload this page.</p>
+    </section>
+
+    <section id="data" data-sub data-span="12" aria-labelledby="data-title">
+      <div class="section-heading">
+        <h2 id="data-title">Data stamp</h2>
+        <p class="eyebrow">Every snapshot number carries its age</p>
+      </div>
+      <p class="stamp-line">Data updated <time datetime="2026-09-30T00:00Z">30 Sep 2026</time> · snapshot, not live</p>
+      <p class="honest-note">Wire this stamp to the snapshot file's own generated field. A hardcoded date that reads fresher than the data is a lie with a timestamp.</p>
+    </section>
+
+    <footer class="colophon" data-span="12">Studio pattern · Projects/HQ/studios/README.md · eight steps from copy to publish</footer>
+  </main>
+</body>
+</html>

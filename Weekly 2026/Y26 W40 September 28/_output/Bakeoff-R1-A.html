@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word CARD · FORM · three directions</title>
+<style>
+:root{
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --white:#FFFFFF;
+  --pos-10:#2277FF;
+  --stroke:3px;
+  --radius-md:12px;
+  --radius-lg:24px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:18px;
+  line-height:30px;
+  font-weight:400;
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+}
+@media (min-width:720px){
+  body{padding:24px;gap:48px}
+}
+
+/* type scale: 12/18/300 · 18/30/400 · 24/36/600 · 36/48/700 · 48/54/800 */
+.cap{font-size:12px;line-height:18px;font-weight:300}
+.bdy{font-size:18px;line-height:30px;font-weight:400}
+.h2{font-size:24px;line-height:36px;font-weight:600}
+.dim{color:var(--g66)}
+
+.band{display:flex;flex-direction:column;gap:12px}
+.band-tag{
+  font-size:12px;
+  line-height:18px;
+  font-weight:300;
+  color:var(--g66);
+  text-transform:uppercase;
+}
+
+.card{
+  background:var(--g06);
+  border:var(--stroke) solid var(--g24);
+  border-radius:var(--radius-lg);
+  padding:12px;
+}
+@media (min-width:720px){ .card{padding:24px} }
+@media (min-width:1080px){ .card{padding:48px} }
+
+.word{font-size:36px;line-height:48px;font-weight:700}
+@media (min-width:720px){ .word{font-size:48px;line-height:54px;font-weight:800} }
+
+.gloss{max-width:540px}
+.reading{max-width:540px}
+
+.q{
+  background:var(--black);
+  border:var(--stroke) solid var(--g24);
+  border-radius:var(--radius-md);
+  padding:12px 24px;
+}
+
+/* ---------- Direction 1 · the dial ---------- */
+.card-d1{display:flex;flex-direction:column;gap:24px;align-items:flex-start}
+.dial-block{
+  width:100%;
+  max-width:280px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:center;
+}
+.dial{position:relative;width:100%}
+.dial svg{display:block;width:100%;height:auto}
+.dnum{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  font-size:12px;
+  line-height:18px;
+  font-weight:300;
+  color:var(--g66);
+}
+.dnum-n{left:50%;top:24%}
+.dnum-e{left:76%;top:50%}
+.dnum-s{left:50%;top:76%}
+.dnum-w{left:24%;top:50%}
+.dial-cap{text-align:center}
+.d1-text{width:100%;display:flex;flex-direction:column;gap:12px}
+.q-d1{margin-top:12px;max-width:600px}
+@media (min-width:720px){ .dial-block{max-width:300px} }
+@media (min-width:1080px){
+  .card-d1{
+    display:grid;
+    grid-template-columns:360px 1fr;
+    gap:48px;
+    align-items:start;
+  }
+  .dial-block{max-width:360px}
+  .d1-text{width:auto}
+}
+
+/* ---------- Direction 2 · the rail ---------- */
+.card-d2 .word{font-size:48px;line-height:54px;font-weight:800}
+.d2-stack{display:flex;flex-direction:column;gap:12px}
+.q-d2{margin-top:12px;margin-left:auto;width:100%;max-width:480px}
+.rail{display:flex;align-items:stretch;margin-top:24px}
+.cell{
+  flex:1 1 0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+}
+.tick{
+  display:block;
+  width:0;
+  height:24px;
+  border-left:var(--stroke) solid var(--g48);
+}
+.on .tick{height:48px;border-left-color:var(--pos-10)}
+.base{
+  display:block;
+  width:100%;
+  border-top:var(--stroke) solid var(--g24);
+  margin-top:8px;
+}
+.num{
+  font-size:12px;
+  line-height:18px;
+  font-weight:300;
+  color:var(--g66);
+  margin-top:8px;
+}
+.on .num{color:var(--white)}
+
+/* ---------- Direction 3 · the seal ---------- */
+.card-d3{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:24px;
+  text-align:center;
+}
+.lede{font-size:24px;line-height:36px;font-weight:600;max-width:660px}
+.seal{position:relative;width:100%;max-width:280px}
+.seal svg{display:block;width:100%;height:auto}
+.seal-word{
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.seal-pos{
+  position:absolute;
+  left:8%;
+  top:26%;
+  transform:translate(-50%,-50%);
+  font-size:12px;
+  line-height:18px;
+  font-weight:300;
+  color:var(--g66);
+}
+.q-d3{width:100%;max-width:660px;text-align:center}
+@media (min-width:720px){ .seal{max-width:360px} }
+@media (min-width:1080px){ .seal{max-width:400px} }
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R1-A.html</span>
+</nav>
+
+<!-- Direction 1 -->
+<section class="band">
+  <h2 class="band-tag">Direction 1</h2>
+  <article class="card card-d1">
+
+    <div class="dial-block">
+      <div class="dial">
+        <svg viewBox="0 0 300 300" aria-hidden="true" focusable="false">
+          <circle cx="150" cy="150" r="120" fill="#000000" stroke="#555555" stroke-width="3"/>
+          <g stroke="#555555" stroke-width="3" fill="none">
+            <line x1="150" y1="30" x2="150" y2="54"/>
+            <line x1="150" y1="30" x2="150" y2="54" transform="rotate(30 150 150)"/>
+            <line x1="150" y1="30" x2="150" y2="54" transform="rotate(60 150 150)"/>
+            <line x1="150" y1="30" x2="150" y2="54" transform="rotate(90 150 150)"/>
+            <line x1="150" y1="30" x2="150" y2="54" transform="rotate(120 150 150)"/>
+            <line x1="150" y1="30" x2="150" y2="54" transform="rotate(150 150 150)"/>
+            <line x1="150" y1="30" x2="150" y2="54" transform="rotate(180 150 150)"/>
+            <line x1="150" y1="30" x2="150" y2="54" transform="rotate(210 150 150)"/>
+            <line x1="150" y1="30" x2="150" y2="54" transform="rotate(240 150 150)"/>
+            <line x1="150" y1="30" x2="150" y2="54" transform="rotate(270 150 150)"/>
+            <line x1="150" y1="30" x2="150" y2="54" transform="rotate(330 150 150)"/>
+          </g>
+          <line x1="150" y1="30" x2="150" y2="54" stroke="#2277FF" stroke-width="3" transform="rotate(300 150 150)"/>
+          <line x1="150" y1="150" x2="150" y2="102" stroke="#2277FF" stroke-width="3" transform="rotate(300 150 150)"/>
+          <circle cx="150" cy="78" r="9" fill="#000000" stroke="#2277FF" stroke-width="3" transform="rotate(300 150 150)"/>
+          <circle cx="150" cy="150" r="12" fill="#000000" stroke="#2277FF" stroke-width="3"/>
+        </svg>
+        <span class="dnum dnum-n">12</span>
+        <span class="dnum dnum-e">3</span>
+        <span class="dnum dnum-s">6</span>
+        <span class="dnum dnum-w">9</span>
+      </div>
+      <p class="cap dim dial-cap">Position 10</p>
+    </div>
+
+    <div class="d1-text">
+      <h3 class="word">FORM</h3>
+      <p class="bdy gloss">Form is the shape a thing takes when it holds together.</p>
+      <p class="cap dim reading">The card reads the shape, the pair and the position, in that order.</p>
+      <div class="q q-d1">
+        <p class="h2">What is holding your shape together right now?</p>
+      </div>
+    </div>
+
+  </article>
+</section>
+
+<!-- Direction 2 -->
+<section class="band">
+  <h2 class="band-tag">Direction 2</h2>
+  <article class="card card-d2">
+
+    <div class="d2-stack">
+      <h3 class="word">FORM</h3>
+      <p class="bdy gloss">Form is the shape a thing takes when it holds together.</p>
+      <p class="cap dim reading">The card reads the shape, the pair and the position, in that order.</p>
+      <div class="q q-d2">
+        <p class="h2">What is holding your shape together right now?</p>
+      </div>
+    </div>
+
+    <div class="rail">
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">12</span></div>
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">1</span></div>
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">2</span></div>
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">3</span></div>
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">4</span></div>
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">5</span></div>
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">6</span></div>
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">7</span></div>
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">8</span></div>
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">9</span></div>
+      <div class="cell on"><span class="tick"></span><span class="base"></span><span class="num">10</span></div>
+      <div class="cell"><span class="tick"></span><span class="base"></span><span class="num">11</span></div>
+    </div>
+
+  </article>
+</section>
+
+<!-- Direction 3 -->
+<section class="band">
+  <h2 class="band-tag">Direction 3</h2>
+  <article class="card card-d3">
+
+    <p class="lede">Form is the shape a thing takes when it holds together.</p>
+
+    <div class="seal">
+      <svg viewBox="0 0 300 300" aria-hidden="true" focusable="false">
+        <circle cx="150" cy="150" r="120" fill="#000000" stroke="#555555" stroke-width="3"/>
+        <g stroke="#555555" stroke-width="3" fill="none">
+          <line x1="150" y1="30" x2="150" y2="42"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(30 150 150)"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(60 150 150)"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(90 150 150)"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(120 150 150)"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(150 150 150)"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(180 150 150)"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(210 150 150)"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(240 150 150)"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(270 150 150)"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(300 150 150)"/>
+          <line x1="150" y1="30" x2="150" y2="42" transform="rotate(330 150 150)"/>
+        </g>
+        <path d="M119 34 A120 120 0 0 1 181 34" fill="none" stroke="#2277FF" stroke-width="3" transform="rotate(300 150 150)"/>
+        <line x1="150" y1="30" x2="150" y2="54" stroke="#2277FF" stroke-width="3" transform="rotate(300 150 150)"/>
+      </svg>
+      <h3 class="word seal-word">FORM</h3>
+      <span class="seal-pos">10</span>
+    </div>
+
+    <p class="cap dim reading">The card reads the shape, the pair and the position, in that order.</p>
+
+    <div class="q q-d3">
+      <p class="h2">What is holding your shape together right now?</p>
+    </div>
+
+  </article>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+/* Base. The dark ground, the default type, and link colours.
+   Kept deliberately small: this is a reference system, not a CSS framework. */
+:root{color-scheme:dark}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--surface-page);
+  color:var(--text-primary);
+  font-family:var(--font-sans);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-optical-sizing:auto;
+  letter-spacing:normal;
+  -webkit-font-smoothing:antialiased;
+}
+*,*::before,*::after{box-sizing:border-box}
+a{color:var(--text-primary);text-decoration-color:var(--g48);text-underline-offset:3px;transition:text-decoration-color var(--dur) var(--ease)}
+a:hover{text-decoration-color:var(--white)}
+a:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+::selection{background:var(--g24);color:var(--white)}
+
+/* The card's flip mark is a paired-axis symbol from the scoped Symbols register. The React card's
+   44px target stays intact; this monochrome mask takes the button's current colour. */
+[data-card] button[aria-label="Flip"]>svg{display:none!important}
+[data-card] button[aria-label="Flip"]::before{
+  content:"";display:block;width:24px;height:12px;flex:0 0 auto;
+  background-color:currentColor;
+  -webkit-mask:url("../components/core/symbols/polarity-pair.svg") center/contain no-repeat;
+  mask:url("../components/core/symbols/polarity-pair.svg") center/contain no-repeat;
+}
