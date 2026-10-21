@@ -1,0 +1,29 @@
+{
+  "generator": "COMMAND/Operations/Development/carry-index.mjs",
+  "rule": "L - path-linked `_output/<file>` from the live set and standing prose",
+  "root": "Re.SOURCE",
+  "week": "Y26 W43 October 19",
+  "generated": "2026-10-21 00:58",
+  "total": 8,
+  "shortlist": [
+    "colour-lingo-trial-2026-10-21.html",
+    "lingo-trial-snapshot-2026-10-21.js"
+  ],
+  "carry": [
+    "colour-lingo-trial-2026-10-21.html",
+    "lingo-trial-snapshot-2026-10-21.js"
+  ],
+  "draft": [
+    "trial-bands-1104-2026-10-21.png",
+    "trial-bands-1440-2026-10-21.png",
+    "trial-bands-390-2026-10-21.png",
+    "trial-capture-1440-2026-10-21.png",
+    "trial-rows-1440-2026-10-21.png",
+    "trial-set-1440-2026-10-21.png"
+  ],
+  "dispositions": {
+    "carry": {},
+    "draft": {}
+  },
+  "problems": 0
+}

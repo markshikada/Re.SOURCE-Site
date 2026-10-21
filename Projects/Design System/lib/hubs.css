@@ -1,0 +1,95 @@
+/* Hub adoption of the existing field and top bar. No instrument geometry changes.
+   Edition v11 (compact modern law): hubs share the same compact density as the
+   nav — 32px rows, 8px radius, 12-16px paddings, subtle borders, no heavy
+   shadows. Masters and pages fit together because every surface uses the same
+   tokens. Desktop and mobile are identical in treatment; only column counts
+   change. */
+.hub-page {
+  margin: 0;
+  padding: calc(var(--rs-topbar-h) + var(--space-md)) 0 var(--space-xl);
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font: var(--fs-caption)/var(--lh-caption) var(--font-sans);
+}
+.hub-page main, .hub-measure { max-width: calc(var(--space-2xl) * 12 - var(--space-xl) - var(--space-lg)); margin-inline: auto; }
+.hub-page main { row-gap: var(--space-md); }
+.hub-page main *, .hub-page main { min-width: 0; }
+.hub-page h1 { margin: 0; font-size: var(--fs-h1); line-height: var(--lh-h1); font-weight: var(--fw-h1); letter-spacing: -0.01em; }
+.hub-page p.lede { margin: 0; max-width: 64ch; font-family: var(--font-mono); font-size: 11px; line-height: 16px; letter-spacing: 0.02em; color: var(--text-secondary); text-wrap: pretty; }
+.hub-page a { color: var(--text-primary); text-decoration: none; }
+.hub-page a:hover { color: var(--text-primary); }
+.hub-page main { scroll-margin-top: calc(var(--rs-topbar-h) + var(--space-sm)); }
+.hub-page :focus-visible { outline: 2px solid var(--g88); outline-offset: 2px; border-radius: 4px; }
+.hub-skip { position: fixed; top: var(--space-sm); left: var(--space-md); z-index: 11; padding: 8px 12px; background: var(--surface-card); border: 1px solid var(--surface-border); border-radius: var(--radius-sm); transform: translateY(-200%); font-family: var(--font-mono); font-size: 11px; }
+.hub-skip:focus { transform: none; }
+
+/* A catalogue is 1 / 2 / 3 cards, compact modern */
+.master-cards { margin: 0; padding: 0; list-style: none; row-gap: var(--space-md); }
+.master-cards > li[data-span] { display: grid; grid-column: span 3; }
+.hub-masters a.card { 
+  display: grid; 
+  grid-template-rows: auto 1fr; 
+  background: var(--surface-card); 
+  border: 1px solid var(--surface-border); 
+  border-radius: var(--radius-sm); 
+  text-decoration: none; 
+  overflow: hidden; 
+  transition: border-color 150ms var(--ease-place), transform 150ms var(--ease-place), background 150ms var(--ease-place);
+}
+.hub-masters a.card:hover { 
+  border-color: var(--g66); 
+  background: var(--surface-raised);
+  transform: translateY(-1px);
+}
+.hub-masters .shot { position: relative; aspect-ratio: 1440 / 900; overflow: hidden; border-bottom: 1px solid var(--surface-border); background: var(--surface-page); }
+.hub-masters .shot iframe { position: absolute; inset: 0; width: calc(var(--space-2xl) * 15); height: calc(var(--space-2xl) * 9 + var(--lh-h2)); border: 0; transform-origin: 0 0; pointer-events: none; }
+.hub-masters .body { display: grid; gap: 6px; align-content: start; padding: 14px; }
+.hub-masters .name { font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: -0.01em; }
+.hub-masters .desc { color: var(--text-secondary); font-size: 11px; line-height: 16px; letter-spacing: 0.01em; text-wrap: pretty; }
+.hub-masters .path { font: 10px/14px var(--font-mono); letter-spacing: 0.02em; color: var(--text-dim); overflow-wrap: anywhere; }
+
+/* Reading rows stack at three columns — compact */
+.hub-notes .row, .hub-notes .mstatus { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.hub-notes .row { padding: 10px 12px; border-radius: 6px; transition: background 120ms var(--ease-place); }
+.hub-notes .row:hover { background: var(--g12); }
+.hub-notes .rule .row { padding: 0; }
+.hub-notes .path { white-space: normal; overflow-wrap: anywhere; }
+.hub-notes .summary, .hub-notes .title, .hub-notes pre, .hub-notes .decbtn { overflow-wrap: anywhere; }
+.hub-notes .notes-tabs { gap: 4px; padding-bottom: 12px; }
+.hub-notes .notes-tabs button { border: 1px solid transparent; background: transparent; min-height: 32px; padding: 6px 10px; font: 11px/16px var(--font-mono); letter-spacing: 0.02em; text-transform: uppercase; border-radius: 6px; transition: all 120ms var(--ease-place); }
+.hub-notes .notes-tabs button:hover { background: var(--g12); color: var(--text-primary); }
+.hub-notes .notes-tabs button.on { background: var(--surface-card); border-color: var(--surface-border); color: var(--text-primary); }
+.hub-notes .taskrow { flex-wrap: wrap; gap: 12px; padding: 12px; border-radius: var(--radius-sm); }
+.hub-notes .trow1, .hub-notes .trow2 { flex: 1 1 100%; }
+.hub-notes .trow2 { flex-wrap: wrap; gap: 6px; }
+.hub-notes .taskrow .t, .hub-notes .searchbox, .hub-notes .addrow input, .hub-notes .decbtn { font-size: var(--fs-body); line-height: var(--lh-body); }
+.hub-notes .startbtn, .hub-notes .mv span, .hub-notes select, .hub-notes .decbtn { min-height: 32px; display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 6px; font-size: 11px; line-height: 16px; }
+.hub-notes .startbtn, .hub-notes .tag { font-size: 11px; }
+.hub-notes .tag, .hub-notes .startbtn.on, .hub-notes .decbtn.picked, .hub-notes .decbtn.verify, .hub-notes .hit mark { background: var(--surface-card); color: var(--text-primary); border: 1px solid var(--surface-border); border-radius: 6px; }
+.hub-notes .addrow { flex-wrap: wrap; gap: 8px; }
+.hub-notes .addrow input { width: 0; min-height: 32px; }
+.hub-notes #glossary .cols > ul { grid-column: 1 / -1; }
+.hub-notes li.open .body { max-height: min(50dvh, calc(var(--space-2xl) * 6)); overflow: auto; overscroll-behavior: contain; }
+.hub-notes #previewOverlay { padding: 12px; }
+.hub-notes #previewBox { min-height: 0; grid-template-rows: auto minmax(0, 1fr); border-radius: var(--radius-sm); }
+.hub-notes #previewBar { gap: 12px; overflow-wrap: anywhere; }
+.hub-notes #previewBar span { flex-shrink: 0; min-height: 32px; display: inline-flex; align-items: center; }
+.hub-notes #hoverPreview { max-width: calc(100vw - 24px); box-sizing: border-box; border-radius: var(--radius-sm); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+
+/* The hub's row shapes follow the field's own count (tokens/grid.css): below 1081 the
+   orientation picks it — landscape six, portrait three (Mark, 24 September 2026, quoted:
+   "orientation picks 3 vs 6") — and 1081 and up is twelve whatever the orientation, so the
+   width half of this gate keeps that frame answered and the 1081 block below still wins
+   wherever the two overlap. */
+@media (orientation: landscape), (min-width: 1081px) {
+  .hub-page { padding-top: calc(var(--rs-topbar-h) + var(--space-lg)); }
+  .hub-notes .row { grid-template-columns: auto minmax(0, 1fr); gap: 12px; }
+  .hub-notes .mstatus { grid-template-columns: minmax(0, 1fr) auto; }
+  .hub-notes .trow1 { flex: 1; }
+  .hub-notes .trow2 { flex: none; }
+  .hub-notes #glossary .cols > ul { grid-column: span 3; }
+}
+@media (min-width: 1081px) {
+  .master-cards > li[data-span] { grid-column: span 4; }
+  .hub-notes #glossary .cols > ul { grid-column: span 6; }
+}

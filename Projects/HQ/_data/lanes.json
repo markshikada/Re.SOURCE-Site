@@ -1,0 +1,896 @@
+{
+  "stamp": "2026-10-21T10:11:06.482Z",
+  "since": "2026-10-20T22:11:06.482Z",
+  "liveMinutes": 20,
+  "quietMinutes": 90,
+  "sessions": {
+    "ok": true,
+    "label": "sessions",
+    "data": []
+  },
+  "activity": {
+    "ok": true,
+    "label": "activity trail",
+    "data": [
+      {
+        "at": "2026-10-20T16:41:18.000Z",
+        "kind": "done",
+        "text": "pr-digest security red parked (4th): re-measured, no mechanical fix; note on main c8d14e5",
+        "ageMinutes": 1050
+      },
+      {
+        "at": "2026-10-17T21:29:21.000Z",
+        "kind": "done",
+        "text": "motion scale: chat face durations on the console scale — housekeep evals:console:motion FIXED, PR 77 merged 916c26c, gate surface PASS",
+        "ageMinutes": 5082
+      },
+      {
+        "at": "2026-10-17T21:17:45.000Z",
+        "kind": "doing",
+        "text": "motion scale: chat face chat-enhanced.css durations 120/200/350/2000/1600ms -> console scale (housekeep evals:console:motion)",
+        "ageMinutes": 5093
+      },
+      {
+        "at": "2026-10-17T18:13:01.000Z",
+        "kind": "done",
+        "text": "housekeep health:agent bridge fixed — omo-console PR #76 seats newest app-server-capable binary, /health 200; note+SHEET PR #469",
+        "ageMinutes": 5278
+      },
+      {
+        "at": "2026-10-17T17:51:32.000Z",
+        "kind": "doing",
+        "text": "console bridge: omo 5.1.34+ removed app-server; spawn resolver picks newest capable binary (housekeep health red)",
+        "ageMinutes": 5300
+      },
+      {
+        "at": "2026-10-15T17:28:01.000Z",
+        "kind": "done",
+        "text": "gallery relay landed: /gather/search + /gather/results proved on the resident console (PRs 70-72)",
+        "ageMinutes": 8203
+      },
+      {
+        "at": "2026-10-15T16:36:16.000Z",
+        "kind": "doing",
+        "text": "gallery search relay: two /gather GET faces + detached gatherer (lane/gather-relay)",
+        "ageMinutes": 8255
+      },
+      {
+        "at": "2026-10-13T22:31:48.000Z",
+        "kind": "done",
+        "text": "Run rail overflow fixed and merged (PR 64); night-qa chat/390 back to findings: 0",
+        "ageMinutes": 10779
+      },
+      {
+        "at": "2026-10-13T22:09:39.000Z",
+        "kind": "doing",
+        "text": "Fixing the phone-width chat run rail: summary text overflowed the 390px viewport (night-qa red)",
+        "ageMinutes": 10801
+      },
+      {
+        "at": "2026-10-13T16:43:26.000Z",
+        "kind": "doing",
+        "text": "INTERFACES.md: regenerate from machine, clear drift-check red",
+        "ageMinutes": 11128
+      },
+      {
+        "at": "2026-10-07T23:25:25.000Z",
+        "kind": "done",
+        "text": "ops follow-up: Phone mode on a desk window now previews at the phone's measure (430px, centred) instead of stretching the table; real-phone behaviour unchanged.",
+        "ageMinutes": 19366
+      },
+      {
+        "at": "2026-10-07T23:00:22.000Z",
+        "kind": "done",
+        "text": "front door wired and live: /state/data + assets served, cap on first paint, missing faces answer 404 not crash; PR 51 merged; launchd crash-loop cleared",
+        "ageMinutes": 19391
+      },
+      {
+        "at": "2026-10-07T22:53:22.000Z",
+        "kind": "doing",
+        "text": "ops: wiring the front door - state/data, console assets, cap on first paint, 404s instead of crashes",
+        "ageMinutes": 19398
+      },
+      {
+        "at": "2026-10-07T21:27:06.000Z",
+        "kind": "doing",
+        "text": "Waiting on Mark: the one-screen board is live at /one with all four states pressable — his ruling on the design comes from playing with it, not from prose",
+        "ageMinutes": 19484
+      },
+      {
+        "at": "2026-10-07T21:21:38.000Z",
+        "kind": "done",
+        "text": "402 health check fixed (PR 48): it was counting agents grepping for the phrase, so the estate went red on its own investigation; planted fault proves it still f",
+        "ageMinutes": 19489
+      },
+      {
+        "at": "2026-10-07T21:15:55.000Z",
+        "kind": "done",
+        "text": "The gate now sweeps /one on four lists (PR 47): face, phone, motion and focus; 26/26 one-screen QA re-run green",
+        "ageMinutes": 19495
+      },
+      {
+        "at": "2026-10-07T21:07:35.000Z",
+        "kind": "done",
+        "text": "One-screen prototype at /one: four bands, one row shape, five labels, fail-closed ages; PR 45, 26/26 QA",
+        "ageMinutes": 19504
+      },
+      {
+        "at": "2026-10-07T20:53:38.000Z",
+        "kind": "doing",
+        "text": "One-screen prototype: four bands, one row shape, five labels at /one",
+        "ageMinutes": 19517
+      },
+      {
+        "at": "2026-10-07T20:20:48.000Z",
+        "kind": "done",
+        "text": "Walkthroughs index now opens the field version per Mark's ruling — e45c337 pushed, gate green",
+        "ageMinutes": 19550
+      },
+      {
+        "at": "2026-10-07T20:16:28.000Z",
+        "kind": "doing",
+        "text": "Walkthroughs index points at the field version per Mark's ruling",
+        "ageMinutes": 19555
+      },
+      {
+        "at": "2026-10-07T19:50:42.000Z",
+        "kind": "done",
+        "text": "Chat face redesigned: hover actions, Ctrl+K search, drag-drop attachments, follow-up chips, designed rest state (7bc112c)",
+        "ageMinutes": 19580
+      },
+      {
+        "at": "2026-10-07T19:49:36.000Z",
+        "kind": "done",
+        "text": "Close-out: four checkouts on main and level with origin, no branches of mine left, five live links at 200, pin-sweep PASS, free-gear exit 0, self-check exit 0, ",
+        "ageMinutes": 19582
+      },
+      {
+        "at": "2026-10-07T19:29:28.000Z",
+        "kind": "done",
+        "text": "Modular layout published and verified live: 11 content checks pass on the served copy, HTTP 200, PR 259; only the two grid containers run the full measure",
+        "ageMinutes": 19602
+      },
+      {
+        "at": "2026-10-07T19:28:29.000Z",
+        "kind": "doing",
+        "text": "Field page respans to the modular grid (PR 259): masthead 8/4, tabs and CTA at 8, nav right-aligned at 9-to-12; only the two grid containers run the full measur",
+        "ageMinutes": 19603
+      },
+      {
+        "at": "2026-10-07T18:56:46.000Z",
+        "kind": "done",
+        "text": "Field version published and verified live: model-settings-walkthrough-field.html, HTTP 200, nine content checks pass, zero script tags, law-sweep 0",
+        "ageMinutes": 19634
+      },
+      {
+        "at": "2026-10-07T18:55:50.000Z",
+        "kind": "doing",
+        "text": "Model settings page rebuilt on the twelve-column field (PR 258): six cards at three across, zero script tags, law-sweep 0; waiting on the publish workflow for t",
+        "ageMinutes": 19635
+      },
+      {
+        "at": "2026-10-07T18:45:48.000Z",
+        "kind": "done",
+        "text": "Walkthroughs page live at /walkthroughs (PR 44): every guided page on one list, built on master.css over the twelve-column field, zero script tags",
+        "ageMinutes": 19645
+      },
+      {
+        "at": "2026-10-07T18:13:07.000Z",
+        "kind": "done",
+        "text": "Master template landed (PR 42): master.css on the Re.SOURCE twelve-column field, comparison page rebuilt pure-CSS with no script tag; Figma API key moved out of",
+        "ageMinutes": 19678
+      },
+      {
+        "at": "2026-10-07T18:05:56.000Z",
+        "kind": "doing",
+        "text": "Pruned the Figma MCP key out of argv into a launchd env var (was readable by any ps); investigating the two listeners Mark asked about",
+        "ageMinutes": 19685
+      },
+      {
+        "at": "2026-10-07T17:48:36.000Z",
+        "kind": "done",
+        "text": "Comparison page live at /walkthrough-compare (PR 41): three references pressed side by side, 7 DOM assertions pass, console now launchd-supervised so it survive",
+        "ageMinutes": 19703
+      },
+      {
+        "at": "2026-10-07T17:44:11.000Z",
+        "kind": "doing",
+        "text": "Comparison page: three live walkthrough references (GOV.UK / Open Props / Linear) at /walkthrough-compare, so Mark picks by pressing rather than reading",
+        "ageMinutes": 19707
+      },
+      {
+        "at": "2026-10-07T17:26:27.000Z",
+        "kind": "done",
+        "text": "Both walkthroughs live and verified by HTTP 200: tabs and disclosure buttons on the model page, three buttoned steps on the browser connect page. law-sweep 0 fi",
+        "ageMinutes": 19725
+      },
+      {
+        "at": "2026-10-07T17:25:48.000Z",
+        "kind": "doing",
+        "text": "Both walkthroughs made interactive and merged (PR 257): tabs, buttons, highlighted calls to action; waiting on the publish workflow for the links",
+        "ageMinutes": 19725
+      },
+      {
+        "at": "2026-10-07T17:07:35.000Z",
+        "kind": "done",
+        "text": "Walkthrough page published: law-sweep 0 findings, renders checked at 390 and 1280, all nine live-content checks pass at markshikada.github.io",
+        "ageMinutes": 19744
+      },
+      {
+        "at": "2026-10-07T16:55:03.000Z",
+        "kind": "done",
+        "text": "OpenCode settings corrected and merged: every pin now resolves to the free primary, pin-sweep 37/37 PASS, free-gear-guard rejects unreachable seats, fresh sessi",
+        "ageMinutes": 19756
+      },
+      {
+        "at": "2026-10-07T16:29:18.000Z",
+        "kind": "doing",
+        "text": "Model settings fix: repoint OpenCode off the gated space-bunny-free seat; peer lane building the walkthrough page",
+        "ageMinutes": 19782
+      },
+      {
+        "at": "2026-10-07T15:52:21.000Z",
+        "kind": "done",
+        "text": "Closed OpenCode Desktop and its serve backend per Mark's tap",
+        "ageMinutes": 19819
+      },
+      {
+        "at": "2026-10-07T15:11:23.000Z",
+        "kind": "doing",
+        "text": "Monitoring MiMo Flash session 01a116c6 (free-gear ruling work) from the support lane",
+        "ageMinutes": 19860
+      },
+      {
+        "at": "2026-10-06T16:37:22.000Z",
+        "kind": "done",
+        "text": "Concept-map interaction prototype is live and published: tap a row, the panel opens with only what the page already knew. PR 253 merged. Awaiting Mark's judgeme",
+        "ageMinutes": 21214
+      },
+      {
+        "at": "2026-10-06T16:05:39.000Z",
+        "kind": "doing",
+        "text": "Waiting on Mark: the concept map's 83 diagram nodes are not interactive, only the three view tabs are. What a click should do is his call, not mine",
+        "ageMinutes": 21245
+      }
+    ]
+  },
+  "vaults": [
+    {
+      "name": "Re.SOURCE",
+      "path": "/Users/sushi/Documents/Vaults/Re.SOURCE",
+      "prs": {
+        "ok": true,
+        "label": "pull requests",
+        "data": [
+          {
+            "vaultLabel": "Re.SOURCE",
+            "number": 353,
+            "title": "rescue: uncommitted bytes from the inbox-generator lane (21 Oct 2026)",
+            "head": "lane/rescue-inbox-generator-2026-10-21",
+            "mergeable": "MERGEABLE",
+            "updatedAt": "2026-10-20T23:50:47Z",
+            "checks": [
+              {
+                "name": "hq",
+                "status": "COMPLETED",
+                "conclusion": "SUCCESS"
+              }
+            ]
+          },
+          {
+            "vaultLabel": "Re.SOURCE",
+            "number": 352,
+            "title": "rescue: uncommitted bytes from the flower-sheet-cab lane (21 Oct 2026)",
+            "head": "lane/rescue-flower-sheet-cab-2026-10-21",
+            "mergeable": "MERGEABLE",
+            "updatedAt": "2026-10-20T23:50:43Z",
+            "checks": [
+              {
+                "name": "hq",
+                "status": "COMPLETED",
+                "conclusion": "SUCCESS"
+              }
+            ]
+          }
+        ]
+      },
+      "landed": {
+        "ok": true,
+        "label": "landed",
+        "data": [
+          {
+            "sha": "da2dd1c0",
+            "at": "2026-10-21T01:42:13+01:00",
+            "subject": "Merge pull request #363 from markshikada/lane/worktree-page-eye-pass-note-2026-10-21"
+          },
+          {
+            "sha": "7a102217",
+            "at": "2026-10-21T01:39:16+01:00",
+            "subject": "Session note: the worktree page, an eye pass on a page nobody had looked at"
+          },
+          {
+            "sha": "0432cffe",
+            "at": "2026-10-21T01:36:02+01:00",
+            "subject": "Merge pull request #362 from markshikada/lane/worktree-page-eyepass-2026-10-21"
+          },
+          {
+            "sha": "87e898a1",
+            "at": "2026-10-21T01:33:09+01:00",
+            "subject": "Worktree page: the eye pass. The figure is rebuilt in HTML so its type never scales below the 12px floor or clips its own box, body copy returns to white where the system puts it, the eyebrow drops its invented letter spacing, and the position colour takes the 3px stroke the system names."
+          },
+          {
+            "sha": "de20c991",
+            "at": "2026-10-21T01:11:30+01:00",
+            "subject": "Merge pull request #361 from markshikada/intel/lingo-capture-first"
+          },
+          {
+            "sha": "94d3df39",
+            "at": "2026-10-21T01:11:24+01:00",
+            "subject": "Colour LINGO trial: a capture tool, not a sheet viewer, with a home offered for every word"
+          },
+          {
+            "sha": "ec9ea00b",
+            "at": "2026-10-21T01:03:50+01:00",
+            "subject": "Merge pull request #360 from markshikada/lane/publish-worktree-page-2026-10-21"
+          },
+          {
+            "sha": "d597616d",
+            "at": "2026-10-21T01:03:28+01:00",
+            "subject": "publish: the worktree page goes on the manifest"
+          },
+          {
+            "sha": "c025a76b",
+            "at": "2026-10-21T01:02:10+01:00",
+            "subject": "Merge pull request #359 from markshikada/intel/lingo-rows-honoured"
+          },
+          {
+            "sha": "dc31592c",
+            "at": "2026-10-21T01:02:03+01:00",
+            "subject": "Colour LINGO trial: the rows are honoured, a length filters rows and never compacts"
+          },
+          {
+            "sha": "8c2d338f",
+            "at": "2026-10-21T01:01:30+01:00",
+            "subject": "Merge pull request #358 from markshikada/lane/design-worktree-page-2026-10-21"
+          },
+          {
+            "sha": "8d9d555f",
+            "at": "2026-10-21T01:01:10+01:00",
+            "subject": "Refine worktree page: larger fault numbers, hex SVG, standfirst, sentence openers"
+          },
+          {
+            "sha": "1c3cdfe7",
+            "at": "2026-10-21T00:59:57+01:00",
+            "subject": "Add worktrees page: what a worktree is and what changes overnight"
+          },
+          {
+            "sha": "4acec258",
+            "at": "2026-10-21T00:59:12+01:00",
+            "subject": "Merge pull request #357 from markshikada/intel/lingo-handover"
+          },
+          {
+            "sha": "36c011ff",
+            "at": "2026-10-21T00:59:06+01:00",
+            "subject": "Handover and carry index after the Colour LINGO trial session"
+          },
+          {
+            "sha": "49fe05d5",
+            "at": "2026-10-21T00:57:51+01:00",
+            "subject": "Merge pull request #355 from markshikada/lane/pin-sweep-fix-2"
+          },
+          {
+            "sha": "74a7665c",
+            "at": "2026-10-21T00:57:48+01:00",
+            "subject": "Merge pull request #356 from markshikada/intel/colour-lingo-trial"
+          },
+          {
+            "sha": "76d9b0fa",
+            "at": "2026-10-21T00:57:21+01:00",
+            "subject": "fix Re.SOURCE agent model pins per pin-sweep ruling"
+          },
+          {
+            "sha": "64254b37",
+            "at": "2026-10-21T00:56:14+01:00",
+            "subject": "Colour LINGO: a safe trial on a frozen copy of the Sheet, and the gap law"
+          },
+          {
+            "sha": "96e2d5a3",
+            "at": "2026-10-21T00:52:58+01:00",
+            "subject": "Merge pull request #354 from markshikada/lane/ops-shared-build-2026-10-21"
+          },
+          {
+            "sha": "7c3b173e",
+            "at": "2026-10-21T00:52:46+01:00",
+            "subject": "ops: add shared build dir and gitignore entry for Re.SOURCE"
+          },
+          {
+            "sha": "824a0acd",
+            "at": "2026-10-21T00:43:50+01:00",
+            "subject": "Merge pull request #351 from markshikada/lane/intel-card-flip-2026-10-21"
+          },
+          {
+            "sha": "d2da22db",
+            "at": "2026-10-21T00:43:36+01:00",
+            "subject": "The card carries no buttons: the counter's own words are the flip"
+          },
+          {
+            "sha": "f0611058",
+            "at": "2026-10-21T00:32:46+01:00",
+            "subject": "Merge pull request #350 from markshikada/intel/lingo-note-title-and-handover"
+          },
+          {
+            "sha": "d9c24f6c",
+            "at": "2026-10-21T00:32:35+01:00",
+            "subject": "Handover and carry index after the Colour LINGO analysis session"
+          },
+          {
+            "sha": "cb7d9c8d",
+            "at": "2026-10-21T00:29:22+01:00",
+            "subject": "Merge pull request #349 from markshikada/intel/colour-lingo-live-upgrade-analysis"
+          },
+          {
+            "sha": "c06201d7",
+            "at": "2026-10-21T00:29:02+01:00",
+            "subject": "Colour LINGO: the Sheet read live, the master's stale pool, and the upgrade proposals"
+          },
+          {
+            "sha": "6c4d86b4",
+            "at": "2026-10-21T00:18:50+01:00",
+            "subject": "Merge pull request #348 from markshikada/lane/intel-card-controls-and-mark-2026-10-21"
+          },
+          {
+            "sha": "fcb499ab",
+            "at": "2026-10-21T00:18:43+01:00",
+            "subject": "The card's two arrows mirror each other exactly, and the ring of dots closes"
+          },
+          {
+            "sha": "feca0e97",
+            "at": "2026-10-20T23:42:21+01:00",
+            "subject": "Merge pull request #347 from markshikada/lane/intel-pin-rule-2026-10-20"
+          },
+          {
+            "sha": "10a43fec",
+            "at": "2026-10-20T23:42:06+01:00",
+            "subject": "The register now carries the version-pin rule, beside the bundle's hash rule"
+          },
+          {
+            "sha": "be38d1a6",
+            "at": "2026-10-20T23:37:47+01:00",
+            "subject": "Merge pull request #346 from markshikada/lane/intel-symbols-version-2026-10-20"
+          },
+          {
+            "sha": "ca8f11de",
+            "at": "2026-10-20T23:37:41+01:00",
+            "subject": "Bump the shared symbol file's version pin, so the change is actually seen"
+          },
+          {
+            "sha": "5159c4a5",
+            "at": "2026-10-20T23:35:46+01:00",
+            "subject": "Merge pull request #345 from markshikada/lane/intel-flower-marker-centre-2026-10-20"
+          },
+          {
+            "sha": "1b3055a7",
+            "at": "2026-10-20T23:35:25+01:00",
+            "subject": "Flower: the rotation markers are centred on the orbit they belong to"
+          }
+        ]
+      },
+      "register": null
+    },
+    {
+      "name": "COMMAND",
+      "path": "/Users/sushi/Documents/Vaults/COMMAND",
+      "prs": {
+        "ok": true,
+        "label": "pull requests",
+        "data": [
+          {
+            "vaultLabel": "COMMAND",
+            "number": 680,
+            "title": "Creation Ledger: the Colour LINGO trial snapshot tool and the trial page",
+            "head": "intel/lingo-ledger-rows",
+            "mergeable": "CONFLICTING",
+            "updatedAt": "2026-10-20T23:59:52Z",
+            "checks": [
+              {
+                "name": "Cloudflare Pages",
+                "status": "COMPLETED",
+                "conclusion": "FAILURE"
+              }
+            ]
+          },
+          {
+            "vaultLabel": "COMMAND",
+            "number": 670,
+            "title": "rescue: COMMAND root uncommitted bytes (21 Oct 2026)",
+            "head": "lane/rescue-root-2026-10-21",
+            "mergeable": "MERGEABLE",
+            "updatedAt": "2026-10-20T23:48:09Z",
+            "checks": [
+              {
+                "name": "Cloudflare Pages",
+                "status": "COMPLETED",
+                "conclusion": "FAILURE"
+              }
+            ]
+          },
+          {
+            "vaultLabel": "COMMAND",
+            "number": 640,
+            "title": "docs(notes): maccrab sequence repark — re-measured 20 Oct, no lever, parked",
+            "head": "lane/maccrab-sequence-repark-2",
+            "mergeable": "MERGEABLE",
+            "updatedAt": "2026-10-20T17:54:20Z",
+            "checks": [
+              {
+                "name": "Cloudflare Pages",
+                "status": "COMPLETED",
+                "conclusion": "FAILURE"
+              }
+            ]
+          },
+          {
+            "vaultLabel": "COMMAND",
+            "number": 618,
+            "title": "housekeep: record the blocked rename on the pr-digest repark note",
+            "head": "lane/pr-digest-repark-rename-note",
+            "mergeable": "MERGEABLE",
+            "updatedAt": "2026-10-20T16:45:26Z",
+            "checks": [
+              {
+                "name": "Cloudflare Pages",
+                "status": "COMPLETED",
+                "conclusion": "FAILURE"
+              }
+            ]
+          }
+        ]
+      },
+      "landed": {
+        "ok": true,
+        "label": "landed",
+        "data": [
+          {
+            "sha": "b6e45bce",
+            "at": "2026-10-21T03:17:36+01:00",
+            "subject": "Merge pull request #687 from markshikada/lane/maccrab-allowlist-rule-id"
+          },
+          {
+            "sha": "b418dd49",
+            "at": "2026-10-21T03:14:58+01:00",
+            "subject": "Correct the Keychain rule id in the MacCrab allowlist script"
+          },
+          {
+            "sha": "f50fe5c7",
+            "at": "2026-10-21T01:50:59+01:00",
+            "subject": "Merge pull request #686 from markshikada/lane/ops-shared-build-ignore-2026-10-21"
+          },
+          {
+            "sha": "7dff9f26",
+            "at": "2026-10-21T01:50:52+01:00",
+            "subject": "ops: the shared build link is a symlink, so the ignore pattern must not be directory-only"
+          },
+          {
+            "sha": "773db19d",
+            "at": "2026-10-21T01:49:46+01:00",
+            "subject": "Merge pull request #685 from markshikada/lane/intel-final-handover-2026-10-21"
+          },
+          {
+            "sha": "ec80df26",
+            "at": "2026-10-21T01:49:38+01:00",
+            "subject": "handover: regenerated after the page landed and the eye pass ran"
+          },
+          {
+            "sha": "5747f767",
+            "at": "2026-10-21T01:47:56+01:00",
+            "subject": "Merge pull request #684 from markshikada/lane/intel-eyepass-record-2026-10-21"
+          },
+          {
+            "sha": "e9abbb07",
+            "at": "2026-10-21T01:47:47+01:00",
+            "subject": "Intel: the eye pass ran, and the page is clean at four widths"
+          },
+          {
+            "sha": "ee1ca9c5",
+            "at": "2026-10-21T01:09:38+01:00",
+            "subject": "Merge pull request #683 from markshikada/lane/intel-brief-link-2026-10-21"
+          },
+          {
+            "sha": "e43eb046",
+            "at": "2026-10-21T01:09:29+01:00",
+            "subject": "Intel: the published link in the morning brief and the carryover"
+          },
+          {
+            "sha": "3b03b6c5",
+            "at": "2026-10-21T01:08:39+01:00",
+            "subject": "Merge pull request #682 from markshikada/lane/intel-rollout-update-2026-10-21"
+          },
+          {
+            "sha": "2d2380f5",
+            "at": "2026-10-21T01:08:31+01:00",
+            "subject": "Intel: the page is live, with its standing link"
+          },
+          {
+            "sha": "6fe8eb53",
+            "at": "2026-10-21T01:05:56+01:00",
+            "subject": "Merge pull request #681 from markshikada/lane/intel-page-ledger-brief-2026-10-21"
+          },
+          {
+            "sha": "e9151af6",
+            "at": "2026-10-21T01:05:48+01:00",
+            "subject": "Intel: creation ledger line for the worktree page"
+          },
+          {
+            "sha": "b57ba1bf",
+            "at": "2026-10-21T00:56:21+01:00",
+            "subject": "Merge pull request #679 from markshikada/lane/ops-closeout-manifests-2026-10-21"
+          },
+          {
+            "sha": "795883d6",
+            "at": "2026-10-21T00:56:10+01:00",
+            "subject": "ops closeout: session note and regenerated handover"
+          },
+          {
+            "sha": "4da0bb1e",
+            "at": "2026-10-21T00:56:09+01:00",
+            "subject": "Merge pull request #678 from markshikada/lane/intel-morning-brief-2026-10-21b"
+          },
+          {
+            "sha": "037e0f07",
+            "at": "2026-10-21T00:56:01+01:00",
+            "subject": "Intel: the morning brief, in plain words, with the decisions that need Mark"
+          },
+          {
+            "sha": "4d9ea0af",
+            "at": "2026-10-21T00:53:01+01:00",
+            "subject": "Merge pull request #677 from markshikada/lane/intel-night-close-2026-10-21"
+          },
+          {
+            "sha": "e8de1793",
+            "at": "2026-10-21T00:52:54+01:00",
+            "subject": "handover: regenerated from this week's notes after the overnight work"
+          },
+          {
+            "sha": "abce58a4",
+            "at": "2026-10-21T00:52:19+01:00",
+            "subject": "Merge pull request #676 from markshikada/lane/ops-manifests-2026-10-21"
+          },
+          {
+            "sha": "4bcf7184",
+            "at": "2026-10-21T00:52:02+01:00",
+            "subject": "ops: add shared-state manifests for Re.SOURCE and omo-console; resolve manifests from lane-start dir"
+          },
+          {
+            "sha": "09dd8e82",
+            "at": "2026-10-21T00:51:50+01:00",
+            "subject": "Merge pull request #675 from markshikada/lane/intel-night-close-2026-10-21"
+          },
+          {
+            "sha": "feab61ba",
+            "at": "2026-10-21T00:51:42+01:00",
+            "subject": "Intel: overnight close note and carryover"
+          },
+          {
+            "sha": "9738f6fa",
+            "at": "2026-10-21T00:50:05+01:00",
+            "subject": "Merge pull request #674 from markshikada/lane/intel-route-b-note-2026-10-21"
+          },
+          {
+            "sha": "76c9e55d",
+            "at": "2026-10-21T00:49:58+01:00",
+            "subject": "Intel: routes B and C researched, for the morning swarm-board and memory session"
+          },
+          {
+            "sha": "ff7edec0",
+            "at": "2026-10-21T00:49:55+01:00",
+            "subject": "Merge pull request #673 from markshikada/lane/ops-wrap-lane-lifecycle-2026-10-21"
+          },
+          {
+            "sha": "b0e0e86f",
+            "at": "2026-10-21T00:49:43+01:00",
+            "subject": "session note and handover for lane lifecycle wave"
+          },
+          {
+            "sha": "f733fd99",
+            "at": "2026-10-21T00:49:25+01:00",
+            "subject": "Merge pull request #672 from markshikada/lane/intel-ledger-lane-lifecycle-2026-10-21"
+          },
+          {
+            "sha": "a3f5edca",
+            "at": "2026-10-21T00:49:18+01:00",
+            "subject": "Merge pull request #671 from markshikada/lane/ops-lane-lifecycle-w2-2026-10-21"
+          },
+          {
+            "sha": "5d2789ad",
+            "at": "2026-10-21T00:49:18+01:00",
+            "subject": "Intel: creation ledger lines for the lane lifecycle tooling and the plain-words note"
+          },
+          {
+            "sha": "cfc1bfda",
+            "at": "2026-10-21T00:49:05+01:00",
+            "subject": "lane lifecycle v2: shared-state manifest, shared build dir, robust apply step"
+          },
+          {
+            "sha": "3de6f94b",
+            "at": "2026-10-21T00:47:25+01:00",
+            "subject": "Merge pull request #669 from markshikada/lane/ops-lane-lifecycle-closeout-2026-10-21"
+          },
+          {
+            "sha": "9c81ef23",
+            "at": "2026-10-21T00:47:17+01:00",
+            "subject": "ops closeout: session note and regenerated handover"
+          },
+          {
+            "sha": "6945ac8d",
+            "at": "2026-10-21T00:45:31+01:00",
+            "subject": "Merge pull request #667 from markshikada/lane/intel-card-closeout-2026-10-21"
+          },
+          {
+            "sha": "64ef66ec",
+            "at": "2026-10-21T00:45:26+01:00",
+            "subject": "Merge pull request #668 from markshikada/lane/ops-lane-lifecycle-w1-2026-10-21"
+          },
+          {
+            "sha": "e573f192",
+            "at": "2026-10-21T00:45:15+01:00",
+            "subject": "Intel, 21 October: the card's controls are landed, and the exemptions are answered in the data"
+          },
+          {
+            "sha": "c7ebcd6b",
+            "at": "2026-10-21T00:44:57+01:00",
+            "subject": "Merge pull request #666 from markshikada/lane/intel-seat-correction-2026-10-21"
+          },
+          {
+            "sha": "747024ab",
+            "at": "2026-10-21T00:44:55+01:00",
+            "subject": "lane lifecycle v2: registry, close, status, prune"
+          },
+          {
+            "sha": "5732db02",
+            "at": "2026-10-21T00:44:49+01:00",
+            "subject": "VAULT: the Monitor session seat named a dead rung; two workers died on it"
+          },
+          {
+            "sha": "be1e0001",
+            "at": "2026-10-21T00:43:52+01:00",
+            "subject": "Merge pull request #665 from markshikada/lane/intel-morning-rollout-2026-10-21"
+          },
+          {
+            "sha": "e19fe786",
+            "at": "2026-10-21T00:43:44+01:00",
+            "subject": "Intel: morning roll-out, three sessions ready to paste"
+          },
+          {
+            "sha": "9acbad54",
+            "at": "2026-10-21T00:42:55+01:00",
+            "subject": "Merge pull request #664 from markshikada/lane/intel-worktree-estate-2026-10-21"
+          },
+          {
+            "sha": "1c31ac65",
+            "at": "2026-10-21T00:42:45+01:00",
+            "subject": "Intel: worktree estate research, plain-words note, ops sheet and design brief"
+          },
+          {
+            "sha": "fa3ac41b",
+            "at": "2026-10-21T00:31:08+01:00",
+            "subject": "Merge pull request #663 from markshikada/lane/intel-allowlist-script-honesty"
+          },
+          {
+            "sha": "6bc4cffd",
+            "at": "2026-10-21T00:30:57+01:00",
+            "subject": "The allowlist script reports what actually happened, and survives a refusal"
+          },
+          {
+            "sha": "94ab441d",
+            "at": "2026-10-21T00:22:02+01:00",
+            "subject": "Merge pull request #662 from markshikada/lane/intel-close-guard-2026-10-21"
+          },
+          {
+            "sha": "b3745088",
+            "at": "2026-10-21T00:21:57+01:00",
+            "subject": "Intel, 21 October: the close duties, the guard's liveness line and the regenerated handover"
+          },
+          {
+            "sha": "e79006d2",
+            "at": "2026-10-21T00:20:40+01:00",
+            "subject": "Merge pull request #661 from markshikada/lane/intel-card-close-2026-10-21"
+          },
+          {
+            "sha": "5de02a5a",
+            "at": "2026-10-21T00:20:18+01:00",
+            "subject": "Intel, 21 October: the card's mark symmetry landed, and the card's controls carried forward with the one question they need"
+          },
+          {
+            "sha": "41e49121",
+            "at": "2026-10-21T00:17:24+01:00",
+            "subject": "Merge pull request #660 from markshikada/lane/intel-probe-comment-accuracy"
+          },
+          {
+            "sha": "1994b37e",
+            "at": "2026-10-21T00:17:15+01:00",
+            "subject": "Correct two comments that still described the removed python3 shim"
+          },
+          {
+            "sha": "a489064f",
+            "at": "2026-10-21T00:15:19+01:00",
+            "subject": "Merge pull request #659 from markshikada/lane/intel-handover-carryover-maccrab"
+          },
+          {
+            "sha": "3309a61e",
+            "at": "2026-10-21T00:15:08+01:00",
+            "subject": "Handover and carryover carry the MacCrab session"
+          },
+          {
+            "sha": "dd8a3f4a",
+            "at": "2026-10-21T00:09:31+01:00",
+            "subject": "Merge pull request #658 from markshikada/lane/intel-maccrab-health-and-prevention-layer"
+          },
+          {
+            "sha": "6a523d68",
+            "at": "2026-10-21T00:09:09+01:00",
+            "subject": "MacCrab's health read, the estate's noise named, and the prevention layer rebuilt"
+          },
+          {
+            "sha": "5b533eed",
+            "at": "2026-10-20T23:44:02+01:00",
+            "subject": "Merge pull request #657 from markshikada/lane/intel-close-lines-2026-10-20"
+          },
+          {
+            "sha": "5a9cd73f",
+            "at": "2026-10-20T23:43:55+01:00",
+            "subject": "Intel, 20 October: the close duties and the guard's liveness line, refreshed"
+          },
+          {
+            "sha": "e19eb3ad",
+            "at": "2026-10-20T23:40:25+01:00",
+            "subject": "Merge pull request #656 from markshikada/lane/intel-lingo-sheet-note-2026-10-20"
+          },
+          {
+            "sha": "0b3ae544",
+            "at": "2026-10-20T23:40:19+01:00",
+            "subject": "Intel, 20 October: the wheel's Realm label, the flower's rotation markers, and the version pin that hid the change"
+          }
+        ]
+      },
+      "register": {
+        "ok": true,
+        "label": "lane register",
+        "data": {
+          "lanes": [
+            {
+              "lane": "estate-integrity",
+              "scope": "",
+              "writes": ""
+            },
+            {
+              "lane": "the-house",
+              "scope": "",
+              "writes": ""
+            },
+            {
+              "lane": "visibility",
+              "scope": "",
+              "writes": ""
+            }
+          ],
+          "path": "/Users/sushi/Documents/Vaults/COMMAND/Operations/Development/lanes-live.md"
+        }
+      }
+    },
+    {
+      "name": "PERSONAL",
+      "path": "/Users/sushi/Documents/Vaults/PERSONAL",
+      "prs": {
+        "ok": true,
+        "label": "pull requests",
+        "data": []
+      },
+      "landed": {
+        "ok": true,
+        "label": "landed",
+        "data": []
+      },
+      "register": null
+    }
+  ]
+}

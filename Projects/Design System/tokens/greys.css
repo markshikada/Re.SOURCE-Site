@@ -1,0 +1,23 @@
+/* The ramp. Every surface and every text colour points at one of these.
+   The G number is approximate perceptual lightness as a percentage. */
+:root{
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;  /* spare, reads as neither text nor structure */
+  --white:#FFFFFF;
+
+  /* Text, three only. Text is white by default, grey is the small meta layer. */
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+
+  /* Surfaces, all off the ramp. No bespoke surface value exists. */
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+}
