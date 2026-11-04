@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Model Settings Walkthrough · on the field · Re.SOURCE</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#000;color:#fff;font-family:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:18px;line-height:30px;-webkit-font-smoothing:antialiased}
+a{color:#fff;text-decoration-color:#555;text-underline-offset:3px}
+a:focus-visible,label:focus-visible,summary:focus-visible,input:focus-visible+label{outline:3px solid #ccc;outline-offset:3px}
+
+:root{
+  --g06:#0D0D0D;--g12:#1A1A1A;--g24:#333;--g48:#555;--g66:#888;--g88:#CCC;--white:#FFF;
+  --cl-02:#FFD100;--cl-03:#FFB000;--cl-04:#FF7700;--cl-06:#FF0000;--cl-10:#2277FF;--cl-11:#00BBDD;--cl-12:#00D460;
+  --space-xs:4px;--space-sm:8px;--space-md:12px;--space-lg:24px;--space-xl:48px;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:24px;
+  --fs-caption:12px;--fs-body:18px;--fs-h2:24px;--fs-h1:36px;
+  --lh-caption:18px;--lh-body:30px;--lh-h2:36px;--lh-h1:48px;
+  --fw-caption:300;--fw-body:400;--fw-h2:600;--fw-h1:700;
+}
+
+[data-frame]{max-width:1400px;margin:0 auto;padding:var(--space-lg) var(--space-lg) var(--space-xl)}
+[data-grid]{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--space-lg)}
+[data-grid]>*{grid-column:1/-1}
+[data-span="4"]{grid-column:span 4}
+[data-span="6"]{grid-column:span 6}
+[data-span="8"]{grid-column:span 8}
+[data-span="12"]{grid-column:span 12}
+@media (max-width:1080px){[data-span="4"],[data-span="6"],[data-span="8"]{grid-column:span 12}}
+
+.masthead{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--space-lg);align-items:start;padding-bottom:var(--space-md);margin-bottom:var(--space-md);border-bottom:1px solid var(--g24)}
+.masthead .title{grid-column:span 8}
+.masthead .aside{grid-column:span 4}
+.masthead h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);margin:0 0 var(--space-xs)}
+.masthead p{margin:0;color:var(--g66)}
+.masthead .fine{margin-top:var(--space-xs);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g48)}
+@media (max-width:1080px){.masthead .title,.masthead .aside{grid-column:1/-1}}
+
+.eyebrow{font:var(--fw-caption) var(--fs-caption)/var(--lh-caption) ui-monospace,Menlo,monospace;text-transform:uppercase;color:var(--g66)}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+.segmented{display:flex;gap:2px;padding:2px;background:var(--g12);border:1px solid var(--g24);border-radius:var(--radius-sm);margin-bottom:var(--space-md);position:sticky;top:0;z-index:5;background-image:none}
+.segmented label{flex:1;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:var(--space-xs);border-radius:var(--radius-sm);color:var(--g66);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-h2);text-transform:uppercase;cursor:pointer;transition:background-color .15s ease,color .15s ease}
+.segmented label:hover{color:var(--g88);background:rgba(255,255,255,.05)}
+#t1:checked~.grid .lb1,#t2:checked~.grid .lb2,#t3:checked~.grid .lb3,#t4:checked~.grid .lb4{background:var(--g24);color:#fff}
+#t1:checked~.grid .p1,#t2:checked~.grid .p2,#t3:checked~.grid .p3,#t4:checked~.grid .p4{display:grid}
+.grid .p1,.grid .p2,.grid .p3,.grid .p4{display:none}
+
+.card{background:var(--g06);border:1px solid var(--g24);border-radius:var(--radius-md);padding:var(--space-md)}
+.card>:first-child{margin-top:0}
+.card>:last-child{margin-bottom:0}
+
+.do{background:var(--g06);border:1px solid var(--g24);border-radius:var(--radius-lg);padding:var(--space-md);margin-bottom:var(--space-md);display:flex;gap:var(--space-md);align-items:center;flex-wrap:wrap}
+.do h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0}
+.do p{margin:0;color:var(--g88);flex:1;min-width:280px}
+#doOpen:checked~.grid .do-list{display:grid}
+.do-btn .on{display:none}
+#doOpen:checked~.grid .do-btn .on{display:inline}
+#doOpen:checked~.grid .do-btn .off{display:none}
+.do-list{display:none;list-style:none;margin:var(--space-sm) 0 0;padding:var(--space-sm) 0 0;border-top:1px solid var(--g24);gap:var(--space-sm);grid-column:1/-1}
+.do-list li{display:flex;gap:var(--space-sm);align-items:flex-start;color:var(--g88);font-size:var(--fs-body);line-height:var(--lh-body)}
+.do-list .tick{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:24px;height:24px;border-radius:24px;background:rgba(0,212,96,.15);border:1px solid rgba(0,212,96,.35);color:var(--cl-12);font-size:var(--fs-caption);font-weight:700;margin-top:3px}
+.do-list strong{color:#fff}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 var(--space-md);border:1px solid var(--g24);border-radius:var(--radius-sm);background:var(--g12);color:var(--g88);font:var(--fw-h2) var(--fs-caption)/var(--lh-caption) inherit;text-transform:uppercase;cursor:pointer;transition:background-color .15s ease,transform .15s ease}
+.btn:hover{background:var(--g24);color:#fff}
+.btn:active{transform:scale(.98)}
+.btn-go{background:var(--cl-10);border-color:var(--cl-10);color:#fff}
+.btn-go:hover{background:var(--cl-10);filter:brightness(1.12);color:#fff}
+.btn-wide{width:100%}
+
+.sec-title{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-md);display:flex;align-items:center;gap:var(--space-sm)}
+.sec-title .num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:24px;background:var(--g12);border:1px solid var(--g24);font-size:var(--fs-caption);font-weight:var(--fw-h2);color:var(--g66);flex-shrink:0}
+
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:76px;padding:var(--space-xs) var(--space-sm);border-radius:var(--radius-sm);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-h2);text-transform:uppercase}
+.badge.free{background:rgba(0,212,96,.15);color:var(--cl-12);border:1px solid rgba(0,212,96,.3)}
+.badge.paid{background:rgba(255,209,0,.15);color:var(--cl-02);border:1px solid rgba(255,209,0,.3)}
+.badge.gated{background:rgba(255,119,0,.15);color:var(--cl-04);border:1px solid rgba(255,119,0,.3)}
+.badge.banned{background:rgba(255,0,0,.15);color:var(--cl-06);border:1px solid rgba(255,0,0,.3)}
+.badge.na{background:var(--g12);color:var(--g66);border:1px solid var(--g24)}
+
+.seat-head{display:flex;gap:var(--space-sm);align-items:center;justify-content:space-between;flex-wrap:wrap}
+.seat-name{font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-caption);line-height:var(--lh-caption);color:#fff;word-break:break-all}
+.seat-code{font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g66);white-space:nowrap}
+.seat-desc{margin-top:var(--space-xs);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g88)}
+details{border-top:1px solid var(--g24);margin-top:var(--space-sm);padding-top:var(--space-xs)}
+summary{cursor:pointer;min-height:32px;display:flex;align-items:center;font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-h2);color:var(--cl-11)}
+summary:hover{color:#fff}
+details p{margin:var(--space-xs) 0 0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g88)}
+details p strong{color:#fff}
+
+.file-path{font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--cl-11);word-break:break-all}
+.file-role{font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-h2);margin-top:2px}
+.file-detail{font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g88);margin-top:var(--space-xs)}
+.tag{display:inline-block;margin-top:var(--space-sm);padding:2px var(--space-sm);border-radius:var(--radius-sm);background:var(--g12);border:1px solid var(--g24);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g66);text-transform:uppercase}
+.tag.durable{color:var(--cl-12);border-color:rgba(0,212,96,.3)}
+.tag.churn{color:var(--cl-03);border-color:rgba(255,176,0,.3)}
+
+.chain .step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:24px;background:var(--g12);border:1px solid var(--g24);font-size:var(--fs-caption);font-weight:var(--fw-h2);color:var(--g66);flex-shrink:0;float:left;margin-right:var(--space-sm)}
+.chain strong{display:block;font-size:var(--fs-body);line-height:var(--lh-body)}
+.chain span{font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g88)}
+.chain .card::after{content:"";display:block;clear:both}
+
+.rule{display:flex;gap:var(--space-sm);align-items:flex-start}
+.rule-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:24px;flex-shrink:0;font-size:var(--fs-body)}
+.rule-icon.green{background:rgba(0,212,96,.15);color:var(--cl-12)}
+.rule-icon.red{background:rgba(255,0,0,.15);color:var(--cl-06)}
+.rule-icon.amber{background:rgba(255,176,0,.15);color:var(--cl-03)}
+.rule strong{display:block;font-size:var(--fs-body);line-height:var(--lh-body)}
+.rule span{font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g88)}
+
+.bottom{background:var(--g12);border:1px solid var(--g24);border-radius:var(--radius-lg);padding:var(--space-md)}
+.bottom h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-xs)}
+.bottom p{margin:0;color:var(--g88);font-size:var(--fs-caption);line-height:var(--lh-caption)}
+
+.nav{margin-top:var(--space-md);grid-column:1/-1;display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--space-lg)}
+.navset{display:none;gap:var(--space-sm);grid-column:9/-1}
+.navset .btn{flex:1}
+@media (max-width:1080px){.navset{grid-column:1/-1}}
+#t1:checked~.grid .navset.n1,#t2:checked~.grid .navset.n2,#t3:checked~.grid .navset.n3,#t4:checked~.grid .navset.n4{display:flex}
+
+.footer{margin-top:var(--space-lg);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g48);text-align:center}
+
+code{font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-caption);background:var(--g12);border:1px solid var(--g24);border-radius:var(--radius-sm);padding:1px 5px}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important}}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/model-settings-walkthrough-field.html</span>
+</nav>
+<div data-frame>
+
+  <header class="masthead">
+    <div class="title">
+      <h1>Model Settings, Explained</h1>
+      <p>Which seat is free, which is paid, which is banned, and why the wrong one kept getting picked. Same words, same law, laid out on the field.</p>
+    </div>
+    <div class="aside">
+      <div class="eyebrow">On the twelve-column field · no script tags</div>
+      <p class="fine">Desktop first. Press the tabs, the buttons and the disclosure links.</p>
+    </div>
+  </header>
+
+  <input class="vh" type="radio" name="tab" id="t1" checked>
+  <input class="vh" type="radio" name="tab" id="t2">
+  <input class="vh" type="radio" name="tab" id="t3">
+  <input class="vh" type="radio" name="tab" id="t4">
+  <input class="vh" type="checkbox" id="doOpen">
+
+  <div class="grid" data-grid>
+
+    <div class="segmented" role="tablist" aria-label="Sections" data-span="8">
+      <label class="lb1" for="t1">1 Seating map</label>
+      <label class="lb2" for="t2">2 Where settings live</label>
+      <label class="lb3" for="t3">3 Why paid got used</label>
+      <label class="lb4" for="t4">4 The rules</label>
+    </div>
+
+    <aside class="card" data-span="4" style="align-self:start">
+      <div class="eyebrow" style="margin-bottom:var(--space-xs)">Read this first</div>
+      <div class="seat-desc">Nothing here needs a decision from you. The pins are already correct; this page explains how they went wrong and what keeps them right.</div>
+    </aside>
+
+    <div class="do" data-span="8">
+      <h2>What should I actually do?</h2>
+      <p>Nothing is broken. One button shows the only three things worth knowing about your own setup.</p>
+      <label class="btn btn-go do-btn" for="doOpen"><span class="off">Show me what to do</span><span class="on">Hide what to do</span></label>
+      <ul class="do-list">
+        <li><span class="tick">1</span><span><strong>Leave the durable pin alone.</strong> <code>~/.omo/omo.jsonc</code> already holds the free seat, and it is what a new session starts on.</span></li>
+        <li><span class="tick">2</span><span><strong>Do not pick a model in the chat and expect it to stick.</strong> That writes <code>settings.json</code>, which changes on the next restart. Use <code>/model</code> to move deliberately.</span></li>
+        <li><span class="tick">3</span><span><strong>Never enable the free Space Bunny privacy toggle.</strong> It would unblock a 400, but it lets the provider train on your prompts — the exact thing the banned-models policy exists to stop.</span></li>
+      </ul>
+    </div>
+
+    <section class="p1" data-span="12">
+      <div class="eyebrow" style="margin-bottom:var(--space-sm)">1 · The seating map</div>
+      <div data-grid>
+
+        <article class="card" data-span="4">
+          <div class="seat-head"><span class="badge free">Free</span><span class="seat-code">HTTP 200</span></div>
+          <div class="seat-name" style="margin-top:var(--space-xs)">opencode-go/longcat-2.5-preview-free</div>
+          <div class="seat-desc">The only zero-cost seat reachable from outside OpenCode. Needs a stable <code>x-opencode-session</code> header; omit it and the route answers <em>400: missing x-opencode-session</em>, which reads like a dead seat and is not one.</div>
+          <details><summary>What does this mean for me?</summary><p><strong>Your primary.</strong> Every file that decides what a session runs on points here, and a fresh session with no flags starts on it. Unlimited, zero-retention, no training on your prompts.</p></details>
+        </article>
+
+        <article class="card" data-span="4">
+          <div class="seat-head"><span class="badge paid">Paid</span><span class="seat-code">HTTP 200</span></div>
+          <div class="seat-name" style="margin-top:var(--space-xs)">opencode-go/mimo-v2.6-flash</div>
+          <div class="seat-desc">The only tolerated paid seat. $0.14 input / $0.28 output per million, $60 monthly limit on the Go plan.</div>
+          <details><summary>What does this mean for me?</summary><p><strong>The fallback.</strong> Used only when the free seat cannot answer. Your 7 October ruling allows exactly this one and no other paid model; it is zero-retention too.</p></details>
+        </article>
+
+        <article class="card" data-span="4">
+          <div class="seat-head"><span class="badge banned">Banned</span><span class="seat-code">HTTP 200</span></div>
+          <div class="seat-name" style="margin-top:var(--space-xs)">opencode-go/space-bunny</div>
+          <div class="seat-desc">Paid seat at $0.15/$0.60. Banned outright by the 7 October ruling.</div>
+          <details><summary>What does this mean for me?</summary><p><strong>It would happily answer</strong>, which is the danger: working is not the same as permitted. Your checker flags it by name with a BANNED message, separate from "retired".</p></details>
+        </article>
+
+        <article class="card" data-span="4">
+          <div class="seat-head"><span class="badge gated">Gated</span><span class="seat-code">HTTP 400</span></div>
+          <div class="seat-name" style="margin-top:var(--space-xs)">opencode/space-bunny-free</div>
+          <div class="seat-desc">Free, but blocked by a workspace privacy gate. Only you can flip it, and flipping it trades away zero-retention.</div>
+          <details><summary>What does this mean for me?</summary><p><strong>This was the cause of the 400.</strong> The fix was not to open the gate — it was to stop dialling this seat. Nothing on your machine points at it any more.</p></details>
+        </article>
+
+        <article class="card" data-span="4">
+          <div class="seat-head"><span class="badge gated">Gated</span><span class="seat-code">HTTP 403</span></div>
+          <div class="seat-name" style="margin-top:var(--space-xs)">opencode/longcat-2.5-preview-free</div>
+          <div class="seat-desc">Free, but OpenCode's free tier only works from within the OpenCode app itself.</div>
+          <details><summary>What does this mean for me?</summary><p><strong>Same model as your primary, different route.</strong> The <code>opencode-go/</code> prefix is the one that works outside the app — which is why the prefix matters more than the name.</p></details>
+        </article>
+
+        <article class="card" data-span="4">
+          <div class="seat-head"><span class="badge na">N/A</span><span class="seat-code">not found</span></div>
+          <div class="seat-name" style="margin-top:var(--space-xs)">opencode-go/space-bunny-free</div>
+          <div class="seat-desc">This id does not exist at all. The catalogue has no such entry.</div>
+          <details><summary>What does this mean for me?</summary><p><strong>It was pinned in three vaults and sixteen agent files.</strong> An id that cannot resolve makes the engine fall back to its built-in chain, and that chain contains paid rungs. This is where the improper paid models came from.</p></details>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="p2" data-span="12">
+      <div class="eyebrow" style="margin-bottom:var(--space-sm)">2 · Where each setting lives</div>
+      <div data-grid>
+        <article class="card" data-span="6">
+          <div class="file-path">~/.omo/omo.jsonc</div>
+          <div class="file-role">The durable pin</div>
+          <div class="file-detail">Holds <code>model_profile</code>, the seat a session starts on. The one that survives across sessions. Currently <code>opencode-go/longcat-2.5-preview-free</code>.</div>
+          <span class="tag durable">Durable</span>
+        </article>
+        <article class="card" data-span="6">
+          <div class="file-path">~/.omo/agent/settings.json</div>
+          <div class="file-role">The session-churned override</div>
+          <div class="file-detail">Holds <code>model</code> and <code>enabledModels</code>. Changes every 20 minutes when the selector is used, and does not survive a restart — the durable pin wins on next launch.</div>
+          <span class="tag churn">Churns</span>
+        </article>
+        <article class="card" data-span="6">
+          <div class="file-path">~/.config/opencode/opencode.json + opencode.jsonc</div>
+          <div class="file-role">The OpenCode client's own defaults</div>
+          <div class="file-detail">Separate from omO. It held <code>opencode/space-bunny-free</code> until 7 October 2026, which produced the 400; it now reads <code>opencode-go/longcat-2.5-preview-free</code> in both <code>model</code> and <code>small_model</code>.</div>
+          <span class="tag">Client default</span>
+        </article>
+        <article class="card" data-span="6">
+          <div class="file-path">~/.config/opencode/fallback.json</div>
+          <div class="file-role">The auto-fallback ladder</div>
+          <div class="file-detail">When a seat fails, the engine walks this list: <code>opencode-go/longcat-2.5-preview-free</code>, then <code>opencode-go/mimo-v2.6-flash</code>.</div>
+          <span class="tag">Fallback chain</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="p3" data-span="12">
+      <div class="eyebrow" style="margin-bottom:var(--space-sm)">3 · Why paid models got used</div>
+      <div data-grid>
+        <article class="card chain" data-span="6"><span class="step-num">1</span><strong>Three files each claim to be "the model"</strong><span>omo.jsonc, settings.json and opencode.json all carry a model setting. They can disagree.</span></article>
+        <article class="card chain" data-span="6"><span class="step-num">2</span><strong>One of them churns every 20 minutes</strong><span>settings.json changes when the selector is used. A paid seat selected there overrides the durable pin — until the next restart.</span></article>
+        <article class="card chain" data-span="6"><span class="step-num">3</span><strong>An unresolvable pin walks into a paid chain</strong><span>If the pinned seat fails and the fallback list holds a paid seat, the engine uses it. The fallback list is the back door.</span></article>
+        <article class="card chain" data-span="6"><span class="step-num">4</span><strong>The OpenCode client has its own defaults</strong><span>opencode.json pointed at a gated seat. When the client's own config is consulted, it blocks the free seat and the engine reaches for a paid one.</span></article>
+      </div>
+    </section>
+
+    <section class="p4" data-span="12">
+      <div class="eyebrow" style="margin-bottom:var(--space-sm)">4 · The rules</div>
+      <div data-grid>
+        <article class="card" data-span="6"><div class="rule"><span class="rule-icon green">&#10003;</span><div><strong>Free first, always</strong><span>Both free seats are zero-cost and zero-retention. No paid seat is better enough to justify the cost.</span></div></div></article>
+        <article class="card" data-span="6"><div class="rule"><span class="rule-icon amber">!</span><div><strong>One tolerated paid seat</strong><span>opencode-go/mimo-v2.6-flash, and only when both free seats are unreachable at once.</span></div></div></article>
+        <article class="card" data-span="6"><div class="rule"><span class="rule-icon red">&#10007;</span><div><strong>opencode-go/space-bunny is banned</strong><span>Paid at $0.15/$0.60. Banned outright by the 7 October ruling. No exceptions.</span></div></div></article>
+        <article class="card" data-span="6"><div class="rule"><span class="rule-icon red">&#10007;</span><div><strong>Free seats that train on prompts are banned</strong><span>Free is not enough. If the provider trains on request data, it is banned. Zero-retention is the rule.</span></div></div></article>
+        <div class="bottom" data-span="12">
+          <h2>The bottom line</h2>
+          <p>The durable pin is correct; the churn is the problem. When settings.json is changed by the model selector it overrides the free pin with a paid seat until the next restart. Keep the durable pin as the only free seat and let the fallback chain handle failures.</p>
+        </div>
+      </div>
+    </section>
+
+    <nav class="nav">
+      <div class="navset n1"><label class="btn btn-go" for="t2">Next &#8594;</label></div>
+      <div class="navset n2"><label class="btn" for="t1">&#8592; Back</label><label class="btn btn-go" for="t3">Next &#8594;</label></div>
+      <div class="navset n3"><label class="btn" for="t2">&#8592; Back</label><label class="btn btn-go" for="t4">Next &#8594;</label></div>
+      <div class="navset n4"><label class="btn" for="t3">&#8592; Back</label><label class="btn btn-go" for="t1">Back to the start</label></div>
+    </nav>
+
+  </div>
+
+  <p class="footer">Published from Re.SOURCE &middot; 7 October 2026</p>
+</div>
+</body>
+</html>

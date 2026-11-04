@@ -1,0 +1,55 @@
+/* Twelve positions at 30 degree steps on a 360 degree wheel.
+   Position 12 sits at 0 degrees, at the top, and the count runs clockwise.
+   Position 00 is the core, a void, and carries no colour.
+
+   Token stems are legacy labels, not assignments. Whichever word sits at a
+   position is read from the LINGO source at the time a build needs it.
+   Never read a word out of a token name. */
+:root{
+  --cl-00-core:transparent;   /* position 00 · core · void */
+  --cl-01-tone:#99DD00;       /* position 01 ·  30° */
+  --cl-02-flux:#FFD100;       /* position 02 ·  60° */
+  --cl-03-flow:#FFB000;       /* position 03 ·  90° */
+  --cl-04-love:#FF7700;       /* position 04 · 120° */
+  --cl-05-bond:#FF5500;       /* position 05 · 150° */
+  --cl-06-fire:#FF0000;       /* position 06 · 180° */
+  --cl-07-path:#E02888;       /* position 07 · 210° */
+  --cl-08-time:#9933CC;       /* position 08 · 240° */
+  --cl-09-meta:#6655FF;       /* position 09 · 270° */
+  --cl-10-form:#2277FF;       /* position 10 · 300° */
+  --cl-11-type:#00BBDD;       /* position 11 · 330° */
+  --cl-12-life:#00D460;       /* position 12 ·   0° */
+
+  /* Colour is a stroke on a shape, never a fill behind text. 3px is the stroke. */
+  --stroke:3px;
+}
+
+/* Foreground utility */
+.cl-00{color:var(--cl-00-core)}
+.cl-01{color:var(--cl-01-tone)}
+.cl-02{color:var(--cl-02-flux)}
+.cl-03{color:var(--cl-03-flow)}
+.cl-04{color:var(--cl-04-love)}
+.cl-05{color:var(--cl-05-bond)}
+.cl-06{color:var(--cl-06-fire)}
+.cl-07{color:var(--cl-07-path)}
+.cl-08{color:var(--cl-08-time)}
+.cl-09{color:var(--cl-09-meta)}
+.cl-10{color:var(--cl-10-form)}
+.cl-11{color:var(--cl-11-type)}
+.cl-12{color:var(--cl-12-life)}
+
+/* Stroke utility. There is deliberately no background utility:
+   a position colour is a stroke on a shape, never a fill behind text. */
+.cl-01-stroke{border-color:var(--cl-01-tone)}
+.cl-02-stroke{border-color:var(--cl-02-flux)}
+.cl-03-stroke{border-color:var(--cl-03-flow)}
+.cl-04-stroke{border-color:var(--cl-04-love)}
+.cl-05-stroke{border-color:var(--cl-05-bond)}
+.cl-06-stroke{border-color:var(--cl-06-fire)}
+.cl-07-stroke{border-color:var(--cl-07-path)}
+.cl-08-stroke{border-color:var(--cl-08-time)}
+.cl-09-stroke{border-color:var(--cl-09-meta)}
+.cl-10-stroke{border-color:var(--cl-10-form)}
+.cl-11-stroke{border-color:var(--cl-11-type)}
+.cl-12-stroke{border-color:var(--cl-12-life)}

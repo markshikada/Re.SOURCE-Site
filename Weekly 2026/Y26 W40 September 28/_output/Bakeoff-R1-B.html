@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Word Card at Rest — Three Directions</title>
+<style>
+/* ============================================================
+   TOKENS — values taken exactly from
+   Projects/Design System/tokens/{colours,greys,space,typography}.css
+   ============================================================ */
+:root{
+  /* colours.css — position 10 · 300° */
+  --cl-10-form:#2277FF;
+  --stroke:3px;
+
+  /* greys.css */
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+
+  /* space.css */
+  --u:4px;
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:24px;
+  --space-xl:48px;
+  --space-2xl:96px;
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:24px;
+
+  /* typography.css */
+  --fs-caption:12px; --lh-caption:18px; --fw-caption:300;
+  --fs-body:18px;    --lh-body:30px;    --fw-body:400;
+  --fs-h2:24px;      --lh-h2:36px;      --fw-h2:600;
+  --fs-h1:36px;      --lh-h1:48px;      --fw-h1:700;
+  --fs-display:48px; --lh-display:54px; --fw-display:800;
+
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+/* ============================================================
+   BASE — mobile first
+   ============================================================ */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--surface-page);
+  color:var(--text-primary);
+  font-family:var(--sans);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* type utilities — the scale and nothing else */
+.t-cap{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);text-transform:uppercase}
+.t-body{font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-body)}
+.t-h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2)}
+.t-h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1)}
+.t-disp{font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display)}
+.c-pri{color:var(--text-primary)}
+.c-sec{color:var(--text-secondary)}
+.c-dim{color:var(--text-dim)}
+
+/* ============================================================
+   BANDS
+   ============================================================ */
+.band{
+  border-bottom:var(--stroke) solid var(--surface-border);
+  padding:var(--space-xl) var(--space-lg);
+}
+.band-in{max-width:1080px;margin:0 auto}
+.band-head{margin-bottom:var(--space-lg)}
+.band-head h2{margin:0}
+.band-head p{margin:var(--space-xs) 0 0;max-width:600px}
+
+.card{
+  background:var(--surface-card);
+  border-radius:var(--radius-lg);
+  padding:var(--space-lg);
+}
+
+/* ============================================================
+   THE WHEEL — one mark, three uses
+   12 positions, 30 degree steps, position 12 at the top, clockwise.
+   Position 10 sits at 300 degrees: upper left.
+   Stroke is always 3px; non-scaling keeps it 3px at every size.
+   ============================================================ */
+.wheel{display:block;width:100%;height:auto}
+.wheel circle,.wheel path{
+  fill:none;
+  stroke-width:3;
+  vector-effect:non-scaling-stroke;
+}
+.w-ring{stroke:var(--surface-border)}
+.w-arc{stroke:var(--cl-10-form)}
+.w-node{stroke:var(--g48)}
+.w-node-on{stroke:var(--cl-10-form)}
+
+/* ============================================================
+   DIRECTION 1 — THE DIAL READOUT
+   Wheel at the left as an instrument, the word read out of its
+   core void, the three texts stacked down the right as readouts.
+   Order: position, word, gloss, reading, question.
+   ============================================================ */
+.d1{display:block}
+.d1-dial{
+  position:relative;
+  width:100%;
+  max-width:240px;
+  margin:0 auto var(--space-xl);
+}
+.d1-core{
+  position:absolute;
+  inset:var(--space-xl);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:var(--space-xs);
+  text-align:center;
+}
+.d1-rows{display:flex;flex-direction:column;gap:var(--space-md)}
+.d1-row{
+  background:var(--surface-raised);
+  border-left:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-md);
+  padding:var(--space-md) var(--space-lg);
+}
+.d1-row p{margin:var(--space-xs) 0 0}
+.d1-row.is-live{border-left-color:var(--cl-10-form)}
+
+@media (min-width:720px){
+  .d1{
+    display:grid;
+    grid-template-columns:240px 1fr;
+    gap:var(--space-xl);
+    align-items:center;
+  }
+  .d1-dial{margin:0}
+}
+
+/* ============================================================
+   DIRECTION 2 — THE QUESTION IS THE CARD
+   One column, no split, no dial on show. The question leads at
+   display size and the wheel is demoted to a signature at the
+   foot beside the word. Order: question, gloss, reading, mark.
+   ============================================================ */
+.d2{max-width:600px;border-top:var(--stroke) solid var(--cl-10-form);border-radius:var(--radius-sm)}
+.d2-q{margin:0}
+.d2-mid{
+  border-top:var(--stroke) solid var(--surface-border);
+  margin-top:var(--space-lg);
+  padding-top:var(--space-lg);
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-lg);
+}
+.d2-mid p{margin:var(--space-xs) 0 0}
+.d2-foot{
+  margin-top:var(--space-xl);
+  padding-top:var(--space-lg);
+  border-top:var(--stroke) solid var(--surface-border);
+  display:flex;
+  align-items:center;
+  gap:var(--space-lg);
+  flex-wrap:wrap;
+}
+.d2-mark{width:96px;flex:none}
+.d2-word{display:flex;flex-direction:column;gap:var(--space-xs)}
+
+/* ============================================================
+   DIRECTION 3 — THE POSITION IS THE LAYOUT
+   The wheel unrolled into a rail of its own twelve places, so
+   the position is shown as an index rather than an angle. Below
+   it the word, then the three texts side by side, read across.
+   Order: rail, word, gloss, reading, question.
+   ============================================================ */
+.d3-rail{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:var(--space-sm);
+  margin-bottom:var(--space-xl);
+}
+.d3-cell{
+  height:48px;
+  background:var(--black);
+  border:var(--stroke) solid transparent;
+  border-radius:var(--radius-sm);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--text-dim);
+  font-family:var(--mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+}
+.d3-cell.is-on{
+  border-color:var(--cl-10-form);
+  color:var(--text-primary);
+  font-weight:var(--fw-h2);
+}
+.d3-word{margin:0 0 var(--space-lg)}
+.d3-cols{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:var(--space-lg);
+}
+.d3-col{border-top:var(--stroke) solid var(--surface-border);padding-top:var(--space-md)}
+.d3-col.is-live{border-top-color:var(--cl-10-form)}
+.d3-col p{margin:var(--space-xs) 0 0}
+
+@media (min-width:720px){
+  .d3-rail{grid-template-columns:repeat(12,1fr)}
+  .d3-cols{grid-template-columns:repeat(3,1fr);gap:var(--space-xl)}
+}
+
+@media (min-width:1080px){
+  .band{padding:var(--space-2xl) var(--space-xl)}
+  .card{padding:var(--space-xl)}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R1-B.html</span>
+</nav>
+
+<!-- ================= DIRECTION 1 ================= -->
+<section class="band" id="d1">
+  <div class="band-in">
+    <div class="band-head">
+      <h2 class="t-h2 c-pri">Direction 1</h2>
+      <p class="t-body c-sec">The dial readout — the wheel is the instrument, the word is read out of its core.</p>
+    </div>
+
+    <div class="card">
+      <div class="d1">
+
+        <div class="d1-dial">
+          <svg class="wheel" viewBox="0 0 120 120" role="img" aria-label="Twelve position wheel, position 10 marked at three hundred degrees">
+            <circle class="w-ring" cx="60" cy="60" r="48"></circle>
+            <path class="w-arc" d="M14 48 A48 48 0 0 1 26 26"></path>
+            <circle class="w-node" cx="60" cy="12" r="6"></circle>
+            <circle class="w-node" cx="84" cy="18" r="6"></circle>
+            <circle class="w-node" cx="102" cy="36" r="6"></circle>
+            <circle class="w-node" cx="108" cy="60" r="6"></circle>
+            <circle class="w-node" cx="102" cy="84" r="6"></circle>
+            <circle class="w-node" cx="84" cy="102" r="6"></circle>
+            <circle class="w-node" cx="60" cy="108" r="6"></circle>
+            <circle class="w-node" cx="36" cy="102" r="6"></circle>
+            <circle class="w-node" cx="18" cy="84" r="6"></circle>
+            <circle class="w-node" cx="12" cy="60" r="6"></circle>
+            <circle class="w-node" cx="36" cy="18" r="6"></circle>
+            <circle class="w-node-on" cx="18" cy="36" r="8"></circle>
+          </svg>
+          <div class="d1-core">
+            <span class="t-cap c-sec">Position 10</span>
+            <span class="t-h1 c-pri">FORM</span>
+          </div>
+        </div>
+
+        <div class="d1-rows">
+          <div class="d1-row">
+            <span class="t-cap c-dim">Gloss</span>
+            <p class="t-body c-pri">Form is the shape a thing takes when it holds together.</p>
+          </div>
+          <div class="d1-row">
+            <span class="t-cap c-dim">Reading</span>
+            <p class="t-body c-sec">The card reads the shape, the pair and the position, in that order.</p>
+          </div>
+          <div class="d1-row is-live">
+            <span class="t-cap c-dim">Question</span>
+            <p class="t-h2 c-pri">What is holding your shape together right now?</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DIRECTION 2 ================= -->
+<section class="band" id="d2">
+  <div class="band-in">
+    <div class="band-head">
+      <h2 class="t-h2 c-pri">Direction 2</h2>
+      <p class="t-body c-sec">The question is the card — one column, the wheel demoted to a signature at the foot.</p>
+    </div>
+
+    <div class="card d2">
+      <p class="t-disp c-pri d2-q">What is holding your shape together right now?</p>
+
+      <div class="d2-mid">
+        <div>
+          <span class="t-cap c-dim">Gloss</span>
+          <p class="t-body c-pri">Form is the shape a thing takes when it holds together.</p>
+        </div>
+        <div>
+          <span class="t-cap c-dim">Reading</span>
+          <p class="t-body c-sec">The card reads the shape, the pair and the position, in that order.</p>
+        </div>
+      </div>
+
+      <div class="d2-foot">
+        <svg class="wheel d2-mark" viewBox="0 0 120 120" role="img" aria-label="Twelve position wheel, position 10 marked at three hundred degrees">
+          <circle class="w-ring" cx="60" cy="60" r="48"></circle>
+          <path class="w-arc" d="M14 48 A48 48 0 0 1 26 26"></path>
+          <circle class="w-node" cx="60" cy="12" r="6"></circle>
+          <circle class="w-node" cx="84" cy="18" r="6"></circle>
+          <circle class="w-node" cx="102" cy="36" r="6"></circle>
+          <circle class="w-node" cx="108" cy="60" r="6"></circle>
+          <circle class="w-node" cx="102" cy="84" r="6"></circle>
+          <circle class="w-node" cx="84" cy="102" r="6"></circle>
+          <circle class="w-node" cx="60" cy="108" r="6"></circle>
+          <circle class="w-node" cx="36" cy="102" r="6"></circle>
+          <circle class="w-node" cx="18" cy="84" r="6"></circle>
+          <circle class="w-node" cx="12" cy="60" r="6"></circle>
+          <circle class="w-node" cx="36" cy="18" r="6"></circle>
+          <circle class="w-node-on" cx="18" cy="36" r="8"></circle>
+        </svg>
+        <div class="d2-word">
+          <span class="t-h1 c-pri">FORM</span>
+          <span class="t-cap c-sec">Position 10</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DIRECTION 3 ================= -->
+<section class="band" id="d3">
+  <div class="band-in">
+    <div class="band-head">
+      <h2 class="t-h2 c-pri">Direction 3</h2>
+      <p class="t-body c-sec">The position is the layout — the wheel unrolled into a rail of its own twelve places, the texts read across.</p>
+    </div>
+
+    <div class="card">
+      <div class="d3-rail" role="img" aria-label="The twelve positions unrolled, position 10 marked">
+        <div class="d3-cell">12</div>
+        <div class="d3-cell">01</div>
+        <div class="d3-cell">02</div>
+        <div class="d3-cell">03</div>
+        <div class="d3-cell">04</div>
+        <div class="d3-cell">05</div>
+        <div class="d3-cell">06</div>
+        <div class="d3-cell">07</div>
+        <div class="d3-cell">08</div>
+        <div class="d3-cell">09</div>
+        <div class="d3-cell is-on">10</div>
+        <div class="d3-cell">11</div>
+      </div>
+
+      <p class="t-disp c-pri d3-word">FORM</p>
+
+      <div class="d3-cols">
+        <div class="d3-col">
+          <span class="t-cap c-dim">Gloss</span>
+          <p class="t-body c-pri">Form is the shape a thing takes when it holds together.</p>
+        </div>
+        <div class="d3-col">
+          <span class="t-cap c-dim">Reading</span>
+          <p class="t-body c-sec">The card reads the shape, the pair and the position, in that order.</p>
+        </div>
+        <div class="d3-col is-live">
+          <span class="t-cap c-dim">Question</span>
+          <p class="t-body c-pri">What is holding your shape together right now?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

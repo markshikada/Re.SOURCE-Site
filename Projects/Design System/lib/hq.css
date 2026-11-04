@@ -1,0 +1,224 @@
+/* HQ only. Values inherit the design-system closure; breakpoints match tokens/grid.css.
+   Edition v8: the masthead is the universal top bar — shared component in
+   lib/topbar.css, built by lib/masters-nav.js bar mode.
+   Edition v9 (21 September 2026, the mobile law): the featured card and its
+   context aside ride the field's own pair (data-sub data-pair on the feature
+   grid, work sections as subgrids so a nested block cannot invent a second
+   field); prompt disclosures scroll inside their own box at most half the
+   frame (the sheet rule applied to a page); landed rows are label above value
+   at three columns; the bar's switcher and links wrap rather than clip. The
+   bar's wrap and its measured height for this page live below; the shared bar
+   itself is not restated. */
+.hq {
+  --hq-hairline: calc(var(--u) / 4);
+  --hq-focus: calc(var(--u) / 2);
+  --hq-accent: var(--cl-03-flow);
+}
+.hq [hidden] { display: none !important; }
+.hq .shell { max-width: calc(var(--space-2xl) * 15); margin-inline: auto; }
+/* Fixed universal bar: page content starts below it (--rs-topbar-h, lib/topbar.css).
+   The links wrap on a phone rather than clipping (a row that cannot wrap is a bug);
+   lib/hq.js measures the wrapped bar's real height into --rs-topbar-h. The values
+   here are the no-JS fallback and cover the widest no-JS wrap (the plain "Open
+   masters" link wraps the links to three lines at 320): four rows at three
+   columns, then the shared bar's own two rows and one row. */
+/* Five rows since 25 September 2026, edition v11.2: the context nav gained an
+   Instruments link, and at 320 the six links wrap to a row the four-row reservation
+   did not cover, so the intro sat under the bar with script off. Measured, not
+   guessed at: the bar is 173px there and four rows reserved 165. This is the no-JS
+   fallback only, since lib/hq.js writes the measured height as soon as it runs. */
+.hq.rs-topbar-page { --rs-topbar-h: calc(var(--rs-topbar-row) * 5 + var(--rs-topbar-rowgap) * 4 + var(--rs-topbar-border) + env(safe-area-inset-top)); }
+/* The bar's row spec follows the field's own split (tokens/grid.css): below 1081 the
+   orientation picks the count — landscape six, portrait three (Mark, 24 September 2026, quoted:
+   "orientation picks 3 vs 6") — so the two-row value is a landscape value, and a portrait frame
+   falls back to the four-row value above, which over-estimates rather than letting content start
+   under the bar. It is a fallback only: lib/hq.js measures the wrapped bar's real height into
+   --rs-topbar-h as soon as script runs, and the 1081 block below answers every orientation at
+   1081 and up, unchanged. */
+@media (orientation: landscape) {
+  .hq.rs-topbar-page { --rs-topbar-h: calc(var(--rs-topbar-row) * 2 + var(--rs-topbar-rowgap) + var(--rs-topbar-border) + env(safe-area-inset-top)); }
+}
+@media (min-width: 1081px) {
+  .hq.rs-topbar-page { --rs-topbar-h: calc(var(--rs-topbar-row) + var(--rs-topbar-border) + env(safe-area-inset-top)); }
+}
+.hq .rs-topbar-navrow { flex-wrap: wrap; }
+.hq .rs-topbar-context { flex-wrap: wrap; overflow-x: visible; row-gap: 0; }
+.hq main { padding-top: calc(var(--rs-topbar-h) + var(--space-lg)); padding-bottom: var(--space-xl); row-gap: var(--space-lg); }
+.hq main > *, .hq [data-grid] > *, .hq .actions > * { min-width: 0; }
+.hq h1, .hq h2, .hq h3, .hq h4, .hq p { margin: 0; }
+.hq h1 { font-size: var(--fs-h1); line-height: var(--lh-h1); font-weight: var(--fw-display); text-wrap: balance; }
+.hq h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); font-weight: var(--fw-h2); text-wrap: balance; }
+.hq h3 { font-size: var(--fs-h2); line-height: var(--lh-h2); font-weight: var(--fw-h2); text-wrap: balance; }
+.hq h4 { font-size: var(--fs-body); line-height: var(--lh-body); font-weight: var(--fw-h2); }
+.hq p { text-wrap: pretty; }
+.hq p, .hq li { color: var(--text-secondary); }
+.hq a, .hq button, .hq summary { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.hq a:focus-visible, .hq button:focus-visible, .hq summary:focus-visible, .hq pre:focus-visible, .hq input:focus-visible {
+  outline: var(--hq-focus) solid var(--text-primary); outline-offset: var(--space-xs);
+}
+.hq .eyebrow, .hq .caption, .hq .status, .hq .edition, .hq .task-meta, .hq .button, .hq .footer-links, .hq code, .hq .toast {
+  font-family: var(--font-mono); font-size: var(--fs-caption); line-height: var(--lh-caption);
+}
+.hq .eyebrow { text-transform: uppercase; color: var(--text-secondary); }
+.hq .caption { color: var(--text-secondary); }
+.hq .intro { display: flex; flex-direction: column; gap: var(--space-md); }
+.hq .intro-copy { display: flex; flex-direction: column; gap: var(--space-sm); }
+/* Edition v8: the edition/week identity moved to the bar's stamp; the intro
+   keeps the snapshot timestamp only. */
+.hq .edition { display: flex; flex-direction: column; gap: var(--space-xs); color: var(--text-secondary); }
+/* Section anchors clear the fixed bar, not just a space margin. Work sections
+   are subgrids of the page field (data-sub), one full-width row of items. */
+.hq .work-section { row-gap: var(--space-lg); scroll-margin-top: calc(var(--rs-topbar-h) + var(--space-lg)); }
+.hq .section-heading { display: flex; align-items: baseline; flex-wrap: wrap; justify-content: space-between; gap: var(--space-sm) var(--space-lg); }
+.hq .section-heading > .eyebrow { font-size: var(--fs-caption); }
+.hq .feature-grid, .hq .secondary-grid { row-gap: var(--space-lg); align-items: start; }
+.hq .task-card { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); background: var(--surface-card); border: var(--hq-hairline) solid var(--surface-border); border-radius: var(--radius-md); }
+/* The featured card and its context aside take the field's own pair — 5 and 7
+   of twelve, 3 and 3 of six, stacked at three (tokens/grid.css) — so this page
+   declares no column numbers and no breakpoint of its own. */
+.hq .featured { border-top: var(--stroke) solid var(--hq-accent); }
+.hq .card-topline { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-md); }
+.hq .status { display: inline-flex; align-items: center; gap: var(--space-sm); padding: var(--space-xs) var(--space-sm); border: var(--hq-hairline) solid var(--surface-border); border-radius: var(--radius-sm); color: var(--text-primary); }
+.hq .recommended { border-color: var(--hq-accent); }
+.hq .recommended i { width: var(--space-sm); height: var(--space-sm); border: var(--hq-focus) solid var(--hq-accent); border-radius: 50%; }
+.hq .task-heading { display: flex; flex-direction: column; gap: var(--space-sm); }
+.hq .task-heading > p { color: var(--text-primary); }
+.hq .task-description { max-width: 62ch; }
+.hq .task-meta { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-md); margin-block: var(--space-sm); color: var(--text-secondary); }
+.hq .task-meta > span:not(:last-child) { border-right: var(--hq-hairline) solid var(--surface-border); padding-right: var(--space-md); }
+.hq .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md); }
+.hq .actions .button { flex: 1 1 auto; }
+.hq .button { appearance: none; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-sm); min-height: var(--space-xl); padding: var(--space-md) var(--space-lg); border: var(--hq-hairline) solid var(--surface-border); border-radius: var(--radius-sm); background: var(--surface-page); color: var(--text-primary); text-decoration: none; font-weight: var(--fw-h2); cursor: pointer; text-align: center; transition: border-color var(--dur-sm) var(--ease-place), background-color var(--dur-sm) var(--ease-place); }
+.hq .button-primary { background: var(--text-primary); color: var(--black); border-color: var(--text-primary); }
+.hq .button:disabled { cursor: progress; }
+.hq .button:active, .hq summary:active { border-color: var(--text-secondary); }
+.hq .disclosure { border-top: var(--hq-hairline) solid var(--surface-border); }
+.hq .task-card > .disclosure { margin-top: var(--space-md); }
+.hq summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); min-height: var(--space-xl); padding-block: var(--space-md); color: var(--text-primary); font-size: var(--fs-caption); line-height: var(--lh-caption); font-family: var(--font-mono); list-style: none; cursor: pointer; }
+.hq summary::-webkit-details-marker { display: none; }
+.hq .chevron { flex: 0 0 auto; width: var(--space-sm); height: var(--space-sm); margin-inline: var(--space-xs); border-right: var(--hq-hairline) solid currentColor; border-bottom: var(--hq-hairline) solid currentColor; transform: rotate(45deg); transition: transform var(--dur-sm) var(--ease-place); }
+.hq details[open] > summary .chevron { transform: rotate(225deg); }
+.hq .disclosure-body { padding-block: var(--space-md); display: flex; flex-direction: column; gap: var(--space-md); overflow-wrap: anywhere; }
+/* The sheet rule applied to a page (21 September 2026, Mark: "responsive design
+   needs more considered layout rules for mobile"): a prompt is reading text and
+   scrolls inside its own box, at most half the frame, so the copy button above
+   it stays in reach. */
+.hq .prompt { margin: 0; padding: var(--space-md); background: var(--surface-page); border: var(--hq-hairline) solid var(--surface-border); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--text-primary); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 50vh; overflow: auto; }
+.hq .master-links { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-lg); }
+.hq .master-links a { display: inline-flex; align-items: center; min-height: var(--space-xl); font-family: var(--font-mono); font-size: var(--fs-caption); line-height: var(--lh-caption); }
+.hq .task-context { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); }
+.hq .task-context h3 { font-size: var(--fs-h1); line-height: var(--lh-h1); }
+.hq .context-rule { height: var(--hq-hairline); background: var(--surface-border); margin-block: var(--space-sm); }
+.hq .acceptance { display: flex; flex-direction: column; gap: var(--space-sm); padding: 0; margin: 0; list-style: none; }
+.hq .acceptance li { padding-left: var(--space-lg); position: relative; }
+.hq .acceptance li::before { content: ''; position: absolute; top: var(--space-md); left: 0; width: var(--space-sm); height: var(--space-sm); border: var(--hq-hairline) solid var(--text-secondary); border-radius: 50%; }
+.hq .text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: var(--space-md); min-height: var(--space-xl); font-size: var(--fs-caption); line-height: var(--lh-caption); font-family: var(--font-mono); text-decoration: none; }
+.hq .link-mark { width: var(--space-sm); height: var(--space-sm); border-top: var(--hq-hairline) solid currentColor; border-right: var(--hq-hairline) solid currentColor; transform: rotate(45deg); margin-right: var(--space-xs); }
+.hq .secondary { align-self: stretch; }
+.hq .secondary .task-note { margin-top: auto; padding-top: var(--space-sm); }
+.hq .publishing { display: flex; flex-direction: column; gap: var(--space-lg); border-block: var(--hq-hairline) solid var(--surface-border); padding-block: var(--space-lg); scroll-margin-top: calc(var(--rs-topbar-h) + var(--space-lg)); }
+.hq .publishing-copy { display: flex; flex-direction: column; gap: var(--space-sm); }
+.hq .publishing-copy p { max-width: 62ch; }
+.hq .publishing-details { flex: 1; }
+.hq .playbook-lede { max-width: 62ch; }
+/* Words: the notes glossary, folded in. Group labels are eyebrows, not headings.
+   The find box filters in script; without script every term stays on the page. */
+.hq .word-find { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-sm); }
+.hq .word-find input { appearance: none; width: 100%; min-height: var(--space-xl); padding: var(--space-md); border: var(--hq-hairline) solid var(--surface-border); border-radius: var(--radius-sm); background: var(--surface-page); color: var(--text-primary); font-family: var(--font-mono); font-size: var(--fs-caption); line-height: var(--lh-caption); }
+.hq .word-group { display: flex; flex-direction: column; gap: var(--space-sm); }
+.hq .word-list { border-bottom: var(--hq-hairline) solid var(--surface-border); }
+.hq .word-list summary { align-items: flex-start; }
+.hq .word-list .summary-label { flex: 1 1 auto; flex-wrap: wrap; min-width: 0; }
+.hq .word-name { color: var(--text-primary); font-family: var(--font-sans); font-size: var(--fs-body); line-height: var(--lh-body); font-weight: var(--fw-h2); }
+.hq .word-gloss { flex: 1 1 auto; min-width: 0; color: var(--text-secondary); font-family: var(--font-sans); font-size: var(--fs-body); line-height: var(--lh-body); text-transform: none; }
+.hq .playbook-list { border-bottom: var(--hq-hairline) solid var(--surface-border); }
+.hq .playbook-list summary { min-height: calc(var(--space-xl) + var(--space-lg)); font-family: var(--font-sans); font-size: var(--fs-body); line-height: var(--lh-body); }
+.hq .summary-label { display: flex; align-items: baseline; gap: var(--space-lg); }
+.hq .steps { display: flex; flex-direction: column; gap: var(--space-md); margin: 0; padding-left: var(--space-lg); }
+.hq .steps li { padding-left: var(--space-sm); }
+.hq .steps li::marker { color: var(--text-primary); font-family: var(--font-mono); font-size: var(--fs-caption); }
+.hq .playbook .disclosure-body { max-width: 72ch; padding-bottom: var(--space-lg); }
+.hq code { color: var(--text-primary); overflow-wrap: anywhere; }
+.hq .footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-md) var(--space-lg); }
+.hq .footer-links { display: flex; flex-wrap: wrap; gap: var(--space-lg); }
+.hq .footer-links a { display: inline-flex; align-items: center; min-height: var(--space-xl); color: var(--text-secondary); }
+.hq .source-details { width: 100%; }
+.hq .source-details summary { justify-content: flex-start; color: var(--text-secondary); }
+.hq .skip-link { position: fixed; top: var(--space-sm); left: var(--space-sm); z-index: 20; padding: var(--space-md); background: var(--text-primary); color: var(--black); transform: translateY(calc(-100% - var(--space-lg))); }
+.hq .skip-link:focus { transform: none; }
+.hq .toast { position: fixed; z-index: 30; bottom: max(var(--space-lg), env(safe-area-inset-bottom)); left: 50%; transform: translate(-50%, var(--space-sm)); width: max-content; max-width: calc(100% - var(--space-lg)); padding: var(--space-md) var(--space-lg); border: var(--hq-hairline) solid var(--text-secondary); border-radius: var(--radius-sm); background: var(--surface-raised); color: var(--text-primary); opacity: 0; pointer-events: none; transition: opacity var(--dur-md) var(--ease-arrive), transform var(--dur-md) var(--ease-arrive); }
+.hq .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+.hq .noscript-note { padding-bottom: var(--space-lg); }
+/* The same boundaries as the field's own counts, read the way tokens/grid.css reads them:
+   landscape six and portrait three below 1081, twelve at 1081 and up whatever the orientation —
+   Mark, 24 September 2026, quoted: "orientation picks 3 vs 6". The wide shapes below therefore
+   match on orientation under 1081 and on width at 1081 and up, so a portrait frame at 1081 or
+   over still gets them; where the two overlap the 1081 block below comes later and still wins.
+   No independent column system either way. */
+@media (orientation: landscape), (min-width: 1081px) {
+  .hq main { padding-top: calc(var(--rs-topbar-h) + var(--space-xl)); row-gap: var(--space-xl); }
+  .hq h1 { font-size: var(--fs-display); line-height: var(--lh-display); }
+  .hq .intro { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  .hq .intro-copy { max-width: 65%; }
+  .hq .edition { text-align: right; flex-shrink: 0; }
+  .hq .featured { padding: var(--space-xl); }
+  .hq .featured h3 { font-size: var(--fs-h1); line-height: var(--lh-h1); }
+  .hq .actions .button { flex: 0 1 auto; }
+  .hq .task-context { padding: var(--space-lg); }
+}
+@media (min-width: 1081px) {
+  .hq .task-context { padding-block: var(--space-lg); }
+  .hq .publishing { flex-direction: row; align-items: flex-start; gap: var(--space-xl); }
+  .hq .publishing-copy { flex: 2; }
+  .hq .publishing-details { border-top: 0; }
+}
+@media (hover: hover) {
+  .hq .button:hover { background: var(--surface-raised); border-color: var(--text-secondary); }
+  .hq .button-primary:hover { background: var(--g88); border-color: var(--g88); }
+  .hq summary:hover, .hq .text-link:hover { color: var(--g88); }
+  .hq .footer-links a:hover { color: var(--text-primary); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hq *, .hq *::before, .hq *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .hq [data-press]:active { transform: none; }
+}
+.hq .clipboard-buffer { position: fixed; inset: 0 auto auto 0; width: var(--space-xs); height: var(--space-xs); opacity: 0; pointer-events: none; }
+
+/* Rendered evidence for the current Flower review, not an alternative master. */
+.hq .alignment-grid { row-gap: var(--space-lg); align-items: start; }
+.hq .alignment-figure { margin: 0; border: var(--hq-hairline) solid var(--surface-border); border-radius: var(--radius-md); overflow: hidden; background: var(--surface-card); }
+.hq .alignment-picture { position: relative; }
+.hq .alignment-picture img { display: block; width: 100%; height: auto; }
+.hq .alignment-picture svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hq .alignment-picture rect { fill: none; stroke: var(--hq-accent); stroke-width: var(--halo-caption); }
+.hq .alignment-figure figcaption { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-lg); }
+.hq #alignment-review { scroll-margin-top: calc(var(--rs-topbar-h) + var(--space-lg)); }
+
+/* Landed archive: completed work folded to rows. The content hierarchy itself
+   is written in notes/hq-content-hierarchy.md; this is its visual treatment.
+   A landed row reads quieter than an active card — hairlines instead of a card
+   surface, body-weight title — and carries no primary action. The row is
+   label above value at three columns (mobile-first; the one line with the
+   status at the right is the wide-count shape — landscape below 1081, and 1081
+   and up whatever the orientation, since the field draws twelve there). */
+.hq .landed-lede { max-width: 62ch; }
+.hq .landed-list { border-top: var(--hq-hairline) solid var(--surface-border); }
+.hq .landed-record { border-bottom: var(--hq-hairline) solid var(--surface-border); }
+.hq .landed-record > summary { gap: var(--space-md); }
+.hq .landed-line { display: flex; align-items: flex-start; flex-wrap: wrap; gap: var(--space-xs) var(--space-md); flex: 1 1 auto; min-width: 0; }
+/* Label above value at three columns: the row's label (the eyebrow) takes its
+   own line, and the value (name and status) wraps beneath it. */
+.hq .landed-line > .eyebrow { flex: 1 0 100%; }
+.hq .landed-line h3 { font-size: var(--fs-body); line-height: var(--lh-body); font-weight: var(--fw-h2); }
+.hq .landed-record .disclosure-body { padding-block: var(--space-sm) var(--space-lg); gap: var(--space-lg); max-width: 90ch; }
+.hq .landed-record .disclosure-body .prompt { white-space: pre-wrap; }
+/* The inline row is the wide-count shape, gated the same way the field picks its count
+   (tokens/grid.css): orientation below 1081, width at 1081 and up. At 768 × 1024 the field
+   draws three while a min-width:721px gate here still drew the six-column shape, so these rows
+   sat inline where the cards beside them stacked. There is no 1081 block restating landed rows,
+   so the width half of the gate carries them instead of being dropped in a portrait frame. */
+@media (orientation: landscape), (min-width: 1081px) {
+  .hq .landed-line { align-items: center; gap: var(--space-sm) var(--space-md); }
+  .hq .landed-line > .eyebrow { flex: 0 1 auto; }
+  .hq .landed-line .status { margin-left: auto; }
+}

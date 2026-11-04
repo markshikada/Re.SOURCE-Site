@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Estate &middot; one front door</title>
+<!-- Tokens and fonts come from the Design System master; values live there, never here. -->
+<link rel="stylesheet" href="../Design System/tokens/fonts.css">
+<link rel="stylesheet" href="../Design System/tokens/base.css">
+<link rel="stylesheet" href="../Design System/tokens/greys.css">
+<link rel="stylesheet" href="../Design System/tokens/typography.css">
+<link rel="stylesheet" href="../Design System/tokens/space.css">
+<style>
+  /* Layout only. Every colour and every type value is a token above. */
+  main{max-width:672px;margin:0 auto;padding:var(--space-lg) var(--space-md) var(--space-2xl)}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-sm);margin-bottom:var(--space-lg)}
+  .wordmark{font-family:var(--font-mono);font-size:var(--fs-caption);line-height:18px;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-dim);margin:0}
+  .wordmark strong{color:var(--text-primary);font-weight:500}
+  #read-age{font-family:var(--font-mono);font-size:var(--fs-caption);line-height:18px;color:var(--text-dim);white-space:nowrap;margin:0}
+
+  section{margin:0 0 var(--space-xl)}
+  h2{font-size:var(--fs-h2);font-weight:600;line-height:var(--lh-h2);margin:0 0 var(--space-sm)}
+  h3.group{font-family:var(--font-mono);font-size:var(--fs-caption);line-height:18px;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-dim);font-weight:400;margin:var(--space-md) 0 var(--space-sm)}
+
+  #answer p{margin:0}
+  #answer-line{font-size:var(--fs-h1);font-weight:700;line-height:var(--lh-h1)}
+  #answer-line .soft{color:var(--text-secondary)}
+  #answer-clause{font-size:var(--fs-body);font-weight:300;line-height:var(--lh-body);color:var(--text-secondary);margin-top:var(--space-sm);max-width:38ch}
+
+  .row{padding:var(--space-xs) 0;margin:0 calc(var(--space-sm) * -1);padding-left:var(--space-sm);padding-right:var(--space-sm);border-radius:var(--radius-sm)}
+  .row + .row{border-top:1px solid var(--surface-border)}
+  .row:hover{background:var(--surface-card)}
+  .row a{display:block;font-size:var(--fs-body);line-height:var(--lh-body);text-decoration:none}
+  .row a:hover .name{text-decoration:underline;text-decoration-color:var(--g48);text-underline-offset:3px}
+  .row .purpose{display:block;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);font-weight:300}
+
+  .rec{display:flex;align-items:flex-start;gap:var(--space-md);padding:var(--space-xs) 0;margin:0 calc(var(--space-sm) * -1)}
+  .rec + .rec{border-top:1px solid var(--surface-border)}
+  .rec .n{font-family:var(--font-mono);font-size:var(--fs-body);font-weight:400;min-width:4ch;text-align:right;line-height:var(--lh-body)}
+  .rec p{margin:0;flex:1;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);font-weight:300;padding-top:6px}
+  .rec a{font-size:inherit}
+
+  .waste-row{padding:var(--space-xs) 0;margin:0 calc(var(--space-sm) * -1);padding-left:var(--space-sm);padding-right:var(--space-sm);border-radius:var(--radius-sm)}
+  .waste-row + .waste-row{border-top:1px solid var(--surface-border)}
+  .waste-row:hover{background:var(--surface-card)}
+  .waste-row .line{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-md)}
+  .waste-row .line strong{font-weight:400;font-size:var(--fs-body);line-height:var(--lh-body)}
+  .waste-row .n{font-family:var(--font-mono);font-size:var(--fs-caption);line-height:18px;color:var(--text-secondary);white-space:nowrap}
+  .waste-row .purpose{display:block;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);font-weight:300}
+  .action{display:block;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:18px;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-dim);margin-top:var(--space-xs)}
+
+  details{margin:var(--space-sm) 0 0}
+  summary{list-style:none;cursor:pointer;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:18px;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-dim);padding:var(--space-xs) 0}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"+";display:inline-block;width:3ch;color:var(--text-dim)}
+  details[open] summary::before{content:"–"}
+  details .row a{font-size:var(--fs-caption);line-height:var(--lh-caption)}
+
+  .prose{margin:0;max-width:58ch;font-size:var(--fs-caption);line-height:var(--lh-body);color:var(--text-secondary);font-weight:300}
+  .prose + .prose{margin-top:var(--space-md)}
+  .prose strong{color:var(--text-primary);font-weight:600}
+  .prose a{font-size:inherit;color:var(--text-primary)}
+
+  #fail{display:none;border:1px solid var(--surface-border);border-radius:var(--radius-sm);padding:var(--space-md);margin-bottom:var(--space-lg)}
+  #fail p{margin:0}
+  #him .prose{font-size:var(--fs-body)}
+  /* The waiting list leads the page: the strongest body weight on it. */
+  #inbox .row a .name{font-weight:400}
+  #inbox h2{margin-bottom:var(--space-xs)}
+  .mono-since{font-family:var(--font-mono);letter-spacing:0.02em;text-transform:uppercase;color:var(--text-dim)}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/estate.html</span>
+</nav>
+<main>
+  <header>
+    <p class="wordmark"><strong>Estate</strong> · front door</p>
+    <p id="read-age"></p>
+  </header>
+
+  <div id="fail"><p></p></div>
+
+  <!-- Waiting for you: read first, answered first. Reads _data/inbox.json,
+       written by its own generator; its absence is handled below, honestly. -->
+  <section id="inbox" hidden></section>
+
+  <section id="answer"></section>
+  <section id="destinations"></section>
+  <section id="records"></section>
+  <section id="waste-section"></section>
+  <section id="what"></section>
+  <section id="him" hidden></section>
+</main>
+
+<script>
+/* Reads only the small summary file. If it is missing, malformed or stale,
+   the page says so in words and never prints a count it did not read. */
+(function () {
+  "use strict";
+  var STALE_MS = 36 * 60 * 60 * 1000; /* past half a day, the reading says its age */
+  var $ = function (id) { return document.getElementById(id); };
+  var scratch = document.createElement("div");
+  function esc(t) { scratch.textContent = t == null ? "" : String(t); return scratch.innerHTML; }
+  function num(n) {
+    return n == null ? null : String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  /* The waiting list reads its own small file, independently of the summary:
+     one cannot be held hostage by the other. */
+  loadInbox();
+
+  fetch("./_data/estate-summary.json", { cache: "no-store" })    .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(function (s) {
+      if (s == null || typeof s !== "object" || s.ok !== true) throw new Error("malformed summary");
+      render(s);
+    })
+    .catch(function (e) { renderFail(e); });
+
+  function ageWords(ms) {
+    var h = Math.round(ms / 3600000);
+    if (h <= 1) return "an hour";
+    if (h < 48) return h + " hours";
+    var d = Math.round(h / 24);
+    return d === 1 ? "a day" : d + " days";
+  }
+
+  function render(s) {
+    var t = s.totals || {}, w = s.waste || {};
+    var stamp = Date.parse(s.stamp || "");
+    var age = isNaN(stamp) ? null : (Date.now() - stamp);
+
+    /* Reading age only. The counts live once, in the answer. */
+    $("read-age").textContent = age == null ? "read without a stamp" : "read " + ageWords(age) + " ago";
+
+    /* ── 1. The answer, said once ── */
+    if (t.current == null || t.destinations == null) { renderFail("incomplete counts"); return; }
+    $("answer").innerHTML =
+      "<p id='answer-line'>" + num(t.current) + " current pages. " +
+        num(t.destinations) + " are places to go. " +
+        "<span class='soft'>The rest are the record</span> of decisions already made, " +
+        "and another version of something already decided.</p>" +
+      "<p id='answer-clause'>The estate tracks " + num(t.tracked) + " pages in all, and " +
+        "the copies behind them are in the waste below.</p>";
+
+    /* ── 2. The destinations ── */
+    renderDestinations(s.destinations || [], s.publishedCurrent || []);
+
+    /* ── 3. The record ── */
+    renderRecords(s.records || {});
+
+    /* ── 4. The waste ── */
+    renderWaste(w);
+
+    /* ── 5. What to do ── */
+    $("what").innerHTML = h2("What to do") +
+      "<p class='prose'><strong>One rule, applied by the generator, not by hand.</strong> " +
+      "A page is a <strong>destination</strong> if it is published and someone goes there, a " +
+      "<strong>record</strong> if it is the settled decision behind one, and " +
+      "<strong>waste</strong> if it is another iteration of a page already in one of those two.</p>" +
+      "<p class='prose'>Most of what sits behind the current pages is not content: it is " +
+      "finished work left on disk when a lane closed. Clearing those lanes is the single " +
+      "biggest waste fix, and it is mechanical.</p>" +
+      "<p class='prose'>This page changes nothing. It is a reading surface: every control that " +
+      "acts on the estate lives somewhere else, and arrives here as a stated recommendation, not a button.</p>";
+
+    /* ── 6. What needs Mark: only a stale reading ── */
+    if (age != null && age > STALE_MS) {
+      var him = $("him");
+      him.hidden = false;
+      him.innerHTML = h2("What needs you") +
+        "<p class='prose'>These numbers were read " + esc(ageWords(age)) + " ago. " +
+        "The next inventory run rewrites them; the page fills in by itself. " +
+        "Nothing here needs your hand before then.</p>";
+    }
+  }
+
+  /* Destinations: curated rows per group, machine-read names and links,
+     everything not named here collapsed under "more". */
+  function renderDestinations(list, moreList) {
+    var work = [], estate = [];
+    list.forEach(function (d) {
+      (d.group === "estate" ? estate : work).push({ name: d.name, line: d.line, href: d.href });
+    });
+    var html = "";
+    html += group("Work", linkRows(work));
+    html += group("Estate", linkRows(estate));
+    html += group("Public site",
+      "<div class='row'><a href='/'><span class='name'>Home page</span></a>" +
+      "<span class='purpose'>Everything the site publishes, starting at the index.</span></div>");
+    html += group("Console",
+      "<div class='row'><span class='name desonly'>Console</span>" +
+      "<span class='purpose'>One place on your Mac. A phone cannot open it, and its pages sit in the record.</span></div>");
+    if (moreList && moreList.length) {
+      html += "<details><summary>More published pages · " + num(moreList.length) + "</summary>" +
+        moreList.slice(0, 80).map(function (d) {
+          return "<div class='row'><a href='" + esc(d.href || "") + "'><span class='name'>" + esc(d.name) + "</span></a></div>";
+        }).join("") + "</details>";
+    }
+    $("destinations").innerHTML = h2("Places worth opening") + html;
+  }
+  function linkRows(rows) {
+    return rows.map(function (d) {
+      return "<div class='row'><a href='" + esc(d.href || "") + "'><span class='name'>" + esc(d.name) + "</span></a>" +
+        "<span class='purpose'>" + esc(d.line) + "</span></div>";
+    }).join("");
+  }
+  function group(title, body) {
+    return "<h3 class='group'>" + esc(title) + "</h3>" + (body || "");
+  }
+
+  /* Records: one line per group, count, link to the feed which lists them. */
+  var RECORD_LINES = {
+    "weeks": "week records: one artefact per settling of a decision, kept as the audit trail",
+    "design-system": "design system records: the settled reasoning behind every master",
+    "console": "console records: the pages behind each working face",
+    "operations": "operations records: how the development floor runs",
+    "personal": "records kept in a private vault, counted only",
+  };
+  function renderRecords(records) {
+    var groups = records.groups || [];
+    var html = groups.map(function (g) {
+      var count = num(g.count);
+      var line = RECORD_LINES[g.group] || "records of decisions already made";
+      return "<div class='rec'><span class='n'>" + count + "</span>" +
+        "<p>" + esc(line) + ". <a href='./feed.html'>Listed on the feed.</a></p></div>";
+    }).join("");
+    $("records").innerHTML = h2("Record") +
+      (html || "<p class='prose'>No record groups were found in the reading.</p>");
+  }
+
+  /* Waste: one line per family, count, what it is, the two-word action. */
+  var FAMILY_WORDS = {
+    "hq": "front doors for the estate, drawn more than once",
+    "index": "index pages of the same estate, several takes",
+    "hq-option-a-v": "alternative front doors, options drafted alongside the decided one",
+    "original": "a kept page carrying its own word original beside itself",
+    "estate-canvas-workspace-v": "the estate canvas, drawn and redrawn before it was retired",
+    "vault-structure-viz": "the vault structure visualised, round after round",
+    "core-audit-viz": "an audit of the core, visualised more than once",
+    "claude-agent-system": "the agent system diagram, redrawn round on round",
+    "claude_ecosystem_overview": "an ecosystem overview, redrawn",
+    "weekly-system-reference": "the weekly system reference, redone",
+    "pipeline-loop": "a pipeline loop diagram, reworked",
+    "arena-pipeline": "an arena pipeline, reworked",
+    "re.word flower v": "the word flower kept in retired versions",
+    "rebuild_engine": "a rebuild of the engine, half a decision",
+    "flower-of-life": "a flower-of-life drawing, superseded",
+    "copywriter-trainer": "the copywriter trainer, older builds beside the live one",
+    "open-people-launch": "an open people launch page, older builds beside the live one",
+  };
+  function familyLine(key) {
+    if (FAMILY_WORDS[key]) return FAMILY_WORDS[key];
+    if (/flower/.test(key)) return "a flower drawing, another take alongside its keeper";
+    if (/walkthrough/.test(key)) return "a walkthrough for a task that has finished";
+    if (/plan|bakeoff|polish|deckscreen|comparison/.test(key)) return "the same work built on several seats, one round per seat";
+    return "another iteration of one thing, page for page";
+  }
+  function renderWaste(w) {
+    var fams = w.families || [];
+    /* The action is one fact and the lane copies are one fact, so each is said
+       once, at the head. Nineteen rows that each repeated them in capitals was
+       the duplication Mark named on an earlier page, on a new one. */
+    var html = "<p class='prose'>Keep one, archive the rest. Every family below is another " +
+      "version of something already decided. " + num(w.laneCopies) +
+      " of the copies behind the current pages are finished lane checkouts, not content.</p>";
+    html += fams.map(function (f) {
+      return "<div class='waste-row'><div class='line'><strong>" + esc(familyLine(f.key)) +
+        "</strong><span class='n'>" + num(f.visible) + " pages</span></div></div>";
+    }).join("");
+    html += "<div class='waste-row'><div class='line'><strong>Finished lane checkouts</strong>" +
+      "<span class='n'>" + num(w.laneCopies) + " pages</span></div>" +
+      "<span class='action'>archive by clearing the lanes</span></div>";
+    $("waste-section").innerHTML = h2("Waste") + html;
+  }
+
+  function h2(text) { return "<h2>" + esc(text) + "</h2>"; }
+
+  /* ── Waiting for you: the top of the page, read before anything else ── */
+  function loadInbox() {
+    fetch("./_data/inbox.json", { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (bin) {
+        if (bin == null || typeof bin !== "object" || !Array.isArray(bin.items)) throw new Error("malformed");
+        var stamp = Date.parse(bin.stamp || "");
+        var age = isNaN(stamp) ? null : Date.now() - stamp;
+        var listable = bin.items.filter(function (it) {
+          return it && typeof it.phrase === "string" && it.phrase.trim() &&
+                 typeof it.href === "string" && it.href.trim();
+        });
+        var box = $("inbox");
+        var html = "";
+        if (listable.length) {
+          html = listable.map(function (it) {
+            return "<div class='row'><a href='" + esc(it.href) + "'><span class='name'>" + esc(it.phrase) + "</span></a>" +
+              (it.detail ? "<span class='purpose'>" + esc(it.detail) + "</span>" : "") +
+              (it.since != null ? "<span class='purpose mono-since'>since " + esc(it.since) + "</span>" : "") +
+              "</div>";
+          }).join("");
+        } else {
+          html = "<p class='prose'>Nothing is waiting on you" +
+            (age != null ? ", as of a reading " + esc(ageWords(age)) + " old" : "") + ".</p>";
+        }
+        box.hidden = false;
+        box.innerHTML = h2("Waiting for you") + html;
+      })
+      .catch(function (e) {
+        /* Missing reading: say so in words, carry the age of the last good one
+           if the previous body of this page kept it. Never a count. */
+        var box = $("inbox");
+        box.hidden = false;
+        box.innerHTML = h2("Waiting for you") +
+          "<p class='prose'>No waiting list was readable. Nothing has written it yet today; " +
+          "when it does, the list fills in here on its own. Nothing is shown rather than something invented.</p>";
+      });
+  }
+
+  function renderFail(why) {
+    var f = $("fail");
+    f.hidden = false;
+    f.style.display = "block";
+    f.querySelector("p").textContent =
+      "Nothing behind this page could be read" +
+      (why ? (" (" + why + ")") : "") +
+      ", so it shows no count rather than a wrong one. The estate's inventory writes a fresh snapshot each day; this page fills in when one lands.";
+    ["answer", "destinations", "records", "waste-section", "what"].forEach(function (id) {
+      var n = $(id); if (n) { n.hidden = true; }
+    });
+    showHim("Open the front door once the estate's daily reading has run; nothing else waits on you.");
+  }
+  function showHim(line) {
+    var him = $("him");
+    him.hidden = false;
+    him.innerHTML = "<h2>What needs you</h2><p class='prose'>" + esc(line) + "</p>";
+  }
+})();
+</script>
+</body>
+</html>

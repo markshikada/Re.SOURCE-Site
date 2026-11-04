@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word card at rest - three directions</title>
+<style>
+/* Values taken as written from Projects/Design System/tokens. */
+:root{
+  /* colours.css - twelve positions at 30 degree steps on a 360 degree wheel */
+  --cl-00-core:transparent;
+  --cl-01-tone:#99DD00;
+  --cl-02-flux:#FFD100;
+  --cl-03-flow:#FFB000;
+  --cl-04-love:#FF7700;
+  --cl-05-bond:#FF5500;
+  --cl-06-fire:#FF0000;
+  --cl-07-path:#E02888;
+  --cl-08-time:#9933CC;
+  --cl-09-meta:#6655FF;
+  --cl-10-form:#2277FF;
+  --cl-11-type:#00BBDD;
+  --cl-12-life:#00D460;
+  --stroke:3px;
+
+  /* greys.css - the ramp */
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+
+  /* space.css - 2:3:6 harmonic on u = 4px */
+  --u:4px;
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:24px;
+  --space-xl:48px;
+  --space-2xl:96px;
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:24px;
+
+  /* typography.css - five sizes, leading whole px on the 6px unit */
+  --u-type:6px;
+  --fs-caption:12px;
+  --fs-body:18px;
+  --fs-h2:24px;
+  --fs-h1:36px;
+  --fs-display:48px;
+  --lh-caption:18px;
+  --lh-body:30px;
+  --lh-h2:36px;
+  --lh-h1:48px;
+  --lh-display:54px;
+  --fw-caption:300;
+  --fw-body:400;
+  --fw-h2:600;
+  --fw-h1:700;
+  --fw-display:800;
+}
+
+*, *::before, *::after{ box-sizing:border-box; }
+html{ background:var(--surface-page); }
+body{
+  margin:0;
+  background:var(--surface-page);
+  color:var(--text-primary);
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.sheet{
+  max-width:1080px;
+  margin:0 auto;
+  padding:var(--space-md);
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-xl);
+}
+
+.band{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-lg);
+  border-top:var(--stroke) solid var(--surface-border);
+  padding-top:var(--space-lg);
+}
+
+.band-label{
+  margin:0;
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-dim);
+  text-transform:uppercase;
+}
+
+.card{
+  width:100%;
+  background:var(--surface-card);
+  border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-lg);
+  padding:var(--space-md);
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-lg);
+}
+.card--d1{ max-width:480px; }
+.card--d2{ max-width:600px; }
+.card--d3{ max-width:600px; }
+
+.word{
+  margin:0;
+  font-size:var(--fs-display);
+  line-height:var(--lh-display);
+  font-weight:var(--fw-display);
+}
+.gloss{
+  margin:0;
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+}
+.reading{
+  margin:0;
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  color:var(--text-secondary);
+}
+.ask{
+  margin:0;
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+}
+.ask--lead{
+  font-size:var(--fs-h1);
+  line-height:var(--lh-h1);
+  font-weight:var(--fw-h1);
+}
+
+.stack{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-md);
+}
+
+.ask-box{
+  background:var(--black);
+  border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-md);
+  padding:var(--space-md);
+}
+.ask-box--lead{
+  border-color:var(--cl-10-form);
+  border-radius:var(--radius-lg);
+}
+
+.stamp{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:var(--space-sm);
+}
+.stamp-label{
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+}
+
+.wheel{
+  display:block;
+  max-width:100%;
+  height:auto;
+}
+.t-index{
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+}
+.t-core{
+  font-size:var(--fs-display);
+  line-height:var(--lh-display);
+  font-weight:var(--fw-display);
+}
+
+/* Direction 1 - the word leads, the wheel is marginalia */
+.d1-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:var(--space-lg);
+}
+
+/* Direction 2 - the wheel leads, the word sits at its core */
+.d2-grid{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:var(--space-lg);
+}
+.d2-col{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-lg);
+}
+
+/* Direction 3 - the ask leads, the rest is the answer beneath it */
+.d3-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--space-lg);
+  flex-wrap:wrap;
+}
+.d3-pair{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-md);
+}
+
+@media (min-width:720px){
+  .sheet{ padding:var(--space-lg); }
+  .card{ padding:var(--space-lg); }
+  .ask-\boxed{ padding:var(--space-lg); }
+  .d2-grid{ flex-direction:row; align-items:center; }
+  .d2-col{ width:auto; flex:1; }
+  .d3-pair{ flex-direction:row; gap:var(--space-lg); }
+  .d3-pair > *{ flex:1; min-width:0; }
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R1-C.html</span>
+</nav>
+<main class="sheet">
+
+  <section class="band">
+    <h2 class="band-label">Direction 1</h2>
+    <article class="card card--d1">
+      <header class="d1-head">
+        <h3 class="word">FORM</h3>
+        <div class="stamp">
+          <svg class="wheel" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Wheel, position 10 marked">
+            <circle cx="48" cy="48" r="40" fill="none" stroke="#333333" stroke-width="3"/>
+            <g stroke="#555555" stroke-width="3">
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(0 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(30 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(60 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(90 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(120 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(150 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(180 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(210 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(240 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(270 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(330 48 48)"/>
+            </g>
+            <line x1="48" y1="4" x2="48" y2="28" stroke="#2277FF" stroke-width="3" transform="rotate(300 48 48)"/>
+          </svg>
+          <span class="stamp-label">10</span>
+        </div>
+      </header>
+      <div class="stack">
+        <p class="gloss">Form is the shape a thing takes when it holds together.</p>
+        <p class="reading">The card reads the shape, the pair and the position, in that order.</p>
+      </div>
+      <div class="ask-box">
+        <p class="ask">What is holding your shape together right now?</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="band">
+    <h2 class="band-label">Direction 2</h2>
+    <article class="card card--d2">
+      <div class="d2-grid">
+        <svg class="wheel" width="240" height="240" viewBox="0 0 240 240" role="img" aria-label="Wheel, position 10 marked at its angle, word FORM at the core">
+          <circle cx="120" cy="120" r="108" fill="none" stroke="#333333" stroke-width="3"/>
+          <g stroke="#555555" stroke-width="3">
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(0 120 120)"/>
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(30 120 120)"/>
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(60 120 120)"/>
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(90 120 120)"/>
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(120 120 120)"/>
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(150 120 120)"/>
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(180 120 120)"/>
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(210 120 120)"/>
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(240 120 120)"/>
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(270 120 120)"/>
+            <line x1="120" y1="12" x2="120" y2="30" transform="rotate(330 120 120)"/>
+          </g>
+          <line x1="120" y1="12" x2="120" y2="60" stroke="#2277FF" stroke-width="3" transform="rotate(300 120 120)"/>
+          <rect x="9" y="54" width="36" height="24" rx="8" fill="#000000" stroke="#2277FF" stroke-width="3"/>
+          <text class="t-index" x="27" y="70" text-anchor="middle" fill="#FFFFFF">10</text>
+          <text class="t-core" x="120" y="136" text-anchor="middle" fill="#FFFFFF">FORM</text>
+        </svg>
+        <div class="d2-col">
+          <div class="stack">
+            <p class="gloss">Form is the shape a thing takes when it holds together.</p>
+            <p class="reading">The card reads the shape, the pair and the position, in that order.</p>
+          </div>
+        </div>
+      </div>
+      <div class="ask-box">
+        <p class="ask">What is holding your shape together right now?</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="band">
+    <h2 class="band-label">Direction 3</h2>
+    <article class="card card--d3">
+      <div class="ask-box ask-box--lead">
+        <p class="ask ask--lead">What is holding your shape together right now?</p>
+      </div>
+      <div class="d3-row">
+        <h3 class="word">FORM</h3>
+        <div class="stamp">
+          <svg class="wheel" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Wheel, position 10 marked">
+            <circle cx="48" cy="48" r="40" fill="none" stroke="#333333" stroke-width="3"/>
+            <g stroke="#555555" stroke-width="3">
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(0 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(30 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(60 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(90 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(120 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(150 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(180 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(210 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(240 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(270 48 48)"/>
+              <line x1="48" y1="8" x2="48" y2="20" transform="rotate(330 48 48)"/>
+            </g>
+            <line x1="48" y1="4" x2="48" y2="28" stroke="#2277FF" stroke-width="3" transform="rotate(300 48 48)"/>
+          </svg>
+          <span class="stamp-label">10</span>
+        </div>
+      </div>
+      <div class="d3-pair">
+        <p class="gloss">Form is the shape a thing takes when it holds together.</p>
+        <p class="reading">The card reads the shape, the pair and the position, in that order.</p>
+      </div>
+    </article>
+  </section>
+
+</main>
+</body>
+</html>

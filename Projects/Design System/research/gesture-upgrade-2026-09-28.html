@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>Flower touch controls · Re.SOURCE</title>
+<style>
+/* Tokens: greyscale and type off Projects/Design System/tokens/. Self contained: system fonts only. */
+:root{
+  --black:#000000;--g06:#0D0D0D;--g12:#1A1A1A;--g24:#333333;--g48:#555555;--g66:#888888;--g88:#CCCCCC;--white:#FFFFFF;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --r-sm:8px;--r-md:12px;--r-lg:24px;
+  --field:1000px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--black);color:var(--white);font:400 18px/30px var(--sans);margin:0;-webkit-font-smoothing:antialiased}
+::selection{background:var(--white);color:var(--black)}
+
+.wrap{max-width:var(--field);margin:0 auto;padding:48px 12px calc(96px + env(safe-area-inset-bottom))}
+@media (min-width:721px){.wrap{padding:72px 24px 96px}}
+@media (min-width:1081px){.wrap{padding:96px 48px 120px}}
+@media (min-width:1081px){.wrap{max-width:calc(var(--field) + 96px)}}
+
+/* Mono caption layer, 12/18, uppercase, 0.02em justified as the metadata dial */
+.mono{font:300 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--g66)}
+
+/* Head */
+.stamp{margin:0;max-width:none;font:300 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--g66)}
+.stamp::before{content:"";display:inline-block;width:8px;height:8px;border:1px solid var(--g88);margin-right:8px;vertical-align:-1px}
+h1{font:700 36px/48px var(--sans);margin:16px 0 0}
+.sub{margin:12px 0 0;font:400 18px/30px var(--sans);color:var(--g66);max-width:66ch}
+
+/* Sections: rhythm from leading, whole numbers only */
+.s{margin-top:64px}
+@media (min-width:721px){.s{margin-top:96px}}
+h2{font:600 24px/36px var(--sans);margin:0 0 20px}
+h2::before{content:"";display:block;width:24px;height:1px;background:var(--g24);margin-bottom:16px}
+p{margin:12px 0 0;max-width:66ch}
+strong{font-weight:600}
+.dim{color:var(--g66)}
+
+/* Cards */
+.card{background:var(--g06);border:1px solid var(--g24);border-radius:var(--r-md);padding:20px}
+.card p{margin:0;max-width:66ch}
+.lead{color:var(--white);max-width:66ch}
+.lead strong{font-weight:600}
+
+/* 1. Three answers: stacked by default, three across only when each holds its measure */
+.answers{margin-top:24px;display:grid;gap:12px}
+@media (min-width:1081px){.answers{grid-template-columns:repeat(3,1fr);gap:24px}}
+
+/* 2. Five hands */
+.hands{margin-top:24px}
+.hand-fig{margin:0}
+@media (min-width:721px){.hand-fig{margin:0 auto}}
+.hand-fig svg{display:block;width:456px;max-width:100%;height:auto;margin:0 auto}
+.pg circle{stroke:var(--g24);stroke-width:1;fill:none}
+.ring{stroke:var(--g66);stroke-width:1;fill:none}
+.orbit{stroke:var(--g48);stroke-width:2;stroke-dasharray:0 10;stroke-linecap:round;fill:none}
+.tri{fill:var(--g48)}
+.corec{fill:#000000;stroke:var(--g88);stroke-width:1}
+.coredot{fill:var(--g66)}
+.pickring{fill:none;stroke:#FFFFFF;stroke-width:1;opacity:0.5}
+.pick{fill:#FFFFFF}
+.cardrx{fill:var(--g06);stroke:var(--g24);stroke-width:1}
+.crow{fill:var(--g24)}
+.crow2{fill:var(--g12)}
+.ftri{fill:var(--g66)}
+.grip{fill:var(--g48)}
+.leadp{stroke:var(--g48);stroke-width:1;fill:none}
+.ldot{fill:var(--g66)}
+.gsq{stroke:var(--g88);stroke-width:1;fill:none}
+.zlab{font-family:var(--mono);font-size:20px;font-weight:600;fill:var(--g88);paint-order:stroke;stroke:#000000;stroke-width:8;stroke-linejoin:round;letter-spacing:0.03em}
+@media (min-width:480px){.zlab{font-size:19px}}
+/* Zone labels hold the 12px floor on phones and stay label scale on desktop. The figure
+   is stationary at 456px once the column allows it (1:1 against the viewBox), so 19 units
+   draw 19px there; the lone scaling case is a shrinking phone column, where 20 units keep
+   the draw above 12px down to 320. Checked on the five-frame pass, 28 September 2026. */
+.hand-rows{margin-top:24px;display:grid;gap:12px}
+.row-card{background:var(--g06);border:1px solid var(--g24);border-radius:var(--r-md);padding:20px}
+.row-card.rule{margin-top:12px}
+.row-name{margin:0;font:600 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--white)}
+.row-part{margin-top:12px}
+.row-part.after{padding-top:12px;border-top:1px solid var(--g12);margin-top:12px}
+.tag{font:300 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--g66)}
+.row-text{margin:4px 0 0;font:400 18px/30px var(--sans);max-width:66ch}
+.today .row-text{color:var(--g66)}
+.after .row-text{color:var(--white)}
+@media (min-width:1081px){
+.hands{display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px;align-items:start}
+.hand-fig{grid-column:1/7}
+.hand-rows{grid-column:7/13;margin-top:0}
+}
+
+/* 3. Numbers, one row */
+.numrow{margin-top:24px;background:var(--g06);border:1px solid var(--g24);border-radius:var(--r-md);padding:16px 20px;
+  font:300 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--g66);max-width:66ch}
+.numrow b{color:var(--white);font-weight:400}
+.numnote{margin:8px 0 0}
+
+/* 4. Standards */
+.stds{margin-top:24px;display:grid;gap:12px}
+@media (min-width:721px){.stds{grid-template-columns:repeat(2,1fr);gap:16px}}
+@media (min-width:1081px){.stds{grid-template-columns:repeat(3,1fr);gap:24px}}
+.std{background:var(--g06);border:1px solid var(--g24);border-radius:var(--r-md);padding:20px;display:flex;flex-direction:column}
+.std p{margin:0;max-width:66ch}
+.src{margin-top:auto;padding-top:12px;border-top:1px solid var(--g12);
+  font:300 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--g66)}
+
+/* 5. Decisions */
+.dec{margin-top:48px}
+.dec-head .kick{margin:0}
+.dec-head h3{font:600 24px/36px var(--sans);margin:8px 0 0}
+.otext{margin:8px 0 0;color:var(--g66)}
+.opts{margin-top:16px;display:grid;gap:12px}
+.opt{background:var(--g06);border:1px solid var(--g24);border-radius:var(--r-md);padding:16px 20px}
+.opt p{margin:0;color:var(--g66);max-width:66ch}
+/* Option head: base case stacks letter above name (below the field's 720) so every
+   option in a list keeps one alignment; the chip sits that row's right on its own slot. */
+.opt-head{display:grid;grid-template-columns:32px minmax(0,1fr);align-items:center;column-gap:10px;row-gap:8px}
+.op-name{font:600 18px/30px var(--sans);color:var(--white);grid-column:1/-1}
+.letter{grid-row:1;grid-column:1;width:32px;height:32px;border:1px solid var(--g24);border-radius:var(--r-sm);
+  display:grid;place-items:center;font:600 12px/18px var(--mono);color:var(--g88)}
+.chip{grid-row:1;grid-column:2;justify-self:end;width:max-content;padding:3px 8px;border-radius:var(--r-sm);background:var(--white);color:var(--black);
+  font:400 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em}
+@media (min-width:721px){
+.opt-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.op-name{grid-column:auto}
+.chip{margin-left:auto;justify-self:auto}
+}
+.rec{border-color:var(--g88);background:var(--g12)}
+@media (min-width:1081px){
+.dec{display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px}
+.dec-head{grid-column:1/6;align-self:start}
+.opts{grid-column:6/13;margin-top:0}
+}
+
+/* 7. Close and footer */
+footer{margin-top:96px;padding-top:24px;border-top:1px solid var(--g24)}
+footer p{max-width:none;margin:0}
+footer p + p{margin-top:4px}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/Design System/research/gesture-upgrade-2026-09-28.html</span>
+</nav>
+<main class="wrap">
+
+<header>
+  <p class="stamp">Updated 28 September 2026 &middot; research pass &middot; unadopted until ruled</p>
+  <h1>Flower touch controls</h1>
+  <p class="sub">Gesture upgrade, proposed from a UX research pass.</p>
+</header>
+
+<section class="s">
+  <h2>Bottom line</h2>
+  <div class="answers">
+    <article class="card"><p class="lead"><strong>Hold a word.</strong> Keep the chain, add a peek. Hold still and the word&rsquo;s card previews without committing; hold and drag and the chain builds. The slow hand does the deliberate things.</p></article>
+    <article class="card"><p class="lead"><strong>Swipe across the centre.</strong> Yes, it flips to the polar pair. Horizontal, either direction, 40px to commit, only with picks held. Double tap on a word loses flip, because on a phone double tap means zoom.</p></article>
+    <article class="card"><p class="lead"><strong>Harmony.</strong> One meaning per start location, in every view and on every device. Two things get fixed: the card&rsquo;s vertical drag means two different things, and two rows of the written gesture law describe a surface that was never built. Schematics holds its camera still on purpose, so that difference is named, not changed.</p></article>
+  </div>
+</section>
+
+<section class="s">
+  <h2>Five hands, today and after</h2>
+  <div class="hands">
+    <figure class="hand-fig">
+      <svg viewBox="0 0 456 346" role="img" aria-label="Simplified Flower of Life mark with five start zones marked: a word petal, the core, the dotted orbit, empty ground, the card">
+      <title>Five start zones on the Flower</title>
+      <!-- six petals, kissing circles at distance r on a ring around the core; drawing carries the viewBox: content spans 41..448 of 456, 30..326 of 346 -->
+      <g class="pg">
+        <circle cx="178" cy="176" r="34"/>
+        <circle cx="161" cy="147" r="34"/>
+        <circle cx="127" cy="147" r="34"/>
+        <circle cx="110" cy="176" r="34"/>
+        <circle cx="127" cy="205" r="34"/>
+        <circle cx="161" cy="205" r="34"/>
+      </g>
+      <circle class="ring" cx="144" cy="176" r="68"/>
+      <!-- dotted orbit, the rotate hand; outward pair marks rotation on its crown points -->
+      <circle class="orbit" cx="144" cy="176" r="91"/>
+      <polygon class="tri" points="41,176 53,171 53,181"/>
+      <polygon class="tri" points="247,176 235,171 235,181"/>
+      <!-- the core -->
+      <circle class="corec" cx="144" cy="176" r="13"/>
+      <circle class="coredot" cx="144" cy="176" r="2.5"/>
+      <!-- held pick on a petal position -->
+      <circle class="pickring" cx="161" cy="147" r="10"/>
+      <circle class="pick" cx="161" cy="147" r="5"/>
+      <!-- the card, a start location on its own surface; inward pair marks flip, grip marks the sheet drag -->
+      <rect class="cardrx" x="352" y="116" width="64" height="138" rx="12"/>
+      <rect class="crow" x="368" y="126" width="32" height="7" rx="3.5"/>
+      <rect class="crow2" x="368" y="138" width="22" height="7" rx="3.5"/>
+      <polygon class="ftri" points="368,178 368,190 374,184"/>
+      <polygon class="ftri" points="400,178 400,190 394,184"/>
+      <rect class="grip" x="374" y="224" width="20" height="2" rx="1"/>
+      <rect class="grip" x="374" y="229" width="20" height="2" rx="1"/>
+      <rect class="grip" x="374" y="234" width="20" height="2" rx="1"/>
+      <!-- leaders -->
+      <path class="leadp" d="M161,115 L272,30"/>
+      <path class="leadp" d="M133,165 L104,46"/>
+      <circle class="ldot" cx="133" cy="165" r="3"/>
+      <path class="leadp" d="M80,242 L80,296"/>
+      <circle class="ldot" cx="80" cy="242" r="3"/>
+      <path class="leadp" d="M250,322 L250,306"/>
+      <rect class="gsq" x="246" y="298" width="8" height="8"/>
+      <!-- zone names -->
+      <g class="zlab">
+        <text x="104" y="36" text-anchor="end">CORE</text>
+        <text x="312" y="36">A WORD</text>
+        <text x="80" y="322" text-anchor="middle">ORBIT</text>
+        <text x="250" y="322" text-anchor="middle">EMPTY GROUND</text>
+        <text x="384" y="108">CARD</text>
+      </g>
+    </svg>
+  </figure>
+    <div class="hand-rows">
+      <article class="row-card">
+        <h3 class="row-name">A Word</h3>
+        <div class="row-part today"><p class="tag mono">Today</p><p class="row-text">Tap picks. Hold arms the chain, then drag adds across words.</p></div>
+        <div class="row-part after"><p class="tag mono">After</p><p class="row-text">Tap picks. Hold previews the card. Hold and drag builds the chain. Drag alone scans and highlights.</p></div>
+      </article>
+      <article class="row-card">
+        <h3 class="row-name">Core</h3>
+        <div class="row-part today"><p class="tag mono">Today</p><p class="row-text">Tap opens the front set&rsquo;s card.</p></div>
+        <div class="row-part after"><p class="tag mono">After</p><p class="row-text">Tap opens the set card. Swipe across it flips the held picks.</p></div>
+      </article>
+      <article class="row-card">
+        <h3 class="row-name">Orbit</h3>
+        <div class="row-part today"><p class="tag mono">Today</p><p class="row-text">Drag rotates the camera; each release settles on its step.</p></div>
+        <div class="row-part after"><p class="tag mono">After</p><p class="row-text">Unchanged.</p></div>
+      </article>
+      <article class="row-card">
+        <h3 class="row-name">Empty Ground</h3>
+        <div class="row-part today"><p class="tag mono">Today</p><p class="row-text">Tap clears the picks; double tap returns the camera.</p></div>
+        <div class="row-part after"><p class="tag mono">After</p><p class="row-text">Unchanged.</p></div>
+      </article>
+      <article class="row-card">
+        <h3 class="row-name">Card</h3>
+        <div class="row-part today"><p class="tag mono">Today</p><p class="row-text">Horizontal swipe flips to the polar pair; vertical drives the sheet, or clears on a wide frame.</p></div>
+        <div class="row-part after"><p class="tag mono">After</p><p class="row-text">Swipe sideways flips to the polar pair. Vertical drives the sheet on a phone.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="s">
+  <h2>Numbers, one row</h2>
+  <p class="numrow"><b>10px</b> still = a tap &middot; <b>40px</b> = a committed swipe &middot; <b>400ms</b> = a hold &middot; <b>30&deg;</b> = the rotation step &middot; <b>1.2</b> = rest zoom</p>
+  <p class="numnote mono">One table, every view.</p>
+</section>
+
+<section class="s">
+  <h2>What the standards say</h2>
+  <div class="stds">
+    <article class="std"><p>A long press reveals more, and a long press that moves becomes a drag.</p><p class="src">Apple HIG &middot; Gestures &middot; Material 3 Gestures</p></article>
+    <article class="std"><p>Double tap zooms. Using it for a unique action is exactly what the platform guidance warns against.</p><p class="src">Apple HIG &middot; Gestures</p></article>
+    <article class="std"><p>A horizontal swipe moves between two peer states, committed by crossing a threshold.</p><p class="src">Material Design &middot; Gesture patterns</p></article>
+    <article class="std"><p>Every complex gesture needs a plainer route beside it: pinch needs zoom keys, a swipe needs a button.</p><p class="src">W3C WCAG 2.2 2.5.1 &middot; TestParty &middot; Centre for Excellence in Universal Design</p></article>
+    <article class="std"><p>A gesture with no signifier and no undo is the classic failure of touch design.</p><p class="src">Don Norman &middot; Gestural Interfaces: A Step Backwards in Usability</p></article>
+    <article class="std"><p>One-to-one tracking, and the touch&rsquo;s speed carries into what happens next.</p><p class="src">Apple &middot; Designing Fluid Interfaces &middot; WWDC18</p></article>
+  </div>
+</section>
+
+<section class="s">
+  <h2>Your call, four decisions</h2>
+
+  <article class="dec">
+    <header class="dec-head">
+      <p class="kick mono">Decision 1 of 4</p>
+      <h3>What hold serves</h3>
+      <p class="otext">One hold between tap and drag, on the twelve word petals: which half owns the still press.</p>
+    </header>
+    <div class="opts">
+      <article class="opt rec">
+        <div class="opt-head"><span class="letter">A</span><span class="op-name">Peek, then chain</span><span class="chip">Recommended</span></div>
+        <p>Hold still previews the card without committing; hold and drag builds the chain. One start, the movement decides.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">B</span><span class="op-name">Its own menu</span></div>
+        <p>Hold opens a small action sheet: hold, flip, undo, open card.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">C</span><span class="op-name">Keep as is</span></div>
+        <p>Hold only arms the chain, and the reference sheet finally says so.</p>
+      </article>
+    </div>
+  </article>
+
+  <article class="dec">
+    <header class="dec-head">
+      <p class="kick mono">Decision 2 of 4</p>
+      <h3>Swipe across the centre</h3>
+      <p class="otext">Polarity flip reaches the artwork by one more route, and a route that collides with zoom retires.</p>
+    </header>
+    <div class="opts">
+      <article class="opt rec">
+        <div class="opt-head"><span class="letter">A</span><span class="op-name">Flip, and retire double tap</span><span class="chip">Recommended</span></div>
+        <p>Across the core, either direction, only with picks held. One route in, one route out: flip keeps four routes and none of them is double tap.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">B</span><span class="op-name">Flip and keep double tap too</span></div>
+        <p>More routes, and the one that collides with zoom stays.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">C</span><span class="op-name">No, flip stays where it is</span></div>
+        <p>Everything it has today: the F key, the card swipe, the Flip button and double tap.</p>
+      </article>
+    </div>
+  </article>
+
+  <article class="dec">
+    <header class="dec-head">
+      <p class="kick mono">Decision 3 of 4</p>
+      <h3>Harmony across devices and views</h3>
+      <p class="otext">Same hand, same meaning, in every view and on every device; the two breaks sit behind this one.</p>
+    </header>
+    <div class="opts">
+      <article class="opt rec">
+        <div class="opt-head"><span class="letter">A</span><span class="op-name">One hand law, and fix the two breaks</span><span class="chip">Recommended</span></div>
+        <p>Same start, same meaning everywhere. The card&rsquo;s vertical drag keeps one meaning per frame and both readings go in the gesture sheet. The two stale rows of the written law get rewritten to what exists.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">B</span><span class="op-name">Document the differences only</span></div>
+        <p>The gesture sheet names them; behaviour stays as it is.</p>
+      </article>
+    </div>
+  </article>
+
+  <article class="dec">
+    <header class="dec-head">
+      <p class="kick mono">Decision 4 of 4</p>
+      <h3>Where touch Undo sits</h3>
+      <p class="otext">One open question from lane 23, folded in here so it is decided in one place.</p>
+    </header>
+    <div class="opts">
+      <article class="opt rec">
+        <div class="opt-head"><span class="letter">A</span><span class="op-name">The card sheet&rsquo;s head</span><span class="chip">Recommended</span></div>
+        <p>Beside the Flip button, appearing exactly when undo has something to take back.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">B</span><span class="op-name">The first-visit hint&rsquo;s slot</span></div>
+        <p>Once a pick is held, the hint line becomes a small Undo.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">C</span><span class="op-name">Beside the Sets legend</span></div>
+        <p>A small control under the legend row.</p>
+      </article>
+    </div>
+  </article>
+</section>
+
+<section class="s">
+  <h2>Once you rule</h2>
+  <p><strong>Your word lands in</strong> the master&rsquo;s gesture tables and Keys sheet, the Design System law, and the tests that lock them. One lane.</p>
+  <p>Needs your hands afterwards: how 40px feels across the core on a real phone, and whether the peek earns its place beside a card that already answers a tap.</p>
+</section>
+
+<footer>
+  <p class="mono">Unadopted material &middot; Projects/Design System/research/ &middot; 28 September 2026 &middot; Re.SOURCE</p>
+  <p class="mono">Study: gesture-upgrade-2026-09-28.md holds the evidence and the costs &middot; this page is its decision surface</p>
+</footer>
+
+</main>
+</body>
+</html>

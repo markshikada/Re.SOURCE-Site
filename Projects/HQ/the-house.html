@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="The House as a climb: altitude on the vertical axis, time on the horizontal. A deck that starts in the cellar and ascends.">
+<title>The House · the climb · Re.SOURCE</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../Design System/styles.css">
+<style>
+/* The House, redrawn as a climb.
+   The earlier version scrolled top-down like a document. This one refuses that:
+   the page never scrolls, y is ALTITUDE (cellar at the bottom), x is TIME, and
+   the reading position is driven by the wheel rather than by the scrollbar. You
+   start in the cellar because that is where the work starts, and you climb.
+
+   Two axes, honestly drawn. The horizontal one is broken: six months of quiet,
+   then thirteen days that built the whole estate. A broken axis is the honest
+   shape here, and it is marked as broken rather than hidden by stretching. */
+
+:root{
+  --cellar:var(--cl-08-time);
+  --stairs:var(--cl-03-flow);
+  --floor1:var(--cl-12-life);
+  --edge:var(--space-lg);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--surface-page)}
+body{
+  color:var(--text-primary);font-family:var(--font-sans);
+  font-size:var(--fs-body);line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:1ms!important;animation-duration:1ms!important}}
+
+/* ── The stage: fixed, full-bleed, never scrolled by the browser ───────────── */
+.stage{position:fixed;inset:0;display:flex;flex-direction:column}
+
+/* ── The plot: the whole ascent, always visible, the reading position marked ── */
+.plot-wrap{position:relative;flex:1 1 auto;min-height:0;padding:var(--space-md) var(--edge) 0;display:flex}
+.plot{width:100%;height:100%;display:block;overflow:visible}
+
+/* Bands: one per floor, drawn as an outline, never a fill behind text. */
+.band{fill:none;stroke:var(--g24);stroke-width:1}
+.band-lit{stroke-width:3}
+.band-name{font-family:var(--font-mono);font-size:13px;fill:var(--text-secondary)}
+.band-sub{font-family:var(--font-mono);font-size:11px;fill:var(--text-dim)}
+
+/* Depth. The house was four flat rectangles, which is a diagram of a building
+   rather than a building. The four bands sit in one perspective stage and each
+   is pushed back in z by its rank, so the cellar is nearest and the register
+   furthest. transform-box is set because an SVG rect otherwise ignores the
+   translate in some engines.
+
+   The motion is Mark's own grammar: the 360ms ease-arrive from
+   tokens/motion.css, with the system's reduced-motion collapse applying here. */
+.plot-stage{transform-style:preserve-3d;perspective:1500px;perspective-origin:50% 40%}
+.band-depth{transform-box:fill-box;transform-origin:50% 100%;
+  transition:transform var(--dur-lg) var(--ease-arrive),opacity var(--dur-lg) var(--ease-arrive)}
+.band-depth[data-depth="1"]{transform:translateZ(0)}
+.band-depth[data-depth="2"]{transform:translateZ(30px)}
+.band-depth[data-depth="3"]{transform:translateZ(60px)}
+.band-depth[data-depth="4"]{transform:translateZ(90px)}
+/* The floor you are on comes forward; the ones already climbed sit back. One
+   attribute, written from paint(), so the depth follows the climb. */
+.band-depth[data-live="1"]{transform:translateZ(112px)}
+.band-depth[data-spent="1"]{opacity:0.6}
+@media (prefers-reduced-motion:reduce){
+  .band-depth{transition:transform 1ms!important,opacity 1ms!important}
+}
+body[data-reduce-motion] .band-depth{transition:transform 1ms!important,opacity 1ms!important}
+.ground{stroke:var(--g48);stroke-width:1;stroke-dasharray:2 5}
+.ground-label{font-family:var(--font-mono);font-size:11px;fill:var(--g48)}
+.axis-line{stroke:var(--g24);stroke-width:1}
+.tick{font-family:var(--font-mono);font-size:11px;fill:var(--text-dim)}
+.tick-rule{stroke:var(--g24);stroke-width:1}
+/* The break. Drawn as the double-slash it is, so the gap is never mistaken for data. */
+.break-mark{stroke:var(--g66);stroke-width:2;fill:none}
+.break-label{font-family:var(--font-mono);font-size:11px;fill:var(--text-secondary)}
+
+/* The climb itself: the dashed line is the whole history, the solid one is how
+   far you have climbed. Same path, two strokes, one geometry. */
+.climb-ghost{stroke:var(--g48);stroke-width:2;fill:none;stroke-dasharray:1 6;stroke-linecap:round}
+.climb-done{stroke:var(--white);stroke-width:3;fill:none;stroke-linecap:round}
+/* The head must read as "you are here", distinct from the line it rides on. */
+.climb-head{fill:var(--black);stroke:var(--white);stroke-width:3}
+
+.station{fill:none;stroke-width:3;cursor:pointer}
+.station[data-past="1"]{fill:var(--g06)}
+.station-now{fill:none;stroke:var(--white);stroke-width:3}
+.station-label{font-family:var(--font-mono);font-size:11px;fill:var(--text-dim);pointer-events:none;
+  paint-order:stroke fill;stroke:var(--black);stroke-width:3px;stroke-linejoin:round}
+.station-label[data-past="1"]{fill:var(--text-secondary)}
+/* Two stations can share a day and a floor, so their labels take different
+   heights inside the band rather than fighting for the same line. */
+.station-label[data-lift="1"]{fill:var(--text-secondary)}
+
+/* ── The reading card: what is at this point on the climb ──────────────────── */
+.readout{
+  flex:0 0 auto;border-top:var(--stroke) solid var(--surface-border);
+  padding:var(--space-md) var(--edge) var(--space-lg);
+  display:grid;gap:var(--space-md) var(--space-xl);
+  grid-template-columns:5fr 7fr;align-items:start;
+}
+/* The plot is wide and short, so on a phone it would letterbox into a stamp with
+   dead space above it. The frame keeps its aspect but the plot grows to fill the
+   height it is given, which means a taller drawing on a narrow frame rather than
+   a small one floating in white. */
+@media (max-width:720px){
+  .stage{gap:0}
+  .plot-wrap{padding:var(--space-sm) var(--space-md) 0}
+  .plot{width:100%;height:auto;max-height:100%}
+  .readout{padding:var(--space-md) var(--page-pad,var(--space-md)) var(--space-lg)}
+}
+@media (min-width:1081px){.readout{padding-block:var(--space-lg)}}
+.readout h1{margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);max-width:24ch}
+.readout h2{margin:0 0 var(--space-xs);font-size:var(--fs-caption);line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);color:var(--text-secondary);text-transform:uppercase}
+.readout p{margin:0;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);max-width:56ch;text-wrap:pretty}
+.readout p strong{color:var(--text-primary);font-weight:var(--fw-h2)}
+.readout ul{margin:var(--space-sm) 0 0;padding-inline-start:var(--space-lg);display:flex;flex-direction:column;gap:var(--space-xs)}
+.readout li{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary)}
+.readout li::marker{color:var(--g48)}
+.readout .q{margin-top:var(--space-md);font-family:var(--font-mono);font-size:var(--fs-caption);
+  line-height:var(--lh-caption);color:var(--text-dim)}
+.chip{display:inline-flex;align-items:center;gap:var(--space-sm);min-height:28px;
+  padding:0 var(--space-md);border:var(--stroke) solid var(--t,var(--g48));border-radius:var(--radius-sm);
+  font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--t,var(--g66))}
+
+/* ── Controls ─────────────────────────────────────────────────────────────── */
+.controls{
+  position:fixed;inset-block-end:var(--space-lg);inset-inline-end:var(--edge);
+  display:flex;gap:var(--space-sm);z-index:5;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:var(--space-sm);min-height:44px;padding:0 var(--space-lg);
+  border:var(--stroke) solid var(--g48);border-radius:var(--radius-sm);
+  background:var(--surface-page);color:var(--text-primary);cursor:pointer;
+  font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);
+  transition:border-color var(--dur-sm) var(--ease-place),background-color var(--dur-sm) var(--ease-place),transform var(--dur-sm) var(--ease-place);
+}
+.btn:hover{border-color:var(--white);background:var(--g12)}
+.btn:active{transform:scale(0.97)}
+.btn:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+@media (max-width:1080px){.readout{grid-template-columns:1fr}}
+@media (max-width:720px){.controls{inset-block-end:var(--space-md)}}
+
+/* ── The scrollbar that is not a scrollbar ────────────────────────────────── */
+.climb-meter{
+  position:fixed;inset-inline-start:var(--edge);inset-block:0;width:26px;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-md);
+}
+.meter-track{position:relative;width:3px;height:min(56vh,460px);background:var(--g24);border-radius:2px}
+.meter-fill{position:absolute;inset-inline:0;bottom:0;background:var(--white);border-radius:2px;
+  box-shadow:0 0 0 1px var(--white);
+  transition:height var(--dur-md) var(--ease-place)}
+.meter-stop{position:absolute;inset-inline-start:50%;translate:-50% 0;background:none;border:0;
+  padding:6px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.meter-stop::before{content:"";width:9px;height:9px;border-radius:50%;
+  border:2px solid var(--g24);background:var(--g24);transition:all var(--dur-sm) var(--ease-place)}
+.meter-stop[data-on="1"]::before{border-color:var(--t,var(--white));background:transparent;width:13px;height:13px}
+.meter-stop:hover::before{border-color:var(--g66)}
+.meter-stop:focus-visible{outline:2px solid var(--g88);outline-offset:2px;border-radius:var(--radius-sm)}
+.meter-label{position:absolute;inset-inline-start:26px;white-space:nowrap;font-family:var(--font-mono);
+  font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);pointer-events:none}
+@media (max-width:1080px){.climb-meter{display:none}}
+
+/* Lane tracks: one per repo, drawn under the ground line. Each mark is a day
+   with landings and its height is that day's count, so four lanes working at
+   once read as four rows of density rather than one flat line. */
+.lane-track{stroke:var(--g24);stroke-width:1}
+.lane-fill{fill:var(--g48)}
+.lane-name{font-family:var(--font-mono);font-size:11px;fill:var(--text-dim)}
+.lane-count{font-family:var(--font-mono);font-size:11px;fill:var(--text-secondary)}
+@media (max-width:1080px){.lane-name{display:none}}
+
+/* The age of the lane reading, and whether it is live or baked. Placed in the
+   readout rather than the plot, because it is a fact about the page, not a mark
+   on the climb. data-live="0" is styled distinctly: a baked reading and a
+   fetched one must never look alike, or the reader cannot tell which they have. */
+.reading-age{grid-column:1/-1;margin:0;font-family:var(--font-mono);
+  font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-dim)}
+.reading-age[data-freshness="stale"]{color:var(--cl-06-fire)}
+.reading-age[data-live="0"]::after{content:" · baked into the page, not fetched live"}
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<script id="house-lanes" type="application/json">{
+  "stamp": "2026-10-05T18:10:25.194Z",
+  "since": "2026-09-01",
+  "dayZero": "2026-04-01",
+  "tracks": [
+    {
+      "key": "resource",
+      "label": "Re.SOURCE",
+      "lane": "the-house",
+      "kind": "design",
+      "home": "Projects/HQ/the-house.html",
+      "total": 439,
+      "first": 154,
+      "last": 188,
+      "missing": false,
+      "byDay": {
+        "154": 1,
+        "159": 1,
+        "161": 6,
+        "166": 8,
+        "172": 26,
+        "173": 28,
+        "174": 31,
+        "175": 25,
+        "176": 108,
+        "177": 35,
+        "178": 1,
+        "179": 11,
+        "180": 10,
+        "181": 32,
+        "182": 9,
+        "183": 18,
+        "184": 35,
+        "185": 3,
+        "186": 47,
+        "187": 2,
+        "188": 2
+      },
+      "landings": [
+        {
+          "sha": "e806560",
+          "day": 188,
+          "pr": "233",
+          "subject": "Restore the page stamps that the trigger commit reverted (#233)"
+        },
+        {
+          "sha": "10282e9",
+          "day": 188,
+          "pr": "232",
+          "subject": "Stamp every baked reading with its age, and schedule the collector (#232)"
+        },
+        {
+          "sha": "d13da0d",
+          "day": 187,
+          "pr": null,
+          "subject": "Screenshot triage: 603 tracked images, 77 MB, measured and sorted"
+        },
+        {
+          "sha": "9ee1df3",
+          "day": 187,
+          "pr": "231",
+          "subject": "Refresh the snapshot: the live page was listing 118 artefacts that no longer exist (#231)"
+        },
+        {
+          "sha": "976d9e7",
+          "day": 186,
+          "pr": "230",
+          "subject": "The artefact card is a band, not a block, on both estate pages (#230)"
+        },
+        {
+          "sha": "c6a35a2",
+          "day": 186,
+          "pr": "229",
+          "subject": "feat(ds): recover the Zed console page and make it reachable (#229)"
+        },
+        {
+          "sha": "c47efc0",
+          "day": 186,
+          "pr": null,
+          "subject": "Publish the seat measurement and flood page so it opens on a phone"
+        },
+        {
+          "sha": "347b8a0",
+          "day": 186,
+          "pr": "227",
+          "subject": "fix(hq): the harness scorecard was on main and reachable from nothing (#227)"
+        },
+        {
+          "sha": "71f73a8",
+          "day": 186,
+          "pr": "226",
+          "subject": "Put the review countdown on the page, not only in the summary file (#226)"
+        },
+        {
+          "sha": "58d24d6",
+          "day": 186,
+          "pr": "225",
+          "subject": "Correct the review reading, and hoist the countdown out of the branch that dropped it (#225)"
+        },
+        {
+          "sha": "532ea32",
+          "day": 186,
+          "pr": "224",
+          "subject": "Report a countdown to the review line, not a zero that means nothing (#224)"
+        },
+        {
+          "sha": "b589423",
+          "day": 186,
+          "pr": "223",
+          "subject": "Deliver the 45-day review list the policy promises (#223)"
+        },
+        {
+          "sha": "8f1472b",
+          "day": 186,
+          "pr": "222",
+          "subject": "Map the publish chain's four links, and who is allowed to block on each (#222)"
+        },
+        {
+          "sha": "55c5f73",
+          "day": 186,
+          "pr": "221",
+          "subject": "Ask the site whether it serves what the manifest names (#221)"
+        },
+        {
+          "sha": "3cf9850",
+          "day": 186,
+          "pr": "220",
+          "subject": "Name the publish gap in the check, as a report and not a failure (#220)"
+        },
+        {
+          "sha": "78e4d21",
+          "day": 186,
+          "pr": "219",
+          "subject": "Make a silently-stale page fail the check, not wait to be noticed (#219)"
+        },
+        {
+          "sha": "53216e7",
+          "day": 186,
+          "pr": "218",
+          "subject": "State the card fork as three answers, not two (#218)"
+        },
+        {
+          "sha": "d09bf6c",
+          "day": 186,
+          "pr": "217",
+          "subject": "Cover the last manifest folder, and add the audit that finds it (#217)"
+        },
+        {
+          "sha": "94bfa01",
+          "day": 186,
+          "pr": "216",
+          "subject": "Record the three rulings 0efead0 bundled, so they are one tap each (#216)"
+        },
+        {
+          "sha": "5c9bf32",
+          "day": 186,
+          "pr": "215",
+          "subject": "Land the harness scorecard page on its own (#215)"
+        },
+        {
+          "sha": "6bd01ae",
+          "day": 186,
+          "pr": "214",
+          "subject": "Let a studio-only change republish the site (#214)"
+        },
+        {
+          "sha": "b3c4c3e",
+          "day": 186,
+          "pr": "213",
+          "subject": "Write the worktree rule into the generator that it bit (#213)"
+        },
+        {
+          "sha": "f7ade58",
+          "day": 186,
+          "pr": "212",
+          "subject": "Read the estate in its own checkout, not in a worktree (#212)"
+        },
+        {
+          "sha": "9e8e770",
+          "day": 186,
+          "pr": "210",
+          "subject": "Report a page that nothing in the repo names (#210)"
+        },
+        {
+          "sha": "336cce7",
+          "day": 186,
+          "pr": "209",
+          "subject": "Close the publish gap in ten lines rather than thirty-one decisions (#209)"
+        },
+        {
+          "sha": "006b742",
+          "day": 186,
+          "pr": "207",
+          "subject": "Publish the sweep page so the tap is reachable from a phone (#207)"
+        },
+        {
+          "sha": "588da24",
+          "day": 186,
+          "pr": "206",
+          "subject": "docs(hq): record how to re-run the console sweep's own reading (#206)"
+        },
+        {
+          "sha": "23e3e97",
+          "day": 186,
+          "pr": "204",
+          "subject": "Prepare the archive sweep, and separate duplication from archivable (#204)"
+        },
+        {
+          "sha": "60ab626",
+          "day": 186,
+          "pr": "202",
+          "subject": "docs(hq): one line per console page - front door, widget or retire (#202)"
+        },
+        {
+          "sha": "b561b36",
+          "day": 186,
+          "pr": "201",
+          "subject": "feat(hq): the tip catalogue gets a card on the front door (#201)"
+        },
+        {
+          "sha": "5ffc4bd",
+          "day": 186,
+          "pr": "200",
+          "subject": "Republish the snapshot so the live figure is true by rule (#200)"
+        },
+        {
+          "sha": "85ad173",
+          "day": 186,
+          "pr": "199",
+          "subject": "Stop the unpublished chip wearing the published colour (#199)"
+        },
+        {
+          "sha": "fca1e68",
+          "day": 186,
+          "pr": "198",
+          "subject": "Show the unpublished chip only where publishing is a live option (#198)"
+        },
+        {
+          "sha": "3182502",
+          "day": 186,
+          "pr": "197",
+          "subject": "Make the canonical seat a rule, not a directory order (#197)"
+        },
+        {
+          "sha": "ea1cabe",
+          "day": 186,
+          "pr": "196",
+          "subject": "Refresh the consolidation numbers against the current estate (#196)"
+        },
+        {
+          "sha": "2252a87",
+          "day": 186,
+          "pr": "195",
+          "subject": "fix(hq): the tips dial must not scroll the page on arrival (#195)"
+        },
+        {
+          "sha": "4920289",
+          "day": 186,
+          "pr": "194",
+          "subject": "Publish the feed, and stop hq-data overwriting the feed snapshot (#194)"
+        },
+        {
+          "sha": "37b9d1e",
+          "day": 186,
+          "pr": "193",
+          "subject": "feat(hq): the tip catalogue as a dial, and the two tips never seen (#193)"
+        },
+        {
+          "sha": "7fd7361",
+          "day": 186,
+          "pr": "192",
+          "subject": "The estate feed as a page, and a check that counts the pile (#192)"
+        },
+        {
+          "sha": "782ae81",
+          "day": 186,
+          "pr": "191",
+          "subject": "fix(publish): a refreshed snapshot must actually republish the site (#191)"
+        }
+      ]
+    },
+    {
+      "key": "command",
+      "label": "COMMAND",
+      "lane": "estate-integrity",
+      "kind": "law",
+      "home": "Operations/Development/lanes-live.md",
+      "total": 216,
+      "first": 159,
+      "last": 188,
+      "missing": false,
+      "byDay": {
+        "159": 2,
+        "161": 1,
+        "173": 1,
+        "175": 2,
+        "176": 21,
+        "177": 3,
+        "178": 4,
+        "181": 4,
+        "182": 4,
+        "183": 15,
+        "184": 56,
+        "185": 23,
+        "186": 68,
+        "187": 6,
+        "188": 6
+      },
+      "landings": [
+        {
+          "sha": "4a75a2b",
+          "day": 188,
+          "pr": "116",
+          "subject": "Register the snapshot tick in the estate automation registry (#116)"
+        },
+        {
+          "sha": "0ebbb57",
+          "day": 188,
+          "pr": "115",
+          "subject": "Ops: correct the vault partial count — 60 of 253 verified, and one rejected (#115)"
+        },
+        {
+          "sha": "e6c183c",
+          "day": 188,
+          "pr": "114",
+          "subject": "Ops: name the owning app and the rebuildable verdict for all 79 GB of Application Support (#114)"
+        },
+        {
+          "sha": "45ae874",
+          "day": 188,
+          "pr": "113",
+          "subject": "Ops: the reclaim total is 99.67 GB, not 99.39 — recomputed from the measured rows (#113)"
+        },
+        {
+          "sha": "62b46fd",
+          "day": 188,
+          "pr": "112",
+          "subject": "Ops: the storage audit, and the 65 GB duplicate that only a cross-drive hash could find (#112)"
+        },
+        {
+          "sha": "c75709d",
+          "day": 188,
+          "pr": "111",
+          "subject": "Correct the runtime reaper's scope and interval in the automation authority (#111)"
+        },
+        {
+          "sha": "ffc43f4",
+          "day": 187,
+          "pr": "110",
+          "subject": "Register the runtime reaper in the automation authority (#110)"
+        },
+        {
+          "sha": "d7efe64",
+          "day": 187,
+          "pr": null,
+          "subject": "Ops: register the branch reaper, the lane guard and the lander"
+        },
+        {
+          "sha": "4cf5e3f",
+          "day": 187,
+          "pr": null,
+          "subject": "Ops: the quota alerts are dead history, and quota is clean"
+        },
+        {
+          "sha": "1a37f67",
+          "day": 187,
+          "pr": null,
+          "subject": "Regenerate HANDOVER.md so the RAM findings reach the next session"
+        },
+        {
+          "sha": "5eb4fba",
+          "day": 187,
+          "pr": null,
+          "subject": "Ops: correct the disk claim, and retune the watch off swap"
+        },
+        {
+          "sha": "2a55d75",
+          "day": 187,
+          "pr": null,
+          "subject": "Ops: RAM watch, and the finding that there is no dead memory to reclaim"
+        },
+        {
+          "sha": "6ce33b8",
+          "day": 186,
+          "pr": "104",
+          "subject": "docs(ops): the estate HTML inventory summary, generated and re-runnable (#104)"
+        },
+        {
+          "sha": "130191f",
+          "day": 186,
+          "pr": null,
+          "subject": "Record what landed, the published page, and two process faults of my own"
+        },
+        {
+          "sha": "397dc10",
+          "day": 186,
+          "pr": "99",
+          "subject": "Replace the ancestry rule with reachability from a live host (#99)"
+        },
+        {
+          "sha": "7819224",
+          "day": 186,
+          "pr": null,
+          "subject": "The page for Mark, so both answers open on a phone"
+        },
+        {
+          "sha": "8ca3710",
+          "day": 186,
+          "pr": null,
+          "subject": "Handover carrying the closed LongCat question and the unused batching fix"
+        },
+        {
+          "sha": "c9e8ed2",
+          "day": 186,
+          "pr": null,
+          "subject": "The mail flood as a number, and the guard that stops the probe measuring the machine"
+        },
+        {
+          "sha": "e5eafe5",
+          "day": 186,
+          "pr": null,
+          "subject": "LongCat under concurrent load, the measurement nobody had taken"
+        },
+        {
+          "sha": "0b720d2",
+          "day": 186,
+          "pr": null,
+          "subject": "Regenerate the handover after the audit shift and the push guard fix"
+        },
+        {
+          "sha": "9a9622f",
+          "day": 186,
+          "pr": null,
+          "subject": "The push guard is tracked 644, so it never ran and never will in a fresh clone"
+        },
+        {
+          "sha": "5a182cb",
+          "day": 186,
+          "pr": null,
+          "subject": "Ops audit: the probe measured its own footprint, and the starter prompt now names the vault root"
+        },
+        {
+          "sha": "1859923",
+          "day": 186,
+          "pr": "94",
+          "subject": "Regenerate the handover after the sweep guard and the push guard (#94)"
+        },
+        {
+          "sha": "5b616f0",
+          "day": 186,
+          "pr": "93",
+          "subject": "Record the direct push to main and the gap in the guard that let it through (#93)"
+        },
+        {
+          "sha": "3e3d59f",
+          "day": 186,
+          "pr": "92",
+          "subject": "A pre-push hook, because the post-commit one cannot refuse anything (#92)"
+        },
+        {
+          "sha": "02c4ec6",
+          "day": 186,
+          "pr": null,
+          "subject": "Regenerate the handover after the sweep guard session"
+        },
+        {
+          "sha": "6da9549",
+          "day": 186,
+          "pr": "91",
+          "subject": "The sweeper's guard would have killed 40 live sessions, and it is now proved (#91)"
+        },
+        {
+          "sha": "7eed19e",
+          "day": 186,
+          "pr": "90",
+          "subject": "Intel ruled on LongCat, and corrected the finding the ruling rested on (#90)"
+        },
+        {
+          "sha": "886a787",
+          "day": 186,
+          "pr": "89",
+          "subject": "Carry the notification ruling into the handover (#89)"
+        },
+        {
+          "sha": "e9a9a91",
+          "day": 186,
+          "pr": "88",
+          "subject": "Mark's ruling on the feed, and the split made live (#88)"
+        },
+        {
+          "sha": "732b7e4",
+          "day": 186,
+          "pr": "87",
+          "subject": "Correct the LongCat line, whose own check reported the wrong number (#87)"
+        },
+        {
+          "sha": "7624ae0",
+          "day": 186,
+          "pr": "86",
+          "subject": "Make the guard fail shut, because it failed open (#86)"
+        },
+        {
+          "sha": "283f238",
+          "day": 186,
+          "pr": "85",
+          "subject": "The sweeper's guard is unsafe, and here is the proof (#85)"
+        },
+        {
+          "sha": "ad1573f",
+          "day": 186,
+          "pr": "84",
+          "subject": "Carry the notification routing work into the handover (#84)"
+        },
+        {
+          "sha": "3c1b6a3",
+          "day": 186,
+          "pr": "83",
+          "subject": "Close of day: RAM reclaimed, and what the next session needs (#83)"
+        },
+        {
+          "sha": "082454e",
+          "day": 186,
+          "pr": "82",
+          "subject": "A closing reading: 15.25 GB free, every check clear (#82)"
+        },
+        {
+          "sha": "24b0ded",
+          "day": 186,
+          "pr": "81",
+          "subject": "End every session close with a paste-ready prompt for the next session in the lane (#81)"
+        },
+        {
+          "sha": "df39bf0",
+          "day": 186,
+          "pr": "80",
+          "subject": "One channel per producer, and messages that render (#80)"
+        },
+        {
+          "sha": "eb98f28",
+          "day": 186,
+          "pr": "79",
+          "subject": "Make the sweeper refuse to run until its safety rule is proven (#79)"
+        },
+        {
+          "sha": "204dcb6",
+          "day": 186,
+          "pr": "78",
+          "subject": "The starter prompt led with a settled line, and now leads with the live one (#78)"
+        }
+      ]
+    },
+    {
+      "key": "console",
+      "label": "omO console",
+      "lane": "console-surfaces",
+      "kind": "surface",
+      "home": "index.html",
+      "total": 87,
+      "first": 185,
+      "last": 188,
+      "missing": false,
+      "byDay": {
+        "185": 30,
+        "186": 25,
+        "187": 29,
+        "188": 3
+      },
+      "landings": [
+        {
+          "sha": "a7a890e",
+          "day": 188,
+          "pr": "30",
+          "subject": "Regenerate the surface inventory so the hourly gate stops failing on stale drift (#30)"
+        },
+        {
+          "sha": "3b8318b",
+          "day": 188,
+          "pr": null,
+          "subject": "Read the effort ladder from the policy instead of a six-rung copy, so max can be placed"
+        },
+        {
+          "sha": "18ce729",
+          "day": 188,
+          "pr": null,
+          "subject": "Restrict the runtime reaper to session runtimes by role, not by exclusion Mark raised the right objection on 5 October 2"
+        },
+        {
+          "sha": "144fc04",
+          "day": 187,
+          "pr": null,
+          "subject": "Correct the plan page's machine section against what was measured"
+        },
+        {
+          "sha": "9f8d10e",
+          "day": 187,
+          "pr": null,
+          "subject": "Reap orphaned agent runtimes, which is where 15 GB was going"
+        },
+        {
+          "sha": "e6bcc21",
+          "day": 187,
+          "pr": null,
+          "subject": "A red check that predates the change is not this change's fault"
+        },
+        {
+          "sha": "d8fa50d",
+          "day": 187,
+          "pr": null,
+          "subject": "Add the plan face: the income strategy, rendered"
+        },
+        {
+          "sha": "3e9f10e",
+          "day": 187,
+          "pr": null,
+          "subject": "The loop wrote sixteen captures six times a day and kept every one"
+        },
+        {
+          "sha": "21137ec",
+          "day": 187,
+          "pr": null,
+          "subject": "The push gate now refuses a push that touches another live lane's file"
+        },
+        {
+          "sha": "bb99214",
+          "day": 187,
+          "pr": null,
+          "subject": "Three pieces of housekeeping, so branch management stops asking Mark anything"
+        },
+        {
+          "sha": "8a4abb5",
+          "day": 187,
+          "pr": null,
+          "subject": "A file, so the branch has something to land"
+        },
+        {
+          "sha": "8a4ee4a",
+          "day": 187,
+          "pr": null,
+          "subject": "Desk header overflowed on a phone; rail separator adjacency made explicit"
+        },
+        {
+          "sha": "40a8924",
+          "day": 187,
+          "pr": null,
+          "subject": "Night QA: the probe stops reporting design decisions as defects"
+        },
+        {
+          "sha": "942e4c0",
+          "day": 187,
+          "pr": null,
+          "subject": "Night QA: two findings withdrawn, because they were read off a screenshot"
+        },
+        {
+          "sha": "5ffcf15",
+          "day": 187,
+          "pr": null,
+          "subject": "Night QA round 1, read off the captures rather than the probe."
+        },
+        {
+          "sha": "0b2b9be",
+          "day": 187,
+          "pr": null,
+          "subject": "Duplicates were a sliding window, not a rendering fault"
+        },
+        {
+          "sha": "52830e3",
+          "day": 187,
+          "pr": null,
+          "subject": "Spend and stalls were real, live, and only visible on a page Mark had to go and open"
+        },
+        {
+          "sha": "ed91369",
+          "day": 187,
+          "pr": null,
+          "subject": "The strip said \"stalls unreadable\" because it asked for numbers nobody published"
+        },
+        {
+          "sha": "f8252a5",
+          "day": 187,
+          "pr": null,
+          "subject": "A second device could read the conversation but could not stop it"
+        },
+        {
+          "sha": "eaa4a29",
+          "day": 187,
+          "pr": null,
+          "subject": "The feed said how many calls a burst made and never which seat made them"
+        },
+        {
+          "sha": "01c219f",
+          "day": 187,
+          "pr": null,
+          "subject": "A check name and its state are one fact, so they wrap as one"
+        },
+        {
+          "sha": "9b0eab5",
+          "day": 187,
+          "pr": null,
+          "subject": "The Map was drawing black boxes on white paper and hiding its own labels"
+        },
+        {
+          "sha": "8429e33",
+          "day": 187,
+          "pr": null,
+          "subject": "A lane name leads in ink, and the accent is reserved for live"
+        },
+        {
+          "sha": "c20c0fe",
+          "day": 187,
+          "pr": null,
+          "subject": "Light mode has to reach the faces the vault paints"
+        },
+        {
+          "sha": "79e708e",
+          "day": 187,
+          "pr": null,
+          "subject": "Six faces were carrying their own palette, so the newest declaration won"
+        },
+        {
+          "sha": "4037e94",
+          "day": 187,
+          "pr": null,
+          "subject": "One palette, two themes, and the pane follows the console"
+        },
+        {
+          "sha": "14e5d3c",
+          "day": 187,
+          "pr": null,
+          "subject": "The gate flagged the chat for quoting itself"
+        },
+        {
+          "sha": "5b4afab",
+          "day": 187,
+          "pr": null,
+          "subject": "The chat now reads its history from the transcript, and shows the work"
+        },
+        {
+          "sha": "ad03639",
+          "day": 187,
+          "pr": null,
+          "subject": "One conversation on every device, and it opens while the agent is busy"
+        },
+        {
+          "sha": "a2c66a5",
+          "day": 187,
+          "pr": null,
+          "subject": "The console opened a fresh husk instead of the conversation you are already in"
+        },
+        {
+          "sha": "f193664",
+          "day": 187,
+          "pr": null,
+          "subject": "The bridge initialised with no capabilities, so the chat could never read a conversation"
+        },
+        {
+          "sha": "d0122c4",
+          "day": 187,
+          "pr": null,
+          "subject": "The chat died on a handshake its own liveness probe had already spent"
+        },
+        {
+          "sha": "b8c9032",
+          "day": 186,
+          "pr": "28",
+          "subject": "chore: ignore the generated estate inventory JSON (#28)"
+        },
+        {
+          "sha": "bd185b5",
+          "day": 186,
+          "pr": null,
+          "subject": "fix(console): a bridge that stopped answering is silent, not ready"
+        },
+        {
+          "sha": "346b291",
+          "day": 186,
+          "pr": "27",
+          "subject": "Answer /hq/pages from the snapshot, not from a hand-kept list (#27)"
+        },
+        {
+          "sha": "5c91e2d",
+          "day": 186,
+          "pr": null,
+          "subject": "docs: the harness-craft lane's night close-out"
+        },
+        {
+          "sha": "c941ae3",
+          "day": 186,
+          "pr": null,
+          "subject": "The estate's HTML artefacts, counted and dated in one pass"
+        },
+        {
+          "sha": "571a8de",
+          "day": 186,
+          "pr": "26",
+          "subject": "Half the tapestry had no name, and the reason was a squash merge (#26)"
+        },
+        {
+          "sha": "7523ea1",
+          "day": 186,
+          "pr": "24",
+          "subject": "Read the four repositories at once, and hold the reading warm (#24)"
+        },
+        {
+          "sha": "ad8786f",
+          "day": 186,
+          "pr": "25",
+          "subject": "The Night Log passed every check in the gate while its live panel was empty (#25)"
+        }
+      ]
+    },
+    {
+      "key": "personal",
+      "label": "PERSONAL",
+      "lane": "personal",
+      "kind": "law",
+      "home": null,
+      "total": 58,
+      "first": 159,
+      "last": 188,
+      "missing": false,
+      "byDay": {
+        "159": 1,
+        "161": 4,
+        "173": 1,
+        "175": 2,
+        "176": 7,
+        "177": 3,
+        "180": 1,
+        "181": 11,
+        "182": 1,
+        "183": 9,
+        "184": 11,
+        "185": 1,
+        "186": 1,
+        "188": 5
+      },
+      "landings": [
+        {
+          "sha": "6d15fad",
+          "day": 188,
+          "pr": "14",
+          "subject": "Correct the vault rule that said the businesses live only here (#14)"
+        },
+        {
+          "sha": "e5bb5cb",
+          "day": 188,
+          "pr": "13",
+          "subject": "Move the commercial half of this vault into WORK (#13)"
+        },
+        {
+          "sha": "c1c5e00",
+          "day": 188,
+          "pr": "12",
+          "subject": "Refresh the handover prompt to the end of 5 October (#12)"
+        },
+        {
+          "sha": "abd706c",
+          "day": 188,
+          "pr": "11",
+          "subject": "Move other people contact data out of this vault, and redact a login id (#11)"
+        },
+        {
+          "sha": "7196907",
+          "day": 188,
+          "pr": "10",
+          "subject": "Add the life and estate strategy audit (#10)"
+        },
+        {
+          "sha": "74e1c31",
+          "day": 186,
+          "pr": "9",
+          "subject": "docs: refresh the PERSONAL handover from this morning run (#9)"
+        },
+        {
+          "sha": "c632054",
+          "day": 185,
+          "pr": null,
+          "subject": "VAULT: an agent never posts in Mark's name outside the vaults, and never signs with his identity"
+        },
+        {
+          "sha": "4539ce3",
+          "day": 184,
+          "pr": null,
+          "subject": "Redact the console pair password from this note"
+        },
+        {
+          "sha": "16b55ed",
+          "day": 184,
+          "pr": null,
+          "subject": "HANDOVER.md: first generated handover, the one-writer rule now in force"
+        },
+        {
+          "sha": "d158e5e",
+          "day": 184,
+          "pr": null,
+          "subject": "VAULT.md: the handover is generated, never typed"
+        },
+        {
+          "sha": "b5bf8fa",
+          "day": 184,
+          "pr": null,
+          "subject": "VAULT.md: main is reached by pull request, at Mark's 3 October ruling"
+        },
+        {
+          "sha": "2aeb788",
+          "day": 184,
+          "pr": "3",
+          "subject": "Name the COMMAND vault in the Arena pointer, so it resolves (#3)"
+        },
+        {
+          "sha": "313797d",
+          "day": 184,
+          "pr": "2",
+          "subject": "Correct the Arena pointer, which named a file that has never existed (#2)"
+        },
+        {
+          "sha": "2fbf806",
+          "day": 184,
+          "pr": null,
+          "subject": "Measured fix: an absolute core.hooksPath, or the hook is silent in every lane"
+        },
+        {
+          "sha": "80137d9",
+          "day": 184,
+          "pr": null,
+          "subject": "Add the auto-push hook: this vault had no core.hooksPath, so it never auto-pushed"
+        },
+        {
+          "sha": "007fb07",
+          "day": 184,
+          "pr": null,
+          "subject": "Free seats only: strike the credit-reset restore instruction"
+        },
+        {
+          "sha": "c1e2f71",
+          "day": 184,
+          "pr": null,
+          "subject": "chore: ignore _Trash, the vault's own discard pile"
+        },
+        {
+          "sha": "14056dc",
+          "day": 184,
+          "pr": null,
+          "subject": "chore(config): hold every pin on the free rung until the 4 October reset"
+        },
+        {
+          "sha": "c2c4880",
+          "day": 183,
+          "pr": null,
+          "subject": "Close out the Smiler watcher session: confirmed under 3 seconds end to end"
+        },
+        {
+          "sha": "946329c",
+          "day": 183,
+          "pr": null,
+          "subject": "Add --test-shoot: a fake alert through the real path, and record the timing"
+        },
+        {
+          "sha": "53db370",
+          "day": 183,
+          "pr": null,
+          "subject": "Record the armed watcher and the published phone setup page"
+        },
+        {
+          "sha": "5f47709",
+          "day": 183,
+          "pr": null,
+          "subject": "Smiler alerts phone setup page: the two switches on Mark's phone"
+        },
+        {
+          "sha": "bbd6926",
+          "day": 183,
+          "pr": null,
+          "subject": "Seating: worker lanes to qwen3.8-flash with the default driver"
+        },
+        {
+          "sha": "9780f94",
+          "day": 183,
+          "pr": null,
+          "subject": "smiler-watch: notification hints and error-message trim, found uncommitted in the tree and preserved"
+        },
+        {
+          "sha": "c6535cc",
+          "day": 183,
+          "pr": null,
+          "subject": "Seating: default driver to qwen3.8-flash on Mark's ruling 30 September"
+        },
+        {
+          "sha": "9b96566",
+          "day": 183,
+          "pr": null,
+          "subject": "Fix the setup command: stop security prompting, show stars for the password"
+        },
+        {
+          "sha": "13cf0fe",
+          "day": 183,
+          "pr": null,
+          "subject": "Smiler booking watcher: 2s poll of the Available pool with an ntfy ping"
+        },
+        {
+          "sha": "b5bf820",
+          "day": 182,
+          "pr": null,
+          "subject": "Design seats on qwen3.8-max in this vault"
+        },
+        {
+          "sha": "e105dd7",
+          "day": 181,
+          "pr": null,
+          "subject": "Record the settled password ruling, short while the phone link stays Tailscale-only"
+        },
+        {
+          "sha": "19ed03a",
+          "day": 181,
+          "pr": null,
+          "subject": "Phone access confirmed working on device, close out the mobile setup record"
+        },
+        {
+          "sha": "10bd6b4",
+          "day": 181,
+          "pr": null,
+          "subject": "Route phone OpenCode via Desktop service so chats load agents and models, carryover updated"
+        },
+        {
+          "sha": "0ea95ae",
+          "day": 181,
+          "pr": null,
+          "subject": "Phone access finished on the private Tailscale route, public entrance closed, carryover settled"
+        },
+        {
+          "sha": "5fdb743",
+          "day": 181,
+          "pr": null,
+          "subject": "Redact leaked password from the mobile setup note, rotate the server password, record the Tailscale decision"
+        },
+        {
+          "sha": "f9bc86b",
+          "day": 181,
+          "pr": null,
+          "subject": "Phone connection completed: wrong-credentials cause traced in the app source, password rotated, handover refreshed"
+        },
+        {
+          "sha": "b4fa13b",
+          "day": 181,
+          "pr": null,
+          "subject": "OpenCode Mobile Android setup: dedicated server plus Cloudflared quick tunnel, session note and handover"
+        },
+        {
+          "sha": "5d33906",
+          "day": 181,
+          "pr": null,
+          "subject": "Publish CI failure fixed: @PERSONAL carry-forward in publish.sh, diagnosis in session note"
+        },
+        {
+          "sha": "8d91f5c",
+          "day": 181,
+          "pr": null,
+          "subject": "Publish the IQON schematic for Mark's phone: fonts carried inside, live link in note/handover/carryover"
+        },
+        {
+          "sha": "f4136c6",
+          "day": 181,
+          "pr": null,
+          "subject": "Move playwright session cache to Trash"
+        },
+        {
+          "sha": "efdc811",
+          "day": 181,
+          "pr": null,
+          "subject": "IQON schematic traced from factory drawing; 68-90-90-68 setup mode; build-verification rule in VAULT"
+        },
+        {
+          "sha": "57af4d8",
+          "day": 180,
+          "pr": null,
+          "subject": "W40: IQON CL Decode Pro 90 live schematic build; week folder opened"
+        }
+      ]
+    }
+  ]
+}</script>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/the-house.html</span>
+</nav>
+
+<div class="stage">
+
+  <div class="plot-wrap">
+    <svg class="plot" id="plot" viewBox="0 0 1000 752" preserveAspectRatio="xMidYMid meet"
+         role="img" aria-labelledby="plot-title plot-desc">
+      <title id="plot-title">The climb from the cellar to the main floor, April to 3 October 2026</title>
+      <desc id="plot-desc">Vertical axis is altitude, with the cellar at the bottom and the register at the
+        top. Horizontal axis is time, with a marked break: six months of quiet, then the thirteen days that
+        built the estate. A line climbs from the cellar in April to the main floor in late September, where
+        it stays, and the last thirteen days fill in every other floor.</desc>
+
+      <g id="bands" class="plot-stage"></g>
+      <g id="ground"></g>
+      <g id="axes"></g>
+      <path id="ghost" class="climb-ghost"></path>
+      <path id="done" class="climb-done"></path>
+      <g id="lanes" aria-hidden="true"></g>
+      <g id="stations"></g>
+      <circle id="head" class="climb-head" r="7"></circle>
+    </svg>
+  </div>
+
+  <div class="readout" id="readout">
+    <div>
+      <h2 id="r-floor">The Cellar</h2>
+      <h1 id="r-title">The cellar, where the work starts</h1>
+      <p class="q" id="r-when">April 2026 · one machine, one window, no floor above it</p>
+    </div>
+    <div id="r-body">
+      <p id="r-lede">Everything the estate runs on was true from the first month. It just had no
+        addresses, so none of it could be talked about without naming a model.</p>
+    </div>
+    <p class="reading-age" id="reading-age" data-live="0" data-freshness="unknown">lane reading · age unknown</p>
+  </div>
+
+</div>
+
+<nav class="climb-meter" aria-label="Climb by floor">
+  <div class="meter-track" id="track">
+    <div class="meter-fill" id="fill"></div>
+    <button class="meter-stop" data-stop="cellar" data-on="0" style="bottom:0%" aria-label="The Cellar"><span class="meter-label">Cellar</span></button>
+    <button class="meter-stop" data-stop="stairs" data-on="0" style="bottom:38%" aria-label="The Stairs"><span class="meter-label">Stairs</span></button>
+    <button class="meter-stop" data-stop="floor" data-on="0" style="bottom:68%" aria-label="Main Floor"><span class="meter-label">Main Floor</span></button>
+    <button class="meter-stop" data-stop="register" data-on="0" style="bottom:100%" aria-label="The Register"><span class="meter-label">Register</span></button>
+  </div>
+</nav>
+
+<div class="controls">
+  <button class="btn" id="down" type="button">Climb up</button>
+  <button class="btn" id="up" type="button">Back down</button>
+</div>
+
+<p class="sr" id="live" aria-live="polite"></p>
+
+<script src="snapshot-age.js"></script>
+<script>
+'use strict';
+/* The climb. The browser's scroll is never used: html and body are overflow:hidden,
+   so the wheel, the arrow keys, the buttons and the floor stops all drive one number,
+   `at`, which is an index into the station list. Everything visible is derived from
+   it. That is what makes bottom-up possible at all, because a document that scrolls
+   top-down cannot be made to start at its end without the reader's scrollbar lying
+   about where they are.
+
+   The one honest compromise, stated rather than hidden: a wheel is a wheel. The
+   listener takes its sign from the reader's intent (wheel down means "further along
+   the climb") and the page answers by moving the reading head UP. A reader who wants
+   the opposite can invert it in one press, and the toggle is on screen rather than
+   buried, because a control nobody can find is not a control. */
+(function () {
+  var FLOORS = {
+    register: { name: 'The Register', sub: 'what outlives the session', y: 106, tone: 'var(--g66)' },
+    floor:    { name: 'The Main Floor', sub: 'the door, the hall, the windows', y: 236, tone: 'var(--cl-12-life)' },
+    stairs:   { name: 'The Stairs', sub: 'category, lane, agent, riser, landing', y: 366, tone: 'var(--cl-03-flow)' },
+    cellar:   { name: 'The Cellar', sub: 'the machine, running unwatched', y: 491, tone: 'var(--cl-08-time)' }
+  };
+  var BANDS = { register: [46, 166], floor: [176, 296], stairs: [306, 426], cellar: [436, 546] };
+
+  /* The stations, in climb order. `d` is days since 1 April 2026; `dupe` nudges two
+     stations that share a day and a floor apart, so neither is hidden behind the other. */
+  var STATIONS = [
+    { d: 15, floor: 'cellar', dupe: -14, when: 'April 2026',
+      title: 'The cellar, where the work starts',
+      lede: 'Everything the estate runs on was true from the first month. It just had no addresses, so none of it could be talked about without naming a model.',
+      points: ['Claude Code on the desk, months before omO', 'One machine, one window, no floor above it'] },
+
+    { d: 172, floor: 'cellar', when: '20 September',
+      title: 'Three vaults, and one that answers',
+      lede: 'The operations authority, the design language and the sensitive life hub. Cloud repos are the source of truth, and the local copy is never assumed to be live.',
+      points: ['COMMAND, Re.SOURCE and PERSONAL', 'Mark never touches git and is never asked to'] },
+
+    { d: 175, floor: 'cellar', when: '23 September',
+      title: 'The reply law, written once',
+      lede: 'The rule that a reply is a decision surface: a finding, a change or an ask, and nothing else. UK English, no em dashes, decisions as buttons rather than typed answers.',
+      points: ['Voice became the primary input', 'Long prose is the wrong container'] },
+
+    { d: 180, floor: 'floor', when: '28 September',
+      title: 'The front door, and the first window',
+      lede: 'The estate hub goes up, and the published site exists so a page can be opened from a phone. This is the first time the work becomes reachable rather than merely done.',
+      points: ['Estate HQ groups Now, Studios, Pages, Vaults, Tools', 'A link that cannot be clicked is a link that does not exist'] },
+
+    { d: 182, floor: 'floor', when: '30 September',
+      title: 'omO takes the engine seat',
+      lede: 'The harness becomes the thing that runs the work, and the console becomes the face, because the terminal was called clunky and the phone had to work.',
+      points: ['Model names stop appearing in replies', 'The lane becomes the word Mark addresses'] },
+
+    { d: 183, floor: 'stairs', dupe: -18, when: '1 October, morning',
+      title: 'Three lanes get their names',
+      lede: 'INTEL watches and reports, OPS executes, DESIGN makes. Each owns a kind of judgement, and each has one thing it never does, which is what makes it trustworthy.',
+      points: ['Say the lane, never the model name', 'A lane re-pins itself from its own evidence'] },
+
+    { d: 183, floor: 'stairs', dupe: 18, when: '1 October, later',
+      title: 'The gears and the board',
+      lede: 'Credit gear becomes four named states in one file with a date it must be revisited by, so a temporary gear can never quietly become permanent. lane-watch reads the pins and probes every seat.',
+      points: ['open, conserve, bridge, pause', 'Every number on the board comes from the checker that owns it'] },
+
+    { d: 184, floor: 'floor', when: '2 October',
+      title: 'The terminal, called clunky three times',
+      lede: 'The complaint lands as a specification: fewer terminals, each visibly labelled with its lane, converging on one place. The console is the destination, not another terminal.',
+      points: ['The estate view is the answer to "what state is my estate in"', 'A slow route must never block the chat face'] },
+
+    { d: 184, floor: 'register', when: '2 October, later',
+      title: 'Memory becomes a repository',
+      lede: 'Facts, preferences, decisions and corrections committed as they emerge. The lesson that generalises: derive a checker\'s rules from the written law, not from the data it inspects.',
+      points: ['Markdown is the channel between agents, not a deliverable', 'A wrong before the change is a finding to report, never a test to edit green'] },
+
+    { d: 185, floor: 'floor', dupe: -22, when: '3 October',
+      title: 'The House is drawn',
+      lede: 'Four floors, one front door, and every term given an address. The flat map had the right words and no shape, which is why it read as dead.',
+      points: ['Cellar, Stairs, Main Floor, Register', 'Each floor answers one question: does this need you?'] },
+
+    { d: 185, floor: 'register', dupe: -8, when: '3 October, later',
+      title: 'The handoff block becomes a law',
+      lede: 'Ask, wanted, For you, Now, Next. The shape of a reply that changes phase, so a result is never a wall of prose and never a bare claim.',
+      points: ['A riser is the smallest thing that can be proven', 'Inconclusive is not approval'] },
+
+    { d: 185, floor: 'stairs', dupe: 22, when: '3 October, same day',
+      title: 'The stairs get their own words',
+      lede: 'A riser is one step up the flight: a delegated child, a report, a delivered artefact. A landing is where only Mark can decide. Both coined here, and both checked against 948 files before adoption.',
+      points: ['L1 / L2 / L3 cut: a second numbering scheme beside one that exists', 'The fallback for landing is decision point'] },
+
+    { d: 185, floor: 'floor', dupe: 22, when: '3 October, same day',
+      title: 'Every thread names its lane',
+      lede: 'identity, lane, objective. A thread called "build the deck" while it is publishing the deck sends the next reader to the wrong phase, so the title is live rather than stamped.',
+      points: ['The Sessions list becomes the lane board', 'A number decays where a name does not'] },
+
+    { d: 185, floor: 'register', dupe: 22, when: '3 October, same day',
+      title: 'The climb, plotted',
+      lede: 'This graph. Altitude on the vertical, time on the horizontal, and the reading head starting at the bottom because that is where the work starts.',
+      points: ['Six months of quiet, then thirteen days', 'The break in the axis is the finding, and it is marked as a break'] }
+  ];
+
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function el(n, a) { var e = document.createElementNS(SVGNS, n); for (var k in a) if (a[k] != null) e.setAttribute(k, a[k]); return e; }
+  function $(id) { return document.getElementById(id); }
+
+  /* The broken time axis. Segment A is 1 Apr to 30 Sep; segment B is 1 to 3 Oct.
+     Drawn as two stretches with a marked break, because a single linear axis puts
+     thirteen of fourteen stations in the last four pixels. */
+  var A_END = 182, A0 = 150, A1 = 690, B0 = 740, B1 = 960, B_SPAN = 3;
+  function X(d) { return d <= A_END ? A0 + (d / A_END) * (A1 - A0) : B0 + ((d - A_END - 1) / B_SPAN) * (B1 - B0); }
+  STATIONS.forEach(function (s) { s.x = X(s.d) + (s.dupe || 0); });
+
+  var bands = $('bands'), ground = $('ground'), axes = $('axes'), stationsG = $('stations');
+
+  /* Depth rank: the cellar is nearest, the register furthest, so the house
+     recedes upward the way a building does. */
+  var DEPTH = { cellar: 1, stairs: 2, floor: 3, register: 4 };
+  var bandKeys = ['register', 'floor', 'stairs', 'cellar'];
+  var bandDepths = [];
+
+  bandKeys.forEach(function (key) {
+    var b = BANDS[key], f = FLOORS[key];
+    var rect = el('rect', { class: 'band band-depth', x: 118, y: b[0], width: 872, height: b[1] - b[0], rx: 8, style: 'stroke:' + f.tone });
+    rect.setAttribute('data-depth', DEPTH[key]);
+    bands.appendChild(rect);
+    bandDepths.push(rect);
+    var nm = el('text', { class: 'band-name', x: 130, y: b[0] + 20 });
+    nm.textContent = f.name; bands.appendChild(nm);
+    var sb = el('text', { class: 'band-sub', x: 130, y: b[0] + 36 });
+    sb.textContent = f.sub; bands.appendChild(sb);
+  });
+
+  ground.appendChild(el('line', { class: 'ground', x1: 118, y1: BANDS.cellar[0], x2: 990, y2: BANDS.cellar[0] }));
+  var gl = el('text', { class: 'ground-label', x: 124, y: BANDS.cellar[0] - 6 });
+  gl.textContent = 'ground'; ground.appendChild(gl);
+
+  /* y axis ticks: the four floors, named once, at their own altitude. */
+  axes.appendChild(el('line', { class: 'axis-line', x1: 118, y1: 40, x2: 118, y2: 560 }));
+  axes.appendChild(el('line', { class: 'axis-line', x1: 118, y1: 560, x2: 990, y2: 560 }));
+  [['Apr', 0], ['May', 30], ['Jun', 61], ['Jul', 91], ['Aug', 122], ['Sep', 153]].forEach(function (t) {
+    var x = X(t[1]);
+    axes.appendChild(el('line', { class: 'tick-rule', x1: x, y1: 560, x2: x, y2: 566 }));
+    var tx = el('text', { class: 'tick', x: x, y: 580, 'text-anchor': 'middle' });
+    tx.textContent = t[0]; axes.appendChild(tx);
+  });
+  [['1 Oct', 183], ['2 Oct', 184], ['3 Oct', 185]].forEach(function (t) {
+    var x = X(t[1]);
+    axes.appendChild(el('line', { class: 'tick-rule', x1: x, y1: 560, x2: x, y2: 566 }));
+    var tx = el('text', { class: 'tick', x: x, y: 580, 'text-anchor': 'middle' });
+    tx.textContent = t[0]; axes.appendChild(tx);
+  });
+  /* the break itself */
+  axes.appendChild(el('line', { class: 'break-mark', x1: 700, y1: 552, x2: 712, y2: 568 }));
+  axes.appendChild(el('line', { class: 'break-mark', x1: 716, y1: 552, x2: 728, y2: 568 }));
+  var bl = el('text', { class: 'break-label', x: 714, y: 552, 'text-anchor': 'middle' });
+  bl.textContent = '13 days, expanded'; axes.appendChild(bl);
+
+  var ay = el('text', { class: 'break-label', x: 40, y: 300, transform: 'rotate(-90 40 300)', 'text-anchor': 'middle' });
+  ay.textContent = 'altitude'; axes.appendChild(ay);
+  var ax = el('text', { class: 'break-label', x: 940, y: 588, 'text-anchor': 'end' });
+  ax.textContent = 'time'; axes.appendChild(ax);
+
+  var d = STATIONS.map(function (s, i) { return (i ? 'L' : 'M') + s.x.toFixed(1) + ' ' + FLOORS[s.floor].y; }).join(' ');
+  $('ghost').setAttribute('d', d);
+  $('done').setAttribute('d', d);
+
+  /* Labels: the day only, because the full date is in the readout and a long
+     string here collides with its neighbours. Two stations sharing a day and a
+     floor take different heights in the band so neither is hidden. */
+  var seen = {};
+  var dots = STATIONS.map(function (s, i) {
+    var g = el('g', {});
+    var c = el('circle', { class: 'station', cx: s.x.toFixed(1), cy: FLOORS[s.floor].y, r: 6, style: 'stroke:' + FLOORS[s.floor].tone });
+    c.setAttribute('data-i', i);
+    g.appendChild(c);
+
+    var key = s.when.replace(/,.*$/, '') + '|' + s.floor;
+    var nth = seen[key] || 0;
+    seen[key] = nth + 1;
+    var short = s.when.replace(/,.*$/, '').replace('September', 'Sep').replace('October', 'Oct');
+    /* Centred on the dot, and above it: a centred label on a 70px column of
+       dots is clear of its neighbours, whereas hanging one to the right runs it
+       into the next dot and the plot edge. The band's own name is at the far
+       left of the band, so the first dot's label never reaches it. */
+    var lab = el('text', {
+      class: 'station-label', x: s.x.toFixed(1),
+      y: (FLOORS[s.floor].y - 16 - nth * 13).toFixed(1),
+      'text-anchor': 'middle'
+    });
+    if (nth) lab.setAttribute('data-lift', '1');
+    lab.textContent = short;
+    g.appendChild(lab);
+    stationsG.appendChild(g);
+    return c;
+  });
+
+  /* Lane tracks, drawn from the data block the generator inlined in the head.
+     Read once, here, and never fetched: a published static host and a file://
+     capture both have to work, and one of them refuses a sibling fetch. */
+  var LANES = (function () {
+    var node = document.getElementById('house-lanes');
+    if (!node) return null;
+    try { return JSON.parse(node.textContent); } catch (e) { return null; }
+  })();
+
+  /* The age of that reading, told once and told honestly.
+     SnapshotAge is the shared renderer the rest of the estate already uses; if it
+     failed to load, fall back to the raw stamp rather than to nothing, and say the
+     age is unknown rather than implying a reading nobody can date. */
+  var ageNode = document.getElementById('reading-age');
+  function paintAge() {
+    if (!ageNode) return;
+    var stamp = LANES && LANES.stamp;
+    var SA = window.SnapshotAge;
+    if (SA && typeof SA.paint === 'function') {
+      SA.paint(ageNode, stamp, { source: 'lanes', label: 'lane reading' });
+      return;
+    }
+    ageNode.textContent = stamp
+      ? 'lane reading · stamped ' + stamp
+      : 'lane reading · age unknown · this page carries no usable stamp';
+    ageNode.setAttribute('data-freshness', stamp ? 'fresh' : 'unknown');
+  }
+  paintAge();
+
+  /* The live half of the front door.
+     The baked block above is the floor, not the ceiling: it is what makes a
+     file:// capture and a static host work with no server at all. Where a fetch
+     IS available, this asks for the collector's own reading and redraws from it
+     when that reading is genuinely newer, so a reader who leaves the page open
+     sees the estate move rather than a snapshot that quietly ages.
+
+     Three rules, each from a way this has already gone wrong:
+       - Never trust the response without its stamp. A fetch that returns
+         something unparseable must leave the baked reading standing, because a
+         half-drawn live reading is worse than an honestly old one.
+       - Never go backwards. A reading older than the baked one is ignored, so a
+         stale CDN copy cannot replace a newer reading already in the page.
+       - Say which one you are looking at. data-live is set only after a reading
+         has actually been adopted, so the page cannot claim to be live while
+         showing baked data. */
+  function redrawLanes(lanes) {
+    var g = $('lanes');
+    if (!g || !lanes || !lanes.tracks || !lanes.tracks.length) return false;
+    while (g.firstChild) g.removeChild(g.firstChild);
+    LANES = lanes;
+    drawLanes();
+    return g.childNodes.length > 0;
+  }
+
+  function adoptLive(lanes) {
+    if (!lanes || !lanes.stamp) return false;
+    var baked = (LANES && LANES.stamp) ? Date.parse(LANES.stamp) : 0;
+    var live = Date.parse(lanes.stamp);
+    if (isNaN(live)) return false;
+    if (baked && live <= baked) return false;
+    redrawLanes(lanes);
+    ageNode.setAttribute('data-live', '1');
+    paintAge();
+    return true;
+  }
+
+  if (typeof fetch === 'function' && location.protocol !== 'file:') {
+    fetch('_data/house-lanes.json', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (live) { if (live) adoptLive(live); })
+      .catch(function () { /* the baked reading stands; it is already labelled */ });
+  }
+
+  /* The axis sits above the lane tracks: the house bands end at the ground
+     line, the axis labels run at 566, and the tracks start at 600 so nothing is
+     drawn through anything else. Tracks first drew at 556, straight through
+     the axis and its labels. */
+  var AXIS_Y = 560, TICK_RULE = 566, TICK_TEXT = 580;
+  var TRACK_BASE = 604, TRACK_H = 13, TRACK_GAP = 17;
+
+  function drawLanes() {
+    var g = $('lanes');
+    if (!g || !LANES || !LANES.tracks) return;
+    var tracks = LANES.tracks.filter(function (t) { return t.total > 0; });
+    if (!tracks.length) return;
+    var peak = tracks.reduce(function (m, t) {
+      return Math.max(m, Object.keys(t.byDay).reduce(function (a, d) { return Math.max(a, t.byDay[d]); }, 0));
+    }, 1);
+
+    tracks.forEach(function (t, i) {
+      var y = TRACK_BASE + i * (TRACK_H + TRACK_GAP);
+      g.appendChild(el('line', { class: 'lane-track', x1: 118, y1: y, x2: 990, y2: y }));
+      var nm = el('text', { class: 'lane-name', x: 124, y: y - 5 });
+      nm.textContent = t.lane + '  ' + t.total;
+      g.appendChild(nm);
+
+      Object.keys(t.byDay).forEach(function (d) {
+        var day = Number(d), n = t.byDay[d];
+        if (day == null || !n) return;
+        var h = Math.max(2, Math.round((n / peak) * TRACK_H));
+        var x = X(day);
+        var w = Math.max(3, Math.min(10, 3 + n * 0.35));
+        g.appendChild(el('rect', {
+          class: 'lane-fill', x: (x - w / 2).toFixed(1), y: (y - h).toFixed(1),
+          width: w.toFixed(1), height: h, rx: 1
+        }));
+      });
+    });
+
+    var total = tracks.reduce(function (a, t) { return a + t.total; }, 0);
+    var foot = el('text', {
+      class: 'lane-count', x: 990,
+      y: TRACK_BASE + tracks.length * (TRACK_H + TRACK_GAP) + 2, 'text-anchor': 'end'
+    });
+    foot.textContent = total + ' landings across ' + tracks.length + ' lanes, read from git on ' + String(LANES.stamp || '').slice(0, 10);
+    g.appendChild(foot);
+  }
+
+  var fill = $('fill'), head = $('head'), live = $('live');
+  var stops = [].slice.call(document.querySelectorAll('.meter-stop'));
+  var at = 0, inverted = false, busy = false;
+
+  function paint() {
+    var i = Math.round(at);
+    var s = STATIONS[i];
+    var f = FLOORS[s.floor];
+
+    /* the solid stroke grows along the same path: pathLength normalises it to 1 */
+    var frac = at / (STATIONS.length - 1);
+    $('done').style.strokeDasharray = '1 1';
+    $('done').style.strokeDashoffset = String(1 - frac);
+
+    var px = s.x, py = f.y;
+    if (at % 1 !== 0) {
+      var a = Math.floor(at), b = Math.min(STATIONS.length - 1, a + 1), k = at - a;
+      px = STATIONS[a].x + (STATIONS[b].x - STATIONS[a].x) * k;
+      py = FLOORS[STATIONS[a].floor].y + (FLOORS[STATIONS[b].floor].y - FLOORS[STATIONS[a].floor].y) * k;
+    }
+    head.setAttribute('cx', px.toFixed(1)); head.setAttribute('cy', py.toFixed(1));
+
+    for (var k2 = 0; k2 < dots.length; k2++) {
+      dots[k2].setAttribute('data-past', k2 < i ? '1' : '0');
+      dots[k2].setAttribute('r', k2 === i ? 9 : 6);
+      dots[k2].setAttribute('style', 'stroke:' + (k2 === i ? 'var(--white)' : FLOORS[STATIONS[k2].floor].tone));
+    }
+
+    fill.style.height = (i / (STATIONS.length - 1) * 100) + '%';
+
+    /* Depth follows the climb: the floor you are on comes forward, the floors
+       below it sit back, and the ones above keep the building's own depth. */
+    for (var bd = 0; bd < bandDepths.length; bd++) {
+      var bkey = bandKeys[bd];
+      bandDepths[bd].removeAttribute('data-live');
+      bandDepths[bd].removeAttribute('data-spent');
+      if (bkey === s.floor) bandDepths[bd].setAttribute('data-live', '1');
+      else if (DEPTH[bkey] < DEPTH[s.floor]) bandDepths[bd].setAttribute('data-spent', '1');
+    }
+    for (var m = 0; m < stops.length; m++) {
+      var on = stops[m].getAttribute('data-stop') === s.floor;
+      stops[m].setAttribute('data-on', on ? '1' : '0');
+      if (on && !stops[m].dataset.tone) stops[m].style.setProperty('--t', f.tone);
+    }
+
+    $('r-floor').textContent = f.name;
+    $('r-title').textContent = s.title;
+    $('r-when').textContent = s.when + ' · ' + (s.floor === 'cellar' ? 'below ground' : s.floor === 'stairs' ? 'the climb' : s.floor === 'floor' ? 'where you live' : 'above the roof');
+    var body = $('r-body');
+    body.innerHTML = '';
+    var chip = document.createElement('span');
+    chip.className = 'chip'; chip.style.setProperty('--t', f.tone);
+    chip.innerHTML = '<span class="dot"></span>' + s.when;
+    body.appendChild(chip);
+    var p = document.createElement('p');
+    p.style.marginTop = 'var(--space-sm)';
+    p.textContent = s.lede;
+    body.appendChild(p);
+    if (s.points && s.points.length) {
+      var ul = document.createElement('ul');
+      s.points.forEach(function (t) { var li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+      body.appendChild(ul);
+    }
+    live.textContent = f.name + '. ' + s.title + '. ' + s.when + '.';
+  }
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(STATIONS.length - 1, i));
+    var from = at, t0 = performance.now(), dur = 520;
+    busy = true;
+    (function step(now) {
+      var k = Math.min(1, (now - t0) / dur);
+      var e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      at = from + (i - from) * e;
+      paint();
+      if (k < 1) requestAnimationFrame(step); else busy = false;
+    })(t0);
+  }
+
+  function step(n) { goTo(Math.round(at) + n); }
+
+  addEventListener('wheel', function (ev) {
+    ev.preventDefault();
+    if (busy) return;
+    var dir = inverted ? -1 : 1;
+    at = Math.max(0, Math.min(STATIONS.length - 1, at + (ev.deltaY > 0 ? dir : -dir) * 0.34));
+    paint();
+  }, { passive: false });
+
+  addEventListener('keydown', function (ev) {
+    var k = ev.key;
+    if (k === 'ArrowUp' || k === 'ArrowRight' || k === 'PageDown' || k === ' ') { ev.preventDefault(); step(1); }
+    else if (k === 'ArrowDown' || k === 'ArrowLeft' || k === 'PageUp') { ev.preventDefault(); step(-1); }
+    else if (k === 'Home') { ev.preventDefault(); goTo(0); }
+    else if (k === 'End') { ev.preventDefault(); goTo(STATIONS.length - 1); }
+    else if (k === 'i' || k === 'I') { ev.preventDefault(); inverted = !inverted; $('down').textContent = inverted ? 'Climb up (inverted)' : 'Climb up'; }
+  });
+
+  $('down').addEventListener('click', function () { step(1); });
+  $('up').addEventListener('click', function () { step(-1); });
+  stops.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var want = b.getAttribute('data-stop');
+      for (var i = 0; i < STATIONS.length; i++) if (STATIONS[i].floor === want) { goTo(i); return; }
+    });
+  });
+  dots.forEach(function (c) {
+    c.addEventListener('click', function () { goTo(Number(c.getAttribute('data-i'))); });
+    c.style.cursor = 'pointer';
+  });
+
+  /* touch: a drag upward climbs, matching the wheel. */
+  var ty = null;
+  addEventListener('touchstart', function (e) { ty = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchmove', function (e) {
+    if (ty === null) return;
+    var dy = ty - e.touches[0].clientY;
+    ty = e.touches[0].clientY;
+    at = Math.max(0, Math.min(STATIONS.length - 1, at + dy / 260));
+    paint();
+  }, { passive: true });
+  addEventListener('touchend', function () { ty = null; goTo(Math.round(at)); }, { passive: true });
+
+  drawLanes();
+  paintAge();
+  paint();
+})();
+</script>
+</body>
+</html>
