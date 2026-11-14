@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="What moved across the lanes, what is open, and where the console goes next. Every figure read from the machine on 5 October 2026.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>State of play · Re.SOURCE HQ</title>
+<style>
+  :root{
+    --u-type:6px;
+    --fs-caption:12px; --fs-body:18px; --fs-h2:24px; --fs-h1:36px; --fs-display:48px;
+    --lh-caption:18px; --lh-body:30px; --lh-h2:36px; --lh-h1:48px; --lh-display:54px;
+    --fw-caption:300; --fw-body:400; --fw-h2:600; --fw-h1:700; --fw-display:800;
+
+    --u:4px;
+    --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px; --space-xl:48px;
+    --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+
+    --cl-01-tone:#99DD00; --cl-02-flux:#FFD100; --cl-03-flow:#FFB000;
+    --cl-04-love:#FF7700; --cl-05-bond:#FF5500; --cl-06-fire:#FF0000;
+    --cl-07-path:#E02888; --cl-08-time:#9933CC; --cl-09-meta:#6655FF;
+    --cl-10-form:#2277FF; --cl-11-type:#00BBDD; --cl-12-life:#00D460;
+
+    --black:#000000; --g06:#0D0D0D; --g12:#1A1A1A; --g24:#333333;
+    --g48:#555555; --g66:#888888; --white:#FFFFFF;
+    --text-primary:var(--white); --text-secondary:var(--g66); --text-dim:var(--g48);
+    --surface-page:var(--black); --surface-card:var(--g06);
+    --surface-raised:var(--g12); --surface-border:var(--g24);
+
+    --stroke:3px;
+    --font: ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--surface-page);color:var(--text-primary);font-family:var(--font);margin:0}
+  body{padding-bottom:var(--space-2xl,96px)}
+
+  .edge{padding:var(--space-xl) var(--space-lg) var(--space-lg);max-width:1180px;margin:0 auto}
+  .eyebrow{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+           color:var(--text-secondary);text-transform:uppercase;letter-spacing:.14em}
+  h1{font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display);
+     margin:var(--space-sm) 0 var(--space-md);letter-spacing:-.02em}
+  .standfirst{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);
+              max-width:62ch;margin:0}
+  .rule{height:1px;background:var(--surface-border);margin:var(--space-lg) 0 0}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 var(--space-lg)}
+
+  /* the plate is for wide screens; the stack is for a phone.
+     Which one shows is toggled on <body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/state-of-play.html</span>
+</nav> by JS, not by a media query,
+     so the switch does not depend on the engine resolving one. */
+  .plate{display:none}
+  .stack{display:none}
+  body.wide .plate{display:block}
+  body.narrow .stack{display:block}
+  svg{width:100%;height:auto;display:block}
+
+  .band{fill:var(--surface-card);stroke:var(--surface-border);stroke-width:1}
+  .node{fill:var(--surface-raised);stroke-width:var(--stroke)}
+  .node-key{fill:var(--surface-raised);stroke:var(--white);stroke-width:var(--stroke)}
+  .wire{fill:none;stroke:var(--g24);stroke-width:1.5}
+  .wire-return{fill:none;stroke:var(--cl-02-flux);stroke-width:2;stroke-dasharray:5 6}
+  .t-key{font-size:19px;font-weight:700;fill:var(--white)}
+  .t-title{font-size:16px;font-weight:600;fill:var(--white)}
+  .t-body{font-size:13.5px;font-weight:400;fill:var(--g66)}
+  .t-cap{font-size:12px;font-weight:300;fill:var(--g48);letter-spacing:.1em}
+
+  /* --- the phone stack: same data, legible type --- */
+  .sband{border:1px solid var(--surface-border);background:var(--surface-card);
+         border-radius:var(--radius-lg);padding:var(--space-lg);margin:0 0 var(--space-md)}
+  .sband > .cap{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+                color:var(--text-dim);text-transform:uppercase;letter-spacing:.12em;margin:0 0 var(--space-md)}
+  .snode{border:var(--stroke) solid var(--hue);border-radius:var(--radius-md);
+         padding:var(--space-md) var(--space-lg);margin:0 0 var(--space-sm);background:var(--surface-raised)}
+  .snode.key{border-color:var(--white)}
+  .snode h3{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-xs)}
+  .snode p{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);margin:0}
+  .sarrow{height:var(--space-lg);display:flex;align-items:center;justify-content:center;
+          color:var(--g48);font-size:var(--fs-h2);line-height:1}
+  .sreturn{border:var(--stroke) dashed var(--cl-02-flux);border-radius:var(--radius-md);
+           padding:var(--space-md) var(--space-lg);margin:var(--space-sm) 0 0;
+           font-size:var(--fs-body);line-height:var(--lh-body);color:var(--cl-02-flux)}
+
+  .legend{margin:var(--space-xl) 0 0;display:grid;gap:var(--space-xl);
+          grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .legend h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-sm)}
+  .legend p{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);margin:0}
+  .legend .meta{font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-dim);margin-top:var(--space-sm)}
+
+  @media (max-width:820px){
+    .edge,.wrap{padding-left:var(--space-md);padding-right:var(--space-md)}
+    h1{font-size:30px;line-height:36px}
+    .standfirst{font-size:16px;line-height:26px}
+    .legend{grid-template-columns:1fr;gap:var(--space-lg)}
+  }
+
+  header .eyebrow,.cap{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+    color:var(--g48);letter-spacing:.1em;text-transform:uppercase;margin:0 0 var(--space-sm)}
+  .band{margin:0 0 var(--space-2xl,72px)}
+  .band .cap{border-bottom:1px solid var(--g24);padding-bottom:var(--space-sm)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--space-lg);margin-top:var(--space-lg)}
+  .grid section{border-left:2px solid var(--g24);padding-left:var(--space-md)}
+  .grid h3{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-xs);color:var(--text-primary)}
+  .grid p{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);margin:0 0 var(--space-sm)}
+  .grid p.meta{font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g48);font-weight:var(--fw-caption)}
+  .grid code{font-family:ui-monospace,monospace;font-size:.9em;color:var(--g66)}
+  .grid a{color:var(--cl-02-flux)}
+  footer{border-top:1px solid var(--g24);padding-top:var(--space-lg)}
+  footer p{font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--g48);font-weight:var(--fw-caption)}
+</style>
+<body>
+
+<header class="wrap">
+  <p class="eyebrow">STATE OF PLAY &middot; 5 OCTOBER 2026, 21:00</p>
+  <h1>What moved, what is open</h1>
+  <p class="standfirst">Every lane that ran in the last 48 hours, what it left behind, and the three
+  things still waiting. Read top to bottom: done, what this sweep found, what is open, and where the
+  console goes.</p>
+  <div class="rule"></div>
+</header>
+
+<div class="wrap">
+  <div class="band">
+    <p class="cap">LANDED &middot; proven on the real surface, merged to main</p>
+    <div class="grid">
+      <section><h3>The estate as a diagram</h3>
+        <p>A map was asked for and prose arrived. Now there is one: six bands, altitude vertical, the
+        return path drawn in its own channel pointing back at Mark. Phone and desktop renderings come
+        from one array, so a band cannot exist in one and be missing from the other.</p>
+        <p class="meta">Re.SOURCE #235</p></section>
+      <section><h3>The front door reads live</h3>
+        <p>The Estate board used to show a baked reading. It fetches the lane reading live and ages it
+        honestly, so a stale number can no longer sit there looking current.</p>
+        <p class="meta">Re.SOURCE #236</p></section>
+      <section><h3>Every reading carries its age</h3>
+        <p>Three baked readings could never age, and one dead page shipped beside them. All three now
+        stamp themselves, and the collector runs hourly so they cannot drift back.</p>
+        <p class="meta">Re.SOURCE #232, #233, #234</p></section>
+      <section><h3>The 65 GB duplicate</h3>
+        <p>The storage audit found 99.67 GB reclaimable, and one 65 GB duplicate pair only a
+        cross-drive hash could have found. Three corrections to the earlier number followed it.</p>
+        <p class="meta">COMMAND #112 to #116</p></section>
+      <section><h3>Orphaned runtimes reaped</h3>
+        <p>A supervisor outliving its front end is where 15 GB went. The reaper is scoped to session
+        runtimes by role, an allowlist, because a deny list has to be complete to be safe.</p>
+        <p class="meta">COMMAND #109 to #111</p></section>
+      <section><h3>The lane guard holds</h3>
+        <p>The push gate refuses a push that touches another live lane's file, and it fired during
+        this sweep: a push was blocked and the lane holding the file was named. The collision
+        protection works.</p>
+        <p class="meta">console, Land the night-critic lane</p></section>
+    </div>
+  </div>
+
+  <div class="band">
+    <p class="cap">FOUND BY THIS SWEEP &middot; the thing lanes leave behind</p>
+    <div class="grid">
+      <section><h3>41 uncommitted paths</h3>
+        <p>The Re.SOURCE shared checkout held 41: a page nobody had committed, a capture prune, and
+        eight regenerated readings. It was banked without touching a single lane's working tree, and
+        the one file that looked unique proved byte-identical to what had already landed. The rest is
+        on main.</p>
+        <p class="meta">Re.SOURCE #238</p></section>
+      <section><h3>130 branches, most holding nothing</h3>
+        <p>Every branch was tested by content against main, per file and per line, never by commit
+        message and never by <code>--merged</code>: this estate squash-merges, so both of those tests
+        answer unlanded for work main already carries. Branches carrying nothing went; the ones
+        holding anything keep an archive tag at the tip, so every deletion is reversible.</p>
+        <p class="meta">COMMAND 34 &middot; Re.SOURCE 43 &middot; PERSONAL 6 &middot; console 24</p></section>
+      <section><h3>One red check that was the instrument</h3>
+        <p>The hourly gate had been red for hours on the pulse strip: no seat name, empty string.
+        Measured in a live browser, the strip holds ten items including three seat names. The check
+        read innerText on a subtree inside a collapsed disclosure, the fold Mark asked for. Fixed: the
+        full 24-check gate passes with zero failures.</p>
+        <p class="meta">console #31</p></section>
+    </div>
+  </div>
+
+  <div class="band">
+    <p class="cap">OPEN &middot; waiting on a person, not on work</p>
+    <div class="grid">
+      <section><h3>A stray .obsidian folder</h3>
+        <p>Obsidian was retired in July. An .obsidian folder appeared in the Re.SOURCE root at 18:50
+        today and is the single failing item on the vault self-check. Git ignores it, so it is
+        harmless to the repos and not harmless to the check. One deletion, on your word.</p>
+        <p class="meta">Re.SOURCE vault root</p></section>
+      <section><h3>The parked ops worktree</h3>
+        <p>A worktree holds real work: two modified collectors, a seat benchmark, a security
+        redaction proof. It is banked on a pushed branch and the worktree is still on disk. It wants a
+        decision, land it or close it.</p>
+        <p class="meta">console, bank/ops-worktree-2026-10-05</p></section>
+      <section><h3>The 45-day review has no rows</h3>
+        <p>The policy promises a review of pages untouched for 45 days. There are none, because the
+        estate is younger than that; the nearest crosses in 23 days. Nothing is overdue. It is stated
+        here so an empty list is not read as a broken promise.</p>
+        <p class="meta">feed-summary.md</p></section>
+    </div>
+  </div>
+
+  <div class="band">
+    <p class="cap">THE CONSOLE &middot; where it goes from here</p>
+    <div class="grid">
+      <section><h3>One door, already standing</h3>
+        <p>Desk is the front door: chat on the left, the live page beside it, the estate on the far
+        right. HQ and Wall are retired into redirects, so an old bookmark still lands somewhere true.
+        The seven-link bar that made every page feel like a separate application is gone.</p></section>
+      <section><h3>The rule that makes it clear</h3>
+        <p>Every number on the board is read from the machine at the moment you look, and anything
+        baked says how old it is. A page that can go stale must wear its age. That one rule removes
+        most of the confusion the prose was compensating for.</p></section>
+      <section><h3>Conciseness is a budget</h3>
+        <p>Chat carries the verdict and the decision; anything longer belongs on a page. Pages are read
+        on a phone, so every claim is one line and every number is generated, never typed, because a
+        typed number is a number that will be wrong.</p></section>
+      <section><h3>What is deliberately not built</h3>
+        <p>No dashboard that aggregates the dashboards, and no second place to look. A retired surface
+        becomes a redirect rather than a tombstone, and the inventory is regenerated so the hourly
+        gate notices when one goes missing.</p></section>
+    </div>
+  </div>
+</div>
+
+<footer class="wrap">
+  <p class="meta">Every figure was read from the machine on 5 October 2026; nothing here is typed by
+  hand. The map is at <a href="system-map.html">system-map.html</a>.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+Published from markshikada/Re.SOURCE
+commit: 3172d43e6d4916137c201d7d0fe0e6409b79be6a
+branch: main
+date: 2026-11-14T13:46:37Z
+manifest entries: 111, carried forward: 31, removals applied: 43

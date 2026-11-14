@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Public sharing is ruled go. The vault side is built. This is the one-time setup only Mark's GitHub account can do, step by step, and what happens after.">
+  <title>Publishing setup · Re.SOURCE</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../lib/publishing.css">
+</head>
+<body class="pub">
+  <a class="skip-link" href="#main">Skip to the steps</a>
+
+  <header class="masthead shell" data-pad>
+    <a class="brand" href="../HQ.html" aria-label="Back to Re.SOURCE HQ">Re.SOURCE <span>HQ</span></a>
+    <span class="spacer"></span>
+    <div class="stamp">
+      <span class="eyebrow">Updated 20 Sep 2026 · 17:05 BST</span>
+      <span class="caption">Lane 4 · publishing · setup runbook</span>
+    </div>
+  </header>
+
+  <main class="shell" id="main" data-pad data-grid tabindex="-1">
+
+    <section class="ask" data-span="12" aria-labelledby="ask-title">
+      <span class="eyebrow">Ruled 20 Sep 2026 · route 1 is go</span>
+      <h1 id="ask-title">Public sharing is go. Two minutes of setup, then one link that lasts.</h1>
+      <p>The ruling, Mark, quoted: &ldquo;Update HQ and keep going to facilitate public sharing.&rdquo; That settles the question the four routes hung on: a Re.SOURCE page may be readable by anyone who has the link. Route 1 is the way, and the vault side of it is already built and tested – the copy list, the publish script, the link checker and the workflow all live in the repo now.</p>
+      <p class="question">What is left is the one part no session can do for you: the public repository has to be created by your GitHub account, and only your account can create it.</p>
+      <p>That is GitHub's permission model, not a workaround being routed around you. A session's GitHub key is scoped to the repository it is granted — this one reaches the vault and nothing else, which is exactly why the vault has stayed safe. On 20 September both directions were tested and the platform proved to be <strong>one repo per session</strong> (the site session writes the site repo, the vault session writes the vault). Two minutes below wires the hands-off bridge, and after that every publish is one click.</p>
+    </section>
+
+    <section class="routes" data-span="12" aria-labelledby="steps-title" data-grid>
+      <h2 id="steps-title" data-span="12">Your one-time setup, step by step</h2>
+
+      <article class="route step lead" data-span="6" aria-labelledby="step1-title">
+        <div class="route-top">
+          <span class="rank">Step 1</span>
+          <h3 id="step1-title">Create the empty public repo</h3>
+          <span class="badge">About a minute</span>
+        </div>
+        <p class="lede">On GitHub: open <code>github.com/new</code> (or the + button, top right, &ldquo;New repository&rdquo;).</p>
+        <dl class="facts">
+          <dt>Owner</dt>
+          <dd>markshikada (your account, the only option that matters here).</dd>
+          <dt>Repository name</dt>
+          <dd><code>Re.SOURCE-Site</code> – typed exactly. If you would rather it were called something else, that is fine: tell the session the name and the script and workflow change in one line each.</dd>
+          <dt>Public or private</dt>
+          <dd><span class="no">Public.</span> This is the ruling you just made; the vault itself stays private.</dd>
+          <dt>Everything else</dt>
+          <dd>Leave it all off: no README, no .gitignore, no license. The repo must be empty; the publish script fills it.</dd>
+        </dl>
+      </article>
+
+      <article class="route step" data-span="6" aria-labelledby="step2-title">
+        <div class="route-top">
+          <span class="rank">Step 2</span>
+          <h3 id="step2-title">Give automation a key (the smart path)</h3>
+          <span class="badge">One minute, hands-off after</span>
+        </div>
+        <p class="lede">Arena grants one repo per session — tested both ways on 20 Sep (vault sessions see only <code>Re.SOURCE</code>, site sessions see only <code>Re.SOURCE-Site</code>). That is a platform limit, not a scope to widen by reconnecting. So publishing does not run from a session's own key; it runs from <strong>Actions</strong> with a stored credential you add once.</p>
+        <dl class="facts">
+          <dt>Smartest: deploy key</dt>
+          <dd>No expiry, least privilege (only the site repo, only write). On your Mac where <code>gh</code> is logged in as you:<br><code>bash Projects/Publish/setup-auto.sh</code><br>It generates an ed25519 pair, adds the public half as a <em>write deploy key</em> on <code>Re.SOURCE-Site</code> and the private half as the Actions secret <code>SITE_PUSH_KEY</code> on <code>Re.SOURCE</code>. Rerunning it replaces the pair cleanly.</dd>
+          <dt>Also works: fine-grained PAT</dt>
+          <dd><code>bash Projects/Publish/setup-auto.sh --pat</code> prints the exact steps. Same scope, but it expires (up to 365 days) and is tied to your user token.</dd>
+          <dt>Where to check</dt>
+          <dd>Site repo → Settings → Deploy keys (should show “Re.SOURCE publish”, write). Vault repo → Settings → Secrets and variables → Actions → <code>SITE_PUSH_KEY</code> (or <code>SITE_PUSH_TOKEN</code>).</dd>
+          <dt>What was wrong with “reconnect both”</dt>
+          <dd>That was the assumed path until both sessions were tested. Reconnecting Arena does not offer two repos — each connection stays single-repo. The key step above replaces it.</dd>
+        </dl>
+      </article>
+
+      <article class="route step" data-span="6" aria-labelledby="step3-title">
+        <div class="route-top">
+          <span class="rank">Step 3</span>
+          <h3 id="step3-title">Pages, if the session cannot switch it on</h3>
+          <span class="badge">Only if needed</span>
+        </div>
+        <p class="lede">The workflow pushes the mirror; Pages needs to be on once. If your PAT has <code>Pages: write</code>, the workflow can enable it; otherwise it is one click.</p>
+        <dl class="facts">
+          <dt>Via the workflow (if PAT)</dt>
+          <dd><code>gh api -X POST repos/markshikada/Re.SOURCE-Site/pages -f build_type=legacy -f source[branch]=main -f source[path]=/</code> — or let the deploy-key run push and do the click below.</dd>
+          <dt>One click</dt>
+          <dd>In the site repo: Settings → Pages → Build and deployment → Source: <code>Deploy from a branch</code> → Branch: <code>main</code>, folder <code>/ (root)</code> → Save.</dd>
+          <dt>Cost</dt>
+          <dd>Nothing. A public repo serves Pages on the free plan.</dd>
+        </dl>
+      </article>
+
+      <article class="route step" data-span="6" aria-labelledby="step4-title">
+        <div class="route-top">
+          <span class="rank">Step 4</span>
+          <h3 id="step4-title">Say &ldquo;the repo is made&rdquo;</h3>
+          <span class="badge">Then you are done</span>
+        </div>
+        <p class="lede">One click in Actions and the first publish runs: stage the copy list, verify every reference, push the mirror, and the fixed link goes on HQ and in the week's note. No chat step needed — you can watch it in the Actions tab.</p>
+        <dl class="facts">
+          <dt>Your link will be</dt>
+          <dd><code>https://markshikada.github.io/Re.SOURCE-Site/</code> – it opens straight onto HQ, and it never changes when the pages change.</dd>
+          <dt>Phone</dt>
+          <dd>The same link. That is the whole point of it.</dd>
+          <dt>After that</dt>
+          <dd>Nothing. &ldquo;Publish it&rdquo; in any session re-runs the same three commands.</dd>
+          <dt>Why the preview is not the answer</dt>
+          <dd>It opens only inside Arena’s own viewer and dies with the session; your phone met its &ldquo;Preview Unavailable&rdquo; wall on 20 September. It reviews. It does not publish.</dd>
+        </dl>
+      </article>
+    </section>
+
+    <section data-span="12" aria-labelledby="split-title">
+      <h2 id="split-title">What goes public, and what stays private</h2>
+      <dl class="facts">
+        <dt>Public, the moment you publish</dt>
+        <dd>The hub pages (HQ, Masters, Notes), the seven masters, the routes decision page and this runbook, and everything they run on: styles, tokens, scripts, self-hosted fonts with their licences, component sources, the card data, and the six captures HQ embeds. All of it is listed, file by file, in <code>Projects/Publish/manifest.txt</code> – a plain text file you can read and cut down at any time. Trimming it and republishing is one session command.</dd>
+        <dt>Private, always</dt>
+        <dd>Everything not on that list: the vault rules, the handover, the queues and prompts, session notes, the weekly folders (apart from those six captures), word-source exports, tests, scraps and internal screenshots. The site repo never sees them.</dd>
+        <dt>The one known trade-off</dt>
+        <dd>HQ carries a few links to markdown files – the queue, the prompts, the rules. On the public mirror those links dead-end, on purpose: markdown is session memory and never goes public. The pages are for looking at, and everything you look at is fully there. If the dead links ever bother you, a follow-up lane can take them off the HQ page itself.</dd>
+      </dl>
+    </section>
+
+    <section data-span="12" aria-labelledby="mechanism-title">
+      <h2 id="mechanism-title">How publishing works once it exists</h2>
+      <details open>
+        <summary>The mechanism, in plain words<span class="chevron" aria-hidden="true"></span></summary>
+        <div class="disclosure-body">
+          <p>The site repo is a mirror of a named list of files, at the same paths as in the vault – that is what keeps every relative link, font and image working without touching a page. The root of the site is a small redirect onto HQ.</p>
+          <p>Three commands do everything, and they live in <code>Projects/Publish/publish.sh</code>: <code>stage</code> copies the manifest set, <code>check</code> verifies that every local reference in every staged page resolves (a missing asset fails the publish loudly instead of serving a broken page; the markdown trade-off above is reported, not failed), <code>push</code> mirrors the result onto the site repo. A stamp file at the site root records which vault commit the mirror was made from.</p>
+          <p>There is also a GitHub workflow (<code>.github/workflows/publish-site.yml</code>) that runs the same three steps on demand once a deploy key or token is added to the vault's secrets — the step you just ran above. Dispatch it from the Actions tab (Publish site → Run workflow) and it does stage → check → push without any session. The link stays the same forever either way; republishing changes the pages behind it, never the address. Until the key exists, the workflow reports and stops at the push, and <code>bash Projects/Publish/publish.sh</code> remains usable in a session that has been granted the site repo.</p>
+        </div>
+      </details>
+    </section>
+
+    <section data-span="12" aria-labelledby="ledger-title">
+      <h2 id="ledger-title">What was tested, and what was not</h2>
+      <details open>
+        <summary>The ledger<span class="chevron" aria-hidden="true"></span></summary>
+        <div class="disclosure-body">
+          <p>The vault side ran for real in the session that built it, on 20 September 2026. The GitHub side is verified against documentation until the repository exists; the first publish proves it live.</p>
+          <div class="ledger-wrap">
+          <table class="ledger">
+            <thead>
+              <tr><th scope="col">Claim</th><th scope="col">Where it came from</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>The copy list stages complete</td><td class="code">Projects/Publish/publish.sh stage – ran against the real vault: 87 files staged from 19 manifest entries, 42 exclusions applied, zero markdown in the set</td></tr>
+              <tr><td>Every staged reference resolves</td><td class="code">Projects/Publish/check-links.cjs – 101 local references resolved across the staged files; the 26 dead .md links reported as the deliberate trade-off</td></tr>
+              <tr><td>The staged site serves as a site</td><td class="code">real Chromium 153 crawl of all 14 staged pages: every page loaded with the self-hosted Figtree, zero failed requests beyond the expected .md; the root redirect landed on HQ</td></tr>
+              <tr><td>The staged pages are the vault pages</td><td class="code">byte-identical (md5). Two masters measured overflowing at 390px – Brand STYLE and Colour LINGO – predate publishing and are recorded in the Design System's own queue, item 10</td></tr>
+              <tr><td>These pages hold at every width</td><td class="code">this runbook and the routes page checked at 1440/1080/820/390/320 in Chromium: no overflow, real fonts; the full HQ regression suite passed at eleven widths after the HUD update</td></tr>
+              <tr><td>A session cannot create your repository</td><td class="code">gh repo create → &ldquo;Resource not accessible by integration&rdquo;; the session key reaches the vault only. That is step 1 existing at all.</td></tr>
+              <tr><td>Arena is one repo per session</td><td class="code">20 Sep 2026, both directions: vault session – installation lists only Re.SOURCE, push to Re.SOURCE-Site → 403; site session (arena/01a0c059) – push to Re.SOURCE-Site succeeds, vault is invisible. The limit is the platform's per-session grant, not a scope to widen.</td></tr>
+              <tr><td>Actions + deploy key pushes without a session</td><td class="code">Projects/Publish/publish.sh push supports SITE_PUSH_KEY (ed25519 deploy key, write) and SITE_PUSH_TOKEN (PAT, Contents: write). The workflow publish-site.yml uses that secret to force-push the single-commit mirror; setup is one local run of Projects/Publish/setup-auto.sh.</td></tr>
+              <tr><td>Pages is free on a public repo</td><td class="code">GitHub Pages documentation; carried over from the routes page ledger</td></tr>
+              <tr><td>The push and the live link</td><td class="code">Not testable until the repo exists. The first Actions run verifies the live page in a browser and captures it before the link is handed over.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <footer class="foot" data-span="12">
+      <p class="caption">Re.SOURCE · lane 4 · setup runbook · 20 September 2026. The decision behind it: <a href="publishing-routes.html">the four routes</a>. The copy list: <code>Projects/Publish/manifest.txt</code>. The queue: <code>Projects/HQ/queue.md</code>, lane 4.</p>
+    </footer>
+
+  </main>
+</body>
+</html>

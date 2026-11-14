@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Map · OmO console</title>
+<meta name="description" content="An illustrated map of the words this system uses: seat, pin, lane, category, agent, harness, probe, board — what each one is, where it lives, and how they connect.">
+
+<link rel="stylesheet" href="ds/styles.css">
+<link rel="stylesheet" href="ds/lib/topbar.css">
+<link rel="stylesheet" href="shell.css">
+<style>
+  /* The Map is a learning surface, not a dashboard: nothing here is live telemetry,
+     so it never goes stale under Mark and never cries wolf. Every fact below was
+     read out of the real config and the real lane script. */
+
+  /* This page's names for the Design System's tokens. The system owns every value
+     used here — no colour, radius, step or size is invented on this page. */
+  :root {
+    --surface-1: var(--surface-card);
+    --surface-2: var(--surface-raised);
+    --border-subtle: var(--surface-border);
+    --border-default: var(--g48);
+    --text-tertiary: var(--text-dim);
+    --accent: var(--cl-02-flux);
+  }
+
+  html { background: var(--black); }
+  body {
+    margin: 0;
+    background: var(--surface-page);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: var(--lh-body);
+  }
+  code { font-family: var(--font-mono); }
+
+  .wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-md) var(--space-2xl);
+  }
+
+  /* ---- the header ---- */
+  .page-head h1 {
+    margin: 0;
+    font-size: var(--fs-h1);
+    line-height: var(--lh-h1);
+    font-weight: var(--fw-h1);
+    letter-spacing: -0.01em;
+  }
+  .lede {
+    max-width: 66ch;
+    margin: var(--space-md) 0 0;
+    color: var(--text-secondary);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+  }
+  .lede strong { color: var(--text-primary); font-weight: var(--fw-h2); }
+
+  /* ---- sections: a numbered masthead rule is what tells the reader they have
+     moved from one part of the page to the next. ---- */
+  .section { margin-top: var(--space-2xl); }
+  .page-head + .section { margin-top: var(--space-xl); }
+  @media (max-width: 720px) { .section { margin-top: var(--space-xl); } }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding-bottom: var(--space-sm);
+    margin: 0 0 var(--space-lg);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .sec-num {
+    flex: 0 0 auto;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-h2);
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+  .sec-head h2 {
+    margin: 0;
+    font-size: var(--fs-h2);
+    line-height: var(--lh-h2);
+    font-weight: var(--fw-h2);
+    letter-spacing: -0.01em;
+  }
+  .section > .lede { margin-bottom: var(--space-lg); }
+
+  /* ---- the canvas: a fixed-shape map you can pan by scrolling, drawn once from
+     the graph below. No canvas element, no library — the diagram is real DOM, so it
+     is selectable, zoomable by the browser, and readable by a screen reader. ---- */
+  .board {
+    position: relative;
+    margin: var(--space-lg) 0 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 1px 1px, var(--g12) 1px, transparent 0) 0 0 / var(--space-lg) var(--space-lg),
+      var(--surface-1);
+    overflow: hidden;
+  }
+  #canvas { display: block; width: 100%; height: auto; touch-action: pan-x pan-y; }
+
+  .pan-hint {
+    display: none;
+    margin: var(--space-sm) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-tertiary);
+  }
+  /* Below ~900px the whole diagram scales down to an unreadable strip, so it keeps
+     a readable minimum width and the board pans sideways instead. The cards below
+     carry the same words for anyone who would rather not pan. */
+  @media (max-width: 900px) {
+    .board { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    #canvas { min-width: 900px; }
+    .pan-hint { display: block; }
+  }
+
+  .node-hit { cursor: pointer; }
+  .node-box {
+    fill: var(--surface-1);
+    stroke: var(--border-default);
+    stroke-width: 1;
+    transition: fill var(--dur-sm) var(--ease-place), stroke var(--dur-sm) var(--ease-place);
+  }
+  .node-box.is-is, .node-box.is-see { stroke: var(--accent); stroke-width: var(--stroke); }
+  .node-box.is-see { fill: var(--surface-2); }
+  .node-hit:hover .node-box { fill: var(--surface-2); stroke: var(--accent); stroke-width: var(--stroke); }
+  /* The white ring is the focus state for every node, whatever colour its own
+     stroke carries, so a keyboard reader can always see where they are. */
+  .node-hit:focus-visible { outline: none; }
+  .node-hit:focus-visible .node-box { fill: var(--surface-2); stroke: var(--text-primary); stroke-width: var(--stroke); }
+
+  .node-label { font-family: var(--font-sans); font-size: var(--fs-body); font-weight: var(--fw-h2); fill: var(--text-primary); pointer-events: none; }
+  .node-sub { font-family: var(--font-mono); font-size: var(--fs-caption); fill: var(--text-secondary); pointer-events: none; }
+  .node-tag { font-family: var(--font-mono); font-size: var(--fs-caption); fill: var(--text-tertiary); pointer-events: none; }
+
+  .group-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    fill: var(--text-tertiary);
+  }
+  .group-rule { stroke: var(--border-subtle); stroke-width: 1; }
+
+  .edge { fill: none; stroke: var(--border-default); stroke-width: 1; }
+  .arrow-head { fill: none; stroke: var(--border-default); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  /* A label rides on the curve, so it carries the caption halo to stay readable
+     where it crosses one. */
+  .edge-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    fill: var(--text-tertiary);
+    paint-order: stroke;
+    stroke: var(--surface-1);
+    stroke-width: var(--halo-h2);
+    stroke-linejoin: round;
+  }
+
+  .legend { display: flex; flex-wrap: wrap; gap: var(--space-md) var(--space-lg); margin: var(--space-md) 0 0; }
+  .swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-tertiary);
+  }
+  .swatch::before {
+    content: "";
+    width: var(--space-lg);
+    height: var(--space-md);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    background: var(--surface-1);
+  }
+  .swatch-is::before { border: var(--stroke) solid var(--accent); }
+  .swatch-see::before { border: var(--stroke) solid var(--accent); background: var(--surface-2); }
+
+  /* ---- cards: one treatment for all three sets, so the page reads as one
+     surface rather than three lists that happen to sit under each other. ---- */
+  .cards { display: grid; gap: var(--space-md); grid-template-columns: 1fr; align-items: start; }
+  @media (min-width: 700px) { .cards { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1100px) { .cards { grid-template-columns: 1fr 1fr 1fr; } }
+
+  .card {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+    transition: border-color var(--dur-sm) var(--ease-place), background-color var(--dur-sm) var(--ease-place);
+  }
+  .card:hover { border-color: var(--border-default); }
+  .card[open] { border-color: var(--accent); background: var(--surface-2); }
+
+  .card > summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    cursor: pointer;
+    list-style: none;
+  }
+  .card > summary::-webkit-details-marker { display: none; }
+  .card-title { flex: 1 1 auto; min-width: 0; font-size: var(--fs-body); line-height: var(--lh-body); font-weight: var(--fw-h2); }
+  .card .tag {
+    flex: 0 0 auto;
+    padding: 0 var(--space-sm);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--pill-radius);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+  .chev {
+    flex: 0 0 auto;
+    width: var(--space-sm);
+    height: var(--space-sm);
+    margin-bottom: var(--space-xs);
+    border-right: 1px solid var(--text-tertiary);
+    border-bottom: 1px solid var(--text-tertiary);
+    transform: rotate(45deg);
+    transition: transform var(--dur-sm) var(--ease-place), border-color var(--dur-sm) var(--ease-place);
+  }
+  .card[open] .chev { transform: rotate(-135deg); border-color: var(--accent); }
+
+  .card .body { padding: 0 var(--space-lg) var(--space-lg); }
+  /* A hand-written card puts its paragraphs straight inside <details>, so the
+     padding the worker cards get from .body has to be given to the direct children
+     too — otherwise the text runs onto the border. */
+  .card > p, .card > ul, .card > ol { padding-left: var(--space-lg); padding-right: var(--space-lg); }
+  .card > p:last-child, .card > ul:last-child { padding-bottom: var(--space-lg); }
+  .card .what { margin: 0; color: var(--text-secondary); font-size: var(--fs-body); line-height: var(--lh-body); }
+  .card .why {
+    margin: var(--space-md) 0 0;
+    padding-left: var(--space-lg);
+    border-left: var(--stroke) solid var(--accent);
+    color: var(--text-secondary);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+  }
+  .card .why li + li { margin-top: var(--space-xs); }
+  .card .where {
+    margin: var(--space-md) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-tertiary);
+    word-break: break-all;
+  }
+
+  .travel { counter-reset: step; list-style: none; padding: 0; margin-top: var(--space-lg); }
+  .travel li {
+    position: relative;
+    padding: var(--space-sm) 0 var(--space-sm) var(--space-xl);
+  }
+  .travel li + li { border-top: 1px solid var(--border-subtle); }
+  .travel li::before {
+    counter-increment: step;
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--accent);
+  }
+
+  .colophon {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border-subtle);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-tertiary);
+  }
+  .colophon code { color: var(--text-secondary); }
+  .colophon a { color: var(--text-secondary); }
+</style>
+
+<style>
+  /* A face that needs the running server cannot be a link on a static host. It is
+     shown as text instead, so nothing on this page points nowhere. */
+  .offline { opacity: .45; cursor: default; text-decoration: line-through; }
+  .offline::after { content: " · local only"; font-size: .7em; letter-spacing: .04em; text-transform: uppercase; }
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">CONSOLE/dist/map.html</span>
+</nav>
+<div class="bar" id="bar">
+  <span class="offline " title="This face needs the console running on your Mac">Chat</span>
+  <span class="offline " title="This face needs the console running on your Mac">Estate</span>
+  <span class="offline here" title="This face needs the console running on your Mac">Map</span>
+  <span class="offline " title="This face needs the console running on your Mac">Sessions</span>
+  <span class="offline " title="This face needs the console running on your Mac">Drop</span>
+  <span class="offline " title="This face needs the console running on your Mac">Security</span>
+</div>
+
+<div class="wrap">
+  <header class="page-head">
+    <h1>The Map</h1>
+    <p class="lede">
+      Every word you keep hearing has a shape. <strong>A seat</strong> is a model.
+      <strong>A pin</strong> is a rule saying which seat runs a job.
+      <strong>A lane</strong> is a named job. <strong>The harness</strong> is omO itself —
+      the thing that reads the pins and hands each job to a seat.
+      <strong>A probe</strong> is the question "are you still there?" asked of a seat every
+      few minutes. <strong>The board</strong> is the Estate page, which reads all of it.
+      Tap any block on the canvas, or open a card below.
+    </p>
+  </header>
+
+  <section class="section" id="words">
+    <div class="sec-head">
+      <span class="sec-num" aria-hidden="true">01</span>
+      <h2>The words</h2>
+    </div>
+
+    <div class="board">
+      <svg id="canvas" viewBox="0 0 1500 780" role="img" aria-label="Diagram of how seats, pins, categories, lanes, agents, the harness, probes and the board connect"></svg>
+    </div>
+
+    <p class="pan-hint">Drag the canvas sideways to follow the connections &rarr;</p>
+
+    <div class="legend">
+      <span class="swatch swatch-is">what a thing IS</span>
+      <span class="swatch swatch-lives">where a thing LIVES</span>
+      <span class="swatch swatch-see">what you SEE</span>
+    </div>
+
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section class="section" id="faces">
+    <div class="sec-head">
+      <span class="sec-num" aria-hidden="true">02</span>
+      <h2>The console, face by face</h2>
+    </div>
+    <p class="lede">Six faces, one nav row, and what each is for. Read off the running console on 2 October 2026.</p>
+    <div class="cards">
+      <details class="card">
+        <summary><span class="card-title">Chat</span><span class="tag">talk here</span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="body">
+          <p class="what">Where you talk to me. I do the work, delegate what needs delegating, and hand the result back as something you can look at.</p>
+          <ul class="why"><li><strong>Beside</strong> shows a page to the right of the chat; <strong>Open</strong> gives it its own window.</li>
+          <li><strong>Chats</strong> lists past conversations, <strong>Stop</strong> halts me mid-turn, <strong>New chat</strong> starts fresh.</li>
+          <li>Name a page like <code>/map</code> in my reply and it arrives as a chip you tap to open beside the chat.</li></ul>
+        </div>
+      </details>
+      <details class="card">
+        <summary><span class="card-title">Estate</span><span class="tag">the live board</span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="body">
+          <p class="what">One surface for the whole system: which seat is on which lane, what the checks say, what it cost, and what needs your attention.</p>
+          <ul class="why"><li><strong>Checks</strong> — health (the hourly gate), self-check, tidy-check.</li>
+          <li><strong>Lanes</strong> — which model runs which kind of work, live from the pins.</li>
+          <li><strong>Findings</strong> — Safety, Drift and Idle: the things worth a look.</li></ul>
+        </div>
+      </details>
+      <details class="card">
+        <summary><span class="card-title">Map</span><span class="tag">the vocabulary</span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="body">
+          <p class="what">This page. The words you keep hearing — seat, pin, lane, probe, harness — as one connected diagram, each block tappable, each card explaining it in plain language.</p>
+          <ul class="why"><li>Deliberately not live: it cannot go stale or lie to you.</li>
+          <li>Grows one block at a time as the vocabulary does.</li></ul>
+        </div>
+      </details>
+      <details class="card">
+        <summary><span class="card-title">Sessions</span><span class="tag">every conversation</span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="body">
+          <p class="what">Every open agent session, newest first, with the folder it belongs to, the model it is on, and whether it is busy.</p>
+          <ul class="why"><li>Tap any row to come back to that conversation.</li>
+          <li>Use it instead of hunting through Zed's thread list.</li></ul>
+        </div>
+      </details>
+      <details class="card">
+        <summary><span class="card-title">Drop</span><span class="tag">phone to Mac</span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="body">
+          <p class="what">Send a note, photo or file from your phone; it lands in the Mac's drop folder.</p>
+          <ul class="why"><li>The fastest way to get something in front of me.</li>
+          <li>Needs the console token on the phone — that is the lock on it.</li></ul>
+        </div>
+      </details>
+      <details class="card">
+        <summary><span class="card-title">Security</span><span class="tag">your GitHub</span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="body">
+          <p class="what">Live read of your GitHub security posture: keys, OAuth apps, sessions.</p>
+          <ul class="why"><li>Readable without the token, on purpose.</li>
+          <li>The one page worth checking on a phone.</li></ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="section" id="regimes">
+    <div class="sec-head">
+      <span class="sec-num" aria-hidden="true">03</span>
+      <h2>Two regimes, two different jobs</h2>
+    </div>
+    <p class="lede">The system is funded two ways over its life, and the right strategy is
+    not the same in each. Written into the constitution on 2 October 2026 so the rule
+    survives this conversation.</p>
+    <div class="cards">
+      <details class="card" open>
+        <summary><span class="card-title">FREE — now</span><span class="tag">spread the load</span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="body">
+          <p class="what">Two uncapped, zero-retention seats. Nothing is scarce except attention and coverage, so the win comes from spreading work and stretching two seats.</p>
+          <ul class="why">
+            <li>Spread across both seats; never hammer one.</li>
+            <li>Use arena agents and extra sub-agents to stretch what two seats can do.</li>
+            <li>Keep everything current and shared — nothing is bought to patch a gap later.</li>
+            <li>A free seat can go quiet with no billing warning, so the probe board matters more here.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="card">
+        <summary><span class="card-title">PAID — Go Plus and other subscriptions</span><span class="tag">efficiency and speed</span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="body">
+          <p class="what">Cost stops being the constraint and becomes the budget: daily, weekly and monthly limits. The optimisation inverts — efficiency and speed, not spreading.</p>
+          <ul class="why">
+            <li>Optimise for tokens per task and for latency.</li>
+            <li>LongCat becomes affordable, so slowness stops deciding the seat.</li>
+            <li>Rate limits become a real failure mode: budget, back off, queue.</li>
+            <li>Retention rules return with force — nothing that trains on prompts touches unreleased work, paid or not.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="card">
+        <summary><span class="card-title">What never changes</span><span class="tag">the load-bearing rules</span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="body">
+          <p class="what">Evidence before claims, one agent to you, the boundaries on your stuff, and never marking my own work reviewed. A change of funding relaxes none of these.</p>
+          <ul class="why"><li>Moving between regimes is a deliberate re-pin with the reason written down — never a side effect of a credit balance.</li></ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="section" id="load">
+    <div class="sec-head">
+      <span class="sec-num" aria-hidden="true">04</span>
+      <h2>How you can spread the load</h2>
+    </div>
+    <p class="lede">Ranked by how much they actually move the needle. The first one is
+    recommended; the rest are optional. Written 2 October 2026.</p>
+    <div class="cards">
+    <details class="card" open><summary>1 · Name the next three outcomes<span class="tag">biggest lever</span></summary>
+      <p class="what">Not tasks — outcomes, in your words, in priority order. Everything else about how the work gets done is mine to figure out.</p>
+      <p class="what">Why it is the biggest lever: right now I choose what to work on next, and a chosen priority is only ever as good as your intent that I do not have yet.</p>
+      <ul class="why"><li>Three is enough. Ten is a wish list, and I will triage it against everything else.</li>
+      <li>"Make the console something I never need Zed for" is a complete instruction of that kind.</li></ul>
+    </details>
+    <details class="card"><summary>2 · Use the Drop box from your phone<span class="tag">while you are out</span></summary>
+      <p class="what">Send a photo, a voice note or a sentence and it lands in front of me. The fastest way to add work without waiting for a session.</p>
+      <ul class="why"><li>Good for "while you're out" instructions and for anything you see rather than remember.</li></ul>
+    </details>
+    <details class="card"><summary>3 · Open a second conversation<span class="tag">parallel lines</span></summary>
+      <p class="what">Two threads means two lines of work in flight. Both free seats get used, which is exactly what the free regime is for.</p>
+      <ul class="why"><li>One per subject, never one per question.</li>
+      <li>Not yet built into the console — see the honest gaps below.</li></ul>
+    </details>
+    <details class="card"><summary>4 · Ask for the arena<span class="tag">when quality matters</span></summary>
+      <p class="what">Several agents attempt the same brief independently, and I synthesise the best result rather than averaging them.</p>
+      <ul class="why"><li>Worth it for craft and judgement; wasteful for mechanical work.</li>
+      <li>Costs time, not money — the seats are free.</li></ul>
+    </details>
+  </section>
+
+  <section class="section" id="never">
+    <div class="sec-head">
+      <span class="sec-num" aria-hidden="true">05</span>
+      <h2>What you never need to do</h2>
+    </div>
+    <div class="cards">
+      <details class="card"><summary>Decide, approve or check the plumbing<span class="tag">handled</span></summary>
+        <ul class="why">
+          <li>Which seat, which lane, how many workers, fast or thorough — my call, every time.</li>
+          <li>Commit, push, merge — mine, reported not asked.</li>
+          <li>Whether a change is verified — the gate decides, and a red gate blocks the push.</li>
+        </ul>
+      </details>
+    </div>
+  </section>
+
+  <section class="section" id="travels">
+    <div class="sec-head">
+      <span class="sec-num" aria-hidden="true">06</span>
+      <h2>How a request actually travels</h2>
+    </div>
+    <ol class="lede travel">
+      <li>You ask for something in <strong>Chat</strong> (or a lane is started for you).</li>
+      <li>The <strong>harness</strong> reads the <strong>pin</strong> for that kind of work — the <strong>category</strong>.</li>
+      <li>The category belongs to a <strong>lane</strong>: INTEL judges, OPS does the mechanics, DESIGN makes things.</li>
+      <li>The harness calls the <strong>seat</strong> the pin names. If that seat is rate-limited, it retries on the <strong>fallback</strong> seat.</li>
+      <li>A <strong>probe</strong> checks every pinned seat and every fallback seat is alive, on a timer.</li>
+      <li>The <strong>board</strong> (Estate) reads the pins, the probes and the spend, and shows you which seat is on which lane.</li>
+    </ol>
+  </section>
+
+  <footer class="colophon">
+    The Map · facts read from <code>~/.omo/omo.jsonc</code> and <code>~/.omo/lanes/lane-watch.cjs</code> on 2 October 2026 ·
+    <span class="offline " title="This face needs the console running on your Mac">see it live on the Estate</span>
+  </footer>
+</div>
+
+<script>
+'use strict';
+if (window.self !== window.top) { const b = document.getElementById('bar'); if (b) b.remove(); }
+
+/* The whole vocabulary as data. Adding a word later means adding one entry here
+   and one dot on the canvas; nothing else in this file needs to change. */
+const NODES = [
+  { id: 'you',    g: 0, x:   70, y:  80, label: 'You',            sub: 'the request',     tag: 'person',
+    what: 'Where work starts. Everything below exists to answer one prompt of yours and to show you, afterwards, that it really ran.',
+    why: ['You never have to name a model — you name a job.', 'The board is how you check the answer without reading a log.'] },
+  { id: 'harness', g: 0, x:   70, y: 250, label: 'Harness',         sub: 'omO',             tag: 'the engine',
+    what: 'omO itself: the loop that reads your pins, decides which seat runs which job, streams the answer back, and retries on the fallback seat when the primary fails.',
+    where: 'omO itself (the agent you are talking to)',
+    why: ['When a lane says "I read this as a rewrite request…" and stops, that is the harness talking, not the model thinking.', 'The retry chain is the harness too — that is why a fallback seat gets used at all.'] },
+  { id: 'pin',    g: 0, x:   70, y: 420, label: 'Pin',             sub: 'the rule',        tag: 'a rule',
+    what: 'One line of config saying "this kind of work runs on that seat". Pins are the only reason any seat is ever chosen — nothing is hard-coded elsewhere.',
+    why: ['Changing a pin changes behaviour everywhere at once, which is why a pin is worth reading before you trust a lane.', 'Two pins disagreeing once made the board lie about the runtime. They agree now.'] },
+  { id: 'config', g: 0, x:   70, y: 590, label: 'Config',          sub: 'omo.jsonc',       tag: 'where it lives',
+    what: 'The file every pin lives in: ~/.omo/omo.jsonc. Plain text, commented, yours to read and change.',
+    where: '~/.omo/omo.jsonc',
+    why: ['It is the seat map. Reading it tells you the whole truth about which model does what.', 'Comments there record why each pin is what it is, with the evidence.'] },
+
+  { id: 'category', g: 1, x:  430, y: 150, label: 'Category',      sub: 'kind of work',    tag: 'a bucket',
+    what: 'The routing bucket for a kind of work: quick, deep-high, architecture, visual-engineering, writing, and nine others. Each has its own pin.',
+    why: ['Two categories can sit on different seats at the same time — that is the split, not a contradiction.', 'Naming a category is how a lane says what kind of work it is handing over.'] },
+  { id: 'agent',   g: 1, x:  430, y: 330, label: 'Agent',           sub: 'named worker',    tag: 'a worker',
+    what: 'A worker with a name and a brief: INTEL (judgement), OPS (mechanics), DESIGN (craft), plus the watchers explore and librarian. Each has its own pin.',
+    why: ['Lanes are for judgement and craft; agents are the things that actually hold that brief day to day.', 'An agent that keeps drifting toward code work is a brief problem, not a model problem.'] },
+  { id: 'lane',    g: 1, x:  430, y: 510, label: 'Lane',            sub: 'INTEL OPS DESIGN', tag: 'a lane',
+    what: 'A named column of work, made of categories. INTEL judges, OPS does the mechanics, DESIGN builds the craft. A lane is what you address work to; the model behind it is an implementation detail.',
+    why: ['Say "DESIGN", never "LongCat". The lane is the thing; the seat can change under it without renaming anything.', 'This is why the board is titled "Lanes · which model is on which".'] },
+
+  { id: 'seat',    g: 2, x:  790, y: 190, label: 'Seat',            sub: 'the model',       tag: 'what answers',
+    what: 'The model that writes the answer. Two free seats are in play: Space Bunny and LongCat, both free and zero-retention, so neither can leak unreleased work.',
+    why: ['A seat is a provider plus a model id, e.g. opencode-go/space-bunny-free.', 'Both seats are uncapped — the $ you see on the board is the harness\'s own overhead, not the seats.'] },
+  { id: 'primary', g: 2, x:  790, y: 360, label: 'Primary seat',    sub: 'what runs',       tag: 'a pin\'s target',
+    what: 'The seat a category is pinned to. Space Bunny leads every lane except the three design categories, which are on LongCat.',
+    why: ['One seat on everything is a single point of failure, which is why a second seat exists at all.', 'If the primary degrades, the fallback catches the work and the board shows the pressure.'] },
+  { id: 'fallback', g: 2, x:  790, y: 530, label: 'Fallback seat',   sub: 'what catches it', tag: 'the second seat',
+    what: 'The seat tried when the primary fails or is rate-limited. Probed as well as primaries now, so it is never a surprise when it takes over.',
+    why: ['Redundancy, not speed — the fallback is chosen for being a separate failure domain.', 'It used to be invisible on the board because only pinned seats were probed. That was the gap you noticed.'] },
+
+  { id: 'probe',   g: 3, x: 1150, y: 250, label: 'Probe',          sub: '"reply OK"',      tag: 'a health check',
+    what: 'lane-watch asks each pinned and fallback seat one trivial question on a timer and records whether it answered, timed out, or was unfunded.',
+    where: '~/.omo/lanes/lane-watch.cjs',
+    why: ['A pin that parses is not a pin that works — the probe is what tells the two apart.', 'It is why the board can say "ok 16s" instead of guessing.'] },
+  { id: 'lanewatch', g: 3, x: 1150, y: 420, label: 'lane-watch',    sub: 'the reader',      tag: 'a script',
+    what: 'The script that reads the live pins, probes the seats, sums the spend and prints every finding. It owns those numbers; nothing else does.',
+    where: '~/.omo/lanes/lane-watch.cjs',
+    why: ['It re-pins nothing. It reports, and a session applies the change.', 'Findings it raises — Safety, Drift, Idle — are the things worth your attention.'] },
+  { id: 'board',   g: 3, x: 1150, y: 590, label: 'Board',           sub: 'Estate',          tag: 'what you see',
+    what: 'The Estate page: lanes and their seats, both checks, spend, quota, findings, published pages. It is a read-only view of what lane-watch found.',
+    where: '~/omo-console/estate.html',
+    why: ['If the board and the runtime ever disagree, the board is wrong — check the pin, not the page.', 'Every number on it comes from the checker that owns it. None is typed by hand.'] }
+];
+
+const EDGES = [
+  ['you', 'harness', 'you ask'],
+  ['harness', 'pin', 'reads'],
+  ['pin', 'config', 'lives in'],
+  ['harness', 'category', 'picks'],
+  ['category', 'agent', 'belongs to'],
+  ['category', 'lane', 'groups into'],
+  ['pin', 'primary', 'names'],
+  ['primary', 'seat', 'is a'],
+  ['fallback', 'seat', 'is a'],
+  ['primary', 'fallback', 'on failure'],
+  ['lane', 'primary', 'runs on'],
+  ['probe', 'seat', 'asks'],
+  ['lanewatch', 'probe', 'runs'],
+  ['lanewatch', 'config', 'reads'],
+  ['board', 'lanewatch', 'shows'],
+  ['board', 'primary', 'names per lane']
+];
+
+/* The three states the legend names, by the tag a node carries. A tag not listed
+   here lives where it lives — the structure state. */
+const STATE = {
+  person: 'is', 'the engine': 'is', 'a rule': 'is', 'the model': 'is', 'a health check': 'is',
+  'what you see': 'see'
+};
+
+const WHERE_DEFAULT = 'a pin or a decision — no file of its own';
+const GROUP_TITLES = ['What you do', 'What routes the work', 'What does the work', 'What checks and shows it'];
+
+const NS = 'http://www.w3.org/2000/svg';
+const el = (n, attrs = {}, kids = []) => {
+  const e = document.createElementNS(NS, n);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  for (const k of kids) e.appendChild(k);
+  return e;
+};
+const byId = Object.fromEntries(NODES.map((n) => [n.id, n]));
+const W = 270, H = 104;                       // node box, generous for an 18px label
+const svg = document.getElementById('canvas');
+const tokenPx = (name, fallback) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || fallback;
+/* A same-column link brackets out to the left of its own column. One spacing step
+   puts that bracket 18px clear of the column edge, which leaves the gap between
+   columns free for the edge labels that ride in it. */
+const BEND = tokenPx('--space-lg', 24);
+const LABEL_GAP = tokenPx('--space-sm', 8);
+
+const defs = el('defs');
+const arrow = el('marker', {
+  id: 'arrow', viewBox: '0 0 10 10', refX: '9', refY: '5',
+  markerWidth: '10', markerHeight: '10', orient: 'auto'
+});
+arrow.appendChild(el('path', { class: 'arrow-head', d: 'M1,1 L9,5 L1,9' }));
+defs.appendChild(arrow);
+svg.appendChild(defs);
+
+const cubic = (p0, p1, p2, p3, t) => {
+  const u = 1 - t;
+  return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3;
+};
+const samples = (x0, x1, x2, x3, y0, y1, y2, y3) => {
+  const pts = [];
+  for (let i = 0; i <= 40; i++) {
+    const t = i / 40;
+    pts.push({ x: cubic(x0, x1, x2, x3, t), y: cubic(y0, y1, y2, y3, t) });
+  }
+  return pts;
+};
+
+/* A label goes in only where the real glyphs fit the gap, sit on no node, and can
+   be lifted clear of their own curve. A struck-through or overlapping label is
+   worse than none. */
+const placeLabel = (text, x, y, anchor, pts, room) => {
+  const t = el('text', { x, y, class: 'edge-label', 'text-anchor': anchor }, [document.createTextNode(text)]);
+  svg.appendChild(t);
+  let box;
+  try { box = t.getBBox(); } catch { return; }
+  if (!box.width) return;
+
+  const left = anchor === 'middle' ? x - box.width / 2 : x;
+  const right = left + box.width;
+  let top = Infinity, bottom = -Infinity;
+  for (const p of pts) {
+    if (p.x < left || p.x > right) continue;
+    if (p.y < top) top = p.y;
+    if (p.y > bottom) bottom = p.y;
+  }
+  if (top !== Infinity) {
+    // A steep edge crosses a label laid on it. Sit the label above or below the
+    // highest and lowest the curve reaches under it, whichever is the nearer move.
+    const up = box.y - y, down = box.y + box.height - y;
+    const above = top - LABEL_GAP - down, below = bottom + LABEL_GAP - up;
+    t.setAttribute('y', String(Math.abs(above - y) <= Math.abs(below - y) ? above : below));
+    try { box = t.getBBox(); } catch { /* the first box is close enough */ }
+  }
+
+  const onNode = NODES.some((n) => box.x + box.width > n.x && box.x < n.x + W && box.y + box.height > n.y && box.y < n.y + H);
+  if (onNode || (room != null && box.width > room)) t.remove();
+};
+
+/* Edges first so nodes sit on top of them. */
+for (const [a, b, label] of EDGES) {
+  const A = byId[a], B = byId[b];
+  if (!A || !B) continue;
+  const yA = A.y + H / 2, yB = B.y + H / 2;
+  let x0, x1, x2, x3, lx, ly, anchor = 'middle', room = null;
+
+  if (A.x === B.x) {
+    // Same column: the link brackets out to the left of its own column rather
+    // than looping back across the one beside it.
+    x0 = A.x; x1 = x2 = A.x - BEND; x3 = B.x;
+    lx = A.x + LABEL_GAP; ly = (yA + yB) / 2; anchor = 'start';
+  } else {
+    const forward = B.x > A.x;
+    x0 = forward ? A.x + W : A.x;
+    x3 = forward ? B.x : B.x + W;
+    x1 = x2 = (x0 + x3) / 2;
+    lx = x1; ly = (yA + yB) / 2; room = Math.abs(x3 - x0);
+  }
+
+  svg.appendChild(el('path', {
+    class: 'edge', 'marker-end': 'url(#arrow)',
+    d: `M${x0},${yA} C${x1},${yA} ${x2},${yB} ${x3},${yB}`,
+  }));
+  if (label) placeLabel(label, lx, ly, anchor, samples(x0, x1, x2, x3, yA, yA, yB, yB), room);
+}
+
+for (const n of NODES) {
+  const g = el('g', { class: 'node-hit', tabindex: '0', role: 'button', 'aria-label': `${n.label} — ${n.sub}` });
+  g.appendChild(el('rect', { class: `node-box is-${STATE[n.tag] || 'lives'}`, x: n.x, y: n.y, width: W, height: H, rx: 8 }));
+  g.appendChild(el('text', { x: n.x + 16, y: n.y + 40, class: 'node-label' }, [document.createTextNode(n.label)]));
+  g.appendChild(el('text', { x: n.x + 16, y: n.y + 65, class: 'node-sub' }, [document.createTextNode(n.sub)]));
+  g.appendChild(el('text', { x: n.x + 16, y: n.y + 88, class: 'node-tag' }, [document.createTextNode(n.tag)]));
+  const open = () => {
+    const card = document.getElementById('card-' + n.id);
+    card.open = true;
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+  g.addEventListener('click', open);
+  g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+  svg.appendChild(g);
+}
+
+/* Group headings last, so nothing paints over them. Each sits above its own
+   column's topmost node, ruled to the column width. */
+for (const g of [...new Set(NODES.map((n) => n.g))].sort()) {
+  const members = NODES.filter((n) => n.g === g);
+  const top = Math.min(...members.map((n) => n.y));
+  const left = Math.min(...members.map((n) => n.x));
+  svg.appendChild(el('text', { x: left, y: top - 30, class: 'group-label' }, [document.createTextNode(GROUP_TITLES[g])]));
+  svg.appendChild(el('line', { class: 'group-rule', x1: left, y1: top - 16, x2: left + W, y2: top - 16 }));
+}
+
+const cards = document.getElementById('cards');
+for (const n of NODES) {
+  const d = document.createElement('details');
+  d.className = 'card';
+  d.id = 'card-' + n.id;
+  d.innerHTML = `<summary><span class="card-title">${n.label}</span><span class="tag">${n.tag}</span><span class="chev" aria-hidden="true"></span></summary>
+    <div class="body">
+      <p class="what">${n.what}</p>
+      <ul class="why">${n.why.map((w) => `<li>${w}</li>`).join('')}</ul>
+      <p class="where">${n.where || WHERE_DEFAULT}</p>
+    </div>`;
+  cards.appendChild(d);
+}
+</script>
+</body>
+</html>

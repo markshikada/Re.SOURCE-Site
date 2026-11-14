@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Re.Source · Deck screen · Y26 W40 Polish</title>
+<style>
+/* ===== Tokens, written from the live source, never quoted from memory ===== */
+:root{
+  --u:4px;
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px; --space-xl:48px; --space-2xl:96px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+
+  --black:#000000;
+  --g06:#0D0D0D; --g12:#1A1A1A; --g24:#333333; --g48:#555555; --g66:#888888; --g88:#CCCCCC; --white:#FFFFFF;
+  --text-primary:var(--white); --text-secondary:var(--g66); --text-dim:var(--g48);
+  --surface-page:var(--black); --surface-card:var(--g06); --surface-raised:var(--g12); --surface-border:var(--g24);
+
+  --cl-00-core:transparent;
+  --cl-01-tone:#99DD00; --cl-02-flux:#FFD100; --cl-03-flow:#FFB000; --cl-04-love:#FF7700;
+  --cl-05-bond:#FF5500; --cl-06-fire:#FF0000; --cl-07-path:#E02888; --cl-08-time:#9933CC;
+  --cl-09-meta:#6655FF; --cl-10-form:#2277FF; --cl-11-type:#00BBDD; --cl-12-life:#00D460;
+
+  --fs-caption:12px; --fs-body:18px; --fs-h2:24px; --fs-h1:36px; --fs-display:48px; --fs-mark:72px;
+  --lh-caption:18px; --lh-body:30px; --lh-h2:36px; --lh-h1:48px; --lh-display:54px; --lh-mark:72px;
+  --fw-caption:300; --fw-body:400; --fw-h2:600; --fw-h1:700; --fw-display:800; --fw-mark:800;
+
+  --stroke:3px;
+  --dur-sm:120ms; --dur-md:180ms; --dur-lg:360ms;
+  --ease-place:cubic-bezier(0.33,0,0.5,1);
+  --ease-arrive:cubic-bezier(0,0,0.5,1);
+  --ease-leave:cubic-bezier(0.33,0,1,1);
+  --ease-pop:cubic-bezier(0.34,1.56,0.64,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--surface-page);color:var(--text-primary);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:var(--fs-body);line-height:var(--lh-body);font-optical-sizing:auto;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--text-primary);text-decoration-color:var(--g48);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+::selection{background:var(--g24);color:var(--white)}
+
+/* ===== Page chrome ===== */
+.bar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:var(--space-md);
+  padding:var(--space-sm) var(--space-lg);
+  background:var(--g06);border-bottom:1px solid var(--surface-border);
+  height:48px;
+}
+.bar .brand{display:flex;align-items:center;gap:var(--space-sm);font-size:var(--fs-caption);font-weight:var(--fw-h1);
+  text-transform:uppercase;letter-spacing:normal}
+.bar .brand .dot{width:12px;height:12px;background:var(--cl-06-fire);border:2px solid var(--white)}
+.bar .set{display:flex;gap:var(--space-md);margin-left:var(--space-lg)}
+.bar .set button{
+  background:transparent;border:0;color:var(--text-secondary);
+  font-size:var(--fs-caption);font-weight:var(--fw-caption);
+  padding:var(--space-xs) var(--space-sm);height:24px;cursor:pointer;
+  font-family:inherit;text-transform:uppercase
+}
+.bar .set button[aria-pressed="true"]{color:var(--white);border-bottom:2px solid var(--cl-06-fire)}
+.bar .stamp{margin-left:auto;font-size:var(--fs-caption);color:var(--text-dim);
+  text-transform:uppercase;font-weight:var(--fw-caption)}
+
+/* ===== Page layout ===== */
+.page{padding:var(--space-xl) var(--space-xl) var(--space-2xl)}
+.lede{max-width:768px;margin-bottom:var(--space-xl)}
+.lede h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);margin:0 0 var(--space-md)}
+.lede p{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);margin:0}
+
+/* ===== The deck lattice at 1440 =====
+   4 columns x 3 rows. The open card takes the rightmost two columns
+   of the middle row (a 6-column block), so 12 cards still sit on
+   4 tracks across, one missing from the open row's right pair.
+   The 11 behind read as a deck; the open card belongs to the lattice. */
+.lattice{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-auto-rows:1fr;
+  gap:var(--space-lg);
+}
+.lattice .open-slot{
+  grid-column:3 / span 2;
+  grid-row:2;
+  align-self:stretch;
+  justify-self:stretch;
+}
+/* The card itself sits inside its track; the open card reads at the
+   same row height as the others, so the lattice stays whole. */
+.lattice .card{min-height:264px}
+
+/* ===== The card ===== */
+.card{
+  position:relative;
+  background:var(--surface-card);
+  border:1px solid var(--surface-border);
+  border-radius:var(--radius-md);
+  padding:var(--space-lg);
+  display:flex;flex-direction:column;gap:var(--space-sm);
+  cursor:pointer;
+  transition:transform var(--dur-sm) var(--ease-place),
+             border-color var(--dur-sm) var(--ease-place),
+             background-color var(--dur-sm) var(--ease-place);
+}
+.card[data-lift]:hover{
+  transform:translateY(-2px);
+  background:var(--surface-raised);
+  border-color:var(--g66);
+}
+.card[data-open]{
+  border-color:var(--cl-06-fire);
+  background:var(--surface-raised);
+}
+.card .head{display:flex;align-items:center;gap:var(--space-sm)}
+.card .setmark{
+  width:14px;height:14px;flex:0 0 auto;
+  background:transparent;
+  border:3px solid var(--cl-06-fire);
+}
+.card .ring-label{
+  font-size:var(--fs-caption);line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);text-transform:uppercase;
+  color:var(--text-dim);
+}
+.card .row-tag{
+  font-size:var(--fs-caption);line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);text-transform:uppercase;
+  color:var(--text-secondary);
+  margin-left:auto;
+}
+.card .word{
+  font-size:var(--fs-display);line-height:var(--lh-display);
+  font-weight:var(--fw-display);color:var(--white);margin:0;
+}
+.card .gloss{
+  font-size:var(--fs-caption);line-height:var(--lh-caption);
+  color:var(--text-secondary);margin:0;
+  font-weight:var(--fw-caption);
+}
+.card .meta{
+  display:flex;gap:var(--space-md);margin-top:auto;
+  font-size:var(--fs-caption);line-height:var(--lh-caption);
+  color:var(--text-dim);text-transform:uppercase;font-weight:var(--fw-caption);
+}
+.card .meta span{display:inline-flex;align-items:center;gap:var(--space-xs)}
+.card .meta .pos-dot{
+  display:inline-block;width:10px;height:10px;background:var(--cl-06-fire);
+  border:2px solid var(--white);
+}
+.card .meta .polar-dot{
+  display:inline-block;width:10px;height:10px;background:var(--cl-09-meta);
+  border:2px solid var(--white);
+}
+
+/* Open card: lives on the lattice. Same padding scale, larger reading, controls. */
+.card.is-open{padding:var(--space-lg)}
+.card.is-open .word{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1)}
+.card.is-open .reading{
+  font-size:var(--fs-body);line-height:var(--lh-body);
+  color:var(--text-primary);margin:0;
+}
+.card.is-open .question{
+  font-size:var(--fs-caption);line-height:var(--lh-caption);
+  color:var(--text-secondary);font-weight:var(--fw-caption);
+  text-transform:uppercase;margin-top:var(--space-md);
+}
+.card.is-open .controls{
+  display:flex;gap:var(--space-sm);margin-top:var(--space-md);
+}
+.card.is-open .controls button{
+  height:32px;padding:var(--space-xs) var(--space-md);
+  background:var(--g06);color:var(--text-primary);
+  border:1px solid var(--surface-border);border-radius:var(--radius-sm);
+  font-family:inherit;font-size:var(--fs-caption);font-weight:var(--fw-caption);
+  text-transform:uppercase;cursor:pointer;
+  transition:background-color var(--dur-sm) var(--ease-place),
+             border-color var(--dur-sm) var(--ease-place);
+}
+.card.is-open .controls button:hover{background:var(--surface-raised);border-color:var(--g66)}
+.card.is-open .controls .key{color:var(--text-dim);margin-left:var(--space-xs)}
+
+/* Set-key ring accents on each card (the twelve position colours).
+   A card's stroke colour reads from its first pick position. */
+.card[data-pos="01"]{--pc:var(--cl-01-tone)}
+.card[data-pos="02"]{--pc:var(--cl-02-flux)}
+.card[data-pos="03"]{--pc:var(--cl-03-flow)}
+.card[data-pos="04"]{--pc:var(--cl-04-love)}
+.card[data-pos="05"]{--pc:var(--cl-05-bond)}
+.card[data-pos="06"]{--pc:var(--cl-06-fire)}
+.card[data-pos="07"]{--pc:var(--cl-07-path)}
+.card[data-pos="08"]{--pc:var(--cl-08-time)}
+.card[data-pos="09"]{--pc:var(--cl-09-meta)}
+.card[data-pos="10"]{--pc:var(--cl-10-form)}
+.card[data-pos="11"]{--pc:var(--cl-11-type)}
+.card[data-pos="12"]{--pc:var(--cl-12-life)}
+.card .setmark{border-color:var(--pc)}
+.card .meta .pos-dot{background:var(--pc)}
+.card[data-open]{border-color:var(--pc)}
+
+/* Relations strip: which two cards this card is polar to. Read at the foot. */
+.relations{
+  display:grid;grid-template-columns:repeat(12,1fr);
+  gap:var(--space-lg);
+  margin-top:var(--space-2xl);
+  padding-top:var(--space-xl);
+  border-top:1px solid var(--surface-border);
+}
+.relations .rel-head{grid-column:1 / -1}
+.relations .rel-head h2{
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);
+  margin:0 0 var(--space-sm);
+}
+.relations .rel-head p{
+  font-size:var(--fs-body);line-height:var(--lh-body);
+  color:var(--text-secondary);margin:0;max-width:768px;
+}
+.relations .pair{
+  grid-column:span 6;
+  background:var(--surface-card);border:1px solid var(--surface-border);
+  border-radius:var(--radius-md);padding:var(--space-lg);
+  display:flex;align-items:center;gap:var(--space-md);
+}
+.relations .pair .mark{
+  width:24px;height:24px;flex:0 0 auto;
+  border:3px solid var(--cl-06-fire);background:transparent;
+}
+.relations .pair .words{
+  display:flex;gap:var(--space-md);align-items:baseline;flex:1 1 auto;
+}
+.relations .pair .words .w{
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);
+  color:var(--white);
+}
+.relations .pair .words .vs{
+  font-size:var(--fs-caption);color:var(--text-dim);text-transform:uppercase;
+  font-weight:var(--fw-caption);
+}
+.relations .pair .read{
+  font-size:var(--fs-caption);line-height:var(--lh-caption);
+  color:var(--text-secondary);font-weight:var(--fw-caption);
+  max-width:360px;
+}
+
+/* Status region, the one and only */
+.status{
+  position:fixed;left:50%;bottom:var(--space-md);transform:translateX(-50%);
+  background:var(--g06);border:1px solid var(--surface-border);
+  color:var(--text-primary);font-size:var(--fs-caption);line-height:var(--lh-caption);
+  padding:var(--space-xs) var(--space-md);border-radius:var(--radius-sm);
+  opacity:0;pointer-events:none;
+  transition:opacity var(--dur-md) var(--ease-arrive);
+  z-index:60;
+}
+.status[data-on]{opacity:1}
+
+/* ===== Mobile at 390 — three columns. The lattice becomes 3 wide x 4 tall.
+   The open card moves out of the deck and rises as a bottom sheet whose
+   controls stay in reach. Nothing stretches to fill a hole. ===== */
+@media (max-width:720px){
+  .page{padding:var(--space-lg) var(--space-md) var(--space-2xl)}
+  .lede h1{font-size:var(--fs-h1);line-height:var(--lh-h1)}
+  .lattice{
+    grid-template-columns:repeat(3,1fr);
+    grid-auto-rows:auto;
+    gap:var(--space-md);
+  }
+  .lattice .open-slot{
+    grid-column:1 / -1;grid-row:auto;
+  }
+  .lattice .card{min-height:0}
+  .card{padding:var(--space-md)}
+  .card .word{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2)}
+  .card.is-open .word{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2)}
+  .card.is-open .controls{flex-wrap:wrap}
+
+  /* The relations strip collapses to single-column on a phone, the
+     pair reads as a stack. */
+  .relations{grid-template-columns:repeat(3,1fr);gap:var(--space-md);margin-top:var(--space-xl)}
+  .relations .pair{grid-column:1 / -1;flex-direction:column;align-items:flex-start}
+
+  /* The open card lifts as a sheet pinned to the foot, body scrolls, head
+     and controls stay in reach. */
+  .open-slot .card.is-open{
+    position:fixed;left:0;right:0;bottom:0;top:auto;
+    height:auto;max-height:60vh;overflow:auto;
+    border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+    z-index:70;margin:0;
+    border-top:1px solid var(--cl-06-fire);
+    border-bottom:0;
+    padding:var(--space-lg) var(--space-md);
+    animation:rs-rise var(--dur-lg) var(--ease-arrive) both;
+  }
+  .open-slot .card.is-open .controls{
+    position:sticky;bottom:0;background:var(--surface-raised);
+    margin:var(--space-md) calc(-1 * var(--space-md)) calc(-1 * var(--space-md));
+    padding:var(--space-md);border-top:1px solid var(--surface-border);
+    z-index:1;
+  }
+}
+@media (min-width:721px) and (max-width:1080px){
+  .lattice{grid-template-columns:repeat(4,1fr)}
+}
+
+@keyframes rs-rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){
+  .open-slot .card.is-open{animation-duration:1ms!important}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Polish-minimaxm3.html</span>
+</nav>
+
+<header class="bar">
+  <div class="brand"><span class="dot"></span><span>Re.Source · Word DECK</span></div>
+  <div class="set" role="tablist" aria-label="Set filter">
+    <button role="tab" aria-pressed="true" data-set="all">All</button>
+    <button role="tab" aria-pressed="false" data-set="r">Realm</button>
+    <button role="tab" aria-pressed="false" data-set="s">State</button>
+    <button role="tab" aria-pressed="false" data-set="t">Tag</button>
+  </div>
+  <div class="stamp">Y26 W40 · 28 Sep 2026</div>
+</header>
+
+<main class="page">
+  <section class="lede">
+    <h1>Twelve cards on the deck lattice</h1>
+    <p>Tap a card to open it. The open card belongs to the lattice at 1440, and rises as a sheet at 390. Another card can be opened without a second click.</p>
+  </section>
+
+  <section class="lattice" id="lattice" aria-label="Deck lattice">
+    <div class="open-slot" id="openSlot" aria-live="polite"></div>
+    <!-- 12 cards injected here -->
+  </section>
+
+  <section class="relations" aria-label="Relations between cards">
+    <header class="rel-head">
+      <h2>How the cards meet</h2>
+      <p>Each card holds a polar opposite. The pair runs opposite ways, so the relationship is the reading, not a diagram.</p>
+    </header>
+    <article class="pair">
+      <div class="mark"></div>
+      <div class="words"><span class="w">LIFE</span><span class="vs">↔</span><span class="w">FIRE</span></div>
+      <p class="read">Vitality keeps footing while what is finished is consumed.</p>
+    </article>
+    <article class="pair">
+      <div class="mark"></div>
+      <div class="words"><span class="w">TIME</span><span class="vs">↔</span><span class="w">FLUX</span></div>
+      <p class="read">Instability sets the terms; duration keeps the record.</p>
+    </article>
+    <article class="pair">
+      <div class="mark"></div>
+      <div class="words"><span class="w">FORM</span><span class="vs">↔</span><span class="w">LOVE</span></div>
+      <p class="read">What gathers decides the shape that holds it.</p>
+    </article>
+    <article class="pair">
+      <div class="mark"></div>
+      <div class="words"><span class="w">WIT</span><span class="vs">↔</span><span class="w">JOY</span></div>
+      <p class="read">Insight lands, then the laugh arrives.</p>
+    </article>
+  </section>
+</main>
+
+<div class="status" id="status" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   The 12 cards, copied verbatim from deck-data.js so this page
+   does not fetch. Three cores plus three singles per set, nine in
+   all — twelve cards exactly.
+   ============================================================ */
+const CARDS = [
+  /* Set 1: Abstract REALM */
+  {id:"r-core",set:"Abstract REALM",setKey:"r",ring:"outer",pos:0,row:"CORE",word:"ZOLE",
+   gloss:"All potential, before orientation",
+   reading:"Nothing here has taken a direction yet. What follows arises from this quiet centre, which carries no colour of its own because it is looking rather than being looked at.",
+   question:"Is anything pointing anywhere yet?",polar:"",pairs:["",""]},
+  {id:"r-single-12",set:"Abstract REALM",setKey:"r",ring:"outer",pos:12,row:"SINGLE",word:"LIFE",
+   gloss:"Raw animation, before intent",
+   reading:"It beats without asking permission and continues whether or not anything is decided. The plainest sign of it is movement that nobody ordered.",
+   question:"What is alive in this moment?",polar:"FIRE",pairs:["FIRE",""]},
+  {id:"r-single-04",set:"Abstract REALM",setKey:"r",ring:"outer",pos:4,row:"SINGLE",word:"LOVE",
+   gloss:"The gravity that ends isolation",
+   reading:"It pulls separate things into one thing and holds them there. Less a feeling than a structural necessity, which is why its absence shows up as drift.",
+   question:"What is drawing you closer right now?",polar:"FORM",pairs:["FORM",""]},
+  {id:"r-single-08",set:"Abstract REALM",setKey:"r",ring:"outer",pos:8,row:"SINGLE",word:"TIME",
+   gloss:"The one thing that never waits",
+   reading:"It measures all else and negotiates with none of it. Its pressure is what makes anything feel urgent, or already gone.",
+   question:"How is the clock affecting your pace?",polar:"FLUX",pairs:["FLUX",""]},
+  /* Set 2: Aspect STATE */
+  {id:"s-core",set:"Aspect STATE",setKey:"s",ring:"mid",pos:0,row:"CORE",word:"HERE",
+   gloss:"Still, under every passing mood",
+   reading:"Nothing has to be felt for this to be present. It sits behind whatever passes, unchanged by any of it.",
+   question:"What is here when the feeling goes?",polar:"",pairs:["",""]},
+  {id:"s-single-12",set:"Aspect STATE",setKey:"s",ring:"mid",pos:12,row:"SINGLE",word:"BODY",
+   gloss:"Experience, held as weight",
+   reading:"It registers everything first and reports in sensation rather than words. The most literal interface there is.",
+   question:"Which signal has the floor?",polar:"WILL",pairs:["WILL",""]},
+  {id:"s-single-04",set:"Aspect STATE",setKey:"s",ring:"mid",pos:4,row:"SINGLE",word:"SOUL",
+   gloss:"Depth that resists formatting",
+   reading:"The part that will not be made useful. Its resonance answers to neither role nor function.",
+   question:"What matters here with no purpose behind it?",polar:"SELF",pairs:["SELF",""]},
+  {id:"s-single-08",set:"Aspect STATE",setKey:"s",ring:"mid",pos:8,row:"SINGLE",word:"MIND",
+   gloss:"Attention working on something, turning it over",
+   reading:"The working space of logic and strategy. It seeks to understand in order to control.",
+   question:"Which idea is being assembled?",polar:"HIGH",pairs:["HIGH",""]},
+  /* Set 3: Anchor TAG */
+  {id:"t-core",set:"Anchor TAG",setKey:"t",ring:"inner",pos:0,row:"CORE",word:"YOU",
+   gloss:"Witness with no label attached",
+   reading:"Perception arrives before naming does. This is the point that observes and takes no category of its own.",
+   question:"Who is doing the looking?",polar:"",pairs:["",""]},
+  {id:"t-single-12",set:"Anchor TAG",setKey:"t",ring:"inner",pos:12,row:"SINGLE",word:"ECO",
+   gloss:"Nothing here operates alone",
+   reading:"Every action ripples through what surrounds it. Dependence is mutual whether or not it gets acknowledged.",
+   question:"How is the wider world answering you?",polar:"MAX",pairs:["MAX",""]},
+  {id:"t-single-04",set:"Anchor TAG",setKey:"t",ring:"inner",pos:4,row:"SINGLE",word:"GOD",
+   gloss:"The standard above all others",
+   reading:"A placeholder for the highest principle, whatever fills it. Effort gets measured against it.",
+   question:"What authority is guiding your devotion?",polar:"EGO",pairs:["EGO",""]},
+  {id:"t-single-08",set:"Anchor TAG",setKey:"t",ring:"inner",pos:8,row:"SINGLE",word:"WIT",
+   gloss:"Speed that cuts complexity",
+   reading:"Quick perception finding the unexpected connection. It handles difficulty with a light touch.",
+   question:"What did you catch straight away?",polar:"JOY",pairs:["JOY",""]}
+];
+
+/* Map word → position colour, single source of colour truth. */
+const POS = {
+  "ZOLE":0,"ZONE":0,"HERE":0,"YOU":0,
+  "TONE":1,"FLUX":2,"FLOW":3,"LOVE":4,"BOND":5,"FIRE":6,
+  "PATH":7,"TIME":8,"META":9,"FORM":10,"TYPE":11,"LIFE":12,
+  "BODY":12,"MOOD":1,"HIGH":2,"TRUE":3,"SOUL":4,"NEED":5,
+  "WILL":6,"WANT":7,"MIND":8,"SELF":10,"MODE":11,
+  "FUN":1,"JOY":2,"ART":3,"GOD":4,"SEX":5,"MAX":6,
+  "WAY":7,"WIT":8,"AIM":9,"EGO":10,"POP":11,"ECO":12
+};
+
+const lattice = document.getElementById("lattice");
+const openSlot = document.getElementById("openSlot");
+const status = document.getElementById("status");
+
+function posKey(p){return String(p).padStart(2,"0")}
+function setLabel(c){
+  if(c.row==="CORE") return "CORE";
+  return "POSITION " + posKey(c.pos);
+}
+
+function cardNode(c){
+  const n = document.createElement("article");
+  n.className = "card";
+  n.setAttribute("data-lift","");
+  n.setAttribute("data-pos", posKey(c.pos));
+  n.setAttribute("data-set", c.setKey);
+  n.setAttribute("data-id", c.id);
+  n.setAttribute("tabindex","0");
+  n.setAttribute("role","button");
+  n.setAttribute("aria-label", c.set + " · " + c.word);
+
+  n.innerHTML =
+    '<div class="head">'+
+      '<span class="setmark"></span>'+
+      '<span class="ring-label">'+c.set+'</span>'+
+      '<span class="row-tag">'+setLabel(c)+'</span>'+
+    '</div>'+
+    '<h2 class="word">'+c.word+'</h2>'+
+    '<p class="gloss">'+c.gloss+'</p>'+
+    '<div class="meta">'+
+      (c.polar ? '<span><span class="polar-dot"></span>Polar · '+c.polar+'</span>' : '<span>Core</span>')+
+      '<span><span class="pos-dot"></span>Pos '+posKey(c.pos)+'</span>'+
+    '</div>';
+
+  n.addEventListener("click",()=>openCard(c.id));
+  n.addEventListener("keydown",(e)=>{
+    if(e.key==="Enter"||e.key===" "){e.preventDefault();openCard(c.id)}
+  });
+  return n;
+}
+
+function openCard(id){
+  const c = CARDS.find(x=>x.id===id);
+  if(!c) return;
+  openSlot.innerHTML = "";
+  const oc = document.createElement("article");
+  oc.className = "card is-open";
+  oc.setAttribute("data-open","");
+  oc.setAttribute("data-pos", posKey(c.pos));
+  oc.setAttribute("data-set", c.setKey);
+  oc.setAttribute("data-id", c.id);
+  oc.innerHTML =
+    '<div class="head">'+
+      '<span class="setmark"></span>'+
+      '<span class="ring-label">'+c.set+'</span>'+
+      '<span class="row-tag">'+setLabel(c)+'</span>'+
+    '</div>'+
+    '<h2 class="word">'+c.word+'</h2>'+
+    '<p class="reading">'+c.reading+'</p>'+
+    '<p class="question">'+c.question+'</p>'+
+    '<div class="meta">'+
+      (c.polar ? '<span><span class="polar-dot"></span>Polar · '+c.polar+'</span>' : '<span>Core</span>')+
+      '<span><span class="pos-dot"></span>Pos '+posKey(c.pos)+'</span>'+
+    '</div>'+
+    '<div class="controls">'+
+      '<button type="button" data-act="next">Next <span class="key">→</span></button>'+
+      '<button type="button" data-act="prev">Prev <span class="key">←</span></button>'+
+      '<button type="button" data-act="close">Close <span class="key">Esc</span></button>'+
+    '</div>';
+  oc.querySelector('[data-act="next"]').addEventListener("click",()=>step(1));
+  oc.querySelector('[data-act="prev"]').addEventListener("click",()=>step(-1));
+  oc.querySelector('[data-act="close"]').addEventListener("click",()=>closeOpen());
+  openSlot.appendChild(oc);
+
+  document.querySelectorAll(".lattice .card:not(.is-open)").forEach(n=>{
+    if(n.getAttribute("data-id")===id) n.setAttribute("data-open","");
+    else n.removeAttribute("data-open");
+  });
+
+  setStatus("Opened · " + c.set + " · " + c.word);
+  oc.focus();
+}
+
+function closeOpen(){
+  openSlot.innerHTML = "";
+  document.querySelectorAll(".lattice .card[data-open]").forEach(n=>n.removeAttribute("data-open"));
+  setStatus("Closed");
+}
+
+function step(dir){
+  const open = openSlot.querySelector(".card.is-open");
+  if(!open) return;
+  const cur = open.getAttribute("data-id");
+  const visible = Array.from(document.querySelectorAll(".lattice .card:not(.is-open)"))
+                        .filter(n=>n.offsetParent!==null || getComputedStyle(n).display!=="none");
+  // Use the master list so order is stable across layouts.
+  const ids = CARDS.map(c=>c.id);
+  const i = ids.indexOf(cur);
+  let nextId = ids[(i + dir + ids.length) % ids.length];
+  openCard(nextId);
+}
+
+let statusTimer = 0;
+function setStatus(msg){
+  status.textContent = msg;
+  status.setAttribute("data-on","");
+  clearTimeout(statusTimer);
+  statusTimer = setTimeout(()=>{status.removeAttribute("data-on")},1800);
+}
+
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="Escape"){e.preventDefault();closeOpen();return}
+  if(e.key==="ArrowRight"){e.preventDefault();step(1);return}
+  if(e.key==="ArrowLeft"){e.preventDefault();step(-1);return}
+});
+
+/* Render the 12 cards into the lattice, in set order, then position order
+   so cores lead their set. The open slot is the third column-pair of
+   the middle row at 1440, so the lattice's 12 tracks read 4×3. */
+const order = ["r-core","r-single-12","r-single-04","r-single-08",
+               "s-core","s-single-12","s-single-04","s-single-08",
+               "t-core","t-single-12","t-single-04","t-single-08"];
+order.forEach(id=>{
+  const c = CARDS.find(x=>x.id===id);
+  if(c) lattice.appendChild(cardNode(c));
+});
+
+/* Open one card so the first thing a reader sees is the deck with a card up. */
+openCard("r-single-04");
+
+/* Set filter — visual only, no model mutation. */
+document.querySelectorAll(".bar .set button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".bar .set button").forEach(x=>x.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    const f = b.getAttribute("data-set");
+    document.querySelectorAll(".lattice .card").forEach(n=>{
+      const show = f==="all" || n.getAttribute("data-set")===f;
+      n.style.display = show ? "" : "none";
+    });
+    if(f!=="all") setStatus("Filter · " + b.textContent);
+    else setStatus("Filter · All");
+  });
+});
+</script>
+</body>
+</html>

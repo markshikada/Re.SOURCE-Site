@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>The design workbench after Claude Design · Re.SOURCE</title>
+<style>
+/* Tokens: greyscale and type off Projects/Design System/tokens/. Self contained: system fonts only. */
+:root{
+  --black:#000000;--g06:#0D0D0D;--g12:#1A1A1A;--g24:#333333;--g48:#555555;--g66:#888888;--g88:#CCCCCC;--white:#FFFFFF;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --r-sm:8px;--r-md:12px;--r-lg:24px;
+  --field:1000px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--black);color:var(--white);font:400 18px/30px var(--sans);margin:0;-webkit-font-smoothing:antialiased}
+::selection{background:var(--white);color:var(--black)}
+
+.wrap{max-width:var(--field);margin:0 auto;padding:48px 12px calc(96px + env(safe-area-inset-bottom))}
+@media (min-width:721px){.wrap{padding:72px 24px 96px}}
+@media (min-width:1081px){.wrap{padding:96px 48px 120px}}
+@media (min-width:1081px){.wrap{max-width:calc(var(--field) + 96px)}}
+
+/* Mono caption layer, 12/18, uppercase, 0.02em justified as the metadata dial */
+.mono{font:300 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--g66)}
+
+/* Head */
+.stamp{margin:0;max-width:none;font:300 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--g66)}
+.stamp::before{content:"";display:inline-block;width:8px;height:8px;border:1px solid var(--g88);margin-right:8px;vertical-align:-1px}
+h1{font:700 36px/48px var(--sans);margin:16px 0 0}
+.sub{margin:12px 0 0;font:400 18px/30px var(--sans);color:var(--g66);max-width:66ch}
+
+/* Sections: rhythm from leading, whole numbers only */
+.s{margin-top:64px}
+@media (min-width:721px){.s{margin-top:96px}}
+h2{font:600 24px/36px var(--sans);margin:0 0 20px}
+h2::before{content:"";display:block;width:24px;height:1px;background:var(--g24);margin-bottom:16px}
+p{margin:12px 0 0;max-width:66ch}
+strong{font-weight:600}
+.dim{color:var(--g66)}
+
+/* Cards */
+.card{background:var(--g06);border:1px solid var(--g24);border-radius:var(--r-md);padding:20px}
+.card p{margin:0;max-width:66ch}
+.lead{color:var(--white);max-width:66ch}
+.lead strong{font-weight:600}
+
+/* 1. Bottom line: stacked by default, three across only when each holds its measure */
+.answers{margin-top:24px;display:grid;gap:12px}
+@media (min-width:1081px){.answers{grid-template-columns:repeat(3,1fr);gap:24px}}
+
+/* 2. The picture */
+.flowfig{margin:24px 0 0}
+.flowfig svg{display:block;width:456px;max-width:100%;height:auto;margin:0 auto}
+.box{fill:var(--g06);stroke:var(--g24);stroke-width:1}
+.dline{stroke:var(--g48);stroke-width:1;stroke-dasharray:6 8;fill:none}
+.sline{stroke:var(--g48);stroke-width:1;fill:none}
+.atri{fill:var(--g48)}
+.bname{font-family:var(--mono);font-size:22px;font-weight:600;fill:var(--g88);paint-order:stroke;stroke:#000000;stroke-width:8;stroke-linejoin:round;letter-spacing:0.03em}
+.cname{font-family:var(--mono);font-size:20px;font-weight:400;fill:var(--g66);paint-order:stroke;stroke:#000000;stroke-width:8;stroke-linejoin:round;letter-spacing:0.03em}
+/* Label floor: 20 units draw above 12px once the 456 figure shrinks to a 296 phone
+   column (0.65 scale). Checked on the three-column pass, 28 September 2026. */
+.pieces{margin-top:24px;display:grid;gap:12px}
+@media (min-width:721px){.pieces{grid-template-columns:repeat(3,1fr);gap:16px}}
+@media (min-width:1081px){.pieces{gap:24px}}
+.piece{background:var(--g06);border:1px solid var(--g24);border-radius:var(--r-md);padding:20px;display:flex;flex-direction:column}
+.piece p{margin:0;max-width:66ch}
+.piece-name{margin:0;font:600 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--white)}
+.piece .src{margin-top:auto;padding-top:12px;border-top:1px solid var(--g12);
+  font:300 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--g66)}
+
+/* 3. What Claude Design gave */
+.rows{margin-top:24px;display:grid;gap:12px}
+.row-card{background:var(--g06);border:1px solid var(--g24);border-radius:var(--r-md);padding:16px 20px}
+.row-head{display:flex;align-items:center;gap:10px}
+.glyph{width:32px;height:32px;border:1px solid var(--g24);border-radius:var(--r-sm);display:grid;place-items:center;font-size:18px;line-height:1}
+.row-name{margin:0;font:600 18px/30px var(--sans);color:var(--white)}
+.row-part{margin-top:8px}
+.tag{font:300 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--g66)}
+.row-text{margin:4px 0 0;font:400 18px/30px var(--sans);max-width:66ch}
+.state{margin-left:auto;padding:3px 8px;border-radius:var(--r-sm);border:1px solid var(--g48);color:var(--g88);
+  font:400 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em}
+.state.gap{background:var(--white);color:var(--black);border-color:var(--white)}
+
+/* 4. Mechanisms */
+.stds{margin-top:24px;display:grid;gap:12px}
+@media (min-width:721px){.stds{grid-template-columns:repeat(2,1fr);gap:16px}
+/* An odd last card earns the full width rather than leaving a hole beside it */
+.stds > .std:last-child:nth-child(odd){grid-column:1/-1}}
+@media (min-width:1081px){.stds{grid-template-columns:repeat(2,1fr);gap:24px}}
+.std{background:var(--g06);border:1px solid var(--g24);border-radius:var(--r-md);padding:20px;display:flex;flex-direction:column}
+.std p{margin:0;max-width:66ch}
+p.src{margin-top:auto;padding-top:12px;border-top:1px solid var(--g12);
+  font:300 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em;color:var(--g66)}
+
+/* 5. Decisions */
+.dec{margin-top:48px}
+.dec-head .kick{margin:0}
+.dec-head h3{font:600 24px/36px var(--sans);margin:8px 0 0}
+.otext{margin:8px 0 0;color:var(--g66)}
+.opts{margin-top:16px;display:grid;gap:12px}
+.opt{background:var(--g06);border:1px solid var(--g24);border-radius:var(--r-md);padding:16px 20px}
+.opt p{margin:0;color:var(--g66);max-width:66ch}
+/* Option head: base case stacks letter above name (below the field's 720) so every
+   option in a list keeps one alignment; the chip sits that row's right on its own slot. */
+.opt-head{display:grid;grid-template-columns:32px minmax(0,1fr);align-items:center;column-gap:10px;row-gap:8px}
+.op-name{font:600 18px/30px var(--sans);color:var(--white);grid-column:1/-1}
+.letter{grid-row:1;grid-column:1;width:32px;height:32px;border:1px solid var(--g24);border-radius:var(--r-sm);
+  display:grid;place-items:center;font:600 12px/18px var(--mono);color:var(--g88)}
+.chip{grid-row:1;grid-column:2;justify-self:end;width:max-content;padding:3px 8px;border-radius:var(--r-sm);background:var(--white);color:var(--black);
+  font:400 12px/18px var(--mono);text-transform:uppercase;letter-spacing:0.02em}
+@media (min-width:721px){
+.opt-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.op-name{grid-column:auto}
+.chip{margin-left:auto;justify-self:auto}
+}
+.rec{border-color:var(--g88);background:var(--g12)}
+@media (min-width:1081px){
+.dec{display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px}
+.dec-head{grid-column:1/6;align-self:start}
+.opts{grid-column:6/13;margin-top:0}
+}
+
+/* 6. How to rule */
+.rule-how{margin-top:48px}
+
+/* 7. Close and footer */
+footer{margin-top:96px;padding-top:24px;border-top:1px solid var(--g24)}
+footer p{max-width:none;margin:0}
+footer p + p{margin-top:4px}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/Design System/research/design-workbench-2026-09-28.html</span>
+</nav>
+<main class="wrap">
+
+<header>
+  <p class="stamp">Updated 28 September 2026 &middot; research pass &middot; ruled 28 September, all three A</p>
+  <h1>The design workbench after Claude Design</h1>
+  <p class="sub">What replaces Claude Design: one surface you own, links that never move, and sessions that open nothing on your screen.</p>
+</header>
+
+<section class="s">
+  <h2>Bottom line</h2>
+  <div class="answers">
+    <article class="card"><p class="lead"><strong>The tab was never the container.</strong> A preview tab is a handle on a session&rsquo;s own server. The session ends, the handle drops, and the page it showed is gone. No tab habit fixes that, because the tab was never holding the work.</p></article>
+    <article class="card"><p class="lead"><strong>The canvas is half built already.</strong> The public site carries the working design masters at fixed links that never change, on any device. What is missing is currency: lanes publish at wrap, so the link shows the last finished state rather than the work.</p></article>
+    <article class="card"><p class="lead"><strong>One surface you own.</strong> A standing live view on the Mac, opened once and kept, always showing the current masters with no session attached. Sessions stop opening windows in your interface entirely; their own checks happen as captures they read themselves.</p></article>
+  </div>
+</section>
+
+<section class="s">
+  <h2>The shape of it</h2>
+  <figure class="flowfig">
+    <svg viewBox="0 0 456 336" role="img" aria-label="The vault feeds one fixed link by checkpoint publishing, which serves the phone and the Mac anywhere; the vault also serves the desk live view directly, which reaches the Mac with no publish at all">
+    <title>One source, two surfaces</title>
+    <!-- boxes: the vault, the site, and the three ways of looking -->
+    <rect class="box" x="8" y="128" width="104" height="72" rx="12"/>
+    <rect class="box" x="200" y="128" width="104" height="72" rx="12"/>
+    <rect class="box" x="352" y="40" width="96" height="64" rx="12"/>
+    <rect class="box" x="352" y="232" width="96" height="64" rx="12"/>
+    <rect class="box" x="8" y="248" width="128" height="56" rx="12"/>
+    <!-- solid: checkpoint publish feeds the fixed link, which feeds any device -->
+    <path class="sline" d="M112,164 L188,164"/>
+    <polygon class="atri" points="200,164 188,159 188,169"/>
+    <path class="sline" d="M304,152 L344,80"/>
+    <polygon class="atri" points="352,74 339,78 346,86"/>
+    <path class="sline" d="M304,176 L344,258"/>
+    <polygon class="atri" points="352,264 346,254 339,262"/>
+    <!-- dashed: the desk view serves the folder straight to the Mac, no publish -->
+    <path class="dline" d="M60,200 L60,240"/>
+    <polygon class="atri" points="60,248 55,236 65,236"/>
+    <path class="dline" d="M136,276 L344,266"/>
+    <polygon class="atri" points="352,264 340,259 340,271"/>
+    <!-- names -->
+    <g class="bname">
+      <text x="60" y="172" text-anchor="middle">VAULT</text>
+      <text x="252" y="172" text-anchor="middle">SITE</text>
+      <text x="400" y="78" text-anchor="middle">PHONE</text>
+      <text x="400" y="270" text-anchor="middle">MAC</text>
+      <text x="72" y="282" text-anchor="middle">LIVE VIEW</text>
+    </g>
+    <g class="cname">
+      <text x="156" y="152" text-anchor="middle">PUBLISH</text>
+      <text x="76" y="228" text-anchor="start">SERVE</text>
+      <text x="244" y="252" text-anchor="middle">LIVE, NO PUBLISH</text>
+    </g>
+    </svg>
+    <figcaption class="mono">One source. Solid: the checkpoint publish that keeps the fixed link current. Dashed: the standing live view, which needs no publish at all.</figcaption>
+  </figure>
+  <div class="pieces">
+    <article class="piece">
+      <h3 class="piece-name">Fixed links, forever</h3>
+      <p class="row-text">Each master keeps one address for its whole life. One bookmark opens the set on the phone and on the Mac. The address never changes, so anything the browser remembers stays with you.</p>
+      <p class="src">Already true on the site &middot; tested today</p>
+    </article>
+    <article class="piece">
+      <h3 class="piece-name">Checkpoint publishing</h3>
+      <p class="row-text">While a lane works, it publishes the working folder at each shape change, about a minute a time. The fixed link then shows the current work across sessions, not the last wrap-up.</p>
+      <p class="src">One command &middot; stages the working folder, even mid-lane</p>
+    </article>
+    <article class="piece">
+      <h3 class="piece-name">The standing live view</h3>
+      <p class="row-text">A small always-on server on the Mac serves the vault folder with live reload. You open it once and keep it; it always shows the current masters, whatever session last touched them. It wraps the folder from outside, so no master file changes for it.</p>
+      <p class="src">The piece that replaces Claude Design &middot; one command to install</p>
+    </article>
+  </div>
+</section>
+
+<section class="s">
+  <h2>What Claude Design gave, and what carries it now</h2>
+  <div class="rows">
+    <article class="row-card">
+      <div class="row-head"><span class="glyph" aria-hidden="true">🗂</span><h3 class="row-name">A place that stays</h3><span class="state">There</span></div>
+      <div class="row-part"><p class="tag mono">Carried by</p><p class="row-text">The vault folder, and one fixed link per master on the site.</p></div>
+    </article>
+    <article class="row-card">
+      <div class="row-head"><span class="glyph" aria-hidden="true">👀</span><h3 class="row-name">The design, live</h3><span class="state gap">The gap</span></div>
+      <div class="row-part"><p class="tag mono">Carried by</p><p class="row-text">Checkpoint publishing, the piece being added here. Nothing standing does this today.</p></div>
+    </article>
+    <article class="row-card">
+      <div class="row-head"><span class="glyph" aria-hidden="true">📱</span><h3 class="row-name">Any device</h3><span class="state">There</span></div>
+      <div class="row-part"><p class="tag mono">Carried by</p><p class="row-text">The public site, phone included. Checked live today.</p></div>
+    </article>
+    <article class="row-card">
+      <div class="row-head"><span class="glyph" aria-hidden="true">🤖</span><h3 class="row-name">An agent working in it</h3><span class="state">There</span></div>
+      <div class="row-part"><p class="tag mono">Carried by</p><p class="row-text">Sessions editing the masters directly in the vault, which is how the work runs now.</p></div>
+    </article>
+    <article class="row-card">
+      <div class="row-head"><span class="glyph" aria-hidden="true">🕰</span><h3 class="row-name">What changed over time</h3><span class="state">Partial</span></div>
+      <div class="row-part"><p class="tag mono">Carried by</p><p class="row-text">Named before-and-after captures and the vault&rsquo;s own history. No canvas undo, and that cost stays.</p></div>
+    </article>
+    <article class="row-card">
+      <div class="row-head"><span class="glyph" aria-hidden="true">🎚</span><h3 class="row-name">Nudging values by hand</h3><span class="state">Partial</span></div>
+      <div class="row-part"><p class="tag mono">Carried by</p><p class="row-text">Each master&rsquo;s own Tools, Sets and Effects controls, which already carry the sliders and saves.</p></div>
+    </article>
+  </div>
+</section>
+
+<section class="s">
+  <h2>Why the previews die today</h2>
+  <div class="stds">
+    <article class="std"><p>A preview tab is a handle, not a place. It lives in the browser attached to the OpenCode app, and it goes when that connection goes.</p><p class="src">OpenCode V2 tools documentation &middot; fetched today</p></article>
+    <article class="std"><p>The server behind the tab belongs to the session that started it. When the session ends, the page it served is gone with it.</p><p class="src">Session playbook, section 1 &middot; file record</p></article>
+    <article class="std"><p>The published site is current with the main line of work, not with the work itself. A lane lands at wrap, so during a lane no link anywhere shows the master being built.</p><p class="src">Publish workflow, read today &middot; branch habit is a file record</p></article>
+    <article class="std"><p>Session previews refuse a phone. A phone browser pointed at one met a wall saying the preview is unavailable.</p><p class="src">20 September session note &middot; file record</p></article>
+    <article class="std"><p>And the clutter is the design fault, not an accident of it. Every session that checked its own work by opening a window left one more handle behind, and handles are exactly what drops. Tidying the tabs leaves the opening in place.</p><p class="src">Mark, 28 September, quoted: &ldquo;My interface is getting cluttered and it&rsquo;s confusing&rdquo;</p></article>
+  </div>
+</section>
+
+<section class="s">
+  <h2>What stops today, whatever you rule</h2>
+  <div class="answers">
+    <article class="card"><p class="lead"><strong>Sessions stop opening browser windows.</strong> This is your correction of 28 September, not an option on the menu. A session checks its own work with captures it reads itself and throws away, and nothing opens on your screen as part of routine work.</p></article>
+    <article class="card"><p class="lead"><strong>What reaches you stays what reaches you.</strong> A chat reply and a visual page at the moment they matter. Only now the visual page is something you open when you choose, at a link that never moves.</p></article>
+  </div>
+</section>
+
+<section class="s">
+  <h2>The editing tools, compared</h2>
+  <p class="dim">Your test was never price. Claude and Kimi design apps were proprietary and OpenCode could never work in them. So a candidate has to pass three things at once: free, better hand tools than the makeshift panels in the masters, and OpenCode working in the same file as you.</p>
+  <div class="stds">
+    <article class="std"><p><strong>Penpot is the one that passes all three.</strong> Free forever, unlimited design files. A real drawing canvas with components, design tokens, flex and grid layout, prototyping. Its official MCP server connects straight to OpenCode, and Penpot&rsquo;s own guide is written for OpenCode. Agents create and edit in the same file you draw in. That is exactly the property whose absence killed the other two tools.</p><p class="src">Penpot pricing, MCP server, OpenCode guide &middot; all checked today</p></article>
+    <article class="std"><p><strong>Inkscape</strong> is the deepest free vector editor there is: pen, nodes, boolean ops, all of it. It works with OpenCode in the plainest way possible &ndash; it edits SVG files in the vault and agents edit the same files. No shared canvas though: you and the agents take turns on a file rather than working in it together.</p><p class="src">Inkscape &middot; free, open source &middot; desktop app &middot; checked today</p></article>
+    <article class="std"><p><strong>The masters&rsquo; own tools</strong>, which you have now: Tools, Sets, Effects. They beat everything above at one thing, and it is the important one &ndash; they edit the live master itself. But they are value panels, not drawing tools. Nothing there draws a new shape by hand.</p><p class="src">The masters today &middot; free &middot; already built</p></article>
+    <article class="std"><p><strong>What the Penpot trial costs you.</strong> A drawing lives in Penpot&rsquo;s own storage, so it is a second place to keep unless a round trip is held open. The MCP is what holds it: work moves both ways instead of being re-authored. Hosted means designs sit on their servers; self-hosted keeps everything on the Mac and needs Docker.</p><p class="src">The honest trade &middot; the trial is what settles it</p></article>
+    <article class="std"><p><strong>Claude Design&rsquo;s lesson, and why this one is different.</strong> Its canvas format proved not portable: the subscription ended and only finished exports came out with it. Penpot is the opposite shape &ndash; open formats throughout (SVG, CSS, HTML, JSON), self-hostable, no subscription that can end.</p><p class="src">COMMAND record, 15 August 2026 &middot; Penpot docs</p></article>
+    <article class="std"><p><strong>How a trial would look.</strong> One real piece of work, not a toy. I connect OpenCode to a free Penpot file, we take something small from the queue &ndash; a card face, an icon set &ndash; and you judge the hand tools yourself against your panels. Nothing in the vault changes until you say so.</p><p class="src">One session &middot; nothing lands without your word</p></article>
+  </div>
+</section>
+
+<section class="s">
+  <h2>Your call, three decisions</h2>
+  <p class="dim">All three are ruled, 28 September: A, A, A. The options below stand as the record of the choice, each ruled one marked.</p>
+
+  <article class="dec">
+    <header class="dec-head">
+      <p class="kick mono">Decision 1 of 3</p>
+      <h3>What carries the workbench</h3>
+      <p class="otext">The shape that replaces Claude Design for carrying design work on across sessions.</p>
+    </header>
+    <div class="opts">
+      <article class="opt rec">
+        <div class="opt-head"><span class="letter">A</span><span class="op-name">Standing live view and fixed links</span><span class="chip">Ruled</span></div>
+        <p>The standing live view on the Mac is the workbench: one surface, opened once and kept, always showing the current masters. The fixed links carry the same work to the phone and outside the house, kept current at checkpoints. Sessions open no windows at all.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">B</span><span class="op-name">Standing canvas only</span></div>
+        <p>Same fixed links and checkpoint publishing, nothing new on the Mac. Watching costs a refresh after each checkpoint.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">C</span><span class="op-name">Standing live view only</span></div>
+        <p>Live at the Mac and on the phone at home, and nothing of the working state goes near the public site. No continuity outside the house.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">D</span><span class="op-name">A hosted design app</span></div>
+        <p>A real canvas tool of the Penpot kind. The masters would need re-authoring, it makes a second source of truth, and it brings back a subscription. See &ldquo;The editing tools, compared&rdquo; above for what that means.</p>
+      </article>
+    </div>
+  </article>
+
+  <article class="dec">
+    <header class="dec-head">
+      <p class="kick mono">Decision 2 of 3</p>
+      <h3>What the public link may show</h3>
+      <p class="otext">The site is readable by anyone holding the link today, by your own ruling of 20 September.</p>
+    </header>
+    <div class="opts">
+      <article class="opt rec">
+        <div class="opt-head"><span class="letter">A</span><span class="op-name">The working state too</span><span class="chip">Ruled</span></div>
+        <p>The fixed link shows the current work, rough edges and all. Simplest, and nothing is exposed that the link-holder cannot already reach.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">B</span><span class="op-name">Two areas, working and finished</span></div>
+        <p>One link set carries the working state and another carries the finished pages, so rough work never sits beside finished work.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">C</span><span class="op-name">Finished states only</span></div>
+        <p>Working state never publishes. You watch at the Mac, and the public link keeps only what has been wrapped up.</p>
+      </article>
+    </div>
+  </article>
+
+  <article class="dec">
+    <header class="dec-head">
+      <p class="kick mono">Decision 3 of 3</p>
+      <h3>What needs your hands</h3>
+      <p class="otext">Only the pieces a session cannot install for you.</p>
+    </header>
+    <div class="opts">
+      <article class="opt rec">
+        <div class="opt-head"><span class="letter">A</span><span class="op-name">One command on the Mac</span><span class="chip">Ruled</span></div>
+        <p>The standing live view comes as a small script and a login item. You run one command and it starts with the Mac.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">B</span><span class="op-name">Skip the Mac piece</span></div>
+        <p>Nothing to install. The fixed links carry everything until you ask for the desk view.</p>
+      </article>
+      <article class="opt">
+        <div class="opt-head"><span class="letter">C</span><span class="op-name">Also Tailscale</span></div>
+        <p>The phone and the Mac join one private network, so the standing live view works outside the house too. Two app installs, both yours.</p>
+      </article>
+    </div>
+  </article>
+</section>
+
+<section class="s rule-how">
+  <h2>How to rule</h2>
+  <p><strong>Tap your ruling in the chat&rsquo;s own question box.</strong> Each option there names in a line what tapping it does, and the recommended one comes first. Tapping is the ruling, and the session then builds it without asking again.</p>
+  <p class="dim">Being honest about this page: it is a static page and it cannot change the vault by itself. It exists so the choice has a picture beside it.</p>
+</section>
+
+<footer>
+  <p class="mono">Unadopted material &middot; Projects/Design System/research/ &middot; 28 September 2026 &middot; Re.SOURCE</p>
+  <p class="mono">Evidence: design-workbench-2026-09-28.md holds the findings and the costs &middot; this page is its decision surface</p>
+</footer>
+
+</main>
+</body>
+</html>

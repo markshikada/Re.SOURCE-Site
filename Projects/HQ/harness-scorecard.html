@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness scorecard: what you use, what you never touch</title>
+<style>
+  :root{
+    --black:#000000; --g06:#0D0D0D; --g12:#1A1A1A; --g24:#333333;
+    --g48:#555555; --g66:#888888; --g88:#CCCCCC; --white:#FFFFFF;
+    --tone:#99DD00; --flux:#FFD100; --flow:#FFB000; --meta:#6655FF;
+    --form:#2277FF; --type:#00BBDD; --life:#00D460; --fire:#FF0000;
+    --u:4px;
+    --fs-caption:12px; --fs-body:18px; --fs-h2:24px; --fs-h1:36px; --fs-display:48px;
+    --lh-caption:18px; --lh-body:30px; --lh-h2:36px;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--black); color:var(--white);
+    font-family:var(--mono); font-size:var(--fs-body); line-height:var(--lh-body);
+    padding:calc(var(--u)*8) calc(var(--u)*5); -webkit-font-smoothing:antialiased}
+  main{max-width:940px; margin:0 auto}
+  header{border-bottom:3px solid var(--g24); padding-bottom:calc(var(--u)*6); margin-bottom:calc(var(--u)*8)}
+  .kicker{font-size:var(--fs-caption); letter-spacing:.18em; text-transform:uppercase; color:var(--tone)}
+  h1{font-size:var(--fs-display); line-height:1.1; margin:calc(var(--u)*3) 0 calc(var(--u)*2); letter-spacing:-.02em}
+  .sub{font-size:var(--fs-h2); line-height:var(--lh-h2); color:var(--g88); margin:0}
+  h2{font-size:var(--fs-h2); line-height:var(--lh-h2); margin:calc(var(--u)*10) 0 calc(var(--u)*3); letter-spacing:-.01em}
+  h2 .num{color:var(--g48); margin-right:calc(var(--u)*3)}
+  p{margin:0 0 calc(var(--u)*4)}
+  .lede{font-size:var(--fs-h2); line-height:var(--lh-h2); color:var(--g88)}
+  strong{color:var(--white); font-weight:700}
+  em{color:var(--tone); font-style:normal}
+  code{font-family:var(--mono); background:var(--g12); border:1px solid var(--g24); padding:0 6px; font-size:var(--fs-caption)}
+  .box{background:var(--g06); border:3px solid var(--g24); padding:calc(var(--u)*5); margin:0 0 calc(var(--u)*5)}
+  .box.hot{border-left-color:var(--flux)} .box.cool{border-left-color:var(--type)} .box.warn{border-left-color:var(--flow)}
+  .lbl{font-size:var(--fs-caption); letter-spacing:.16em; text-transform:uppercase; color:var(--g66); display:block; margin-bottom:var(--u)}
+  table{width:100%; border-collapse:collapse; margin:0 0 calc(var(--u)*5); font-size:var(--fs-caption); line-height:var(--lh-caption)}
+  th,td{text-align:left; padding:calc(var(--u)*2) calc(var(--u)*3); border-bottom:1px solid var(--g24); vertical-align:top}
+  th{color:var(--g66); font-weight:400; letter-spacing:.12em; text-transform:uppercase; font-size:11px}
+  td:first-child{color:var(--white)}
+  .yes{color:var(--life)} .no{color:var(--fire)} .mid{color:var(--flux)} .dim{color:var(--g48)}
+  .bar{height:14px; background:var(--g12); border:1px solid var(--g24); position:relative; min-width:120px}
+  .bar i{display:block; height:100%; background:var(--tone)}
+  .bar.long i{background:var(--flux)}
+  .bar.zero i{background:var(--fire)}
+  ol{padding-left:calc(var(--u)*5); margin:0 0 calc(var(--u)*5)}
+  li{margin-bottom:calc(var(--u)*3)}
+  footer{border-top:3px solid var(--g24); margin-top:calc(var(--u)*10); padding-top:calc(var(--u)*4); color:var(--g66); font-size:var(--fs-caption); line-height:var(--lh-caption)}
+  @media (max-width:600px){
+    body{padding:calc(var(--u)*4) calc(var(--u)*3); font-size:15px; line-height:24px}
+    h1{font-size:30px} .sub{font-size:19px; line-height:28px} h2{font-size:20px; line-height:28px}
+  }
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/harness-scorecard.html</span>
+</nav>
+<main>
+
+<header>
+  <span class="kicker">Estate / HQ / harness</span>
+  <h1>Harness scorecard</h1>
+  <p class="sub">What you actually use, what you never touch, and what each unused mechanic buys you.</p>
+</header>
+
+<p class="lede">Measured across <strong>108 sessions</strong> and <strong>425 messages</strong> from you over the seven days to 4 October 2026, read from the session records themselves — not from memory.</p>
+
+<div class="box hot">
+  <span class="lbl">The finding</span>
+  <p>You are driving this harness like one very long session rather than like a fleet. <strong>8,405 in-session calls against 51 delegations.</strong> The fan-out machinery exists, is configured, and is almost entirely idle.</p>
+</div>
+
+<h2><span class="num">01</span>Your discipline is already strong</h2>
+<table>
+  <tr><th>Mechanic</th><th>Uses</th><th>Verdict</th></tr>
+  <tr><td><code>todo</code> live checklist</td><td>633</td><td class="yes">strong, keep</td></tr>
+  <tr><td><code>ask_user_question</code> decisions as taps</td><td>133</td><td class="yes">strong, keep</td></tr>
+  <tr><td><code>monitor</code> wait on events</td><td>95</td><td class="yes">strong, keep</td></tr>
+  <tr><td><code>create_goal</code> binding objectives</td><td>55</td><td class="yes">strong, keep</td></tr>
+  <tr><td><code>memory</code> durable facts</td><td>303</td><td class="yes">strong, keep</td></tr>
+</table>
+
+<h2><span class="num">02</span>Four mechanics running cold</h2>
+<table>
+  <tr><th>Mechanic</th><th>Uses</th><th>What it is for</th></tr>
+  <tr><td><code>task</code> parallel subagents</td><td>51</td><td class="mid">fan out independent work in one wave</td></tr>
+  <tr><td>Workflow skills by name</td><td>14 <span class="dim">ulw</span> / 4 <span class="dim">plan</span> / 4 <span class="dim">refactor</span> / 4 <span class="dim">visual QA</span> / 2 <span class="dim">mass-ulw</span> / 1 <span class="dim">review</span> / 1 <span class="dim">debug</span></td><td class="mid">each is a contract with its own evidence rules</td></tr>
+  <tr><td><code>/diff</code> and <code>/files</code></td><td class="no">0 and 0</td><td class="no">the receipt for what changed</td></tr>
+  <tr><td><code>lsp_diagnostics</code></td><td class="no">1</td><td class="no">verification by checker, not by eye</td></tr>
+</table>
+
+<div class="box warn">
+  <span class="lbl">The only two tips you have never seen</span>
+  <p>Out of <strong>124</strong> in the live catalogue, <strong>122</strong> have been shown. The unseen pair is exactly <code>/files</code> and <code>/diff</code> — both confirmed present in the installed 5.1.13 binary. They are unseen by age, not by absence: the rotation has no cooldown, so they are simply next.</p>
+</div>
+
+<h2><span class="num">03</span>The four changes now in force</h2>
+<p>Written into the standing agent rules on 4 October 2026, so they bind every session from the next one onward.</p>
+<ol>
+  <li><strong>Fan out, do not stream.</strong> Three or more independent parts means parallel children in one wave, disjoint write scopes. Say <em>mass-ulw</em> when the ordering between parts is the whole point.</li>
+  <li><strong>Call workflow skills by name.</strong> <code>ulw plan</code>, <code>debug this</code>, <code>review work</code>, <code>visual QA</code>, <code>refactor</code>, <code>remove AI slop</code>. Improvising the same work drops the contract.</li>
+  <li><strong>Take the receipt before the summary.</strong> <code>/diff</code> for the change set, <code>/files</code> for everything touched.</li>
+  <li><strong>Check state, never assume it.</strong> <code>/rules</code> <code>/hooks</code> <code>/mcp</code> <code>/websearch</code> <code>/efforts</code> <code>/fallback</code> <code>/lookat</code>, then diagnostics after every edit.</li>
+</ol>
+
+<footer>
+  Counted from <code>~/.omo/agent/sessions/**/*.jsonl</code>, seven-day window, and from the live <code>omo --list-tips</code> output against <code>settings.json</code> tipsHistory on 4 October 2026. Counts change as you work; regenerate rather than quote this page.
+</footer>
+
+</main>
+</body>
+</html>

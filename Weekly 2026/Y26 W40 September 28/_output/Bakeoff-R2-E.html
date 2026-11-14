@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word CARD — three states</title>
+<style>
+/* ================================================================
+   Word CARD — the printed Re.Source card, one component at a scale,
+   shown in three states: (1) at rest, (2) opened with reading and
+   question, (3) as a bottom sheet on a 390 frame.
+
+   Self-contained: tokens from the Design System inlined from
+   tokens/colours.css, greys.css, space.css and typography.css.
+   System font stack. No fetch, no build, no framework, no script.
+   ================================================================ */
+
+:root{
+  /* tokens/colours.css · position 10 sits at 300 degrees */
+  --cl-10-form:#2277FF;
+  /* Colour is a stroke on a shape, never a fill behind text. 3px is the stroke. */
+  --stroke:3px;
+
+  /* tokens/greys.css · the ramp. Every surface and every text colour points here. */
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+
+  /* tokens/space.css · 2:3:6 harmonic on u = 4 */
+  --u:4px;
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:24px;
+  --space-xl:48px;
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:24px;
+
+  /* tokens/typography.css · five sizes, five leadings, five weights.
+     Letter spacing is never declared. */
+  --u-type:6px;
+  --fs-caption:12px;
+  --fs-body:18px;
+  --fs-h2:24px;
+  --fs-h1:36px;
+  --fs-display:48px;
+  --lh-caption:18px;
+  --lh-body:30px;
+  --lh-h2:36px;
+  --lh-h1:48px;
+  --lh-display:54px;
+  --fw-caption:300;
+  --fw-body:400;
+  --fw-h2:600;
+  --fw-h1:700;
+  --fw-display:800;
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+
+html{background:var(--surface-page);}
+
+body{
+  margin:0;
+  padding:var(--space-md);
+  background:var(--surface-page);
+  color:var(--text-primary);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+}
+
+/* ---------- sheet head ---------- */
+
+.page-head{max-width:720px;margin:0 auto var(--space-lg);text-align:center;}
+
+.kicker{
+  margin:0;
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+}
+
+.page-title{
+  margin:0;
+  font-size:var(--fs-h1);
+  line-height:var(--lh-h1);
+  font-weight:var(--fw-h1);
+}
+
+.page-meta{
+  margin:var(--space-xs) 0 0;
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+}
+
+/* ---------- the three specimens ---------- */
+
+.stage{
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--space-lg);
+  justify-content:center;
+  align-items:flex-start;
+}
+
+.specimen{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-md);
+  align-items:center;
+  min-width:0;
+}
+
+.spec-label{
+  margin:0;
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+  text-align:center;
+}
+
+/* ---------- the card: one component, 360 x 504 ---------- */
+
+.card{
+  width:100%;
+  max-width:360px;
+  min-width:0;
+  height:auto;
+  min-height:504px;
+  padding:var(--space-lg);
+  background:var(--surface-page);
+  border:var(--stroke) solid var(--cl-10-form);
+  border-radius:var(--radius-lg);
+  display:flex;
+  flex-direction:column;
+}
+
+/* position meta: label, ring, twelve-step track */
+.card-top{display:flex;flex-direction:column;gap:var(--space-md);}
+
+.card-row{display:flex;align-items:center;justify-content:space-between;}
+
+.meta{
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+}
+
+.ring{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:48px;
+  height:48px;
+  background:var(--black);
+  border:var(--stroke) solid var(--cl-10-form);
+  border-radius:var(--radius-lg);
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+}
+
+.track{display:flex;gap:var(--space-sm);min-width:0;}
+
+.track i{
+  display:block;
+  flex:0 1 16px;
+  min-width:0;
+  width:16px;
+  height:24px;
+  background:var(--black);
+  border:var(--stroke) solid var(--g24);
+  border-radius:var(--radius-sm);
+}
+
+.track i.on{border-color:var(--cl-10-form);}
+
+/* the word holds the middle */
+.word{
+  margin:auto 0;
+  font-size:var(--fs-display);
+  line-height:var(--lh-display);
+  font-weight:var(--fw-display);
+  color:var(--text-primary);
+}
+
+/* the payload sits at the foot: gloss at rest, reading and question when opened */
+.foot{display:flex;flex-direction:column;gap:var(--space-md);}
+
+.block{display:flex;flex-direction:column;gap:var(--space-xs);}
+
+.rule{border-top:var(--stroke) solid var(--cl-10-form);}
+
+.text{
+  margin:0;
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  color:var(--text-primary);
+}
+
+/* ---------- 390 frame and its bottom sheet ---------- */
+
+.frame{
+  width:100%;
+  max-width:390px;
+  min-width:0;
+  height:auto;
+  min-height:760px;
+  background:var(--surface-page);
+  border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+.frame-body{
+  flex:1 1 auto;
+  padding:var(--space-md);
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-sm);
+}
+
+.frame-row{
+  flex:0 0 auto;
+  height:48px;
+  background:var(--surface-raised);
+  border-radius:var(--radius-md);
+}
+
+.sheet{
+  margin-top:auto;
+  width:100%;
+  padding:var(--space-md);
+  background:var(--surface-card);
+  border-top:var(--stroke) solid var(--cl-10-form);
+  border-top-left-radius:var(--radius-lg);
+  border-top-right-radius:var(--radius-lg);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:var(--space-md);
+}
+
+.handle{
+  flex:0 0 auto;
+  width:48px;
+  height:16px;
+  background:var(--g48);
+  border-radius:var(--radius-sm);
+}
+
+/* ---------- wider frames: the card at its exact scale ---------- */
+
+@media (min-width:414px){
+  .card{width:360px;height:504px;}
+  .frame{width:390px;height:760px;}
+}
+
+@media (min-width:721px){
+  body{padding:var(--space-lg);}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-E.html</span>
+</nav>
+
+<header class="page-head">
+  <p class="kicker">Re.Source</p>
+  <h1 class="page-title">Word CARD</h1>
+  <p class="page-meta">360 × 504 · three states</p>
+</header>
+
+<main class="stage">
+
+  <!-- 1 · at rest -->
+  <section class="specimen">
+    <p class="spec-label">1 · At rest</p>
+    <article class="card">
+      <div class="card-top">
+        <div class="card-row">
+          <span class="meta">Position</span>
+          <span class="ring">10</span>
+        </div>
+        <div class="track">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i>
+        </div>
+      </div>
+      <div class="word">FORM</div>
+      <div class="foot">
+        <div class="rule"></div>
+        <div class="block">
+          <span class="meta">Gloss</span>
+          <p class="text">Form is the shape a thing takes when it holds together.</p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 2 · opened -->
+  <section class="specimen">
+    <p class="spec-label">2 · Opened</p>
+    <article class="card">
+      <div class="card-top">
+        <div class="card-row">
+          <span class="meta">Position</span>
+          <span class="ring">10</span>
+        </div>
+        <div class="track">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i>
+        </div>
+      </div>
+      <div class="word">FORM</div>
+      <div class="foot">
+        <div class="rule"></div>
+        <div class="block">
+          <span class="meta">Reading</span>
+          <p class="text">The card reads the shape, the pair and the position, in that order.</p>
+        </div>
+        <div class="block">
+          <span class="meta">Question</span>
+          <p class="text">What is holding your shape together right now?</p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 3 · bottom sheet on a 390 frame -->
+  <section class="specimen">
+    <p class="spec-label">3 · Bottom sheet · 390 frame</p>
+    <div class="frame">
+      <div class="frame-body">
+        <div class="frame-row"></div>
+        <div class="frame-row"></div>
+        <div class="frame-row"></div>
+      </div>
+      <div class="sheet">
+        <div class="handle"></div>
+        <article class="card">
+          <div class="card-top">
+            <div class="card-row">
+              <span class="meta">Position</span>
+              <span class="ring">10</span>
+            </div>
+            <div class="track">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i>
+            </div>
+          </div>
+          <div class="word">FORM</div>
+          <div class="foot">
+            <div class="rule"></div>
+            <div class="block">
+              <span class="meta">Gloss</span>
+              <p class="text">Form is the shape a thing takes when it holds together.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>

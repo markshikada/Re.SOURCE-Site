@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Polish round – five builds, one brief</title>
+<style>
+/* Tokens, exact values from Projects/Design System/tokens/ (colours, greys,
+   space, typography). Whole numbers only. Radius 8 / 12 / 24. Colour is a
+   stroke, never a fill behind text. No letter-spacing declared.
+   Rhythm, one pass over the whole page: section gap 24, item gap 12,
+   inner gap 8. Nothing sits further than 24 from its neighbour. */
+:root{
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --white:#FFFFFF;
+  --cl-10-form:#2277FF;
+  --stroke:3px;
+
+  --fs-caption:12px; --lh-caption:18px; --fw-caption:300;
+  --fs-body:18px;    --lh-body:30px;    --fw-body:400;
+  --fs-h2:24px;      --lh-h2:36px;      --fw-h2:600;
+  --fs-h1:36px;      --lh-h1:48px;      --fw-h1:700;
+
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px; --space-xl:48px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--black);
+  color:var(--white);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+}
+img{max-width:100%}
+.wrap{max-width:1280px;margin:0 auto;padding:var(--space-lg) var(--space-md)}
+
+/* --- head --- */
+.kicker{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:0}
+h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);margin:var(--space-sm) 0 0}
+.stamp{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g48);margin:var(--space-md) 0 0}
+.lede{margin:var(--space-md) 0 0;max-width:44ch}
+.lede + .lede{margin-top:var(--space-sm);color:var(--g66)}
+.finding{
+  margin:var(--space-md) 0 0;
+  padding:var(--space-sm) 0 var(--space-sm) var(--space-md);
+  border-left:var(--stroke) solid var(--cl-10-form);
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);
+  max-width:32ch;
+}
+
+/* --- sections: section gap 24, heading to content 12 --- */
+section{margin-top:var(--space-lg)}
+h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-md)}
+.note{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:var(--space-md) 0 0;max-width:52ch}
+
+/* --- ranked table: two short lines per build on a phone, one line from 720.
+       No label-over-value pairs: the values carry the line, the verdict takes
+       a line of its own so nothing is pushed off the edge. --- */
+table{width:100%;border-collapse:collapse;margin:0}
+thead{display:none}
+tbody tr{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  column-gap:var(--space-sm);
+  row-gap:var(--space-md);
+  background:var(--g06);
+  border:1px solid var(--g24);
+  border-radius:var(--radius-sm);
+  padding:var(--space-md);
+  margin-bottom:var(--space-md);
+}
+tbody tr:last-child{margin-bottom:0}
+tbody tr.win{border-color:var(--cl-10-form)}
+td{
+  display:block;
+  padding:0;
+  margin:0;
+  white-space:nowrap;
+}
+td::before{content:none}
+td.build{
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h1);
+  white-space:normal;
+}
+td.verdict{
+  flex:0 0 100%;
+  font-size:var(--fs-body);line-height:var(--lh-body);font-weight:600;
+}
+
+/* --- builds: one column, two columns from 900 --- */
+.builds{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-md)}
+.strip-group{min-width:0}
+.strip-group > p{
+  margin:var(--space-md) 0 0;
+  font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+  color:var(--g66);
+}
+
+/* --- capture strip: the pair shares one height, so the two captures read
+       together instead of one small beside one enormous. The height walks
+       down with the column, so a pair never overflows its cell. --- */
+.shots{display:flex;gap:var(--space-md);container-type:inline-size}
+figure{margin:0;min-width:0;flex:0 1 auto}
+.shot{
+  display:block;
+  height:240px;
+  height:min(240px,53cqw);
+  border:1px solid var(--g24);
+  border-radius:var(--radius-sm);
+  background:var(--g06);
+  overflow:hidden;
+}
+.shot:hover,.shot:focus-visible{border-color:var(--g66)}
+.shot img{
+  display:block;
+  height:100%;
+  width:auto;
+  max-width:100%;
+  object-fit:contain;
+  object-position:center;
+}
+figcaption{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);padding-top:var(--space-xs)}
+
+/* --- per build review --- */
+.reviews{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-md)}
+.review{
+  background:var(--g06);
+  border:1px solid var(--g24);
+  border-radius:var(--radius-md);
+  padding:var(--space-md);
+  min-width:0;
+}
+.review h3{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0}
+.review h3 .score{color:var(--g66);font-weight:var(--fw-caption);font-size:var(--fs-caption);line-height:var(--lh-caption);display:block}
+.call{margin-top:var(--space-md)}
+.call + .call{margin-top:var(--space-md)}
+.call p{margin:0 0 var(--space-sm);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66)}
+.call ul{list-style:none;margin:0;padding:0}
+.call li{
+  position:relative;
+  padding-left:16px; /* marker 8 + inner gap 8 */
+  margin-bottom:var(--space-sm);
+  font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+}
+.call li:last-child{margin-bottom:0}
+.call li::before{
+  content:"";position:absolute;left:0;top:5px;
+  width:8px;height:8px;border:var(--stroke) solid var(--g48);
+}
+.call.good li::before{border-color:var(--cl-10-form)}
+
+/* --- caveats --- */
+.caveats{
+  border:1px solid var(--g24);
+  border-radius:var(--radius-md);
+  padding:var(--space-md);
+  background:var(--g12);
+}
+.caveats ul{list-style:none;margin:0;padding:0}
+.caveats li{position:relative;padding-left:16px;margin-bottom:var(--space-md);color:var(--g66)}
+.caveats li:last-child{margin-bottom:0}
+.caveats li::before{content:"";position:absolute;left:0;top:11px;width:8px;height:1px;background:var(--g48)}
+
+/* --- from 720: page margin steps up, the ranking becomes one line --- */
+@media (min-width:720px){
+  .wrap{padding:var(--space-lg)}
+  h1{font-size:48px;line-height:54px}
+
+  thead{display:table-header-group}
+  thead th{
+    text-align:left;
+    font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+    color:var(--g66);
+    padding:0 var(--space-md) var(--space-sm);
+    border-bottom:1px solid var(--g24);
+    white-space:nowrap;
+  }
+  thead th:first-child{padding-left:var(--space-md);width:1%}
+  thead th:last-child{padding-right:0;text-align:right;width:1%}
+
+  tbody tr{
+    display:table-row;
+    background:none;
+    border:none;
+    border-bottom:1px solid var(--g24);
+    border-radius:0;
+    padding:0;
+    margin:0;
+  }
+  tbody tr:last-child{margin-bottom:0}
+  tbody tr.win{border-color:var(--g24)}
+  td{
+    display:table-cell;
+    vertical-align:baseline;
+    padding:var(--space-sm) var(--space-md);
+  }
+  td:first-child{padding-left:var(--space-md)}
+  td:last-child{padding-right:0;text-align:right}
+  tbody tr.win td:first-child{box-shadow:inset var(--stroke) 0 0 0 var(--cl-10-form)}
+}
+
+/* --- from 390 (the phone): the pair holds the full shared height --- */
+@media (min-width:390px){
+  .shot{height:240px}
+}
+
+/* --- from 900: the builds take a two-column grid, and each review splits
+       its strengths against its defects --- */
+@media (min-width:900px){
+  .builds{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .reviews{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+  .review{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    column-gap:var(--space-md);
+    row-gap:var(--space-md);
+    align-items:start;
+  }
+  .review h3{grid-column:1 / -1}
+  .review .call{margin-top:0}
+
+  .shot{height:320px}
+  .shot{height:min(320px,53cqw)}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Polish-comparison.html</span>
+</nav>
+<main class="wrap">
+
+  <header>
+    <p class="kicker">Re.SOURCE · bake-off · round 3 · polish</p>
+    <h1>Polish round – five builds, one brief</h1>
+    <p class="stamp">Updated 2026-09-29 16:05 · judged by Intel on the seven axes · law by law-sweep.cjs</p>
+    <p class="lede">Five models took one brief: the Re.Source deck screen at production quality. Twelve real cards on the deck lattice at 1440 and at 390, with one card open — and this time the open card had to belong to the lattice, and the thing had to actually work.</p>
+    <p class="lede">The deck round left that unsolved across all four of its builds, so it is what this round grades.</p>
+    <p class="finding">Every open card now sits in the lattice, and four of five deal, open, close and step from the keyboard. One phone view is cut in half.</p>
+  </header>
+
+  <section aria-labelledby="rank">
+    <h2 id="rank">The ranking</h2>
+    <p class="note">Models are listed everywhere in ladder order, strongest to weakest: qwen3.8-max, mimo-v2.6-flash, minimax-m3, glm-5.3-flash, mimo-v2.6-pro. This table and this strip are sorted by this round's own score, because here the position is the result.</p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Build</th>
+          <th scope="col">Visual / 70</th>
+          <th scope="col">Law</th>
+          <th scope="col">Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="win">
+          <td class="build">qwen3.8-max</td>
+          <td>59</td>
+          <td>6 of 7</td>
+          <td class="verdict">Ship it</td>
+        </tr>
+        <tr>
+          <td class="build">glm-5.3-flash</td>
+          <td>58</td>
+          <td>6 of 7</td>
+          <td class="verdict">Second of five</td>
+        </tr>
+        <tr>
+          <td class="build">mimo-v2.6-flash</td>
+          <td>53</td>
+          <td>6 of 7</td>
+          <td class="verdict">Best behaviour, loudest surface</td>
+        </tr>
+        <tr>
+          <td class="build">mimo-v2.6-pro</td>
+          <td>52</td>
+          <td>7 of 7</td>
+          <td class="verdict">Law clean, boots with nothing open</td>
+        </tr>
+        <tr>
+          <td class="build">minimax-m3</td>
+          <td>46</td>
+          <td>5 of 7</td>
+          <td class="verdict">Phone view cut at 390</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">Four builds fail one law for the same reason: <code>border-radius: 0</code> on the sheet's foot edge (glm line 112, qwen 147, mimoflash 333, minimax 288) — the reading that cost round 2's build C a point, scored the same way here. minimax fails a second rule: it overflows at 390, so R7 goes with R2.</p>
+  </section>
+
+  <section aria-labelledby="strip">
+    <h2 id="strip">The strip, ten captures</h2>
+    <p class="note">Desktop at 1440 beside phone at 390, one pair per build, ranked order, captured at a settled frame so the deal has finished. <a href="Bakeoff-preview.html">The preview bench</a> runs the same five live, or open <a href="Bakeoff-zoom.html">the full-size viewer</a> to pan and pinch.</p>
+
+    <div class="builds">
+
+      <div class="strip-group">
+        <div class="shots">
+          <figure>
+            <a class="shot" href="Polish-qwen38max-1440.png" target="_blank" rel="noopener">
+              <img src="Polish-qwen38max-1440.png" width="1440" height="989" loading="lazy" decoding="async" alt="qwen3.8-max polish build, full page at 1440 wide">
+            </a>
+            <figcaption>Desktop 1440</figcaption>
+          </figure>
+          <figure>
+            <a class="shot" href="Polish-qwen38max-390.png" target="_blank" rel="noopener">
+              <img class="phone" src="Polish-qwen38max-390.png" width="390" height="1329" loading="lazy" decoding="async" alt="qwen3.8-max polish build, full page at 390 wide">
+            </a>
+            <figcaption>Phone 390</figcaption>
+          </figure>
+        </div>
+        <p>qwen3.8-max · 59 · ship</p>
+      </div>
+
+      <div class="strip-group">
+        <div class="shots">
+          <figure>
+            <a class="shot" href="Polish-glmflash-1440.png" target="_blank" rel="noopener">
+              <img src="Polish-glmflash-1440.png" width="1440" height="1072" loading="lazy" decoding="async" alt="glm-5.3-flash polish build, full page at 1440 wide">
+            </a>
+            <figcaption>Desktop 1440</figcaption>
+          </figure>
+          <figure>
+            <a class="shot" href="Polish-glmflash-390.png" target="_blank" rel="noopener">
+              <img class="phone" src="Polish-glmflash-390.png" width="390" height="2008" loading="lazy" decoding="async" alt="glm-5.3-flash polish build, full page at 390 wide">
+            </a>
+            <figcaption>Phone 390</figcaption>
+          </figure>
+        </div>
+        <p>glm-5.3-flash · 58 · second</p>
+      </div>
+
+      <div class="strip-group">
+        <div class="shots">
+          <figure>
+            <a class="shot" href="Polish-mimoflash-1440.png" target="_blank" rel="noopener">
+              <img src="Polish-mimoflash-1440.png" width="1440" height="1141" loading="lazy" decoding="async" alt="mimo-v2.6-flash polish build, full page at 1440 wide">
+            </a>
+            <figcaption>Desktop 1440</figcaption>
+          </figure>
+          <figure>
+            <a class="shot" href="Polish-mimoflash-390.png" target="_blank" rel="noopener">
+              <img class="phone" src="Polish-mimoflash-390.png" width="390" height="2253" loading="lazy" decoding="async" alt="mimo-v2.6-flash polish build, full page at 390 wide">
+            </a>
+            <figcaption>Phone 390</figcaption>
+          </figure>
+        </div>
+        <p>mimo-v2.6-flash · 53 · third</p>
+      </div>
+
+      <div class="strip-group">
+        <div class="shots">
+          <figure>
+            <a class="shot" href="Polish-mimopro-1440.png" target="_blank" rel="noopener">
+              <img src="Polish-mimopro-1440.png" width="1440" height="900" loading="lazy" decoding="async" alt="mimo-v2.6-pro polish build, full page at 1440 wide">
+            </a>
+            <figcaption>Desktop 1440</figcaption>
+          </figure>
+          <figure>
+            <a class="shot" href="Polish-mimopro-390.png" target="_blank" rel="noopener">
+              <img class="phone" src="Polish-mimopro-390.png" width="390" height="918" loading="lazy" decoding="async" alt="mimo-v2.6-pro polish build, full page at 390 wide">
+            </a>
+            <figcaption>Phone 390</figcaption>
+          </figure>
+        </div>
+        <p>mimo-v2.6-pro · 52 · law clean</p>
+      </div>
+
+      <div class="strip-group">
+        <div class="shots">
+          <figure>
+            <a class="shot" href="Polish-minimaxm3-1440.png" target="_blank" rel="noopener">
+              <img src="Polish-minimaxm3-1440.png" width="1440" height="2193" loading="lazy" decoding="async" alt="minimax-m3 polish build, full page at 1440 wide">
+            </a>
+            <figcaption>Desktop 1440</figcaption>
+          </figure>
+          <figure>
+            <a class="shot" href="Polish-minimaxm3-390.png" target="_blank" rel="noopener">
+              <img class="phone" src="Polish-minimaxm3-390.png" width="557" height="2277" loading="lazy" decoding="async" alt="minimax-m3 polish build, cut at 390 because the page measures 557 wide">
+            </a>
+            <figcaption>Phone 390 · cut</figcaption>
+          </figure>
+        </div>
+        <p>minimax-m3 · 46 · overflows at 390</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="graded">
+    <h2 id="graded">The graded question</h2>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Build</th>
+          <th scope="col">In the lattice at 1440</th>
+          <th scope="col">Does it work</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="win">
+          <td class="build">qwen3.8-max</td>
+          <td>Yes, tracks 3 × 2, whole rows</td>
+          <td class="verdict">Deal, open, close, direct switch, arrow step, 390 sheet at 50vh with grab bar and foot controls</td>
+        </tr>
+        <tr>
+          <td class="build">glm-5.3-flash</td>
+          <td>Yes, first cell of the grid, 3 × 2</td>
+          <td class="verdict">Boots with a card open, deal, tap swaps, tap-outside closes, Enter and Space, 390 sheet at 50vh</td>
+        </tr>
+        <tr>
+          <td class="build">mimo-v2.6-flash</td>
+          <td>Yes, but a full-width band, and the card shows twice</td>
+          <td class="verdict">The best key law of the five: focus restored on close, full legend, 390 sheet at 50vh</td>
+        </tr>
+        <tr>
+          <td class="build">mimo-v2.6-pro</td>
+          <td>Yes, tracks 2 × 2 with its foot beneath</td>
+          <td class="verdict">Mechanically yes, but it boots with nothing open, so the graded state shows no reader</td>
+        </tr>
+        <tr>
+          <td class="build">minimax-m3</td>
+          <td>Yes at 1440, two tracks inline</td>
+          <td class="verdict">No deal at all, and the page measures 557px at a 390 frame</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section aria-labelledby="review">
+    <h2 id="review">What the read named</h2>
+
+    <div class="reviews">
+
+      <article class="review">
+        <h3>qwen3.8-max <span class="score">59 of 70 · 6 of 7 laws</span></h3>
+        <div class="call good">
+          <p>Strengths</p>
+          <ul>
+            <li>the reader is a lattice citizen, grid-column 1 span 3 over two rows, so twelve tiles plus reader fill three whole rows of six exactly</li>
+            <li>the spirograph flower is a real mark drawn as coloured strokes on black, and the three void cores get greyscale flowers — the round's best single image</li>
+            <li>the richest hierarchy of the five: kicker, diagram, position, title at 36, gloss, read, ask, chips, foot with step controls</li>
+          </ul>
+        </div>
+        <div class="call">
+          <p>Defects</p>
+          <ul>
+            <li>top right collides, the key legend running straight into the status line with no separator, and wrapping mid-token at 390</li>
+            <li>"11 of 12" contradicts "P12" on the same card face</li>
+            <li>the deal outlasts a fast capture — seven tiles arrived and a ragged third row, though the deck is whole in code</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="review">
+        <h3>glm-5.3-flash <span class="score">58 of 70 · 6 of 7 laws</span></h3>
+        <div class="call good">
+          <p>Strengths</p>
+          <ul>
+            <li>the read is the lattice's first cell and the twelve tiles fill the remaining tracks exactly — the most literal pass on the graded requirement</li>
+            <li>pair tiles carry both names with a roman numeral and every tile foot names its counter, so requirement 4 is answered inside the deck</li>
+            <li>the deal's content mechanic is the round's best idea: holdings dealt whole, a card and its counter always together</li>
+          </ul>
+        </div>
+        <div class="call">
+          <p>Defects</p>
+          <ul>
+            <li>the ANCHORS block repeats vocabulary the tile chips already show and eats the reader's lower half</li>
+            <li>no arrow stepping, where the other four all step</li>
+            <li>a 180px mini-card against a 406px text column leaves the title block unbalanced</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="review">
+        <h3>mimo-v2.6-flash <span class="score">53 of 70 · 6 of 7 laws</span></h3>
+        <div class="call good">
+          <p>Strengths</p>
+          <ul>
+            <li>the best mechanics: escape, arrows, D, Tab, focus restored to the source tile, reduced motion held at 1ms rather than deleted</li>
+            <li>the best copy — "The deck, opened", and a legend that names exactly what the surface answers</li>
+            <li>the question box stroked in the card's own colour and held words as ring chips: a vocabulary, not decoration</li>
+          </ul>
+        </div>
+        <div class="call">
+          <p>Defects</p>
+          <ul>
+            <li>the open band shows the card twice, its face in the band and its tile lit in the lattice, both green</li>
+            <li>at 390 the sheet's fixed foot rides over the question box mid-line</li>
+            <li>the loudest surface here: twelve colours on edges, chips and boxes at once</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="review">
+        <h3>mimo-v2.6-pro <span class="score">52 of 70 · 7 of 7 laws</span></h3>
+        <div class="call good">
+          <p>Strengths</p>
+          <ul>
+            <li>the only law-clean build: no radius zero, integers throughout, colour as 3px position strokes, twelve colours and greys only</li>
+            <li>exact lattice fill at both widths, 6 × 200 at 1440 with the reader on two tracks, 3 × 110 at 390 in four clean rows</li>
+            <li>every card names its polar in its footer, so relationships read on the deck itself</li>
+          </ul>
+        </div>
+        <div class="call">
+          <p>Defects</p>
+          <ul>
+            <li>the graded state is missing: it boots with nothing open, so no reader appears in either capture</li>
+            <li>titles at 24px give the flattest hierarchy of the five</li>
+            <li>a paragraph of instructions in the header where every rival carries a line</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="review">
+        <h3>minimax-m3 <span class="score">46 of 70 · 5 of 7 laws</span></h3>
+        <div class="call good">
+          <p>Strengths</p>
+          <ul>
+            <li>the most deck-like desktop arrangement: four columns, the reader taking two tracks inline, all twelve cards legible</li>
+            <li>"How the cards meet" is the best relations treatment below the deck, four pairs each with a full reading</li>
+            <li>reader controls and the source tile's mark make the open state unmistakable</li>
+          </ul>
+        </div>
+        <div class="call">
+          <p>Defects</p>
+          <ul>
+            <li>the phone view is cut: three columns of 173px in a 390 frame, page 557px wide, LOVE's card sliced by the edge</li>
+            <li>the status toast lands on the reader's NEXT control at both widths</li>
+            <li>"ZONE" is spelled "ZOLE" on a core card, and there is no deal at all</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="ship">
+    <h2 id="ship">What ships, and what gets stolen for it</h2>
+    <div class="change">
+      <p class="label">Ship qwen3.8-max</p>
+      <p>The reader on lattice tracks and the flower mark are the surface; nothing else in the round looks like the product.</p>
+    </div>
+    <div class="reviews">
+      <div class="review">
+        <div class="call good">
+          <p>Steal for it</p>
+          <ul>
+            <li>from glm-5.3-flash: the pair tiles and the counters-together deal, which answers the relationships requirement for free</li>
+            <li>from mimo-v2.6-flash: the boxed question stroked in the card's colour, and its focus-restoring key law</li>
+            <li>from minimax-m3: the "How the cards meet" readings, to sit under the lattice</li>
+            <li>from mimo-v2.6-pro: the polar footer on every card, and its law discipline — the clean base the fixes cost least to fold into</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="change">
+      <p class="label">The one change for all five</p>
+      <p>Kill the explanatory copy. Every build spends its top line teaching the interface; one live status line plus the labelled controls already say all of it, and at 390 that copy is what breaks the header. Its mechanical twin: write the sheet's foot radius from the radius tokens instead of the literal 0 that four of five declared.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="matrix">
+    <h2 id="matrix">Where this leaves the matrix</h2>
+    <p class="prose">The row the matrix still called unproven is settled at 1440 and conditional at 390. The deck round's failure was an open card parked beside the lattice and one build nobody could deal; this round puts every reader in the lattice, four of them on grid tracks, and four of five deal, open, close, switch and step from the keyboard, with hover and focus drawn and reduced motion held at 1ms in all five. What holds it at "proven with fixes" is one cut phone view, the shared radius-zero, and the copy discipline above.</p>
+  </section>
+
+  <section aria-labelledby="caveats">
+    <h2 id="caveats">Caveats, all five</h2>
+    <div class="caveats">
+      <ul>
+        <li>One judge, no second eye: design-reviewer could not be spawned (subagent depth limit), so the ruling and the seven-axis scores are Intel's alone.</li>
+        <li>The read hit the vault's known image defect — the file tool served it the wrong renders — so it proved the graded pack correct by MD5 against fresh re-renders before trusting a single frame.</li>
+        <li>Captures are taken at a settled frame, 1.6 seconds after load. Two graded frames caught decks mid-deal, and that was scored as a timing defect rather than as missing cards.</li>
+        <li>Law comes from <code>law-sweep.cjs</code>, not from the eye: whole numbers, radius, colour vocabulary, type scale, letter-spacing and whether a page can answer a narrow frame. Stroke against fill is judged in the review, not by the script.</li>
+        <li>Not tested: touch on real hardware, screen-reader output, and hover as felt rather than read out of the CSS.</li>
+      </ul>
+    </div>
+  </section>
+
+  <p class="foot">Five builds, ten captures: headless Chrome, full page, 1440 and 390, 29 September 2026. <a href="Bakeoff-preview.html">Preview bench</a> · <a href="Bakeoff-zoom.html">Full-size viewer</a> · <a href="DeckScreen-comparison.html">Deck round</a> · <a href="Bakeoff-R2-comparison.html">Component round</a></p>
+
+</main>
+</body>
+</html>

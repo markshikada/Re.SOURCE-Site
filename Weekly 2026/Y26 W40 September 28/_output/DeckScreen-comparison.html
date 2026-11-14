@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Deck screen – four builds, one brief</title>
+<style>
+/* Tokens, exact values from Projects/Design System/tokens/ (colours, greys,
+   space, typography). Whole numbers only. Radius 8 / 12 / 24. Colour is a
+   stroke, never a fill behind text. Tracking is left to the font.
+   One rhythm over the whole page: 4 / 8 / 12 / 24, and nothing sits further
+   than 24 from its neighbour. */
+@font-face{
+  font-family:'Figtree';
+  src:url('../../../Projects/Design System/assets/fonts/Figtree-Variable.woff2') format('woff2-variations');
+  font-weight:300 900;font-display:swap;
+}
+@font-face{
+  font-family:'JetBrains Mono';
+  src:url('../../../Projects/Design System/assets/fonts/JetBrainsMono-Variable.woff2') format('woff2-variations');
+  font-weight:100 800;font-display:swap;
+}
+:root{
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --white:#FFFFFF;
+  --cl-02-flux:#FFD100;
+  --cl-10-form:#2277FF;
+  --cl-12-life:#00D460;
+  --stroke:3px;
+
+  --fs-caption:12px; --lh-caption:18px; --fw-caption:300;
+  --fs-body:18px;    --lh-body:30px;    --fw-body:400;
+  --fs-h2:24px;      --lh-h2:36px;      --fw-h2:600;
+  --fs-h1:36px;      --lh-h1:48px;      --fw-h1:700;
+
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+
+  --sans:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--sans);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%}
+.wrap{max-width:1080px;margin:0 auto;padding:var(--space-lg) var(--space-md)}
+@media (min-width:900px){.wrap{padding:var(--space-lg)}}
+
+/* --- head --- */
+.kicker{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:0}
+h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);margin:var(--space-sm) 0 0}
+.stamp{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g48);margin:var(--space-sm) 0 0}
+.lede{margin:var(--space-md) 0 0;max-width:46ch}
+.finding{
+  margin:var(--space-md) 0 0;
+  padding:var(--space-sm) 0 var(--space-sm) var(--space-md);
+  border-left:var(--stroke) solid var(--cl-10-form);
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);
+  max-width:34ch;
+}
+
+/* --- sections: section gap 24, heading to content 12 --- */
+section{margin-top:var(--space-lg);padding-top:var(--space-md);border-top:1px solid var(--g24)}
+h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-md)}
+h3{font-family:var(--mono);font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-h2);margin:0 0 var(--space-sm)}
+.note{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:var(--space-md) 0 0;max-width:56ch}
+.label{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:var(--space-md) 0 var(--space-xs)}
+
+/* --- ranking: one line per build, label hard left, verdict hard right --- */
+.rank{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:var(--space-md);
+  background:var(--g06);
+  border:1px solid var(--g24);
+  border-radius:var(--radius-sm);
+  padding:var(--space-sm) var(--space-md);
+  margin-bottom:var(--space-sm);
+}
+.rank:last-of-type{margin-bottom:0}
+.rank .who{font-family:var(--mono);font-size:var(--fs-body);line-height:var(--lh-body)}
+.rank .score{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);white-space:nowrap}
+.rank.ship{border-left:var(--stroke) solid var(--cl-12-life)}
+
+/* --- the strip: a build's two captures side by side at one shared height.
+       The pair scales as one unit so a shared height never becomes a squeeze:
+       --arn is the pair's total aspect ratio in thousandths (whole numbers),
+       and 12 covers the two 1px capture borders plus the 8 gap. --- */
+.grid{display:grid;gap:var(--space-md);grid-template-columns:1fr}
+@media (min-width:900px){.grid{grid-template-columns:1fr 1fr}}
+.cell{container-type:inline-size}
+.pair{display:flex;gap:var(--space-sm);--h:min(320px, calc((100cqw - 12px) * 1000 / var(--arn)))}
+.pair img{
+  height:var(--h);width:auto;flex:0 0 auto;display:block;
+  background:var(--black);
+  border:1px solid var(--g24);
+  border-radius:var(--radius-sm);
+}
+@media (max-width:899px){.pair{--h:min(240px, calc((100cqw - 12px) * 1000 / var(--arn)))}}
+.cap{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:0 0 var(--space-sm)}
+
+/* --- build cards --- */
+.card{
+  background:var(--g06);
+  border:1px solid var(--g24);
+  border-radius:var(--radius-md);
+  padding:var(--space-md);
+}
+.card ul{margin:0;padding:0;list-style:none}
+.card li{
+  position:relative;
+  padding-left:var(--space-md);
+  margin-bottom:var(--space-sm);
+}
+.card li:last-child{margin-bottom:0}
+.card li::before{
+  content:"";position:absolute;left:0;top:13px;
+  width:8px;height:1px;background:var(--g48);
+}
+
+/* --- ideas: label left, verdict right --- */
+.idea{
+  display:grid;gap:var(--space-xs);
+  padding:var(--space-sm) 0;
+  border-top:1px solid var(--g24);
+}
+.idea:first-of-type{border-top:0;padding-top:0}
+.idea .who{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66)}
+@media (min-width:720px){
+  .idea{grid-template-columns:144px 1fr;gap:var(--space-md);align-items:baseline}
+}
+
+/* --- the one change --- */
+.change{
+  margin:var(--space-md) 0 0;
+  padding:var(--space-sm) 0 var(--space-sm) var(--space-md);
+  border-left:var(--stroke) solid var(--cl-02-flux);
+  max-width:60ch;
+}
+.change p{margin:0}
+.change .label{margin-top:0;color:var(--g66)}
+.prose{margin:var(--space-md) 0 0;max-width:60ch}
+.foot{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g48);margin:var(--space-lg) 0 0}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/DeckScreen-comparison.html</span>
+</nav>
+<div class="wrap">
+
+  <header>
+    <p class="kicker">Re.SOURCE · deck screen round · four builds, one brief</p>
+    <h1>Deck screen – four builds</h1>
+    <p class="stamp">Updated 2026-09-29 04:22</p>
+    <p class="lede">Four models took one real brief: the Re.Source deck screen.</p>
+    <p class="finding">The fastest model produced the best surface, and the one you would ship is mimo-v2.6-flash.</p>
+  </header>
+
+  <section aria-labelledby="rank">
+    <h2 id="rank">The ranking</h2>
+    <p class="note">Models are listed everywhere in ladder order, strongest to weakest: qwen3.8-max, mimo-v2.6-flash, minimax-m3, glm-5.3-flash, mimo-v2.6-pro. This table and this strip are sorted by this round's own score, because here the position is the result.</p>
+    <div class="rank">
+      <span class="who">minimaxm3</span>
+      <span class="score">48.0</span>
+    </div>
+    <div class="rank">
+      <span class="who">qwen38max</span>
+      <span class="score">47.0</span>
+    </div>
+    <div class="rank ship">
+      <span class="who">mimoflash</span>
+      <span class="score">46.5</span>
+    </div>
+    <div class="rank">
+      <span class="who">glmflash</span>
+      <span class="score">41.5</span>
+    </div>
+    <p class="note">The reviewer would ship mimoflash anyway, because it is the only build whose law survived every width and the only one you can actually deal.</p>
+  </section>
+
+  <section aria-labelledby="strip">
+    <h2 id="strip">The strip</h2>
+    <p class="note">Eight captures: every build at 1440 and at 390, full page, side by side at one shared height. <a href="Bakeoff-preview.html">The preview bench</a> runs the four builds live, or open <a href="Bakeoff-zoom.html">the full-size viewer</a> to pan and pinch the stills.</p>
+    <div class="grid" style="margin-top:var(--space-md)">
+      <div class="cell">
+        <p class="cap">minimaxm3 · 1440 and 390</p>
+        <div class="pair" style="--arn:1274">
+          <img src="DeckScreen-minimaxm3-1440.png" width="1440" height="1438" alt="minimaxm3 build, full page at 1440 wide">
+          <img src="DeckScreen-minimaxm3-390.png" width="390" height="1432" alt="minimaxm3 build, full page at 390 wide">
+        </div>
+      </div>
+      <div class="cell">
+        <p class="cap">qwen38max · 1440 and 390</p>
+        <div class="pair" style="--arn:545">
+          <img src="DeckScreen-qwen38max-1440.png" width="1440" height="2970" alt="qwen38max build, full page at 1440 wide">
+          <img src="DeckScreen-qwen38max-390.png" width="390" height="6480" alt="qwen38max build, full page at 390 wide">
+        </div>
+      </div>
+      <div class="cell">
+        <p class="cap">mimoflash · 1440 and 390</p>
+        <div class="pair" style="--arn:1405">
+          <img src="DeckScreen-mimoflash-1440.png" width="1440" height="1096" alt="mimoflash build, full page at 1440 wide">
+          <img src="DeckScreen-mimoflash-390.png" width="390" height="4298" alt="mimoflash build, full page at 390 wide">
+        </div>
+      </div>
+      <div class="cell">
+        <p class="cap">glmflash · 1440 and 390</p>
+        <div class="pair" style="--arn:931">
+          <img src="DeckScreen-glmflash-1440.png" width="1440" height="1753" alt="glmflash build, full page at 1440 wide">
+          <img src="DeckScreen-glmflash-390.png" width="390" height="3546" alt="glmflash build, full page at 390 wide">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="builds">
+    <h2 id="builds">Build by build</h2>
+    <div class="grid">
+      <article class="card">
+        <h3>minimaxm3</h3>
+        <p class="label">Strengths</p>
+        <ul>
+          <li>the open card, a full-width lifted PRIME with three named position dots, reading, question and the counter line, is the best single surface here, and it feels like a card pinned flat</li>
+          <li>dead-tree discipline, numbered band keys and an opacity-dimmed lifted twin marking the slot it came from</li>
+        </ul>
+        <p class="label">Defects</p>
+        <ul>
+          <li>it is static, the buttons exist in spirit only and you cannot open another card, so it is a picture of a deck</li>
+          <li>a stray hairline collapses to a floating dot after every band key so the key ends in an orphan dash, and the counter line overflows the phone sheet's right edge, clipped mid-word</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>qwen38max</h3>
+        <p class="label">Strengths</p>
+        <ul>
+          <li>the polar axis, where a pair card's ring grows two coloured radii meeting at the centre, teaches polarity better than anything else here</li>
+          <li>the printed ring, a dashed twelve-segment wheel that is a pure-stroke colour legend reusing the deck's own ring, so the card face is a diagram of itself</li>
+        </ul>
+        <p class="label">Defects</p>
+        <ul>
+          <li>with one card open the page collapses into a narrow centred column with dead margins, and the open band forms rows of two, one and one, so the display band does not divide twelve the way the deck does</li>
+          <li>the relation labels in mono read as diagram furniture rather than copy</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>mimoflash</h3>
+        <p class="label">Strengths</p>
+        <ul>
+          <li>the edge ring, a conic band of twelve 30 degree segments around every card with held positions coloured on the wheel's own angles, so the diagram is the border and black sits behind every word</li>
+          <li>the one measured lattice, same tracks at every count with uniform heights and no holes</li>
+          <li>the open band of face, reading and question as three equal cells, the only open-card treatment that fills a six-column row properly</li>
+        </ul>
+        <p class="label">Defects</p>
+        <ul>
+          <li>measured equal height wraps the Core cards in near-empty black, which is dead space and looks it at 1440</li>
+          <li>the deal fills by cell rather than by row, so the visual tracks break where the open band's siblings end mid-slot</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>glmflash</h3>
+        <p class="label">Strengths</p>
+        <ul>
+          <li>the chip chain, small cards at caption size and large holdings at body size, so the size gradient encodes weight and it works</li>
+          <li>the pip row, tiny colour-coded beads annotating each relation and still on budget at 12px</li>
+        </ul>
+        <p class="label">Defects</p>
+        <ul>
+          <li>a double-click trap, where clicking a second card once only closes the current one and the new card needs a second click</li>
+          <li>the open band has no layout law at all, it is a plain block after the grid relying on auto margins</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="ideas">
+    <h2 id="ideas">The reviewer's verdict on ideas</h2>
+    <div class="idea">
+      <span class="who">qwen38max</span>
+      <span>qwen's ring is an idea, the card face diagramming its own twelve positions</span>
+    </div>
+    <div class="idea">
+      <span class="who">mimoflash</span>
+      <span>mimoflash's edge ring is the most quietly intelligent single device here</span>
+    </div>
+    <div class="idea">
+      <span class="who">minimaxm3</span>
+      <span>minimax's banded tableau is settled print design rather than an idea</span>
+    </div>
+    <div class="idea">
+      <span class="who">glmflash</span>
+      <span>glm is merely competent</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="brief">
+    <h2 id="brief">What the brief got wrong</h2>
+    <p class="prose">The brief rewarded the phone view, so nobody solved the central desktop problem of the open card belonging to the lattice rather than being a paging afterthought, and four builds dodged it with four different escape hatches.</p>
+    <div class="change">
+      <p class="label">The one change for all four</p>
+      <p>The polar pair on a single card should sit on one horizontal axis rather than as sidebar trivia, the two positions on one shared 3px stroke beneath the word, so every face teaches its relationship at once.</p>
+    </div>
+  </section>
+
+  <p class="foot">Captures: headless Chrome, full page, 1440 and 390, 29 September 2026. No overflow at either width.</p>
+
+</div>
+</body>
+</html>

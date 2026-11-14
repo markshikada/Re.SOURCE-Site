@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="What a worktree is, in plain words, what the estate already does with them, what was wrong on 21 October 2026, and what changes overnight.">
+<title>What a worktree is · Re.SOURCE</title>
+<link rel="stylesheet" href="../Design System/styles.css">
+<style>
+  :root { color-scheme: dark; }
+
+  html, body { margin: 0; }
+  body {
+    background: var(--surface-page);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+  }
+
+  /* The small meta layer. Mono, caption size, uppercase, secondary grey.
+     Letter spacing is never declared, so none is set here. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin: 0 0 var(--space-sm);
+  }
+
+  h1 {
+    font-size: var(--fs-display);
+    line-height: var(--lh-display);
+    font-weight: var(--fw-display);
+    margin: 0 0 var(--space-sm);
+  }
+
+  .standfirst {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--text-primary);
+    max-width: 62ch;
+    text-wrap: balance;
+    margin: 0 0 var(--space-xl);
+  }
+
+  h2 {
+    font-size: var(--fs-h2);
+    line-height: var(--lh-h2);
+    font-weight: var(--fw-h2);
+    margin: var(--space-2xl) 0 var(--space-md);
+  }
+
+  p {
+    margin: 0 0 var(--space-md);
+    max-width: 62ch;
+  }
+
+  ul, ol { margin: 0 0 var(--space-md); padding-left: var(--space-lg); max-width: 62ch; }
+  li { margin-bottom: var(--space-sm); }
+
+  /* Section 1 figure. HTML, not SVG: the type is real px at every width, so it
+     never scales below the 12px floor and never clips its own box. The two
+     connectors are an SVG carrying lines only, so they stretch without text. */
+  .desk-diagram { margin: var(--space-lg) auto var(--space-md); max-width: 560px; }
+  .desks { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+  .desk {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    text-align: center;
+  }
+  .desk .name, .desk .branch {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+  }
+  .desk .name { color: var(--text-primary); }
+  .desk .branch { color: var(--text-secondary); }
+
+  .links { display: block; width: 100%; height: 24px; }
+  .links line { stroke: var(--text-secondary); stroke-width: 1; vector-effect: non-scaling-stroke; }
+
+  /* Colour is a stroke on a shape, never a fill behind text: dark fill, a
+     position colour on a 3px stroke, white type. */
+  .shared {
+    margin: 0 auto;
+    max-width: 340px;
+    background: var(--surface-raised);
+    border: 3px solid var(--cl-10-form);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    text-align: center;
+  }
+  .shared .name, .shared .detail {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+  }
+  .shared .name { color: var(--text-primary); }
+  .shared .detail { color: var(--text-secondary); }
+
+  /* Section 3: faults with large numbers */
+  .faults { display: grid; gap: var(--space-md); margin: var(--space-md) 0; }
+  .fault {
+    display: grid;
+    grid-template-columns: minmax(4ch, auto) 1fr;
+    gap: var(--space-md);
+    align-items: baseline;
+    padding: var(--space-md);
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+  }
+  .fault .n {
+    font-family: var(--font-mono);
+    font-size: var(--fs-display);
+    line-height: var(--lh-display);
+    font-weight: var(--fw-display);
+    color: var(--text-primary);
+  }
+  .fault .t {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--text-primary);
+  }
+  .fault .t strong { color: var(--text-primary); font-weight: var(--fw-h2); }
+
+  @media (max-width: 720px) {
+    .fault { grid-template-columns: 1fr; gap: var(--space-xs); }
+    .fault .n { font-size: var(--fs-h1); line-height: var(--lh-h1); }
+  }
+
+  /* Section 4: changes */
+  .changes { display: grid; gap: var(--space-md); margin: var(--space-md) 0; }
+  .change {
+    padding: var(--space-md);
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+  }
+  .change .head {
+    display: flex; gap: var(--space-sm); align-items: baseline; margin-bottom: var(--space-xs);
+  }
+  .change .num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--text-secondary);
+  }
+  .change .title {
+    font-size: var(--fs-body);
+    font-weight: var(--fw-h2);
+    color: var(--text-primary);
+  }
+  .change .body {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--text-primary);
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  /* Section 5 bullets compact */
+  .open-list { margin: var(--space-md) 0; }
+  .open-list li { color: var(--text-primary); }
+
+  /* footer note */
+  .footnote {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    color: var(--text-secondary);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--surface-border);
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: var(--space-lg) var(--space-md) var(--space-2xl); }
+    h1 { font-size: var(--fs-h1); line-height: var(--lh-h1); }
+  }
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/worktrees.html</span>
+</nav>
+<div class="page">
+
+  <p class="eyebrow">Re.SOURCE · 21 October 2026</p>
+  <h1>What a worktree is</h1>
+  <p class="standfirst">What it is, what was wrong, and what changes overnight. Plain words, no jargon.</p>
+
+  <h2>The one idea</h2>
+  <p>A worktree is a second desk in the same room. Same history, same piles of paper, but a separate desk with its own branch of work on it. You can have ten desks open at once, each with different work, and no two sessions ever fight over the same files.</p>
+  <p>A symlink worktree is a worktree that does not duplicate the heavy, temporary stuff: the folders Git never copies because they are not part of the project. Build output, installed packages, caches, secret files. Instead it points back at the main copy. One heavy folder, shared by pointer, built once and never twice.</p>
+
+  <div class="desk-diagram" aria-hidden="true">
+    <div class="desks">
+      <div class="desk">
+        <span class="name">Desk 1</span>
+        <span class="branch">branch A</span>
+      </div>
+      <div class="desk">
+        <span class="name">Desk 2</span>
+        <span class="branch">branch B</span>
+      </div>
+    </div>
+    <svg class="links" viewBox="0 0 100 24" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <line x1="24" y1="0" x2="50" y2="24"/>
+      <line x1="76" y1="0" x2="50" y2="24"/>
+    </svg>
+    <div class="shared">
+      <span class="name">Shared heavy folder</span>
+      <span class="detail">build output · packages · caches</span>
+    </div>
+  </div>
+
+  <h2>What we already do</h2>
+  <ul>
+    <li>Every piece of work gets its own desk: a worktree, a branch, a pull request.</li>
+    <li>Git refuses to put one branch on two desks, so two sessions cannot collide.</li>
+    <li>Work merges into the main copy through a pull request, one merge method only.</li>
+    <li>Estate rules are written down and followed by every lane.</li>
+  </ul>
+
+  <h2>What was wrong</h2>
+  <p>Measured on 21 October 2026. Stated plainly.</p>
+  <div class="faults">
+    <div class="fault">
+      <div class="n">16</div>
+      <div class="t"><strong>desks open.</strong> 13 of them already finished. Their work had merged into the main copy weeks ago, and nobody had closed them.</div>
+    </div>
+    <div class="fault">
+      <div class="n">28</div>
+      <div class="t"><strong>of 31 branches</strong> in the control vault already merged, still sitting there.</div>
+    </div>
+    <div class="fault">
+      <div class="n">14</div>
+      <div class="t"><strong>files in one main copy, 26 in the other,</strong> uncommitted, sitting in the one folder sessions are told never to touch. That work was at risk of being lost.</div>
+    </div>
+    <div class="fault">
+      <div class="n">1</div>
+      <div class="t"><strong>of seven repositories</strong> parked on a side branch instead of its main branch.</div>
+    </div>
+    <div class="fault">
+      <div class="n">0</div>
+      <div class="t"><strong>desks recorded as in use.</strong> Nothing tracked which desks were actually live. Register was written by hand, last updated 3 October.</div>
+    </div>
+  </div>
+
+  <h2>What changes overnight</h2>
+  <div class="changes">
+    <div class="change">
+      <div class="head"><span class="num">1</span><span class="title">Desks will close themselves.</span></div>
+      <p class="body">When a pull request merges, the desk and its branch clear automatically. Nothing accumulates.</p>
+    </div>
+    <div class="change">
+      <div class="head"><span class="num">2</span><span class="title">One register, always current.</span></div>
+      <p class="body">Any session can read which desks are live, what each is for, and how old it is.</p>
+    </div>
+    <div class="change">
+      <div class="head"><span class="num">3</span><span class="title">Heavy folders shared, not copied.</span></div>
+      <p class="body">A lane points at the shared build folder rather than making its own, so nothing builds twice.</p>
+    </div>
+    <div class="change">
+      <div class="head"><span class="num">4</span><span class="title">The two main copies rescued, not touched.</span></div>
+      <p class="body">At-risk work preserved on a branch and put in front of Mark as a pull request to review in the morning.</p>
+    </div>
+  </div>
+
+  <h2>What is still open</h2>
+  <ul class="open-list">
+    <li>Rescue pull request from the two main copies needs Mark's review. It is another session's work, so it is his call.</li>
+    <li>One repository parked on a side branch needs to go back on its main branch.</li>
+    <li>One orphaned detached worktree with no branch is being reported, not removed.</li>
+  </ul>
+
+  <h2>The video that prompted this</h2>
+  <p>Mark sent a short comic video: a parody of an engineer who replaces himself with sixteen agents in separate worktrees sharing one symlinked build folder. It got the shape right, separate desks with a shared heavy folder, and it got silly about the rest. Estate took the good idea from it: one desk per piece of work, heavy folders shared by pointer.</p>
+
+  <p class="footnote">Figures measured 21 October 2026. Changes described are those in flight; items needing a decision are listed above.</p>
+
+</div>
+</body>
+</html>

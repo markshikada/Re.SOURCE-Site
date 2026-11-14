@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Re.SOURCE mark">
+<title>Re.SOURCE mark</title>
+
+<g fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.45"><circle cx="60" cy="30.75" r="29.25" transform="rotate(0 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(30 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(60 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(90 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(120 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(150 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(180 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(210 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(240 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(270 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(300 60 60)"></circle><circle cx="60" cy="30.75" r="29.25" transform="rotate(330 60 60)"></circle></g>
+<circle cx="60" cy="60" r="29.25" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="1 3" stroke-linecap="round"></circle>
+<circle cx="60" cy="60" r="3" fill="#FFFFFF"></circle>
+</svg>

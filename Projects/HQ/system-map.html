@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Estate, drawn</title>
+<style>
+  :root{
+    --u-type:6px;
+    --fs-caption:12px; --fs-body:18px; --fs-h2:24px; --fs-h1:36px; --fs-display:48px;
+    --lh-caption:18px; --lh-body:30px; --lh-h2:36px; --lh-h1:48px; --lh-display:54px;
+    --fw-caption:300; --fw-body:400; --fw-h2:600; --fw-h1:700; --fw-display:800;
+
+    --u:4px;
+    --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px; --space-xl:48px;
+    --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+
+    --cl-01-tone:#99DD00; --cl-02-flux:#FFD100; --cl-03-flow:#FFB000;
+    --cl-04-love:#FF7700; --cl-05-bond:#FF5500; --cl-06-fire:#FF0000;
+    --cl-07-path:#E02888; --cl-08-time:#9933CC; --cl-09-meta:#6655FF;
+    --cl-10-form:#2277FF; --cl-11-type:#00BBDD; --cl-12-life:#00D460;
+
+    --black:#000000; --g06:#0D0D0D; --g12:#1A1A1A; --g24:#333333;
+    --g48:#555555; --g66:#888888; --white:#FFFFFF;
+    --text-primary:var(--white); --text-secondary:var(--g66); --text-dim:var(--g48);
+    --surface-page:var(--black); --surface-card:var(--g06);
+    --surface-raised:var(--g12); --surface-border:var(--g24);
+
+    --stroke:3px;
+    --font: ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--surface-page);color:var(--text-primary);font-family:var(--font);margin:0}
+  body{padding-bottom:var(--space-2xl,96px)}
+
+  .edge{padding:var(--space-xl) var(--space-lg) var(--space-lg);max-width:1180px;margin:0 auto}
+  .eyebrow{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+           color:var(--text-secondary);text-transform:uppercase;letter-spacing:.14em}
+  h1{font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display);
+     margin:var(--space-sm) 0 var(--space-md);letter-spacing:-.02em}
+  .standfirst{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);
+              max-width:62ch;margin:0}
+  .rule{height:1px;background:var(--surface-border);margin:var(--space-lg) 0 0}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 var(--space-lg)}
+
+  /* the plate is for wide screens; the stack is for a phone.
+     Which one shows is toggled on <body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/system-map.html</span>
+</nav> by JS, not by a media query,
+     so the switch does not depend on the engine resolving one. */
+  .plate{display:none}
+  .stack{display:none}
+  body.wide .plate{display:block}
+  body.narrow .stack{display:block}
+  svg{width:100%;height:auto;display:block}
+
+  .band{fill:var(--surface-card);stroke:var(--surface-border);stroke-width:1}
+  .node{fill:var(--surface-raised);stroke-width:var(--stroke)}
+  .node-key{fill:var(--surface-raised);stroke:var(--white);stroke-width:var(--stroke)}
+  .wire{fill:none;stroke:var(--g24);stroke-width:1.5}
+  .wire-return{fill:none;stroke:var(--cl-02-flux);stroke-width:2;stroke-dasharray:5 6}
+  .t-key{font-size:19px;font-weight:700;fill:var(--white)}
+  .t-title{font-size:16px;font-weight:600;fill:var(--white)}
+  .t-body{font-size:13.5px;font-weight:400;fill:var(--g66)}
+  .t-cap{font-size:12px;font-weight:300;fill:var(--g48);letter-spacing:.1em}
+
+  /* --- the phone stack: same data, legible type --- */
+  .sband{border:1px solid var(--surface-border);background:var(--surface-card);
+         border-radius:var(--radius-lg);padding:var(--space-lg);margin:0 0 var(--space-md)}
+  .sband > .cap{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+                color:var(--text-dim);text-transform:uppercase;letter-spacing:.12em;margin:0 0 var(--space-md)}
+  .snode{border:var(--stroke) solid var(--hue);border-radius:var(--radius-md);
+         padding:var(--space-md) var(--space-lg);margin:0 0 var(--space-sm);background:var(--surface-raised)}
+  .snode.key{border-color:var(--white)}
+  .snode h3{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-xs)}
+  .snode p{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);margin:0}
+  .sarrow{height:var(--space-lg);display:flex;align-items:center;justify-content:center;
+          color:var(--g48);font-size:var(--fs-h2);line-height:1}
+  .sreturn{border:var(--stroke) dashed var(--cl-02-flux);border-radius:var(--radius-md);
+           padding:var(--space-md) var(--space-lg);margin:var(--space-sm) 0 0;
+           font-size:var(--fs-body);line-height:var(--lh-body);color:var(--cl-02-flux)}
+
+  .legend{margin:var(--space-xl) 0 0;display:grid;gap:var(--space-xl);
+          grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .legend h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-sm)}
+  .legend p{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);margin:0}
+  .legend .meta{font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-dim);margin-top:var(--space-sm)}
+
+  @media (max-width:820px){
+    .edge,.wrap{padding-left:var(--space-md);padding-right:var(--space-md)}
+    h1{font-size:30px;line-height:36px}
+    .standfirst{font-size:16px;line-height:26px}
+    .legend{grid-template-columns:1fr;gap:var(--space-lg)}
+  }
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+
+<header class="edge">
+  <p class="eyebrow">Re.SOURCE · the system, drawn</p>
+  <h1>How it comes together</h1>
+  <p class="standfirst">Six altitudes, read top to bottom. You decide at the top; the work runs
+  downward through the lanes and the seats; the result lands in the House and comes back out
+  to you as something you can open. The dashed line is the only path that matters: the one
+  that ends at your phone.</p>
+  <div class="rule"></div>
+</header>
+
+<div class="wrap">
+  <div class="plate"><svg id="plate" role="img" aria-label="A layered diagram of the estate, read from Mark at the top down through the lanes, the seats, the sessions and the vaults to the surfaces, over a substrate of storage, clouds and automations. A dashed line returns from the surfaces to Mark."></svg></div>
+  <div class="stack" id="stack"></div>
+</div>
+
+<div class="wrap">
+  <div class="legend">
+    <section>
+      <h2>How to read it</h2>
+      <p>Downward is work. Every arrow is a handoff with a name on it. The band a thing sits
+      in tells you what kind of thing it is: a decision, a seat, a fleet, an authority, a
+      surface, or the ground everything stands on.</p>
+      <p class="meta">Six bands. One dashed line, and it points at you.</p>
+    </section>
+    <section>
+      <h2>What is not on it</h2>
+      <p>The local vault folders are absent on purpose. They are git's working copy — agents
+      need a tree to commit from — and they are not a place you work. The cloud holds the
+      source of truth; the folder is plumbing wearing the costume of a destination.</p>
+    </section>
+    <section>
+      <h2>The three lanes</h2>
+      <p>Intel and Ops are fundamental and universal: they work everywhere. Design is
+      use-case specific. The fourth seat exists because the implementer is never allowed to
+      approve its own work.</p>
+      <p class="meta">Terminal is drawn because it is still the stair, not because it is a destination.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+// One source for both renderings. The plate and the phone stack are generated from
+// this array, so a band cannot exist in one and be missing from the other.
+const HUE = {
+  tone:'var(--cl-01-tone)', flux:'var(--cl-02-flux)', flow:'var(--cl-03-flow)',
+  love:'var(--cl-04-love)', bond:'var(--cl-05-bond)', fire:'var(--cl-06-fire)',
+  path:'var(--cl-07-path)', time:'var(--cl-08-time)', meta:'var(--cl-09-meta)',
+  form:'var(--cl-10-form)', type:'var(--cl-11-type)', life:'var(--cl-12-life)'
+};
+
+const DECIDES = { title:'Mark', lines:['Direction, taste, and anything irreversible'], hue:null, key:true };
+
+const BANDS = [
+  { cap:'LANES · four seats, and what each is for', nodes:[
+    { title:'Intel', lines:['Universal. Reads and reports.','Works everywhere.'], hue:HUE.life },
+    { title:'Ops', lines:['Universal. Builds and repairs.','Money, contracts, systems.'], hue:HUE.flux },
+    { title:'Design', lines:['Use-case specific.','Writes the copy,','picks the design.'], hue:HUE.path },
+    { title:'Design review', lines:['Separate context. The','implementer never self-approves.'], hue:HUE.time }
+  ]},
+  { cap:'SEATS · which model does which kind of work', nodes:[
+    { title:'Free pair', lines:['Every routing value sits','on the ruled free seats.'], hue:HUE.flow },
+    { title:'Ladder', lines:['Off, minimal, low, medium,','high, xhigh, max.'], hue:HUE.form },
+    { title:'Strength is an offset', lines:['Never a pinned rung. Quality does not','separate by rung: 47% of cells disagree','with themselves at the same rung.'], hue:HUE.tone }
+  ]},
+  { cap:'SESSIONS · the fleet, reaped and counted', nodes:[
+    { title:'Ceiling 24 lanes', lines:['Felt beyond 35.','6 heavy lanes; one is 32% of a core.'], hue:HUE.bond },
+    { title:'Reaped hourly', lines:['196 procs / 16.8 GB down to 16 / 2.0 GB.','Scoped to a peer, not an exclusion list.'], hue:HUE.bond },
+    { title:'Orphans were the cost', lines:['A supervisor outlived its front end.','Nothing in the harness ever reaped one.'], hue:HUE.love }
+  ]},
+  { cap:'THE HOUSE · three vaults, three authorities', nodes:[
+    { title:'COMMAND', lines:['Operations authority.','Handover, registry, health,','the gates.'], hue:HUE.fire },
+    { title:'Re.SOURCE', lines:['Design language. Vaults, studios,','pages, the publish pipeline.'], hue:HUE.path },
+    { title:'PERSONAL', lines:['Life hub. Sensitive by design,','never published.'], hue:HUE.life }
+  ]},
+  { cap:'SURFACES · where it becomes yours to open', nodes:[
+    { title:'The console', lines:['Chat, Estate board, sessions, map.'], hue:HUE.flux },
+    { title:'Published site', lines:['Every page is a public https link.'], hue:HUE.flux },
+    { title:'Terminal', lines:['Still the stair. Still charged to you.'], hue:HUE.tone },
+    { title:'Your phone', lines:['The only surface that reaches you.'], hue:null, key:true }
+  ]},
+  { cap:'SUBSTRATE · carries everything above it', nodes:[
+    { title:'Storage', lines:['Internal 926 GB at 80%.','SSD 2 TB at 92%: 1.68 TB of client work.'], hue:HUE.time },
+    { title:'Clouds', lines:['iCloud, Google Drive, Box.','All sync upward. None is a backup.'], hue:HUE.meta },
+    { title:'Automations', lines:['15 launchd agents: reaper, branch, lane, health.','The schedule watcher is not one of them.'], hue:HUE.type }
+  ]}
+];
+
+const RETURN_FROM = 3; // index of the phone node within the surfaces band
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ---------------------------------------------------------------- phone stack
+function renderStack(){
+  const out = [];
+  out.push(`<div class="sband"><p class="cap">DECIDES</p>
+    <div class="snode key"><h3>${esc(DECIDES.title)}</h3>
+    ${DECIDES.lines.map(l=>`<p>${esc(l)}</p>`).join('')}</div>
+    <div class="sreturn">What comes back to you is always a page you can open. Memory, storage and git loops are finished without asking you.</div>
+  </div>`);
+  out.push(`<div class="sarrow" aria-hidden="true">&#9660;</div>`);
+  BANDS.forEach((b, i) => {
+    out.push(`<div class="sband"><p class="cap">${esc(b.cap)}</p>`);
+    b.nodes.forEach(n => {
+      out.push(`<div class="snode${n.key?' key':''}" style="--hue:${n.hue||'var(--white)'}">
+        <h3>${esc(n.title)}</h3>${n.lines.map(l=>`<p>${esc(l)}</p>`).join('')}</div>`);
+    });
+    out.push(`</div>`);
+    if (i < BANDS.length - 1) out.push(`<div class="sarrow" aria-hidden="true">&#9660;</div>`);
+  });
+  return out.join('\n');
+}
+
+// ---------------------------------------------------------------- wide plate
+function renderPlate(){
+  const W = 1210, PAD = 20, GAP = 26, BAND_X = PAD, BAND_W = 1080;
+  const NODE_H = 100, NODE_PAD = 18;
+  let y = 30;
+
+  const nodeH = n => 52 + n.lines.length * 20;
+  const bandH = b => Math.max(...b.nodes.map(nodeH)) + 58;
+
+  let s = `<defs>
+    <marker id="tip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cl-02-flux)"/>
+    </marker>
+  </defs><rect class="plate-bg" x="0" y="0" width="${W}" height="200"/>`;
+
+  // Mark, then a connector down to the first band
+  const markW = 360, markH = 106, markX = (BAND_X + BAND_W / 2) - markW / 2, markY = 34;
+  s += `<rect class="node-key" x="${markX}" y="${markY}" width="${markW}" height="${markH}" rx="24"/>
+    <text class="t-key" x="${markX + markW / 2}" y="${markY + 48}" text-anchor="middle">${esc(DECIDES.title)}</text>
+    <text class="t-body" x="${markX + markW / 2}" y="${markY + 76}" text-anchor="middle">${esc(DECIDES.lines[0])}</text>
+    <text class="t-cap" x="${markX + markW / 2}" y="${markY - 12}" text-anchor="middle">DECIDES</text>`;
+
+  // the ruling, wired into Mark's left edge
+  const rw = 316, rh = 82, rx = BAND_X, ry = markY + 12;
+  s += `<rect class="node" x="${rx}" y="${ry}" width="${rw}" height="${rh}" rx="12" stroke="var(--cl-06-fire)"/>
+    <text class="t-body" x="${rx + 20}" y="${ry + 32}">Memory, storage and git loops</text>
+    <text class="t-body" x="${rx + 20}" y="${ry + 56}">are finished without asking you.</text>
+    <path class="wire" d="M${rx + rw} ${ry + rh / 2} H${markX - 6}" marker-end="url(#tip)"/>`;
+
+  y = markY + markH + GAP;
+
+  const centre = BAND_X + BAND_W / 2;
+  const tops = [];
+  BANDS.forEach((b, bi) => {
+    const bh = bandH(b);
+    tops.push({ y, h: bh });
+    s += `<rect class="band" x="${BAND_X}" y="${y}" width="${BAND_W}" height="${bh}" rx="12"/>
+      <text class="t-cap" x="${BAND_X + 24}" y="${y + 30}">${esc(b.cap)}</text>`;
+
+    const n = b.nodes.length;
+    const inner = BAND_W - 48;
+    const gap = 16;
+    const nw = (inner - gap * (n - 1)) / n;
+    b.nodes.forEach((nd, i) => {
+      const nx = BAND_X + 24 + i * (nw + gap);
+      const nh = Math.max(NODE_H, nodeH(nd));
+      const ny = y + 44;
+      s += `<rect class="${nd.key?'node-key':'node'}" x="${nx}" y="${ny}" width="${nw}" height="${nh}" rx="12"${nd.hue?` stroke="${nd.hue}"`:''}/>
+        <text class="${nd.key?'t-key':'t-title'}" x="${nx + NODE_PAD}" y="${ny + 30}">${esc(nd.title)}</text>`;
+      nd.lines.forEach((l, li) => {
+        s += `<text class="t-body" x="${nx + NODE_PAD}" y="${ny + 54 + li * 20}">${esc(l)}</text>`;
+      });
+    });
+
+    y += bh + GAP;
+  });
+
+  const totalH = y;
+  s = s.replace('<rect class="plate-bg" x="0" y="0" width="' + W + '" height="200"/>',
+                `<rect class="plate-bg" x="0" y="0" width="${W}" height="${totalH}"/>`);
+
+  // connectors between bands, drawn in the gaps
+  for (let i = 0; i < tops.length - 1; i++) {
+    const a = tops[i], b = tops[i + 1];
+    s += `<path class="wire" d="M${centre} ${a.y + a.h} V${b.y}"/>`;
+  }
+  s += `<path class="wire" d="M${centre} ${markY + markH} V${tops[0].y}"/>`;
+
+  // the return: out of the phone's right edge, up the channel beside the bands, into Mark
+  const surf = tops[BANDS.findIndex(b => b.nodes.some(n => n.key))];
+  const surfBand = BANDS[BANDS.findIndex(b => b.nodes.some(n => n.key))];
+  const phoneIdx = surfBand.nodes.findIndex(n => n.key);
+  const n2 = surfBand.nodes.length;
+  const inner2 = BAND_W - 48, gap2 = 16;
+  const nw2 = (inner2 - gap2 * (n2 - 1)) / n2;
+  const px = BAND_X + 24 + phoneIdx * (nw2 + gap2);
+  const channelX = BAND_X + BAND_W + 58;
+  const phoneMidY = surf.y + 44 + 50;
+  s += `<path class="wire-return" marker-end="url(#tip)" d="M${px + nw2} ${phoneMidY} H${channelX} V${markY + markH / 2} H${markX + markW + 6}"/>
+    <text class="t-cap" x="${channelX - 10}" y="${(markY + surf.y) / 2}" fill="var(--cl-02-flux)"
+      text-anchor="middle" transform="rotate(-90 ${channelX - 10} ${(markY + surf.y) / 2})">WHAT COMES BACK TO YOU</text>`;
+
+  return { svg: s, W, H: totalH, channelX };
+}
+
+const plate = renderPlate();
+const svg = document.getElementById('plate');
+// Explicit intrinsics: an SVG sized only by CSS height:auto resolves to zero in some
+// engines, which silently collapses the whole diagram.
+svg.setAttribute('viewBox', `0 0 ${plate.W} ${plate.H}`);
+svg.setAttribute('width', plate.W);
+svg.setAttribute('height', plate.H);
+svg.innerHTML = plate.svg;
+document.getElementById('stack').innerHTML = renderStack();
+
+function applyBreakpoint(){
+  const narrow = window.matchMedia('(max-width:820px)').matches;
+  document.body.classList.toggle('narrow', narrow);
+  document.body.classList.toggle('wide', !narrow);
+}
+applyBreakpoint();
+window.addEventListener('resize', applyBreakpoint);
+</script>
+</body>
+</html>

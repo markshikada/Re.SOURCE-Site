@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Re.Source Word CARD — FORM at position 10</title>
+<style>
+/* ------------------------------------------------------------------
+   Re.Source Word CARD — printed specimen
+   Position 10 · FORM
+   Three states: at rest, opened, bottom sheet on a 390 wide frame
+   ------------------------------------------------------------------ */
+
+:root{
+  /* Tokens, exact values from the four token files. Whole numbers only. */
+
+  /* Position colours */
+  --cl-00-core:transparent;
+  --cl-10-form:#2277FF;
+
+  /* Greyscale ramp + text */
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --g88:#CCCCCC;
+  --white:#FFFFFF;
+
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+
+  /* Stroke law */
+  --stroke:3px;
+
+  /* Spacing 2:3:6 on u=4 */
+  --u:4px;
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:24px;
+  --space-xl:48px;
+
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:24px;
+
+  --pill-height:36px;
+  --pill-radius:18px;
+
+  /* Type scale, px, weights, leading. Whole even multiples. */
+  --u-type:6px;
+  --fs-caption:12px;
+  --fs-body:18px;
+  --fs-h2:24px;
+  --fs-h1:36px;
+  --fs-display:48px;
+
+  --lh-caption:18px;
+  --lh-body:30px;
+  --lh-h2:36px;
+  --lh-h1:48px;
+  --lh-display:54px;
+
+  --fw-caption:300;
+  --fw-body:400;
+  --fw-h2:600;
+  --fw-h1:700;
+  --fw-display:800;
+
+  /* Card geometry, 360 x 504 */
+  --card-w:360px;
+  --card-h:504px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html,body{
+  background:var(--surface-page);
+  color:var(--text-primary);
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+body{
+  padding:var(--space-xl) var(--space-lg);
+  min-height:100vh;
+}
+
+/* Letter spacing is never declared. The font owns it. */
+
+/* Headline at the top of the page */
+.spec-head{
+  max-width:var(--card-w);
+  margin:0 auto var(--space-xl);
+  padding:0 var(--space-md);
+}
+.spec-head .kicker{
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+}
+.spec-head .title{
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+  margin-top:var(--space-sm);
+}
+.spec-head .meta{
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-dim);
+  margin-top:var(--space-xs);
+}
+
+/* Three states in one row at desktop, stacked at narrow. */
+.spec-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--space-xl);
+  align-items:flex-start;
+  justify-content:center;
+}
+
+.state{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:var(--space-md);
+}
+
+.state-label{
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+  padding:var(--space-xs) var(--space-sm);
+  border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);
+  background:var(--surface-card);
+}
+
+/* ------------------------------ THE CARD ------------------------------ */
+
+.card{
+  position:relative;
+  width:var(--card-w);
+  height:var(--card-h);
+  background:var(--surface-card);
+  border:3px solid var(--cl-10-form);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Position badge, top-left, black fill, coloured stroke, white text. */
+.card .badge{
+  position:absolute;
+  top:var(--space-md);
+  left:var(--space-md);
+  width:36px;
+  height:36px;
+  border-radius:var(--radius-md);
+  border:3px solid var(--cl-10-form);
+  background:var(--black);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:var(--fs-body);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+  font-variant-numeric:tabular-nums;
+}
+
+/* Set mark, top-right, the small ring with the position colour. */
+.card .mark{
+  position:absolute;
+  top:var(--space-md);
+  right:var(--space-md);
+  width:36px;
+  height:36px;
+  border-radius:var(--radius-md);
+  border:3px solid var(--cl-10-form);
+  background:var(--black);
+  position:absolute;
+}
+
+/* The title word, centred in the card body. */
+.card .word{
+  flex:1 1 auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:var(--space-lg) var(--space-md);
+}
+.card .word span{
+  font-size:var(--fs-display);
+  line-height:var(--lh-display);
+  font-weight:var(--fw-display);
+  color:var(--text-primary);
+  text-align:center;
+}
+
+/* The gloss line at the foot, secondary type. */
+.card .gloss{
+  padding:0 var(--space-md) var(--space-md);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-align:center;
+}
+
+/* Position caption above the word, meta layer. */
+.card .position{
+  padding:var(--space-md) var(--space-md) 0;
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-dim);
+  text-transform:uppercase;
+  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:var(--space-sm);
+}
+.card .position .dot{
+  width:8px;
+  height:8px;
+  border-radius:var(--radius-md);
+  border:3px solid var(--cl-10-form);
+  background:var(--black);
+  display:inline-block;
+}
+.card .position .pipe{
+  width:1px;
+  height:12px;
+  background:var(--g48);
+  display:inline-block;
+}
+
+/* ----------------------------- STATE 2: OPENED ----------------------------- */
+
+.card.opened{
+  height:auto;
+  min-height:var(--card-h);
+}
+
+.card.opened .reading,
+.card.opened .question{
+  padding:0 var(--space-md);
+}
+
+.card.opened .reading{
+  padding-top:var(--space-md);
+}
+.card.opened .reading .k,
+.card.opened .question .k{
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+}
+.card.opened .reading .v{
+  margin-top:var(--space-xs);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  color:var(--text-primary);
+}
+.card.opened .question{
+  padding-top:var(--space-md);
+  padding-bottom:var(--space-md);
+  margin-top:var(--space-md);
+  border-top:3px solid var(--cl-10-form);
+}
+.card.opened .question .v{
+  margin-top:var(--space-xs);
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+}
+
+/* ----------------------- STATE 3: BOTTOM SHEET ON 390 --------------------- */
+
+.frame-390{
+  width:390px;
+  height:640px;
+  background:var(--surface-page);
+  border:3px solid var(--surface-border);
+  border-radius:var(--radius-lg);
+  position:relative;
+  overflow:hidden;
+}
+
+/* Faux phone chrome, mono caption, surface raised. */
+.frame-390 .chrome{
+  position:absolute;
+  top:0;left:0;right:0;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 var(--space-md);
+  background:var(--surface-raised);
+  border-bottom:3px solid var(--surface-border);
+}
+.frame-390 .chrome .l,
+.frame-390 .chrome .r{
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+}
+
+/* Behind the sheet, the surface page, so the sheet reads as elevated. */
+.frame-390 .stage{
+  position:absolute;
+  top:36px;left:0;right:0;bottom:0;
+  display:flex;
+  flex-direction:column;
+  padding:var(--space-md);
+  gap:var(--space-md);
+}
+.frame-390 .stage .peeker{
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-dim);
+  text-transform:uppercase;
+}
+.frame-390 .stage .mini-row{
+  display:flex;
+  gap:var(--space-sm);
+  margin-top:var(--space-xs);
+}
+.frame-390 .stage .mini-row .mini{
+  width:36px;
+  height:36px;
+  border-radius:var(--radius-md);
+  border:3px solid var(--surface-border);
+  background:var(--surface-card);
+}
+.frame-390 .stage .mini-row .mini.active{
+  border-color:var(--cl-10-form);
+}
+
+/* Sheet at the foot, full width, capped at half the frame. */
+.sheet{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  max-height:320px;          /* half of 640, whole number */
+  background:var(--surface-raised);
+  border-top:3px solid var(--cl-10-form);
+  border-top-left-radius:var(--radius-lg);
+  border-top-right-radius:var(--radius-lg);
+  padding:var(--space-md) var(--space-md) var(--space-lg);
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-md);
+}
+
+.sheet .handle{
+  width:36px;
+  height:6px;
+  background:var(--g48);
+  border-radius:var(--radius-md);
+  margin:0 auto var(--space-xs);
+}
+
+.sheet .topline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.sheet .topline .pos{
+  display:flex;
+  align-items:center;
+  gap:var(--space-sm);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  text-transform:uppercase;
+}
+.sheet .topline .pos .dot{
+  width:8px;height:8px;
+  border-radius:var(--radius-md);
+  border:3px solid var(--cl-10-form);
+  background:var(--black);
+  display:inline-block;
+}
+.sheet .topline .x{
+  width:36px;height:36px;
+  border-radius:var(--radius-md);
+  border:3px solid var(--surface-border);
+  background:var(--surface-card);
+  display:flex;align-items:center;justify-content:center;
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-h2);
+  color:var(--text-secondary);
+}
+
+.sheet .word{
+  font-size:var(--fs-h1);
+  line-height:var(--lh-h1);
+  font-weight:var(--fw-h1);
+  color:var(--text-primary);
+}
+.sheet .question{
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  color:var(--text-primary);
+}
+.sheet .actions{
+  display:flex;
+  gap:var(--space-sm);
+  margin-top:auto;
+}
+.sheet .actions .btn{
+  flex:1 1 auto;
+  min-height:36px;
+  padding:0 var(--space-md);
+  border-radius:var(--radius-md);
+  border:3px solid var(--cl-10-form);
+  background:var(--black);
+  color:var(--text-primary);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-h2);
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.sheet .actions .btn.secondary{
+  border-color:var(--surface-border);
+  color:var(--text-secondary);
+}
+
+/* ------------------------ MOBILE RESPONSIVE ------------------------ */
+
+@media (max-width:720px){
+  body{padding:var(--space-lg) var(--space-md);}
+  .spec-row{gap:var(--space-lg);}
+  .spec-head{margin-bottom:var(--space-lg);}
+}
+
+@media (max-width:480px){
+  body{padding:var(--space-md) var(--space-sm);}
+  .spec-row{gap:var(--space-lg);}
+  /* Card itself never reflows. It sits inside its 390 frame. */
+}
+
+@media (max-width:420px){
+  /* On the tightest frame the 390 sheet frame goes full bleed, card stays its own size. */
+  .frame-390{
+    width:100%;
+    border-left:none;
+    border-right:none;
+    border-radius:0;
+  }
+}
+
+/* Reduced motion, no decorative transitions present anyway, but keep the contract. */
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important;}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-C.html</span>
+</nav>
+
+<header class="spec-head">
+  <div class="kicker">Word CARD &middot; specimen</div>
+  <div class="title">FORM at position 10</div>
+  <div class="meta">360 &times; 504 &middot; one component at a scale, three states</div>
+</header>
+
+<section class="spec-row">
+
+  <!-- ============================== STATE 1: AT REST ============================== -->
+  <div class="state">
+    <span class="state-label">1 &middot; At rest</span>
+
+    <article class="card" aria-label="Word card at rest, FORM at position 10">
+
+      <div class="badge" aria-label="position 10">10</div>
+      <div class="mark" aria-hidden="true"></div>
+
+      <div class="position">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Position 10</span>
+        <span class="pipe" aria-hidden="true"></span>
+        <span>FORM</span>
+      </div>
+
+      <div class="word"><span>FORM</span></div>
+
+      <div class="gloss">Form is the shape a thing takes when it holds together.</div>
+
+    </article>
+  </div>
+
+  <!-- ============================== STATE 2: OPENED ============================== -->
+  <div class="state">
+    <span class="state-label">2 &middot; Opened</span>
+
+    <article class="card opened" aria-label="Word card opened, showing its reading and question">
+
+      <div class="badge" aria-label="position 10">10</div>
+      <div class="mark" aria-hidden="true"></div>
+
+      <div class="position">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Position 10</span>
+        <span class="pipe" aria-hidden="true"></span>
+        <span>FORM</span>
+      </div>
+
+      <div class="word"><span>FORM</span></div>
+
+      <div class="reading">
+        <div class="k">Reading</div>
+        <div class="v">The card reads the shape, the pair and the position, in that order.</div>
+      </div>
+
+      <div class="question">
+        <div class="k">Question</div>
+        <div class="v">What is holding your shape together right now?</div>
+      </div>
+
+    </article>
+  </div>
+
+  <!-- ====================== STATE 3: BOTTOM SHEET ON 390 ====================== -->
+  <div class="state">
+    <span class="state-label">3 &middot; Bottom sheet on 390</span>
+
+    <div class="frame-390" aria-label="Phone frame, 390 wide, with the FORM card as a bottom sheet">
+
+      <div class="chrome">
+        <span class="l">Re.Source</span>
+        <span class="r">FORM</span>
+      </div>
+
+      <div class="stage">
+        <div class="peeker">Set &middot; Realm</div>
+        <div class="mini-row" aria-hidden="true">
+          <div class="mini"></div>
+          <div class="mini"></div>
+          <div class="mini"></div>
+          <div class="mini active"></div>
+          <div class="mini"></div>
+          <div class="mini"></div>
+          <div class="mini"></div>
+        </div>
+      </div>
+
+      <div class="sheet" role="dialog" aria-label="FORM card sheet">
+
+        <div class="handle" aria-hidden="true"></div>
+
+        <div class="topline">
+          <div class="pos">
+            <span class="dot" aria-hidden="true"></span>
+            <span>10 &middot; FORM</span>
+          </div>
+          <div class="x" aria-label="close">&times;</div>
+        </div>
+
+        <div class="word">FORM</div>
+        <div class="question">What is holding your shape together right now?</div>
+
+        <div class="actions">
+          <div class="btn secondary">Hold</div>
+          <div class="btn">Open</div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+</body>
+</html>
