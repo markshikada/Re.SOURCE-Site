@@ -1,0 +1,45 @@
+{
+  "stamp": "2026-10-20T17:53:30.502Z",
+  "sources": [
+    {
+      "name": "carryover-1",
+      "at": "2026-10-20T17:46:36.463Z",
+      "ageMs": 414041,
+      "ok": true
+    },
+    {
+      "name": "carryover-2",
+      "at": "2026-10-11T13:47:37.155Z",
+      "ageMs": 792353349,
+      "ok": true
+    },
+    {
+      "name": "carryover-3",
+      "at": "2026-10-11T14:34:03.390Z",
+      "ageMs": 789567116,
+      "ok": true
+    },
+    {
+      "name": "estate",
+      "at": "2026-10-20T17:31:57.933Z",
+      "ageMs": 1292573,
+      "ok": true
+    },
+    {
+      "name": "state",
+      "at": "2026-10-20T17:53:15.737Z",
+      "ageMs": 14770,
+      "ok": true
+    }
+  ],
+  "items": [
+    {
+      "id": "5ea8e6537c",
+      "kind": "decision",
+      "phrase": "The standing live view, one on the Mac: installs only when he runs , then is the Mac-only link",
+      "detail": "All three workbench decisions were ruled A and are settled",
+      "href": "http://l",
+      "since": "2026-10-11T13:47:37.155Z"
+    }
+  ]
+}

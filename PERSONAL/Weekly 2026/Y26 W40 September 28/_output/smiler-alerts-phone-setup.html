@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smiler alerts — phone setup</title>
+<style>
+  :root {
+    --purple: #3D1B64;
+    --purple-soft: #f3edf8;
+    --ink: #211528;
+    --muted: #5b4a66;
+    --paper: #ffffff;
+    --ground: #f7f4f7;
+    --accent: #c2185b;
+    --ok: #0b6b4f;
+    --line: #e4d9ec;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px 16px 56px;
+  }
+  header {
+    background: var(--purple);
+    color: #fff;
+    padding: 22px 18px;
+    border-radius: 18px;
+    margin-bottom: 18px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 25px; line-height: 1.2; }
+  header p { margin: 0; color: #eadff2; font-size: 15px; }
+  .stamp {
+    display: inline-block;
+    margin-top: 12px;
+    background: rgba(255,255,255,0.16);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    letter-spacing: 0.2px;
+  }
+  section {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px 18px 20px;
+    margin-bottom: 16px;
+  }
+  h2 {
+    margin: 0 0 4px;
+    font-size: 19px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--purple);
+  }
+  h2 .glyph { font-size: 22px; line-height: 1; }
+  .lead { margin: 0 0 14px; color: var(--muted); font-size: 15.5px; }
+  ol { margin: 0; padding-left: 0; list-style: none; counter-reset: step; }
+  ol li {
+    counter-increment: step;
+    position: relative;
+    padding: 10px 0 10px 40px;
+    border-top: 1px solid var(--line);
+    font-size: 16.5px;
+  }
+  ol li:first-child { border-top: 0; }
+  ol li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 11px;
+    width: 27px; height: 27px;
+    border-radius: 50%;
+    background: var(--purple-soft);
+    color: var(--purple);
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  strong { color: var(--ink); }
+  .path {
+    background: var(--purple-soft);
+    color: var(--purple);
+    padding: 1px 7px;
+    border-radius: 7px;
+    font-weight: 600;
+    font-size: 15.5px;
+  }
+  .note {
+    margin-top: 14px;
+    background: var(--ground);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15.5px;
+    color: var(--ink);
+  }
+  .ok {
+    background: #eaf6f1;
+    border-left-color: var(--ok);
+    color: #0a4d3a;
+  }
+  .quiet { color: var(--muted); font-size: 14.5px; }
+  footer {
+    margin-top: 22px;
+    color: var(--muted);
+    font-size: 13.5px;
+    text-align: center;
+  }
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../../index.html">Estate HQ</a>
+<a href="../../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">PERSONAL/Weekly 2026/Y26 W40 September 28/_output/smiler-alerts-phone-setup.html</span>
+</nav>
+<main>
+
+  <header>
+    <h1>Smiler alerts — phone setup</h1>
+    <p>Two switches on your phone, then a new shoot lands in your hand within seconds of it being posted.</p>
+    <span class="stamp">Updated 30 September 2026, 18:25</span>
+  </header>
+
+  <section>
+    <h2><span class="glyph">🔔</span> ntfy — the instant ping</h2>
+    <p class="lead">About a minute. This is the channel that tells you the moment a shoot appears.</p>
+    <ol>
+      <li>Install <strong>ntfy</strong> from the Play Store (the one by <strong>binwiederhier</strong>).</li>
+      <li>Open the app, tap <strong>+</strong>, and subscribe to the topic name sent in the chat message. Keep it private, it is the address of your alerts.</li>
+      <li>Stop the phone delaying it: <span class="path">Settings → Apps → ntfy → Battery → Unrestricted</span>. Without this, Android batches the ping and "instant" becomes "when the phone wakes up".</li>
+      <li>Optional but worth it: <span class="path">ntfy settings → Notifications</span>, turn on pop-ups and give it a loud sound, so a new shoot is hard to miss.</li>
+    </ol>
+    <div class="note ok"><strong>Test it.</strong> A test ping went to the topic already. If it did not reach you, the subscription is not set up yet.</div>
+  </section>
+
+  <section>
+    <h2><span class="glyph">📸</span> Smiler's own push — the backstop</h2>
+    <p class="lead">About a minute. This one covers the gap when the Mac is asleep and the watcher cannot poll.</p>
+    <ol>
+      <li>In the Smiler app, open your <strong>notification settings</strong> (profile area → Notifications).</li>
+      <li>Tap <strong>Allow notifications</strong>, and allow it again when Android asks.</li>
+      <li>Under <strong>What to notify me about</strong>, switch on <strong>New bookings to claim</strong> — that is exactly the pool the watcher is watching.</li>
+      <li>Make them pop up: <span class="path">Settings → Apps → Smiler → Notifications</span> → allow sound and pop on screen.</li>
+      <li>Same battery fix: <span class="path">Settings → Apps → Smiler → Battery → Unrestricted</span>. On Samsung, also add Smiler to the never-sleeping apps.</li>
+    </ol>
+    <div class="note"><strong>Test it.</strong> Smiler's own screen has a send-test button. If that test arrives, the backstop works.</div>
+  </section>
+
+  <section>
+    <h2><span class="glyph">⏱️</span> What happens when a shoot lands</h2>
+    <ol>
+      <li>The watcher on your Mac checks the <strong>Available</strong> pool every <strong>2 seconds</strong>. The Smiler app on its own only refreshes every 30, which is the whole reason this exists.</li>
+      <li>Your phone buzzes within a second or two: the shoot name, city, date and price.</li>
+      <li>Claim it in the <strong>Smiler app → Bookings → Available</strong>. First to claim wins, so that is the move to be quick at.</li>
+    </ol>
+    <div class="note"><strong>No ping while the Mac sleeps.</strong> That is the one gap, and it is what the Smiler backstop above is for.</div>
+  </section>
+
+  <section>
+    <h2><span class="glyph">🧰</span> If a ping does not arrive</h2>
+    <p class="lead">Say so in chat. The watcher keeps a log of every check, so it can be told whether the phone side or the Mac side is at fault, rather than guessing.</p>
+  </section>
+
+  <footer>Built for Mark Shikada · 30 September 2026 · PERSONAL</footer>
+
+</main>
+</body>
+</html>

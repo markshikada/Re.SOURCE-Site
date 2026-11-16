@@ -1,0 +1,16 @@
+{
+  "generator": "COMMAND/Operations/Development/carry-index.mjs",
+  "rule": "L - path-linked `_output/<file>` from the live set and standing prose",
+  "root": "Re.SOURCE",
+  "week": "Y26 W43 October 19",
+  "generated": "2026-10-21 00:32",
+  "total": 0,
+  "shortlist": [],
+  "carry": [],
+  "draft": [],
+  "dispositions": {
+    "carry": {},
+    "draft": {}
+  },
+  "problems": 0
+}

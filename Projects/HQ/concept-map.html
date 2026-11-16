@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The New System, a concept map</title>
+<style>
+  /* Semantic colour tokens. One fixed meaning each, across all three views.
+     The table and its sources live in concept-map.DESIGN.md section 2.
+     Hue lives in the diagrams; chrome is ink. */
+  :root{
+    --space-0:#04060f; --space-1:#0a1122; --space-2:#101a33;
+    --human:#f5d9a8;   /* You, the human at the centre */
+    --agent:#5eead4;   /* AI agents */
+    --local:#7dd3fc;   /* local hardware */
+    --cloud:#a78bfa;   /* cloud services */
+    --touch:#f5b453;   /* communication surfaces: chat, phone, email */
+    --tool:#f472b6;    /* software tools */
+    --life:#4ade80;    /* life domains: the six areas of life */
+    --tension:#f87171; /* life links that pull apart */
+    --reinforce:#e8ecf4;/* life links that pull together. Ink by necessity, not by
+                 choice: every cool hue on this page is already a category (agent,
+                 local, cloud), so the default relation takes the ink ramp. The life
+                 legend marks link SHAPE, not hue, so it never teaches the ink as a
+                 category. See "The two decisions that needed a ruling" in
+                 concept-map.DESIGN.md. */
+    --text-1:#e8ecf4; --text-2:#9aa7c2; --text-3:#8a94ac;
+    --border:rgba(148,163,204,.14);
+    --fs-display:48px; --fs-h1:36px; --fs-h2:28px; --fs-h3:22px;
+    --fs-body:16px; --fs-caption:12px;
+    --fw-display:700; --fw-h1:700; --fw-h2:600; --fw-body:400; --fw-caption:500;
+    --u:4px; --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px;
+    --sp-6:24px; --sp-8:32px; --sp-10:40px; --sp-12:48px; --sp-16:64px; --sp-20:80px;
+    --radius-sm:8px; --radius-md:12px; --radius-lg:20px; --radius-full:9999px;
+    --font:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    --mono:ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --ease-emphasis:cubic-bezier(.16,1,.3,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; color:var(--text-1); font-family:var(--font);
+    background:
+      radial-gradient(120% 90% at 50% -10%, var(--space-2) 0%, transparent 55%),
+      radial-gradient(100% 80% at 85% 110%, #0c1430 0%, transparent 50%),
+      linear-gradient(180deg, var(--space-1) 0%, var(--space-0) 100%);
+    background-attachment:fixed;
+    min-height:100dvh; overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---- background layers ---- */
+  #bg, .bg-fallback{position:fixed; inset:0; width:100%; height:100%; z-index:-2; pointer-events:none}
+  .bg-fallback{
+    z-index:-3;
+    background:
+      radial-gradient(60% 50% at 20% 15%, rgba(148,163,204,.05) 0%, transparent 60%),
+      radial-gradient(50% 40% at 80% 80%, rgba(148,163,204,.06) 0%, transparent 60%);
+  }
+  /* ---- top bar ---- */
+  .top{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between; gap:var(--sp-4);
+    padding:var(--sp-4) var(--sp-6);
+    background:linear-gradient(180deg, rgba(4,6,15,.82) 0%, rgba(4,6,15,.55) 70%, transparent 100%);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex; align-items:baseline; gap:var(--sp-3); min-width:0}
+  .brand-mark{
+    width:12px; height:12px; border-radius:var(--radius-full); flex:0 0 auto;
+    background:radial-gradient(circle at 35% 35%, #fff 0%, var(--text-1) 45%, transparent 75%);
+    box-shadow:0 0 14px 2px rgba(232,236,244,.35);
+  }
+  .brand-name{font-size:var(--fs-h3); font-weight:var(--fw-h1); letter-spacing:-.01em; white-space:nowrap}
+  .brand-sub{font-family:var(--mono); font-size:var(--fs-caption); color:var(--text-3); letter-spacing:.06em; white-space:nowrap}
+  .tabs{display:flex; gap:var(--sp-1); padding:var(--sp-1); border:1px solid var(--border); border-radius:var(--radius-full); background:rgba(10,17,34,.5)}
+  .tab{
+    appearance:none; border:0; background:transparent; color:var(--text-2);
+    font-family:var(--font); font-size:14px; font-weight:500; letter-spacing:.01em;
+    padding:var(--sp-2) var(--sp-4); border-radius:var(--radius-full); cursor:pointer;
+    transition:color .2s ease, background-color .2s ease;
+  }
+  .tab:hover{color:var(--text-1)}
+  .tab[aria-pressed="true"]{color:var(--text-1); background:rgba(148,163,204,.14)}
+  .tab:focus-visible{outline:2px solid var(--text-1); outline-offset:2px}
+  /* ---- layout ---- */
+  main{max-width:1280px; margin:0 auto; padding:0 var(--sp-6) var(--sp-16)}
+  .view{display:none}
+  .view.active{display:block}
+  .view-head{max-width:760px; margin:0 auto; text-align:center; padding:var(--sp-12) 0 var(--sp-8)}
+  /* The network is the page. At 1440 roughly 430px of headline and lede passed
+     before the drawing began and the map was the smaller of the two; the hero
+     share comes down so the drawing starts inside the first screen. */
+  @media (min-width:861px){
+    .view-head{padding:var(--sp-6) 0 var(--sp-4)}
+    .view-head h1{font-size:clamp(30px,3.6vw,40px)}
+    .lede{font-size:15px; line-height:1.55}
+  }
+  .eyebrow{
+    font-size:var(--fs-caption); font-weight:var(--fw-caption); letter-spacing:.16em;
+    text-transform:uppercase; color:var(--text-2); margin:0 0 var(--sp-3);
+  }
+  h1{
+    font-size:clamp(30px, 5.4vw, var(--fs-display)); font-weight:var(--fw-display);
+    line-height:1.08; letter-spacing:-.02em; margin:0 0 var(--sp-4);
+  }
+  .lede{font-size:var(--fs-body); line-height:1.6; color:var(--text-2); margin:0; max-width:60ch; margin-inline:auto}
+  .lede strong{color:var(--text-1); font-weight:600}
+  /* ---- map wrap ---- */
+  .map-wrap{position:relative; width:100%; max-width:920px; margin:0 auto}
+  .map-wrap svg{display:block; width:100%; height:auto; max-height:68vh}
+  .legend{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:var(--sp-3) var(--sp-5);
+    padding:var(--sp-5) 0 0; margin:0 auto; max-width:760px;
+  }
+  .legend-item{display:flex; align-items:center; gap:var(--sp-2); font-size:13px; color:var(--text-2)}
+  .legend-dot{width:10px; height:10px; border-radius:var(--radius-full); box-shadow:0 0 8px 1px currentColor}
+  /* ---- life map ---- */
+  .life-legend{gap:var(--sp-6)}
+  .life-legend .legend-dot{width:22px; height:3px; border-radius:2px; box-shadow:none}
+  /* ---- interface view ---- */
+  .compare{
+    display:grid; grid-template-columns:1fr auto 1fr; gap:var(--sp-6);
+    align-items:stretch; max-width:1080px; margin:0 auto; padding:var(--sp-8) 0 0;
+  }
+  .frame{
+    border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;
+    background:linear-gradient(180deg, rgba(16,26,51,.6) 0%, rgba(10,17,34,.6) 100%);
+    box-shadow:0 18px 50px -20px rgba(0,0,0,.7);
+    display:flex; flex-direction:column;
+  }
+  .frame-bar{
+    display:flex; align-items:center; gap:var(--sp-2);
+    padding:var(--sp-3) var(--sp-4); border-bottom:1px solid var(--border);
+    background:rgba(4,6,15,.4);
+  }
+  .frame-dot{width:9px; height:9px; border-radius:var(--radius-full); background:var(--text-3)}
+  .frame-title{margin-left:var(--sp-2); font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--text-3); text-transform:uppercase}
+  .frame-body{flex:1; padding:var(--sp-5); min-height:280px; display:flex; flex-direction:column; gap:var(--sp-3)}
+  .frame-input{
+    padding:var(--sp-3) var(--sp-4); border-top:1px solid var(--border);
+    font-size:13px; color:var(--text-3); background:rgba(4,6,15,.3);
+  }
+  /* before: the text chat */
+  .frame-before .frame-body{justify-content:flex-end; gap:var(--sp-2)}
+  .bubble{
+    max-width:78%; padding:var(--sp-2) var(--sp-3); border-radius:var(--radius-md);
+    font-size:13px; line-height:1.45; color:var(--text-2);
+    background:rgba(148,163,204,.07); border:1px solid var(--border);
+  }
+  .bubble-r{align-self:flex-end; background:rgba(245,217,168,.08); border-color:rgba(245,217,168,.2); color:#f7e7c8}
+  .bubble-mid{align-self:center; font-family:var(--mono); font-size:11px; color:var(--text-3); background:transparent; border:0}
+  /* after: the spatial canvas */
+  .frame-after{background:linear-gradient(180deg, rgba(232,236,244,.05) 0%, rgba(10,17,34,.6) 100%); box-shadow:0 18px 60px -18px rgba(232,236,244,.10)}
+  .canvas-mini{flex:1; display:grid; place-items:center; padding:var(--sp-2) 0}
+  .canvas-mini svg{width:100%; height:auto; max-height:220px}
+  .lane-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--sp-2); padding-top:var(--sp-3); border-top:1px solid var(--border)}
+  .lane{
+    font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--text-2); padding:var(--sp-2); border-radius:var(--radius-sm);
+    background:rgba(148,163,204,.06); border:1px solid var(--border); text-align:center;
+  }
+  .lane b{display:block; font-size:11px; color:var(--text-1); margin-bottom:2px; font-weight:600}
+  /* the arrow between */
+  .arrow{display:grid; place-items:center; padding:var(--sp-2)}
+  .arrow svg{width:56px; height:56px; overflow:visible}
+  .arrow-path{stroke:var(--text-1); stroke-width:2; fill:none; opacity:.7}
+  .arrow-head{fill:var(--text-1); opacity:.9}
+  .arrow-flow{stroke:#fff; stroke-width:2; fill:none; stroke-dasharray:3 9; animation:flow 1.4s linear infinite}
+  @keyframes flow{to{stroke-dashoffset:-24}}
+  .compare-label{
+    text-align:center; font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--text-3); padding:var(--sp-3) 0 0;
+  }
+  .compare-label strong{display:block; color:var(--text-1); font-size:13px; letter-spacing:.02em; text-transform:none; font-family:var(--font); font-weight:600; margin-top:2px}
+  /* ---- footer ---- */
+  footer{
+    max-width:1280px; margin:0 auto; padding:var(--sp-10) var(--sp-6) var(--sp-16);
+    border-top:1px solid var(--border); display:flex; justify-content:space-between; gap:var(--sp-4);
+    font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--text-3);
+  }
+  /* ---- entrance ---- */
+  .rise{opacity:0; transform:translateY(14px); transition:opacity .6s var(--ease-emphasis), transform .6s var(--ease-emphasis)}
+  body.ready .rise{opacity:1; transform:none}
+  .rise-1{transition-delay:.05s}.rise-2{transition-delay:.14s}.rise-3{transition-delay:.23s}
+  /* ---- reduced motion ---- */
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    .rise{opacity:1; transform:none; transition:none}
+    .arrow-flow{animation:none}
+    *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important}
+  }
+  /* ---- responsive ---- */
+  @media (max-width:860px){
+    .compare{grid-template-columns:1fr; gap:var(--sp-4)}
+    .arrow{transform:rotate(90deg); padding:var(--sp-1) 0}
+    .brand-sub{display:none}
+  }
+  @media (max-width:560px){
+    .top{flex-direction:column; align-items:stretch; gap:var(--sp-3); padding:var(--sp-3) var(--sp-4)}
+    .brand{justify-content:center}
+    .tabs{justify-content:center}
+    .tab{padding:var(--sp-2) var(--sp-3); font-size:13px}
+    main{padding:0 var(--sp-4) var(--sp-12)}
+    .view-head{padding:var(--sp-10) 0 var(--sp-6)}
+    .map-wrap svg{max-height:60vh}
+    footer{flex-direction:column; gap:var(--sp-2); padding:var(--sp-8) var(--sp-4) var(--sp-12)}
+  }
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../index.html">Estate HQ</a>
+<a href="../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Projects/HQ/concept-map.html</span>
+</nav>
+  <div class="bg-fallback" aria-hidden="true"></div>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <header class="top">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">The New System</span>
+      <span class="brand-sub">a concept map</span>
+    </div>
+    <nav class="tabs" aria-label="Views">
+      <button class="tab" data-view="system" aria-pressed="true">The System</button>
+      <button class="tab" data-view="life" aria-pressed="false">Your Life</button>
+      <button class="tab" data-view="interface" aria-pressed="false">The Interface</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="view active" id="view-system" aria-label="The system, drawn as a network">
+      <div class="view-head">
+        <p class="eyebrow rise rise-1">A concept map</p>
+        <h1 class="rise rise-2">Everything you touch draws as one living network.</h1>
+        <p class="lede rise rise-3">You at the centre. Agents, machines, cloud and touchpoints around you, joined by flows you can watch move. This is a system that is <strong>spatial, visual and alive</strong>: the shape of an interface that left the text chat behind.</p>
+      </div>
+      <div class="map-wrap rise rise-3">
+        <svg id="system-map" role="img" aria-label="A radial network with You at the centre, surrounded by rings of AI agents, local hardware, cloud services and touchpoints, connected by flowing lines."></svg>
+      </div>
+      <div class="legend rise rise-3" id="system-legend"></div>
+    </section>
+
+    <section class="view" id="view-life" aria-label="Your life domains and how they relate">
+      <div class="view-head">
+        <p class="eyebrow rise rise-1">Your life, mapped</p>
+        <h1 class="rise rise-2">Where the parts pull together, and where they pull apart.</h1>
+        <p class="lede rise rise-3">Six domains, one picture. <strong style="color:var(--life)">Green</strong> nodes are the domains; <strong style="color:var(--reinforce)">pale</strong> links reinforce, <strong style="color:var(--tension)">red</strong> links pull apart. The thickest red is the one to watch: the work you love and the money it makes.</p>
+      </div>
+      <div class="map-wrap rise rise-3">
+        <svg id="life-map" role="img" aria-label="Six life domains arranged in a hexagon, linked by pale reinforcing lines and red tension lines."></svg>
+      </div>
+      <div class="legend life-legend rise rise-3">
+        <span class="legend-item"><span class="legend-dot" style="color:var(--reinforce);background:var(--reinforce)"></span>Reinforce</span>
+        <span class="legend-item"><span class="legend-dot" style="color:var(--tension);background:var(--tension)"></span>Pull apart</span>
+      </div>
+    </section>
+
+    <section class="view" id="view-interface" aria-label="The interface, redesigned from text to space">
+      <div class="view-head">
+        <p class="eyebrow rise rise-1">The interface, redesigned</p>
+        <h1 class="rise rise-2">From a text chat to a spatial canvas.</h1>
+        <p class="lede rise rise-3">The old way is a wall of text in a basement. The new way is a <strong>space you can see, touch and move through</strong>, live previews, lanes and nodes instead of a scrolling transcript.</p>
+      </div>
+      <div class="compare rise rise-3">
+        <div>
+          <div class="frame frame-before">
+            <div class="frame-bar"><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-title">Chat</span></div>
+            <div class="frame-body">
+              <div class="bubble">Did you push the change?</div>
+              <div class="bubble bubble-r">Yes, it is on main.</div>
+              <div class="bubble">And the page?</div>
+              <div class="bubble bubble-r">Published. Link below.</div>
+              <div class="bubble bubble-mid">· 47 more messages you have to read ·</div>
+            </div>
+            <div class="frame-input">Write a message…</div>
+          </div>
+          <p class="compare-label">The old way<strong>A text chat</strong></p>
+        </div>
+
+        <div class="arrow" aria-hidden="true">
+          <svg viewBox="0 0 56 56">
+            <path class="arrow-path" d="M6 28 H44" />
+            <path class="arrow-flow" d="M6 28 H44" />
+            <path class="arrow-head" d="M40 20 L50 28 L40 36 Z" />
+          </svg>
+        </div>
+
+        <div>
+          <div class="frame frame-after">
+            <div class="frame-bar"><span class="frame-dot" style="background:var(--text-1)"></span><span class="frame-dot"></span><span class="frame-dot"></span><span class="frame-title" style="color:var(--text-2)">Canvas</span></div>
+            <div class="frame-body">
+              <div class="canvas-mini">
+                <svg viewBox="0 0 320 200" role="img" aria-label="A small spatial canvas with glowing nodes and connections">
+                  <defs>
+                    <radialGradient id="cm-glow"><stop offset="0%" stop-color="#fff" stop-opacity=".9"/><stop offset="100%" stop-color="#e8ecf4" stop-opacity="0"/></radialGradient>
+                  </defs>
+                  <g stroke="rgba(148,163,204,.25)" stroke-width="1">
+                    <line x1="160" y1="100" x2="70" y2="55"/><line x1="160" y1="100" x2="250" y2="55"/>
+                    <line x1="160" y1="100" x2="70" y2="150"/><line x1="160" y1="100" x2="250" y2="150"/>
+                    <line x1="70" y1="55" x2="250" y2="150"/><line x1="250" y1="55" x2="70" y2="150"/>
+                  </g>
+                  <g>
+                    <circle cx="160" cy="100" r="26" fill="url(#cm-glow)"/><circle cx="160" cy="100" r="7" style="fill:var(--human)"/>
+                    <circle cx="70" cy="55" r="18" fill="url(#cm-glow)"/><circle cx="70" cy="55" r="5" style="fill:var(--agent)"/>
+                    <circle cx="250" cy="55" r="18" fill="url(#cm-glow)"/><circle cx="250" cy="55" r="5" style="fill:var(--cloud)"/>
+                    <circle cx="70" cy="150" r="18" fill="url(#cm-glow)"/><circle cx="70" cy="150" r="5" style="fill:var(--local)"/>
+                    <circle cx="250" cy="150" r="18" fill="url(#cm-glow)"/><circle cx="250" cy="150" r="5" style="fill:var(--touch)"/>
+                  </g>
+                </svg>
+              </div>
+              <div class="lane-strip">
+                <div class="lane"><b>Intel</b>watching</div>
+                <div class="lane"><b>Ops</b>live</div>
+                <div class="lane"><b>Design</b>queued</div>
+              </div>
+            </div>
+            <div class="frame-input" style="color:var(--text-2)">Speak, or tap a node…</div>
+          </div>
+          <p class="compare-label">The new way<strong>A spatial canvas</strong></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>The New System · a concept map</span>
+    <span>drawn live · three.js + svg</span>
+  </footer>
+
+<noscript><p style="text-align:center;padding:2rem;color:#9aa7c2">This concept map is drawn with JavaScript. Please enable it to see the network.</p></noscript>
+
+<script>
+(function(){
+  "use strict";
+  var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var SVGNS = "http://www.w3.org/2000/svg";
+
+  /* ---------- semantic colour: the CSS :root is the single source of truth ----------
+     Every hue here carries one fixed meaning, per concept-map.DESIGN.md section 2.
+     No second set of hexes is declared: the SVG reads the same tokens the CSS uses. */
+  var CS = getComputedStyle(document.documentElement);
+  function tok(name){ return CS.getPropertyValue(name).trim(); }
+  var INK = tok("--text-1");
+  var HUE = {
+    human: tok("--human"),
+    agent: tok("--agent"),
+    local: tok("--local"),
+    cloud: tok("--cloud"),
+    touch: tok("--touch"),
+    tool:  tok("--tool")
+  };
+  var LIFE = tok("--life"), REINFORCE = tok("--reinforce"), TENSION = tok("--tension");
+
+  /* ---------- data ---------- */
+  var CATS = {
+    human:{label:"You"},
+    agent:{label:"AI agents"},
+    local:{label:"Local hardware"},
+    cloud:{label:"Cloud"},
+    touch:{label:"Touchpoints"},
+    tool:{label:"Tools"}
+  };
+  var NODES = [
+    {id:"you",      label:"You",            cat:"human", ring:0},
+    {id:"omo",      label:"omO",            cat:"agent", ring:1},
+    {id:"estate",   label:"Agent estate",   cat:"agent", ring:1},
+    {id:"claude",   label:"Claude · OpenCode", cat:"agent", ring:1},
+    {id:"mac",      label:"Mac M1 Pro",     cat:"local", ring:2},
+    {id:"iphone",   label:"iPhone",         cat:"local", ring:2},
+    {id:"github",   label:"GitHub",         cat:"cloud", ring:3},
+    {id:"site",     label:"Published site", cat:"cloud", ring:3},
+    {id:"tailscale",label:"Tailscale",      cat:"cloud", ring:3},
+    {id:"chat",     label:"Chat",           cat:"touch", ring:4},
+    {id:"phone",    label:"Phone",          cat:"touch", ring:4},
+    {id:"email",    label:"Email",          cat:"touch", ring:4}
+  ];
+  var EDGES = [
+    ["you","omo"],["you","estate"],["you","claude"],
+    ["omo","mac"],["omo","github"],["estate","github"],
+    ["claude","mac"],["github","site"],
+    ["site","chat"],["site","phone"],["site","email"],
+    ["tailscale","phone"],["mac","iphone"]
+  ];
+  /* Every domain shares one hue: they are one class, life, and each domain's
+     identity is carried by its label and position, as an agent's is. */
+  var DOMAINS = [
+    {id:"creative",     label:"Creative Work", hue:LIFE},
+    {id:"health",       label:"Health",        hue:LIFE},
+    {id:"relationships",label:"Relationships", hue:LIFE},
+    {id:"finances",     label:"Finances",      hue:LIFE},
+    {id:"growth",       label:"Growth",        hue:LIFE},
+    {id:"craft",        label:"Craft",         hue:LIFE}
+  ];
+  var LIFE_LINKS = [
+    ["creative","craft","reinforce"],
+    ["health","relationships","reinforce"],
+    ["health","growth","reinforce"],
+    ["finances","craft","reinforce"],
+    ["growth","creative","reinforce"],
+    ["creative","finances","tension"],
+    ["creative","health","tension"],
+    ["relationships","finances","tension"]
+  ];
+
+  /* ---------- svg helpers ---------- */
+  function el(name, attrs, parent){
+    var e = document.createElementNS(SVGNS, name);
+    if(attrs) for(var k in attrs) e.setAttribute(k, attrs[k]);
+    if(parent) parent.appendChild(e);
+    return e;
+  }
+  function isFiniteCoord(p){ return !!p && isFinite(p.x) && isFinite(p.y); }
+  function nodeById(id){ for(var i=0;i<NODES.length;i++) if(NODES[i].id===id) return NODES[i]; return null; }
+  function domainById(id){ for(var i=0;i<DOMAINS.length;i++) if(DOMAINS[i].id===id) return DOMAINS[i]; return null; }
+
+  /* ---------- system map ---------- */
+
+  /* Labels live in SVG user units, so their rendered size is the user size times
+     the scale the viewBox is actually drawn at, which is not width/1700 because
+     the svg carries a max-height cap. 11px is the floor: below it the map is the
+     least readable thing on the page. Measured off the live viewBox and the live
+     rendered box, so it holds at every width instead of at the one that was tried. */
+  var LABEL_FLOOR_PX=11;
+  function labelUserSize(svg,base){
+    var vb=svg.viewBox&&svg.viewBox.baseVal;
+    var box=svg.getBoundingClientRect();
+    if(!vb||!vb.width||!box.width||!box.height) return base;
+    var scale=Math.min(box.width/vb.width, box.height/vb.height);
+    if(!(scale>0)) return base;
+    return Math.max(base, Math.ceil(LABEL_FLOOR_PX/scale));
+  }
+
+  /* Labels live in SVG user units, so their rendered size is the user size times
+     the scale the viewBox is drawn at, which is not width/1700 because the svg
+     carries a max-height cap. 11px is the floor: below it the map is the least
+     readable thing on the page. Measured off the live viewBox and the live
+     rendered box, so it holds at every width rather than the one that was tried. */
+  var LABEL_FLOOR_PX=11, LABEL_FS=26, NARROW_AT=620;
+  function labelUserSize(svg,base){
+    var vb=svg.viewBox&&svg.viewBox.baseVal;
+    var box=svg.getBoundingClientRect();
+    if(!vb||!vb.width||!box.width||!box.height) return base;
+    var scale=Math.min(box.width/vb.width, box.height/vb.height);
+    if(!(scale>0)) return base;
+    return Math.max(base, Math.ceil(LABEL_FLOOR_PX/scale));
+  }
+
+  /* The viewBox is sized to what is drawn rather than fixed at 1700: the outer
+     ring sits at 740 and a label reaches outward from it, so a fixed box clips
+     the outer labels at every width. Box and label size depend on each other, so
+     pass one sizes the box from the drawing and pass two from the label pass one
+     asked for. Each pass re-centres, because positions are absolute. */
+  var MAP_PAD=90, RING_R=[0,210,390,570,740];
+  function mapBox(fs,narrow){
+    var reach=34+fs*0.95, halfW=0;
+    NODES.forEach(function(n){
+      if(narrow && n.ring!==0 && n.ring!==4) return;
+      halfW=Math.max(halfW, n.label.length*fs*0.34);
+    });
+    var half=RING_R[RING_R.length-1]+reach+halfW+MAP_PAD;
+    return {size:half*2, cx:half, cy:half};
+  }
+  var MAP_BOX=mapBox(26,false);
+
+  /* Every offset is derived from a value the map already has: the glow radius the
+     node is drawn at, the label's own size, and the node's own angle. */
+  function labelPlace(p,fs,isCentre){
+    if(isCentre) return {x:p.x, y:p.y+15+fs*0.75, anchor:"middle"};
+    var ang=Math.atan2(p.y-CY, p.x-CX), cos=Math.cos(ang);
+    var reach=34+fs*0.95;
+    var anchor = cos>0.25 ? "start" : (cos<-0.25 ? "end" : "middle");
+    return {x:p.x+Math.cos(ang)*reach, y:p.y+Math.sin(ang)*reach+fs*0.35, anchor:anchor};
+  }
+
+  var CX=850, CY=850, RINGS=[0,210,390,570,740];
+  var RING_START={0:0,1:-90,2:0,3:30,4:-30};
+  var sysPos={}, sysEls={}, flowDots=[], flowRaf=0;
+
+  function buildSystemMap(){
+    var svg=document.getElementById("system-map");
+    var narrow=svg.getBoundingClientRect().width<NARROW_AT;
+    MAP_BOX=mapBox(26,narrow);
+    CX=MAP_BOX.cx; CY=MAP_BOX.cy;
+    svg.setAttribute("viewBox","0 0 "+MAP_BOX.size+" "+MAP_BOX.size);
+    computeSysPos();
+    LABEL_FS=labelUserSize(svg,26);
+    MAP_BOX=mapBox(LABEL_FS,narrow);
+    CX=MAP_BOX.cx; CY=MAP_BOX.cy;
+    svg.setAttribute("viewBox","0 0 "+MAP_BOX.size+" "+MAP_BOX.size);
+    computeSysPos();
+    LABEL_FS=labelUserSize(svg,26);
+    var defs=el("defs",null,svg);
+    // glow gradients per category
+    for(var cat in CATS){
+      var g=el("radialGradient",{id:"glow-"+cat},defs);
+      el("stop",{offset:"0%","stop-color":HUE[cat],"stop-opacity":.55},g);
+      el("stop",{offset:"100%","stop-color":HUE[cat],"stop-opacity":0},g);
+    }
+    // edge gradients
+    EDGES.forEach(function(e,i){
+      var a=nodeById(e[0]), b=nodeById(e[1]);
+      var pa=sysPos[e[0]], pb=sysPos[e[1]];
+      /* A non-finite coordinate is never set. setAttribute accepts "NaN" and the
+         gradient silently paints nothing, which is how this fault reads as a
+         missing drawing rather than as a bug. */
+      if(!pa||!pb||!isFiniteCoord(pa)||!isFiniteCoord(pb)) return;
+      var gr=el("linearGradient",{id:"eg"+i,"gradientUnits":"userSpaceOnUse",
+        x1:pa.x,y1:pa.y,x2:pb.x,y2:pb.y},defs);
+      el("stop",{offset:"0%","stop-color":HUE[a.cat]},gr);
+      el("stop",{offset:"100%","stop-color":HUE[b.cat]},gr);
+    });
+    // faint ring guides
+    var guides=el("g",null,svg);
+    [210,390,570,740].forEach(function(r){
+      el("circle",{cx:CX,cy:CY,r:r,fill:"none",stroke:"rgba(148,163,204,.07)","stroke-width":1},guides);
+
+    });
+    // edges
+    var edgesG=el("g",null,svg);
+    EDGES.forEach(function(e,i){
+      var a=sysPos[e[0]], b=sysPos[e[1]];
+      var mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+      var cxp=CX+(mx-CX)*.16, cyp=CY+(my-CY)*.16;
+      var p=el("path",{d:"M "+a.x+" "+a.y+" Q "+cxp+" "+cyp+" "+b.x+" "+b.y,
+        fill:"none",stroke:"url(#"+"eg"+i+")","stroke-width":(e[0]==="you"||e[1]==="you")?2.4:1.4,
+        "stroke-opacity":.5,"stroke-linecap":"round"},edgesG);
+      sysEls["edge"+i]=p;
+    });
+    // flow dots (created after paths so getTotalLength works)
+    EDGES.forEach(function(e,i){
+      var p=sysEls["edge"+i];
+      if(!p) return;
+      /* An empty path measures zero and getPointAtLength throws on it, which is
+         the second half of this fault. No dot is created, so nothing animates it. */
+      var len=0;
+      try{ len=p.getTotalLength()||0; }catch(err){ len=0; }
+      if(!(len>0)) return;
+      var n=(e[0]==="you"||e[1]==="you")?3:2;
+      for(var k=0;k<n;k++){
+        var dot=el("circle",{r:3.4,fill:"#fff",opacity:.95},edgesG);
+        flowDots.push({path:p,len:len,dot:dot,speed:.05+Math.random()*.05,off:k/n});
+      }
+    });
+    // nodes
+    var nodesG=el("g",null,svg);
+    NODES.forEach(function(n){
+      var p=sysPos[n.id], hue=HUE[n.cat];
+      var isCentre=(n.ring===0);
+      var coreR=isCentre?15:8;
+      el("circle",{cx:p.x,cy:p.y,r:isCentre?46:34,fill:"url(#glow-"+n.cat+")"},nodesG);
+      el("circle",{cx:p.x,cy:p.y,r:coreR+3,fill:"none",stroke:hue,"stroke-opacity":.5,"stroke-width":1},nodesG);
+      el("circle",{cx:p.x,cy:p.y,r:coreR,fill:hue},nodesG);
+      if(isCentre){
+        el("circle",{cx:p.x,cy:p.y,r:coreR+12,fill:"none",stroke:hue,"stroke-opacity":.35,"stroke-width":1,"stroke-dasharray":"2 6"},nodesG);
+      }
+      /* Twelve labels cannot all reach 11px on a phone frame: the inner rings sit
+         about 72px apart there and an 11px label is wider than the gap. Fewer
+         labels rather than smaller type, the other half of the same rule. The
+         centre and the outer ring carry the names; the rings stay legible as the
+         dots and rings they are. */
+      if(narrow && !isCentre && n.ring!==4) return;
+      var fs=isCentre?Math.max(26,LABEL_FS):LABEL_FS;
+      var lp=labelPlace(p,fs,isCentre);
+      var t=el("text",{x:lp.x,y:lp.y,"text-anchor":lp.anchor,
+        fill:INK,"font-size":fs,"font-weight":isCentre?600:500,
+        "font-family":"ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"},nodesG);
+      t.textContent=n.label;
+    });
+  }
+
+  function computeSysPos(){
+    var byRing={};
+    NODES.forEach(function(n){ (byRing[n.ring]=byRing[n.ring]||[]).push(n); });
+    for(var ring in byRing){
+      var arr=byRing[ring], start=RING_START[ring];
+      arr.forEach(function(n,i){
+        var ang=(start+(i/arr.length)*360)*Math.PI/180, r=RING_R[ring];
+        sysPos[n.id]={x:CX+r*Math.cos(ang), y:CY+r*Math.sin(ang)};
+      });
+    }
+  }
+
+  function animateFlows(now){
+    var t=now/1000;
+    for(var i=0;i<flowDots.length;i++){
+      var d=flowDots[i];
+      if(!d||!d.path||!(d.len>0)) continue;
+      var p=(t*d.speed+d.off)%1, pt=null;
+      try{ pt=d.path.getPointAtLength(p*d.len); }catch(err){ continue; }
+      if(!pt||!isFinite(pt.x)||!isFinite(pt.y)) continue;
+      d.dot.setAttribute("cx",pt.x); d.dot.setAttribute("cy",pt.y);
+    }
+    flowRaf=requestAnimationFrame(animateFlows);
+  }
+
+  /* ---------- life map ---------- */
+  function buildLifeMap(){
+    var svg=document.getElementById("life-map");
+    svg.setAttribute("viewBox","0 0 1100 950");
+    var cx=550, cy=475, R=320;
+    var defs=el("defs",null,svg);
+    DOMAINS.forEach(function(d){
+      var g=el("radialGradient",{id:"lg-"+d.id},defs);
+      el("stop",{offset:"0%","stop-color":LIFE,"stop-opacity":.55},g);
+      el("stop",{offset:"100%","stop-color":LIFE,"stop-opacity":0},g);
+    });
+    var pos={};
+    DOMAINS.forEach(function(d,i){
+      var ang=(-90+i*60)*Math.PI/180;
+      pos[d.id]={x:cx+R*Math.cos(ang), y:cy+R*Math.sin(ang)};
+    });
+    // hexagon guide
+    var guide=el("g",null,svg);
+    var pts=DOMAINS.map(function(d){return pos[d.id].x+","+pos[d.id].y;}).join(" ");
+    el("polygon",{points:pts,fill:"none",stroke:"rgba(148,163,204,.08)","stroke-width":1},guide);
+    // links: reinforce is ink, the default relation; tension is the signal
+    var linksG=el("g",null,svg);
+    LIFE_LINKS.forEach(function(l){
+      var a=pos[l[0]], b=pos[l[1]], kind=l[2];
+      var col=(kind==="reinforce")?REINFORCE:TENSION;
+      var mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+      var cxp=cx+(mx-cx)*.22, cyp=cy+(my-cy)*.22;
+      var thick=(l[0]==="creative"&&l[1]==="finances")||(l[0]==="finances"&&l[1]==="creative");
+      el("path",{d:"M "+a.x+" "+a.y+" Q "+cxp+" "+cyp+" "+b.x+" "+b.y,
+        fill:"none",stroke:col,"stroke-width":thick?3.4:1.6,
+        "stroke-opacity":thick?.85:.5,"stroke-linecap":"round",
+        "stroke-dasharray":"none"},linksG);
+    });
+    // nodes
+    var nodesG=el("g",null,svg);
+    DOMAINS.forEach(function(d){
+      var p=pos[d.id];
+      el("circle",{cx:p.x,cy:p.y,r:30,fill:"url(#lg-"+d.id+")"},nodesG);
+      el("circle",{cx:p.x,cy:p.y,r:9,fill:LIFE},nodesG);
+      var t=el("text",{x:p.x,y:p.y+52,"text-anchor":"middle",fill:INK,
+        "font-size":labelUserSize(svg,20),"font-weight":500,
+        "font-family":"ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"},nodesG);
+      t.textContent=d.label;
+    });
+  }
+
+  /* ---------- legend ---------- */
+  function buildLegend(){
+    var wrap=document.getElementById("system-legend");
+    ["human","agent","local","cloud","touch"].forEach(function(cat){
+      var item=document.createElement("span"); item.className="legend-item";
+      var dot=document.createElement("span"); dot.className="legend-dot";
+      dot.style.color=HUE[cat]; dot.style.background=HUE[cat];
+      var txt=document.createElement("span"); txt.textContent=CATS[cat].label;
+      item.appendChild(dot); item.appendChild(txt); wrap.appendChild(item);
+    });
+  }
+
+  /* ---------- background : three.js with canvas-2d fallback ---------- */
+  function loadThree(){
+    return new Promise(function(resolve){
+      if(window.THREE) return resolve(window.THREE);
+      var urls=[
+        "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js",
+        "https://unpkg.com/three@0.158.0/build/three.min.js"
+      ];
+      var i=0;
+      (function tryNext(){
+        if(i>=urls.length) return resolve(null);
+        var s=document.createElement("script"); s.src=urls[i++];
+        s.onload=function(){resolve(window.THREE||null);};
+        s.onerror=tryNext;
+        document.head.appendChild(s);
+      })();
+    });
+  }
+
+  function fitCanvas(canvas){
+    var dpr=Math.min(window.devicePixelRatio||1,2);
+    var w=canvas.clientWidth||window.innerWidth, h=canvas.clientHeight||window.innerHeight;
+    canvas.width=Math.round(w*dpr); canvas.height=Math.round(h*dpr);
+    return dpr;
+  }
+
+  function makeSprite(){
+    var c=document.createElement("canvas"); c.width=c.height=128;
+    var g=c.getContext("2d");
+    var grad=g.createRadialGradient(64,64,0,64,64,64);
+    grad.addColorStop(0,"rgba(255,255,255,1)");
+    grad.addColorStop(.25,"rgba(255,255,255,.5)");
+    grad.addColorStop(.6,"rgba(255,255,255,.12)");
+    grad.addColorStop(1,"rgba(255,255,255,0)");
+    g.fillStyle=grad; g.fillRect(0,0,128,128);
+    return new THREE.CanvasTexture(c);
+  }
+
+  function initThreeBg(THREE){
+    var canvas=document.getElementById("bg");
+    var renderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:false});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    var scene=new THREE.Scene();
+    var camera=new THREE.PerspectiveCamera(60,1,0.1,120);
+    camera.position.z=34;
+    var N=650, pos=new Float32Array(N*3), col=new Float32Array(N*3);
+    /* the constellation is the system as a whole, so it carries every category
+       hue at once; each light still means its own category */
+    var palette=[HUE.agent,HUE.local,HUE.cloud,HUE.touch,HUE.human,HUE.tool].map(function(h){return new THREE.Color(h);});
+    for(var i=0;i<N;i++){
+      var r=18+Math.random()*14, th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1);
+      pos[i*3]=r*Math.sin(ph)*Math.cos(th); pos[i*3+1]=r*Math.sin(ph)*Math.sin(th); pos[i*3+2]=r*Math.cos(ph);
+      var c=palette[(Math.random()*palette.length)|0];
+      col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
+    }
+    var geo=new THREE.BufferGeometry();
+    geo.setAttribute("position",new THREE.BufferAttribute(pos,3));
+    geo.setAttribute("color",new THREE.BufferAttribute(col,3));
+    var sprite=makeSprite();
+    var mat=new THREE.PointsMaterial({size:.85,map:sprite,vertexColors:true,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false});
+    var points=new THREE.Points(geo,mat);
+    scene.add(points);
+    var pointer={x:0,y:0};
+    window.addEventListener("pointermove",function(e){
+      pointer.x=(e.clientX/window.innerWidth-.5); pointer.y=(e.clientY/window.innerHeight-.5);
+    },{passive:true});
+    function resize(){
+      var w=window.innerWidth,h=window.innerHeight;
+      renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+    }
+    window.addEventListener("resize",resize); resize();
+    var running=false, raf=0;
+    function loop(t){
+      if(!running) return;
+      points.rotation.y=t*0.00004; points.rotation.x=Math.sin(t*0.00006)*0.12;
+      camera.position.x+= (pointer.x*4-camera.position.x)*0.03;
+      camera.position.y+= (-pointer.y*3-camera.position.y)*0.03;
+      camera.lookAt(0,0,0);
+      renderer.render(scene,camera);
+      raf=requestAnimationFrame(loop);
+    }
+    function start(){ if(REDUCED){renderer.render(scene,camera);return;} if(running)return; running=true; raf=requestAnimationFrame(loop); }
+    function stop(){ running=false; cancelAnimationFrame(raf); }
+    document.addEventListener("visibilitychange",function(){ document.hidden?stop():start(); });
+    if("IntersectionObserver" in window){
+      new IntersectionObserver(function(en){ en[0].isIntersecting?start():stop(); },{threshold:0}).observe(canvas);
+    }
+    start();
+  }
+
+  function initCanvasBg(){
+    var canvas=document.getElementById("bg"), ctx=canvas.getContext("2d");
+    var palette=[HUE.agent,HUE.local,HUE.cloud,HUE.touch,HUE.human];
+    var stars=[];
+    for(var i=0;i<220;i++){
+      stars.push({x:Math.random(),y:Math.random(),z:Math.random(),
+        s:Math.random()*1.5+0.4,c:palette[i%palette.length],tw:Math.random()*Math.PI*2});
+    }
+    function resize(){ fitCanvas(canvas); }
+    window.addEventListener("resize",resize); resize();
+    var running=false, raf=0;
+    function loop(t){
+      if(!running) return;
+      var w=canvas.width,h=canvas.height;
+      ctx.clearRect(0,0,w,h);
+      for(var i=0;i<stars.length;i++){
+        var st=stars[i];
+        var drift=((t*0.00002*(0.4+st.z))%1);
+        var x=((st.x+drift)%1)*w, y=st.y*h;
+        var a=0.25+0.55*Math.abs(Math.sin(t*0.001+st.tw));
+        ctx.globalAlpha=a*(0.4+st.z*0.6);
+        ctx.fillStyle=st.c;
+        ctx.beginPath(); ctx.arc(x,y,st.s*(0.6+st.z),0,Math.PI*2); ctx.fill();
+      }
+      ctx.globalAlpha=1;
+      raf=requestAnimationFrame(loop);
+    }
+    function start(){ if(REDUCED){loop(0);return;} if(running)return; running=true; raf=requestAnimationFrame(loop); }
+    function stop(){ running=false; cancelAnimationFrame(raf); }
+    document.addEventListener("visibilitychange",function(){ document.hidden?stop():start(); });
+    if("IntersectionObserver" in window){
+      new IntersectionObserver(function(en){ en[0].isIntersecting?start():stop(); },{threshold:0}).observe(canvas);
+    }
+    start();
+  }
+
+  /* ---------- nav ---------- */
+  function initNav(){
+    var tabs=document.querySelectorAll(".tab");
+    tabs.forEach(function(tab){
+      tab.addEventListener("click",function(){
+        var view=tab.getAttribute("data-view");
+        tabs.forEach(function(t){ t.setAttribute("aria-pressed", t===tab?"true":"false"); });
+        document.querySelectorAll(".view").forEach(function(s){
+          s.classList.toggle("active", s.id==="view-"+view);
+        });
+      });
+    });
+  }
+
+  /* ---------- boot ---------- */
+  function boot(){
+    computeSysPos();
+    buildSystemMap();
+    buildLifeMap();
+    buildLegend();
+    initNav();
+    if(!REDUCED) flowRaf=requestAnimationFrame(animateFlows);
+    loadThree().then(function(THREE){ THREE?initThreeBg(THREE):initCanvasBg(); });
+    requestAnimationFrame(function(){ document.body.classList.add("ready"); });
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
+})();
+</script>
+</body>
+</html>

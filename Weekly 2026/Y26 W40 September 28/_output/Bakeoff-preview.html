@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Bake-off preview bench – every build, live and switchable</title>
+<style>
+/* Tokens, exact values from Projects/Design System/tokens/. Whole numbers only.
+   Radius 8 / 12 / 24. Colour is a stroke, never a fill behind text. Tracking is
+   left to the font. Mobile first: the phone column is the base. */
+@font-face{
+  font-family:'Figtree';
+  src:url('../../../Projects/Design System/assets/fonts/Figtree-Variable.woff2') format('woff2-variations');
+  font-weight:300 900;font-display:swap;
+}
+@font-face{
+  font-family:'JetBrains Mono';
+  src:url('../../../Projects/Design System/assets/fonts/JetBrainsMono-Variable.woff2') format('woff2-variations');
+  font-weight:100 800;font-display:swap;
+}
+:root{
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --white:#FFFFFF;
+  --cl-02-flux:#FFD100;
+  --cl-10-form:#2277FF;
+  --cl-12-life:#00D460;
+  --stroke:3px;
+
+  --fs-caption:12px; --lh-caption:18px; --fw-caption:300;
+  --fs-body:18px;    --lh-body:30px;    --fw-body:400;
+  --fs-h2:24px;      --lh-h2:36px;      --fw-h2:600;
+  --fs-h1:36px;      --lh-h1:48px;      --fw-h1:700;
+
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+
+  --sans:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--black);color:var(--white);
+  font-family:var(--sans);font-size:var(--fs-body);line-height:var(--lh-body);
+  font-weight:var(--fw-body);-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:var(--space-lg) var(--space-md)}
+a{color:var(--cl-10-form)}
+
+.kicker{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:0}
+h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);margin:var(--space-sm) 0 0}
+.stamp{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g48);margin:var(--space-sm) 0 0}
+.lede{margin:var(--space-md) 0 0;max-width:46ch}
+.finding{
+  margin:var(--space-md) 0 0;padding:var(--space-sm) 0 var(--space-sm) var(--space-md);
+  border-left:var(--stroke) solid var(--cl-10-form);
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);max-width:34ch;
+}
+section{margin-top:var(--space-lg);padding-top:var(--space-md);border-top:1px solid var(--g24)}
+h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-md)}
+.note{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:0 0 var(--space-md);max-width:60ch}
+.label{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:0 0 var(--space-sm);text-transform:uppercase}
+
+/* --- chips: rounds, then models. One row that wraps, never a squeezed row. --- */
+.chips{display:flex;flex-wrap:wrap;gap:var(--space-sm);margin:0 0 var(--space-md);padding:0;list-style:none}
+.chip{
+  font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--g66);background:var(--g12);
+  border:1px solid var(--g24);border-radius:var(--radius-sm);
+  padding:var(--space-sm) var(--space-md);
+  min-height:32px;cursor:pointer;
+}
+.chip:hover,.chip:focus-visible{border-color:var(--g66);color:var(--white)}
+.chip:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+.chip[aria-pressed="true"]{background:var(--g24);color:var(--white);border-color:var(--g66)}
+.chip[aria-disabled="true"]{color:var(--g48);border-style:dashed;cursor:help}
+a.chip{display:inline-block;text-decoration:none;color:var(--g66)}
+a.chip:hover,a.chip:focus-visible{color:var(--white)}
+
+/* --- the stage: the build renders at its real width, scaled to the column,
+       so a 1440 layout reads whole on a phone instead of being cropped. --- */
+.stage{
+  position:relative;overflow:hidden;
+  height:min(76vh,780px);
+  background:var(--g06);
+  border:1px solid var(--g24);border-radius:var(--radius-md);
+}
+.stage iframe{
+  position:absolute;top:0;left:0;
+  transform-origin:0 0;
+  border:0;background:var(--black);
+}
+.stagebar{display:flex;flex-wrap:wrap;gap:var(--space-md);align-items:baseline;justify-content:space-between;margin-top:var(--space-sm)}
+.who{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66)}
+.who b{color:var(--white);font-weight:var(--fw-caption)}
+.ctrls{display:flex;flex-wrap:wrap;gap:var(--space-md);align-items:baseline}
+
+/* --- scores: label hard left, number hard right, verdict under it --- */
+.rank{
+  display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;
+  gap:var(--space-sm) var(--space-md);
+  background:var(--g06);border:1px solid var(--g24);border-radius:var(--radius-sm);
+  padding:var(--space-sm) var(--space-md);margin-bottom:var(--space-sm);
+}
+.rank:last-child{margin-bottom:0}
+.rank .who{font-family:var(--mono);font-size:var(--fs-body);line-height:var(--lh-body);color:var(--white)}
+.rank .score{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);white-space:nowrap}
+.rank .verdict{flex:1 0 100%;font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66)}
+.rank.ship{border-left:var(--stroke) solid var(--cl-12-life)}
+.rank.none .who,.rank.none .score{color:var(--g48)}
+
+.foot{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g48);margin:var(--space-lg) 0 0}
+
+@media (min-width:720px){
+  .wrap{padding:var(--space-lg)}
+  h1{font-size:48px;line-height:54px}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-preview.html</span>
+</nav>
+<div class="wrap">
+
+  <header>
+    <p class="kicker">Re.SOURCE · bake-off · live preview bench</p>
+    <h1>Bake-off, live</h1>
+    <p class="stamp">Updated 2026-09-29 13:32</p>
+    <p class="lede">Every build from the three rounds, running rather than photographed. Pick a round, pick a model, and the build loads in the frame below at its real width, scaled to fit.</p>
+    <p class="finding">Five models, three rounds, one place. Fable 5.1 is the sixth, still to come.</p>
+  </header>
+
+  <section aria-labelledby="bench">
+    <h2 id="bench">The bench</h2>
+
+    <p class="label">Round</p>
+    <ul class="chips" id="rounds" aria-label="Bake-off round"></ul>
+
+    <p class="label">Model</p>
+    <ul class="chips" id="models" aria-label="Model"></ul>
+
+    <div class="stagebar">
+      <span class="who" id="stageWho"></span>
+      <span class="ctrls">
+        <button type="button" class="chip" id="widthBtn" aria-pressed="false">Desktop 1440</button>
+        <a class="chip" id="rawLink" href="#" target="_blank" rel="noopener">Open the build itself</a>
+      </span>
+    </div>
+
+    <div class="stage" style="margin-top:var(--space-sm)">
+      <iframe id="frame" title="Bake-off build preview" loading="lazy"></iframe>
+    </div>
+
+    <p class="note" id="stageNote"></p>
+
+    <noscript>
+      <p class="note">Without JavaScript the bench cannot switch builds, so here they are as plain links:
+      sketch – <a href="Bakeoff-R1-A.html">mimo-v2.6-flash</a>, <a href="Bakeoff-R1-B.html">qwen3.8-max</a>, <a href="Bakeoff-R1-C.html">mimo-v2.6-pro</a>, <a href="Bakeoff-R1-D.html">glm-5.3-flash</a>, <a href="Bakeoff-R1-E.html">minimax-m3</a>;
+      component – <a href="Bakeoff-R2-A.html">qwen3.8-max</a>, <a href="Bakeoff-R2-B.html">glm-5.3-flash</a>, <a href="Bakeoff-R2-C.html">minimax-m3</a>, <a href="Bakeoff-R2-D.html">mimo-v2.6-pro</a>, <a href="Bakeoff-R2-E.html">mimo-v2.6-flash</a>;
+      deck – <a href="DeckScreen-mimoflash.html">mimo-v2.6-flash</a>, <a href="DeckScreen-qwen38max.html">qwen3.8-max</a>, <a href="DeckScreen-minimaxm3.html">minimax-m3</a>, <a href="DeckScreen-glmflash.html">glm-5.3-flash</a>.</p>
+    </noscript>
+  </section>
+
+  <section aria-labelledby="scores">
+    <h2 id="scores">How this round scored</h2>
+    <p class="note">Every list on this page runs in ladder order, strongest to weakest: qwen3.8-max, mimo-v2.6-flash, minimax-m3, glm-5.3-flash, mimo-v2.6-pro. The score beside each name is what this round gave it.</p>
+    <div id="ranks"></div>
+    <p class="note" id="roundNote"></p>
+  </section>
+
+  <section aria-labelledby="more">
+    <h2 id="more">Stills and review</h2>
+    <p class="note">The bench shows the builds as they run now. What the judges actually scored were captures at 1440 and 390, so those stay as they were: <a href="Bakeoff-zoom.html">all eighteen captures at full size</a>, <a href="Bakeoff-R2-comparison.html">the component round's scores and defects</a>, <a href="DeckScreen-comparison.html">the deck round's scores and defects</a>. The sketch round was scored but never captured, which is why its five builds are live links only.</p>
+  </section>
+
+  <p class="foot">Builds are self-contained HTML, one file per model per round, captured 28 and 29 September 2026.</p>
+
+</div>
+
+<script>
+/* One entry per round. Files are the builds themselves; scores are what the
+   judging recorded, never re-scored here. */
+/* The ladder, one order for every page: strongest to weakest across all four
+   rounds, each round's score converted to 70 and the deck's no-file counted as
+   zero, since a model that returns nothing scores nothing.
+   qwen3.8-max 213, mimo-v2.6-flash 204.5, minimax-m3 193.8,
+   glm-5.3-flash 188, mimo-v2.6-pro 143.7. Chips and rows follow it in every
+   round, so a model never moves when the round changes. */
+var LADDER = ['qwen3.8-max', 'mimo-v2.6-flash', 'minimax-m3', 'glm-5.3-flash', 'mimo-v2.6-pro'];
+function inLadder(builds){
+  return LADDER.map(function(m){
+    for (var i = 0; i < builds.length; i++) if (builds[i].model === m) return builds[i];
+    return null;
+  }).filter(Boolean);
+}
+
+var ROUNDS = [
+  {
+    key:'sketch', label:'Sketch', note:'Three layout directions each, judged out of 30 for ideas, craft and law. No captures were taken for this round.',
+    builds:[
+      {model:'qwen3.8-max',   file:'Bakeoff-R1-B.html', score:'24 / 30', verdict:'Three genuinely different theses, and the best single direction of the fifteen'},
+      {model:'glm-5.3-flash', file:'Bakeoff-R1-D.html', score:'24 / 30', verdict:'Strong on craft, template-bound on ideas'},
+      {model:'mimo-v2.6-flash', file:'Bakeoff-R1-A.html', score:'21 / 30', verdict:'An instrument, a specimen label, a seal'},
+      {model:'minimax-m3',    file:'Bakeoff-R1-E.html', score:'19 / 30', verdict:'Wheel as title, vertical spine, word as wheel'},
+      {model:'mimo-v2.6-pro', file:'Bakeoff-R1-C.html', score:'17 / 30', verdict:'Word leads, wheel leads, ask leads'}
+    ]
+  },
+  {
+    key:'component', label:'Component', note:'The printed Word CARD at 360 × 504 in three states, judged out of 70 by eye with a seven-law sweep beside it.',
+    builds:[
+      {model:'mimo-v2.6-flash', file:'Bakeoff-R2-E.html', score:'56 / 70', verdict:'7 of 7 laws, cheapest tier, ship it'},
+      {model:'minimax-m3',      file:'Bakeoff-R2-C.html', score:'55.5 / 70', verdict:'6 of 7 laws, one border-radius outside the set'},
+      {model:'mimo-v2.6-pro',   file:'Bakeoff-R2-D.html', score:'52 / 70', verdict:'7 of 7 laws, the most sophisticated type discipline'},
+      {model:'qwen3.8-max',     file:'Bakeoff-R2-A.html', score:'51 / 70', verdict:'7 of 7 laws, the dearest of the five'},
+      {model:'glm-5.3-flash',   file:'Bakeoff-R2-B.html', score:'32.5 / 70', verdict:'7 of 7 laws, its own layout clipped out of frame, send back'}
+    ]
+  },
+  {
+    key:'deck', label:'Deck screen', note:'Twelve real cards on the deck lattice, one card open, judged out of 70 at both widths.',
+    builds:[
+      {model:'minimax-m3',      file:'DeckScreen-minimaxm3.html',  score:'48.0 / 70', verdict:'Best single surface of the batch, and a build you cannot open another card in'},
+      {model:'qwen3.8-max',     file:'DeckScreen-qwen38max.html',  score:'47.0 / 70', verdict:'The one idea of the four: the card face diagrams its own twelve positions'},
+      {model:'mimo-v2.6-flash', file:'DeckScreen-mimoflash.html',  score:'46.5 / 70', verdict:'The one the reviewer would ship: law clean at every width, and you can actually deal it', ship:true},
+      {model:'glm-5.3-flash',   file:'DeckScreen-glmflash.html',   score:'41.5 / 70', verdict:'Merely competent: a double-click trap and an open band with no layout law'},
+      {model:'mimo-v2.6-pro',   file:null, score:'no build', verdict:'Returned no file twice on this brief, so there is nothing to show', absent:true}
+    ]
+  }
+];
+
+var FABLE = 'Not run. The sixth model is the boss round: one session across all three rounds, about $1.50 of build, started only after Anthropic\'s published retention position is read into .opencode/agents/banned-models.md. Say go when you want it.';
+
+var roundIdx = 0, modelIdx = 0, desktop = window.innerWidth >= 900;
+var stage = document.querySelector('.stage');
+var frame = document.getElementById('frame');
+var stageWho = document.getElementById('stageWho');
+var stageNote = document.getElementById('stageNote');
+var widthBtn = document.getElementById('widthBtn');
+var rawLink = document.getElementById('rawLink');
+widthBtn.textContent = desktop ? 'Desktop 1440' : 'Phone 390';
+widthBtn.setAttribute('aria-pressed', desktop ? 'true' : 'false');
+
+function el(tag, cls, text){
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+
+function renderRounds(){
+  var box = document.getElementById('rounds');
+  box.textContent = '';
+  ROUNDS.forEach(function(r, i){
+    var li = document.createElement('li');
+    var b = el('button', 'chip', r.label);
+    b.type = 'button';
+    b.setAttribute('aria-pressed', i === roundIdx ? 'true' : 'false');
+    b.addEventListener('click', function(){ roundIdx = i; modelIdx = 0; renderAll(); });
+    li.appendChild(b);
+    box.appendChild(li);
+  });
+  var liF = document.createElement('li');
+  var f = el('button', 'chip', 'Fable 5.1 · sixth');
+  f.type = 'button';
+  f.setAttribute('aria-disabled', 'true');
+  f.addEventListener('click', function(){
+    stageNote.textContent = FABLE;
+    stageWho.innerHTML = '<b>Fable 5.1</b> · not run';
+    rawLink.style.display = 'none';
+    frame.removeAttribute('src');
+    frame.style.visibility = 'hidden';
+  });
+  liF.appendChild(f);
+  box.appendChild(liF);
+}
+
+function renderModels(){
+  var box = document.getElementById('models');
+  box.textContent = '';
+  inLadder(ROUNDS[roundIdx].builds).forEach(function(b, i){
+    var li = document.createElement('li');
+    var c = el('button', 'chip', b.model);
+    c.type = 'button';
+    if (b.absent) c.style.borderStyle = 'dashed';
+    c.setAttribute('aria-pressed', i === modelIdx ? 'true' : 'false');
+    c.addEventListener('click', function(){ modelIdx = i; renderStage(); renderModels(); });
+    li.appendChild(c);
+    box.appendChild(li);
+  });
+}
+
+function renderStage(){
+  var r = ROUNDS[roundIdx];
+  var b = r.builds[modelIdx];
+  var note = r.note;
+  if (b.absent){
+    frame.removeAttribute('src');
+    frame.style.visibility = 'hidden';
+    stageWho.innerHTML = '<b>' + b.model + '</b> · ' + b.score;
+    stageNote.textContent = b.verdict;
+    rawLink.style.display = 'none';
+    return;
+  }
+  frame.style.visibility = 'visible';
+  if (frame.getAttribute('src') !== b.file) frame.setAttribute('src', b.file);
+  stageWho.innerHTML = '<b>' + b.model + '</b> · ' + r.label.toLowerCase() + ' round · ' + (desktop ? 'desktop 1440' : 'phone 390');
+  stageNote.textContent = b.verdict + '. ' + note;
+  rawLink.href = b.file;
+  rawLink.style.display = '';
+  fit();
+}
+
+function renderRanks(){
+  var box = document.getElementById('ranks');
+  box.textContent = '';
+  inLadder(ROUNDS[roundIdx].builds).forEach(function(b, i){
+    var row = el('div', 'rank' + (b.absent ? ' none' : '') + (b.ship ? ' ship' : ''));
+    row.appendChild(el('span', 'who', b.model));
+    row.appendChild(el('span', 'score', b.score));
+    row.appendChild(el('span', 'verdict', b.verdict));
+    box.appendChild(row);
+  });
+  document.getElementById('roundNote').textContent = ROUNDS[roundIdx].note;
+}
+
+/* The build renders at one whole screen of its real width, scaled to fit the
+   stage and centred, so a 1440 layout reads whole on a phone instead of being
+   cropped. Nothing is panned: pinch the page to enlarge, scroll inside the
+   frame to move through a tall build. */
+function fit(){
+  var W = desktop ? 1440 : 390;
+  var H = desktop ? 900 : 780;
+  var sw = stage.clientWidth, sh = stage.clientHeight;
+  if (!sw || !sh) return;
+  var k = Math.min(sw / W, sh / H);
+  var L = Math.round((sw - W * k) / 2);
+  var T = Math.round((sh - H * k) / 2);
+  frame.style.width = W + 'px';
+  frame.style.height = H + 'px';
+  frame.style.transform = 'translate(' + L + 'px,' + T + 'px) scale(' + k + ')';
+}
+
+function renderAll(){ renderRounds(); renderModels(); renderStage(); renderRanks(); }
+
+widthBtn.addEventListener('click', function(){
+  desktop = !desktop;
+  widthBtn.textContent = desktop ? 'Desktop 1440' : 'Phone 390';
+  widthBtn.setAttribute('aria-pressed', desktop ? 'true' : 'false');
+  renderStage();
+});
+
+window.addEventListener('resize', fit);
+renderAll();
+</script>
+</body>
+</html>

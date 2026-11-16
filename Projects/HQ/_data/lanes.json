@@ -1,0 +1,496 @@
+{
+  "stamp": "2026-10-15T15:11:03.273Z",
+  "since": "2026-10-15T03:11:03.273Z",
+  "liveMinutes": 20,
+  "quietMinutes": 90,
+  "sessions": {
+    "ok": true,
+    "label": "sessions",
+    "data": [
+      {
+        "id": "01a13fe3",
+        "label": null,
+        "ageMinutes": 15,
+        "live": true,
+        "toolCallsInTail": 34,
+        "log": "/Users/sushi/.omo/agent/sessions/--Users-sushi--/2026-10-15T14-07-13-732Z_01a13fe3-7544-78dd-baa1-dd1ab89bb029.jsonl",
+        "openedAt": "2026-10-15T14-07-13-732Z"
+      }
+    ]
+  },
+  "activity": {
+    "ok": true,
+    "label": "activity trail",
+    "data": [
+      {
+        "at": "2026-10-13T22:31:48.000Z",
+        "kind": "done",
+        "text": "Run rail overflow fixed and merged (PR 64); night-qa chat/390 back to findings: 0",
+        "ageMinutes": 2439
+      },
+      {
+        "at": "2026-10-13T22:09:39.000Z",
+        "kind": "doing",
+        "text": "Fixing the phone-width chat run rail: summary text overflowed the 390px viewport (night-qa red)",
+        "ageMinutes": 2461
+      },
+      {
+        "at": "2026-10-13T16:43:26.000Z",
+        "kind": "doing",
+        "text": "INTERFACES.md: regenerate from machine, clear drift-check red",
+        "ageMinutes": 2788
+      },
+      {
+        "at": "2026-10-07T23:25:25.000Z",
+        "kind": "done",
+        "text": "ops follow-up: Phone mode on a desk window now previews at the phone's measure (430px, centred) instead of stretching the table; real-phone behaviour unchanged.",
+        "ageMinutes": 11026
+      },
+      {
+        "at": "2026-10-07T23:00:22.000Z",
+        "kind": "done",
+        "text": "front door wired and live: /state/data + assets served, cap on first paint, missing faces answer 404 not crash; PR 51 merged; launchd crash-loop cleared",
+        "ageMinutes": 11051
+      },
+      {
+        "at": "2026-10-07T22:53:22.000Z",
+        "kind": "doing",
+        "text": "ops: wiring the front door - state/data, console assets, cap on first paint, 404s instead of crashes",
+        "ageMinutes": 11058
+      },
+      {
+        "at": "2026-10-07T21:27:06.000Z",
+        "kind": "doing",
+        "text": "Waiting on Mark: the one-screen board is live at /one with all four states pressable — his ruling on the design comes from playing with it, not from prose",
+        "ageMinutes": 11144
+      },
+      {
+        "at": "2026-10-07T21:21:38.000Z",
+        "kind": "done",
+        "text": "402 health check fixed (PR 48): it was counting agents grepping for the phrase, so the estate went red on its own investigation; planted fault proves it still f",
+        "ageMinutes": 11149
+      },
+      {
+        "at": "2026-10-07T21:15:55.000Z",
+        "kind": "done",
+        "text": "The gate now sweeps /one on four lists (PR 47): face, phone, motion and focus; 26/26 one-screen QA re-run green",
+        "ageMinutes": 11155
+      },
+      {
+        "at": "2026-10-07T21:07:35.000Z",
+        "kind": "done",
+        "text": "One-screen prototype at /one: four bands, one row shape, five labels, fail-closed ages; PR 45, 26/26 QA",
+        "ageMinutes": 11163
+      },
+      {
+        "at": "2026-10-07T20:53:38.000Z",
+        "kind": "doing",
+        "text": "One-screen prototype: four bands, one row shape, five labels at /one",
+        "ageMinutes": 11177
+      },
+      {
+        "at": "2026-10-07T20:20:48.000Z",
+        "kind": "done",
+        "text": "Walkthroughs index now opens the field version per Mark's ruling — e45c337 pushed, gate green",
+        "ageMinutes": 11210
+      },
+      {
+        "at": "2026-10-07T20:16:28.000Z",
+        "kind": "doing",
+        "text": "Walkthroughs index points at the field version per Mark's ruling",
+        "ageMinutes": 11215
+      },
+      {
+        "at": "2026-10-07T19:50:42.000Z",
+        "kind": "done",
+        "text": "Chat face redesigned: hover actions, Ctrl+K search, drag-drop attachments, follow-up chips, designed rest state (7bc112c)",
+        "ageMinutes": 11240
+      },
+      {
+        "at": "2026-10-07T19:49:36.000Z",
+        "kind": "done",
+        "text": "Close-out: four checkouts on main and level with origin, no branches of mine left, five live links at 200, pin-sweep PASS, free-gear exit 0, self-check exit 0, ",
+        "ageMinutes": 11241
+      },
+      {
+        "at": "2026-10-07T19:29:28.000Z",
+        "kind": "done",
+        "text": "Modular layout published and verified live: 11 content checks pass on the served copy, HTTP 200, PR 259; only the two grid containers run the full measure",
+        "ageMinutes": 11262
+      },
+      {
+        "at": "2026-10-07T19:28:29.000Z",
+        "kind": "doing",
+        "text": "Field page respans to the modular grid (PR 259): masthead 8/4, tabs and CTA at 8, nav right-aligned at 9-to-12; only the two grid containers run the full measur",
+        "ageMinutes": 11263
+      },
+      {
+        "at": "2026-10-07T18:56:46.000Z",
+        "kind": "done",
+        "text": "Field version published and verified live: model-settings-walkthrough-field.html, HTTP 200, nine content checks pass, zero script tags, law-sweep 0",
+        "ageMinutes": 11294
+      },
+      {
+        "at": "2026-10-07T18:55:50.000Z",
+        "kind": "doing",
+        "text": "Model settings page rebuilt on the twelve-column field (PR 258): six cards at three across, zero script tags, law-sweep 0; waiting on the publish workflow for t",
+        "ageMinutes": 11295
+      },
+      {
+        "at": "2026-10-07T18:45:48.000Z",
+        "kind": "done",
+        "text": "Walkthroughs page live at /walkthroughs (PR 44): every guided page on one list, built on master.css over the twelve-column field, zero script tags",
+        "ageMinutes": 11305
+      },
+      {
+        "at": "2026-10-07T18:13:07.000Z",
+        "kind": "done",
+        "text": "Master template landed (PR 42): master.css on the Re.SOURCE twelve-column field, comparison page rebuilt pure-CSS with no script tag; Figma API key moved out of",
+        "ageMinutes": 11338
+      },
+      {
+        "at": "2026-10-07T18:05:56.000Z",
+        "kind": "doing",
+        "text": "Pruned the Figma MCP key out of argv into a launchd env var (was readable by any ps); investigating the two listeners Mark asked about",
+        "ageMinutes": 11345
+      },
+      {
+        "at": "2026-10-07T17:48:36.000Z",
+        "kind": "done",
+        "text": "Comparison page live at /walkthrough-compare (PR 41): three references pressed side by side, 7 DOM assertions pass, console now launchd-supervised so it survive",
+        "ageMinutes": 11362
+      },
+      {
+        "at": "2026-10-07T17:44:11.000Z",
+        "kind": "doing",
+        "text": "Comparison page: three live walkthrough references (GOV.UK / Open Props / Linear) at /walkthrough-compare, so Mark picks by pressing rather than reading",
+        "ageMinutes": 11367
+      },
+      {
+        "at": "2026-10-07T17:26:27.000Z",
+        "kind": "done",
+        "text": "Both walkthroughs live and verified by HTTP 200: tabs and disclosure buttons on the model page, three buttoned steps on the browser connect page. law-sweep 0 fi",
+        "ageMinutes": 11385
+      },
+      {
+        "at": "2026-10-07T17:25:48.000Z",
+        "kind": "doing",
+        "text": "Both walkthroughs made interactive and merged (PR 257): tabs, buttons, highlighted calls to action; waiting on the publish workflow for the links",
+        "ageMinutes": 11385
+      },
+      {
+        "at": "2026-10-07T17:07:35.000Z",
+        "kind": "done",
+        "text": "Walkthrough page published: law-sweep 0 findings, renders checked at 390 and 1280, all nine live-content checks pass at markshikada.github.io",
+        "ageMinutes": 11403
+      },
+      {
+        "at": "2026-10-07T16:55:03.000Z",
+        "kind": "done",
+        "text": "OpenCode settings corrected and merged: every pin now resolves to the free primary, pin-sweep 37/37 PASS, free-gear-guard rejects unreachable seats, fresh sessi",
+        "ageMinutes": 11416
+      },
+      {
+        "at": "2026-10-07T16:29:18.000Z",
+        "kind": "doing",
+        "text": "Model settings fix: repoint OpenCode off the gated space-bunny-free seat; peer lane building the walkthrough page",
+        "ageMinutes": 11442
+      },
+      {
+        "at": "2026-10-07T15:52:21.000Z",
+        "kind": "done",
+        "text": "Closed OpenCode Desktop and its serve backend per Mark's tap",
+        "ageMinutes": 11479
+      },
+      {
+        "at": "2026-10-07T15:11:23.000Z",
+        "kind": "doing",
+        "text": "Monitoring MiMo Flash session 01a116c6 (free-gear ruling work) from the support lane",
+        "ageMinutes": 11520
+      },
+      {
+        "at": "2026-10-06T16:37:22.000Z",
+        "kind": "done",
+        "text": "Concept-map interaction prototype is live and published: tap a row, the panel opens with only what the page already knew. PR 253 merged. Awaiting Mark's judgeme",
+        "ageMinutes": 12874
+      },
+      {
+        "at": "2026-10-06T16:05:39.000Z",
+        "kind": "doing",
+        "text": "Waiting on Mark: the concept map's 83 diagram nodes are not interactive, only the three view tabs are. What a click should do is his call, not mine",
+        "ageMinutes": 12905
+      },
+      {
+        "at": "2026-10-06T16:05:39.000Z",
+        "kind": "done",
+        "text": "Health gate fully green again: the free seat is restored on both routing pins with the fallback chain armed, so the outage that stranded this morning now costs ",
+        "ageMinutes": 12905
+      },
+      {
+        "at": "2026-10-06T15:55:13.000Z",
+        "kind": "doing",
+        "text": "Next lane, found by the gate: pin-sweep and console-inventory both read the harness settings.json defaultModel as a routing value, but the running session rewri",
+        "ageMinutes": 12916
+      },
+      {
+        "at": "2026-10-06T15:55:13.000Z",
+        "kind": "done",
+        "text": "Pickup lane closed: concept map landed with the colour ruling applied and measured, page published and named in the feed; August work recovered to PERSONAL; HQ ",
+        "ageMinutes": 12916
+      },
+      {
+        "at": "2026-10-06T14:30:17.000Z",
+        "kind": "done",
+        "text": "Support lane: health gate 4 fails -> 0. Tailscale restarted (phone surface 401 again), model pins restored to the ruled free pair (37 values, 22 files), auto-fa",
+        "ageMinutes": 13001
+      },
+      {
+        "at": "2026-10-05T21:33:38.000Z",
+        "kind": "done",
+        "text": "Finished work is now links: page URLs in the index, and the Estate board lists the newest pages as clickable links. Mark: 'I don't even know where they live.'",
+        "ageMinutes": 14017
+      },
+      {
+        "at": "2026-10-05T20:25:34.000Z",
+        "kind": "done",
+        "text": "Estate sweep closed: 41 uncommitted paths banked and landed, 107branches swept with archive tags at every kept tip, the red pulse check was an instrument fault ",
+        "ageMinutes": 14085
+      },
+      {
+        "at": "2026-10-05T20:01:57.000Z",
+        "kind": "doing",
+        "text": "Estate sweep: bank the uncommitted Re.SOURCE delta, sweep stale branches, catch up the lanes",
+        "ageMinutes": 14109
+      }
+    ]
+  },
+  "vaults": [
+    {
+      "name": "Re.SOURCE",
+      "path": "/Users/sushi/Documents/Vaults/Re.SOURCE",
+      "prs": {
+        "ok": true,
+        "label": "pull requests",
+        "data": []
+      },
+      "landed": {
+        "ok": true,
+        "label": "landed",
+        "data": [
+          {
+            "sha": "47e043fb",
+            "at": "2026-10-15T15:33:01+01:00",
+            "subject": "Merge pull request #317 from markshikada/lane/mimo-free-never"
+          },
+          {
+            "sha": "0e53d6e2",
+            "at": "2026-10-15T15:32:35+01:00",
+            "subject": "Ban Mimo free: add 1M-floor ban section, remove it from the permitted-seats table"
+          },
+          {
+            "sha": "b81daf95",
+            "at": "2026-10-15T15:27:48+01:00",
+            "subject": "Merge pull request #316 from markshikada/lane/root-rescue-2026-10-15"
+          },
+          {
+            "sha": "42297e57",
+            "at": "2026-10-15T15:27:09+01:00",
+            "subject": "Merge origin/main into the root rescue, keeping both sides; generated snapshots kept at the carried (14-15 October) stamps"
+          },
+          {
+            "sha": "56d77165",
+            "at": "2026-10-15T15:26:03+01:00",
+            "subject": "Rescue: root clone's uncommitted work carried verbatim off its old local HEAD"
+          },
+          {
+            "sha": "f8aea57a",
+            "at": "2026-10-15T15:10:22+01:00",
+            "subject": "Merge pull request #315 from markshikada/lane/lingo-auto-sync"
+          },
+          {
+            "sha": "47e125e6",
+            "at": "2026-10-15T15:08:56+01:00",
+            "subject": "LINGO sync: mirror readAt stamped by today's pull"
+          },
+          {
+            "sha": "f65fea72",
+            "at": "2026-10-15T15:08:12+01:00",
+            "subject": "LINGO auto-sync: live Sheet to mirror to masters, position+set-keyed check, 30-minute job"
+          },
+          {
+            "sha": "e061bcda",
+            "at": "2026-10-15T14:47:44+01:00",
+            "subject": "Merge pull request #314 from markshikada/lane/seat-sweep-floor"
+          },
+          {
+            "sha": "142d885b",
+            "at": "2026-10-15T14:46:45+01:00",
+            "subject": "Seat sweep: floor every agent frontmatter model: to opencode-go/longcat-2.5-preview-free (1M floor, Mark 15 Oct)"
+          }
+        ]
+      },
+      "register": null
+    },
+    {
+      "name": "COMMAND",
+      "path": "/Users/sushi/Documents/Vaults/COMMAND",
+      "prs": {
+        "ok": true,
+        "label": "pull requests",
+        "data": [
+          {
+            "vaultLabel": "COMMAND",
+            "number": 400,
+            "title": "Lingo sync wiring: housekeep reads the sync log, refresher's classifier goes line-level",
+            "head": "lane/lingo-estate-wiring",
+            "mergeable": "MERGEABLE",
+            "updatedAt": "2026-10-15T15:03:34Z",
+            "checks": [
+              {
+                "name": "Cloudflare Pages",
+                "status": "COMPLETED",
+                "conclusion": "FAILURE"
+              }
+            ]
+          }
+        ]
+      },
+      "landed": {
+        "ok": true,
+        "label": "landed",
+        "data": [
+          {
+            "sha": "95ffc22b",
+            "at": "2026-10-15T15:47:17+01:00",
+            "subject": "Merge pull request #399 from markshikada/lane/system-map-canvas-v2"
+          },
+          {
+            "sha": "73863a01",
+            "at": "2026-10-15T15:46:47+01:00",
+            "subject": "Design: system map rebuilt as a canvas, not boxes"
+          },
+          {
+            "sha": "c38830de",
+            "at": "2026-10-15T15:35:47+01:00",
+            "subject": "Merge pull request #398 from markshikada/lane/ops-mimo-ban-note"
+          },
+          {
+            "sha": "33babf39",
+            "at": "2026-10-15T15:35:28+01:00",
+            "subject": "Ops session note: Mimo free banned outright — Console-disabled, guard-hardened, ban file corrected"
+          },
+          {
+            "sha": "4f96a580",
+            "at": "2026-10-15T15:31:44+01:00",
+            "subject": "Merge pull request #397 from markshikada/lane/mimo-free-never"
+          },
+          {
+            "sha": "62b7fe5a",
+            "at": "2026-10-15T15:31:22+01:00",
+            "subject": "Ban Mimo free outright: 1M floor in banned-models, pin-sweep BANNED, tier HELD_OUT, drop from both probe lists"
+          },
+          {
+            "sha": "333f5d45",
+            "at": "2026-10-15T15:02:53+01:00",
+            "subject": "Merge pull request #396 from markshikada/lane/ops-seat-sweep-note"
+          },
+          {
+            "sha": "dc3be08d",
+            "at": "2026-10-15T15:01:56+01:00",
+            "subject": "Ops session note: Job A seat sweep — the ban was in tier.mjs, not just frontmatter"
+          },
+          {
+            "sha": "d5e16aa3",
+            "at": "2026-10-15T14:56:27+01:00",
+            "subject": "Merge pull request #395 from markshikada/lane/system-map-canvas"
+          },
+          {
+            "sha": "44d32bec",
+            "at": "2026-10-15T14:56:01+01:00",
+            "subject": "Design: system map as a nodal canvas, 39 nodes and 45 edges"
+          },
+          {
+            "sha": "8f9953af",
+            "at": "2026-10-15T14:47:38+01:00",
+            "subject": "Merge pull request #394 from markshikada/lane/seat-sweep-floor"
+          },
+          {
+            "sha": "1cc2ece1",
+            "at": "2026-10-15T14:45:19+01:00",
+            "subject": "Seat sweep: floor every agent frontmatter to LongCat, strike banned 200K id from tier.mjs roles+fallback"
+          },
+          {
+            "sha": "6b1598ed",
+            "at": "2026-10-15T13:31:05+01:00",
+            "subject": "Merge pull request #393 from markshikada/lane/lingo-aspect-states-read"
+          },
+          {
+            "sha": "0d703d37",
+            "at": "2026-10-15T13:30:45+01:00",
+            "subject": "Intel, 15 October: live LINGO Sheet read, the Aspect STATE row and two stale vault copies"
+          }
+        ]
+      },
+      "register": {
+        "ok": true,
+        "label": "lane register",
+        "data": {
+          "lanes": [
+            {
+              "lane": "estate-integrity",
+              "scope": "",
+              "writes": ""
+            },
+            {
+              "lane": "the-house",
+              "scope": "",
+              "writes": ""
+            },
+            {
+              "lane": "visibility",
+              "scope": "",
+              "writes": ""
+            }
+          ],
+          "path": "/Users/sushi/Documents/Vaults/COMMAND/Operations/Development/lanes-live.md"
+        }
+      }
+    },
+    {
+      "name": "PERSONAL",
+      "path": "/Users/sushi/Documents/Vaults/PERSONAL",
+      "prs": {
+        "ok": true,
+        "label": "pull requests",
+        "data": []
+      },
+      "landed": {
+        "ok": true,
+        "label": "landed",
+        "data": [
+          {
+            "sha": "c0aee453",
+            "at": "2026-10-15T15:33:07+01:00",
+            "subject": "Merge pull request #72 from markshikada/lane/mimo-free-never"
+          },
+          {
+            "sha": "b0f8039a",
+            "at": "2026-10-15T15:32:38+01:00",
+            "subject": "Ban Mimo free: add 1M-floor ban section, remove it from the permitted-seats table"
+          },
+          {
+            "sha": "beec6677",
+            "at": "2026-10-15T14:47:48+01:00",
+            "subject": "Merge pull request #71 from markshikada/lane/seat-sweep-floor"
+          },
+          {
+            "sha": "8dfe693d",
+            "at": "2026-10-15T14:46:48+01:00",
+            "subject": "Seat sweep: floor every agent frontmatter model: to opencode-go/longcat-2.5-preview-free (1M floor, Mark 15 Oct)"
+          }
+        ]
+      },
+      "register": null
+    }
+  ]
+}

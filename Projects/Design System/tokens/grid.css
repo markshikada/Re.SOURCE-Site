@@ -1,0 +1,95 @@
+/* The twelve-column field, lifted out of Brand STYLE v2's helmet so it is one system-wide fact
+   rather than a rule copied into nine pages. Frame GRID's derived rules, none of them stipulated:
+   twelve columns with the gutter at space lg, sections as subgrids, a division landing on a column
+   edge, and vertical rhythm from leading rather than a page-wide baseline.
+
+   Ruled 5 September 2026 alongside motion.css: a deliberate exception to inline-styles-only for
+   design components. See notes/v2-rollout.md, question 1. */
+[data-grid]{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--space-lg)}
+[data-grid]>*{grid-column:1/-1}
+/* A subgrid inherits the parent's tracks instead of restating them, so a nested block cannot
+   invent a second field. */
+[data-sub]{display:grid;grid-template-columns:subgrid;grid-column:1/-1;column-gap:var(--space-lg)}
+[data-sub]>*{grid-column:1/-1}
+/* The atom: a rule paired with its reason, on 5 and 7 of the twelve. */
+[data-pair]>*:nth-child(odd){grid-column:span 5}
+[data-pair]>*:nth-child(even){grid-column:span 7}
+[data-narrow]{grid-column:span 8}
+[data-span="1"]{grid-column:span 1}[data-span="2"]{grid-column:span 2}[data-span="3"]{grid-column:span 3}[data-span="4"]{grid-column:span 4}[data-span="5"]{grid-column:span 5}[data-span="6"]{grid-column:span 6}[data-span="7"]{grid-column:span 7}[data-span="8"]{grid-column:span 8}[data-span="9"]{grid-column:span 9}[data-span="10"]{grid-column:span 10}[data-span="11"]{grid-column:span 11}[data-span="12"]{grid-column:span 12}
+/* The page margin is field geometry too, so it is answered once here rather than privately by each
+   surface — but it follows the frame, not the count. Ruled 24 September 2026: below 1081 the
+   orientation picks the count and width no longer always agrees with it, so the margin stays
+   width-driven (xl above 1080, lg 721–1080, md at 720 and below) and a narrow frame keeps a
+   narrow margin whichever count it draws. */
+[data-pad]{--field-pad:var(--space-xl);padding-left:var(--field-pad);padding-right:var(--field-pad)}
+@media (max-width:1080px){[data-pad]{--field-pad:var(--space-lg)}}
+@media (max-width:720px){[data-pad]{--field-pad:var(--space-md)}}
+/* A bleed reaches the page edge by cancelling the margin it inherits, never by a number of its own.
+   Added 21 September 2026 (Mark: "responsive design needs more considered layout rules for
+   mobile"): Brand STYLE's width demo bled 48px on every count, which is the desktop margin, so on
+   a phone it stood 36px past each edge and the whole page was scaled down to fit it. */
+[data-bleed]{width:calc(100% + 2 * var(--field-pad,0px));margin-left:calc(-1 * var(--field-pad,0px));margin-right:calc(-1 * var(--field-pad,0px))}
+
+/* The overlay checks a division actually lands, rather than being trusted to. */
+[data-ov]{position:absolute;inset:0;z-index:-1;display:grid;pointer-events:none;user-select:none;opacity:0;transition:opacity var(--dur-md) var(--ease-arrive)}
+@media (min-width:1081px){[data-ov]{grid-template-columns:repeat(12,1fr);column-gap:var(--space-lg)}}
+body[data-gridlines] [data-ov]{opacity:1}
+
+/* The field halves, and halves again. Twelve columns, six, three — 12 ÷ 2 ÷ 2 — so a span maps by
+   division rather than by a second set of numbers, and the gutter walks down the same 2:3:6 it came
+   from, lg to md to sm.
+
+   Halving has to preserve the pair, which is the part that is easy to get wrong: rounding every
+   odd span up makes 5 and 7 into 3 and 4, which is seven columns of six, and the pair wraps. So a
+   span below the middle halves down and one above it halves up — 5 of 12 becomes 2 of 6, 7 becomes
+   4 — and any pair summing to twelve still sums to six. One column is the exception: it cannot
+   halve, so it stays one, and a 1/11 division does not survive the collapse. Pair 1 with 10.
+
+   At three columns the division stops and the page becomes one column. A third of a 390px phone is
+   120px, which holds a swatch, a tile or a mark but not a measure, so only a span that was a
+   quarter or less of the twelve keeps a share of the row — everything wider takes all three. This
+   is measured against the phone rather than derived from the halving, which on its own put three
+   cards side by side and made the page unreadable. Convention agrees: on a phone almost everything
+   stacks full width.
+
+   Breakpoints are still read off the field rather than off device names: twelve 68px columns need
+   1080, and 720 is where the page margin steps down (data-pad above) because below it a twelfth is
+   narrower than a word. What a width cannot answer on its own is which of the two smaller counts a
+   sub-1081 frame draws — a 667-wide phone on its side and a 768-wide tablet held upright are the
+   same width class and want different fields. So below 1081 the orientation picks the count.
+   Mark, 24 September 2026, quoted before the rule it generalises: his ranges are "Mobile vertical
+   = 1–3 columns / Mobile horizontal = 4–6 columns / Desktop = 6–12 columns", and asked which rule
+   should pick the count, he ruled: "orientation picks 3 vs 6". Landscape draws six, portrait draws
+   three, and the halving, pair and quarter rules above are untouched by it. A division still lands
+   on a column edge at every width. A rule that only makes sense at one frame belongs to the
+   surface, not here. */
+/* The six-column default's gutter: every frame at 1080 or under gets the md step, whatever count
+   it draws; the portrait block below drops to sm for its three. */
+@media (max-width:1080px){[data-grid],[data-sub],[data-ov]{column-gap:var(--space-md)}}
+/* Orientation picks the count below 1081 (Mark, 24 September 2026: "orientation picks 3 vs 6").
+   Everything inside each block belongs to the count rather than to a width — the span mapping,
+   [data-pair], [data-narrow] and the overlay's hidden spans — so it moves with its block. */
+@media (max-width:1080px) and (orientation:landscape){
+  [data-grid],[data-sub],[data-ov]{grid-template-columns:repeat(6,1fr)}
+  [data-sub]:not([data-grid]){grid-template-columns:subgrid}
+  [data-span="1"]{grid-column:span 1}[data-span="2"]{grid-column:span 1}[data-span="3"]{grid-column:span 1}[data-span="4"]{grid-column:span 2}[data-span="5"]{grid-column:span 2}[data-span="6"]{grid-column:span 3}[data-span="7"]{grid-column:span 4}[data-span="8"]{grid-column:span 4}[data-span="9"]{grid-column:span 5}[data-span="10"]{grid-column:span 5}[data-span="11"]{grid-column:span 6}[data-span="12"]{grid-column:span 6}
+  [data-pair]>*:nth-child(odd){grid-column:span 3}[data-pair]>*:nth-child(even){grid-column:span 3}
+  [data-narrow]{grid-column:span 6}
+  [data-ov]>span:nth-child(n+7){display:none}
+}
+@media (max-width:1080px) and (orientation:portrait){
+  [data-grid],[data-sub],[data-ov]{grid-template-columns:repeat(3,1fr);column-gap:var(--space-sm)}
+  [data-sub]:not([data-grid]){grid-template-columns:subgrid}
+  [data-span="1"]{grid-column:span 1}[data-span="2"]{grid-column:span 1}[data-span="3"]{grid-column:span 1}[data-span="4"]{grid-column:span 3}[data-span="5"]{grid-column:span 3}[data-span="6"]{grid-column:span 3}[data-span="7"]{grid-column:span 3}[data-span="8"]{grid-column:span 3}[data-span="9"]{grid-column:span 3}[data-span="10"]{grid-column:span 3}[data-span="11"]{grid-column:span 3}[data-span="12"]{grid-column:span 3}
+  /* Stacked, one column each. Written as the pair of nth-child rules the desktop pair uses: a
+     bare [data-pair]>* loses the specificity duel with the span 5/7 rules above and the pair
+     would not stack (found by measuring the deck's focus at 820, 25 September 2026). */
+  [data-pair]>*:nth-child(odd){grid-column:1/-1}[data-pair]>*:nth-child(even){grid-column:1/-1}
+  [data-narrow]{grid-column:span 3}
+  /* Three columns need no checking by eye, so the overlay is off wherever the portrait count
+     draws — at any width below 1081, not only on a phone. */
+  [data-ov]{display:none}
+  [data-ov]>span:nth-child(n+4){display:none}
+}
+
+[data-ov]>span{background:rgba(255,255,255,0.04);border-left:1px solid rgba(255,255,255,0.14);border-right:1px solid rgba(255,255,255,0.14)}

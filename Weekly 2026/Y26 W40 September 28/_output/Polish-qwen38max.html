@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>Word DECK – Deck Screen · Polish Round · Lane 30</title>
+<!--
+  Re.SOURCE · Word DECK screen · Polish round · Lane 30 · qwen3.8-max · 2026-09-29
+  Self-contained: card data copied from Projects/Design System/data/deck-data.js,
+  token values copied from Projects/Design System/tokens/ (colours, greys, space,
+  typography, motion). No external fetches, no external fonts.
+
+  Lattice law (WordDeck master, five rules): one lattice, one gap, the count
+  divides the deck, nothing stretches, leftover space is margin.
+  The open card takes tracks from the same grid: at 1440 it spans half the
+  count over two rows, so twelve closed cards plus the reader fill whole rows.
+  Below 721 the reader becomes a bottom sheet, peek capped at half the frame,
+  handle lifts it full, head and foot pinned, body the one part that scrolls.
+  Law: whole numbers only; radius 8 / 12 / 24; colour is a stroke on a shape,
+  never a fill behind text; twelve position colours and the greyscale only;
+  type 12 / 18 / 24 / 36 / 48 / 72, leading on the 6px unit, 30 the exception;
+  no letter-spacing declared.
+-->
+<style>
+:root{
+  /* greys.css */
+  --black:#000000; --g06:#0D0D0D; --g12:#1A1A1A; --g24:#333333; --g48:#555555;
+  --g66:#888888; --g88:#CCCCCC; --white:#FFFFFF;
+  --text-primary:var(--white); --text-secondary:var(--g66); --text-dim:var(--g48);
+  --surface-page:var(--black); --surface-card:var(--g06); --surface-raised:var(--g12);
+  --surface-border:var(--g24);
+  /* space.css */
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px; --space-xl:48px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+  /* typography.css */
+  --fs-caption:12px; --lh-caption:18px;
+  --fs-body:18px; --lh-body:30px;
+  --fs-h2:24px; --lh-h2:36px;
+  --fs-h1:36px; --lh-h1:48px;
+  --fs-display:48px; --lh-display:54px;
+  /* motion.css */
+  --dur-sm:120ms; --dur-md:180ms; --dur-lg:360ms;
+  --ease-place:cubic-bezier(0.33,0,0.5,1);
+  --ease-arrive:cubic-bezier(0,0,0.5,1);
+  --ease-leave:cubic-bezier(0.33,0,1,1);
+  /* fonts.css, system stack (self-contained file, no fetch) */
+  --font-sans:system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:ui-monospace,'SF Mono',Menlo,monospace;
+  /* the lattice, written by layout() after measuring the frame */
+  --slot:180px; --cardh:252px; --gapv:24px; --ocols:6; --osp:3; --sheet-h:0px;
+}
+@keyframes rs-arrive{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+@keyframes rs-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes rs-sheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+html{-webkit-text-size-adjust:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;background:var(--surface-page);color:var(--text-primary);
+  font-family:var(--font-sans);font-size:var(--fs-body);line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--g24);color:var(--white)}
+:focus-visible{outline:2px solid var(--g88);outline-offset:3px}
+button{font-family:inherit;font-size:inherit;line-height:inherit;margin:0}
+[hidden]{display:none!important}
+.mono{font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:300;text-transform:uppercase}
+
+.page{padding:var(--space-xl)}
+@media (max-width:1080px){.page{padding:var(--space-lg)}}
+@media (max-width:720px){.page{padding:var(--space-md)}}
+
+/* – the bar – */
+.bar{display:flex;flex-wrap:wrap;gap:var(--space-md);align-items:center;justify-content:space-between;
+  padding-bottom:var(--space-md);margin-bottom:var(--space-lg);border-bottom:1px solid var(--surface-border)}
+.brand{display:block;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:700;text-transform:uppercase}
+.stamp{display:block;color:var(--text-dim);margin-top:var(--space-xs)}
+.bar-right{display:flex;flex-wrap:wrap;gap:var(--space-md);align-items:center}
+.legend{color:var(--text-dim)}
+#status{color:var(--text-secondary);min-width:120px}
+
+/* – controls, states law: idle g48/g66, hover and pressed white on g88 – */
+.ctl{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--space-sm);
+  height:32px;padding:0 var(--space-md);background:var(--surface-card);color:var(--text-secondary);
+  border:1px solid var(--surface-border);border-radius:var(--radius-sm);cursor:pointer;
+  font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:400;
+  text-transform:uppercase;
+  transition:transform var(--dur-sm) var(--ease-place),background-color var(--dur-sm) var(--ease-place),
+    border-color var(--dur-sm) var(--ease-place),color var(--dur-sm) var(--ease-place)}
+.ctl::after{content:"";position:absolute;inset:-6px} /* the 44 hit area behind the 32 visual row */
+.ctl:hover{color:var(--white);border-color:var(--g88);background:var(--surface-raised)}
+.ctl:active{transform:scale(0.96);color:var(--white);border-color:var(--g88)}
+.ctl[aria-disabled="true"]{color:var(--text-dim);border-color:var(--g12);cursor:default}
+.ctl[aria-disabled="true"]:hover{color:var(--text-dim);border-color:var(--g12);background:var(--surface-card)}
+
+/* – the lattice: one grid, one gap, nothing stretches – */
+/* start, never center: an odd leftover would put the tracks on half pixels,
+   and the lattice law says leftover space is margin, whole numbers only */
+#lattice{display:grid;grid-template-columns:repeat(var(--ocols),var(--slot));grid-auto-rows:var(--cardh);
+  gap:var(--gapv);justify-content:start}
+body[data-mode="sheet"][data-open="1"] #lattice{padding-bottom:calc(var(--sheet-h) + var(--space-md))}
+
+/* – the closed card: black fill, coloured stroke, white text – */
+.card{position:relative;display:flex;flex-direction:column;gap:var(--space-xs);
+  width:var(--slot);height:var(--cardh);padding:var(--space-md);overflow:hidden;text-align:center;
+  background:var(--surface-card);border:1px solid var(--surface-border);border-radius:var(--radius-sm);
+  cursor:pointer;font-family:var(--font-sans);
+  transition:transform var(--dur-sm) var(--ease-place),background-color var(--dur-sm) var(--ease-place),
+    border-color var(--dur-sm) var(--ease-place)}
+.card:hover{transform:translateY(-2px);background:var(--surface-raised);border-color:var(--g66)}
+.card:active{transform:scale(0.96)}
+.card.dealt{animation:rs-rise var(--dur-lg) var(--ease-arrive) both}
+.card.here{outline:1px solid var(--white);outline-offset:2px}
+.card.rel{outline:1px solid var(--g66);outline-offset:2px}
+.c-top,.c-foot{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-xs);text-align:left}
+.c-top{color:var(--text-secondary)}
+.c-foot{color:var(--text-dim);margin-top:auto}
+.c-mark{display:block;width:80px;height:80px;margin:0 auto}
+.c-title{display:block;font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:700;
+  text-transform:uppercase;color:var(--white)}
+.c-gloss{display:block;font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:300;
+  color:var(--text-secondary);margin:0;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c-foot{display:flex;flex-direction:column;align-items:center;gap:0;margin-top:auto;text-align:center}
+.c-foot span{white-space:nowrap}
+.c-badge{position:absolute;top:34px;right:8px;height:18px;padding:0 var(--space-sm);
+  background:var(--black);border:1px solid var(--g66);border-radius:var(--radius-sm);color:var(--white)}
+
+/* the compact card, where the frame is under 721 */
+body.compact .card{padding:var(--space-sm)}
+body.compact .c-mark{width:56px;height:56px}
+body.compact .c-gloss{display:none}
+body.compact .c-title{font-size:var(--fs-body);line-height:var(--lh-body);font-weight:700}
+body.compact .c-foot{flex-direction:row;justify-content:center;gap:var(--space-sm)}
+body.compact .c-badge{top:30px;right:4px}
+
+/* – the reader: one element, two placements – */
+#reader{display:none;flex-direction:column;gap:var(--space-md);
+  background:var(--surface-card);border:1px solid var(--surface-border);border-top:3px solid var(--g48);
+  border-radius:var(--radius-sm);overflow:hidden}
+body[data-mode="grid"][data-open="1"] #reader{display:flex;grid-column:1 / span var(--osp);grid-row:1 / span 2;
+  padding:var(--space-lg)}
+body[data-mode="grid"][data-open="1"] #reader.in{animation:rs-arrive var(--dur-lg) var(--ease-arrive) both}
+body[data-mode="sheet"][data-open="1"] #reader{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;
+  max-height:50vh;padding:var(--space-md) var(--space-md) calc(var(--space-md) + env(safe-area-inset-bottom));
+  border-left:none;border-right:none;border-bottom:none;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+body[data-mode="sheet"][data-open="1"] #reader.full{max-height:88vh}
+body[data-mode="sheet"][data-open="1"] #reader.in{animation:rs-sheet var(--dur-lg) var(--ease-arrive) both}
+
+.rd-head{display:flex;align-items:center;gap:var(--space-md);min-height:32px}
+.rd-head .rd-set{color:var(--text-secondary)}
+.rd-head .rd-row{color:var(--text-dim)}
+#grab{display:none;align-items:center;justify-content:center;width:60px;height:32px;padding:0;
+  background:none;border:none;cursor:pointer;position:relative}
+#grab::after{content:"";position:absolute;inset:-6px}
+.grab-bar{display:block;width:48px;height:8px;background:var(--g48);border-radius:var(--radius-sm)}
+body[data-mode="sheet"] #grab{display:inline-flex}
+#rdClose{margin-left:auto;width:32px;padding:0;font-size:var(--fs-body);line-height:var(--lh-body)}
+
+.rd-body{display:flex;gap:var(--space-lg);flex:1;min-height:0}
+.rd-left{flex:none;width:168px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-sm)}
+#rdMark{width:168px;height:168px}
+.rd-left .rd-pos{color:var(--text-secondary)}
+.rd-left .rd-holds{color:var(--text-dim)}
+.rd-main{flex:1;min-width:0;overflow:auto}
+.rd-title{margin:0;font-size:var(--fs-display);line-height:var(--lh-display);font-weight:800;
+  text-transform:uppercase;color:var(--white)}
+.rd-gloss{margin:var(--space-xs) 0 0;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:600;color:var(--white)}
+.lbl{display:block;color:var(--text-dim);margin-top:var(--space-md)}
+.rd-read{margin:0;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:400;color:var(--white)}
+.rd-ask{margin:0;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:300;color:var(--text-secondary)}
+.rd-chips{display:flex;flex-wrap:wrap;gap:var(--space-md);margin-top:var(--space-md)}
+.chip{position:relative;display:inline-flex;align-items:center;height:32px;padding:0 var(--space-md);
+  background:var(--black);color:var(--white);border:1px solid var(--g66);border-radius:var(--radius-sm);
+  cursor:pointer;font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);
+  font-weight:400;text-transform:uppercase;
+  transition:transform var(--dur-sm) var(--ease-place),background-color var(--dur-sm) var(--ease-place),
+    border-color var(--dur-sm) var(--ease-place)}
+.chip::after{content:"";position:absolute;inset:-6px}
+.chip:hover{background:var(--surface-raised);border-color:var(--g88)}
+.chip:active{transform:scale(0.96)}
+
+.rd-foot{display:flex;align-items:center;gap:var(--space-md)}
+.rd-index{margin-left:auto;color:var(--text-dim)}
+
+/* the sheet at 390: body stacks so the reading keeps the whole measure,
+   body the one part that scrolls, head and foot pinned */
+body[data-mode="sheet"] .rd-body{flex-direction:column;gap:var(--space-md);overflow:auto}
+body[data-mode="sheet"] .rd-body::-webkit-scrollbar{width:4px}
+body[data-mode="sheet"] .rd-body::-webkit-scrollbar-thumb{background:var(--g24)}
+body[data-mode="sheet"] .rd-left{width:auto;flex-direction:row;align-items:center;gap:var(--space-md)}
+body[data-mode="sheet"] #rdMark{width:72px;height:72px}
+body[data-mode="sheet"] .rd-title{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:700}
+body[data-mode="sheet"] .rd-main{overflow:visible}
+
+@media (prefers-reduced-motion:reduce){
+  .card,.ctl,.chip,#reader{transition-duration:1ms!important;animation-duration:1ms!important}
+  .card.dealt,#reader.in{animation-duration:1ms!important;animation-delay:0ms!important}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body data-mode="grid" data-open="0">
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Polish-qwen38max.html</span>
+</nav>
+<div class="page">
+
+<header class="bar">
+  <div class="bar-left">
+    <span class="brand">Word DECK</span>
+    <span class="stamp mono" id="stamp">RE.SOURCE · POLISH ROUND · LANE 30</span>
+  </div>
+  <div class="bar-right">
+    <span class="legend mono" id="legend"></span>
+    <span class="mono" id="status" role="status" aria-live="polite"></span>
+    <button type="button" class="ctl" id="deal">DEAL</button>
+  </div>
+</header>
+
+<main>
+  <div id="lattice">
+    <section id="reader" tabindex="-1" aria-label="The open card">
+      <div class="rd-head">
+        <button type="button" id="grab" aria-label="Expand the card" aria-expanded="false"><span class="grab-bar"></span></button>
+        <span class="rd-set mono" id="rdSet"></span>
+        <span class="rd-row mono" id="rdRow"></span>
+        <button type="button" class="ctl" id="rdClose" aria-label="Close the card">×</button>
+      </div>
+      <div class="rd-body">
+        <div class="rd-left">
+          <svg id="rdMark" viewBox="0 0 120 120" aria-hidden="true"></svg>
+          <span class="rd-pos mono" id="rdPos"></span>
+          <span class="rd-holds mono" id="rdHolds"></span>
+        </div>
+        <div class="rd-main">
+          <h2 class="rd-title" id="rdTitle"></h2>
+          <p class="rd-gloss" id="rdGloss"></p>
+          <span class="lbl mono">READ</span>
+          <p class="rd-read" id="rdReading"></p>
+          <span class="lbl mono">ASK</span>
+          <p class="rd-ask" id="rdQuestion"></p>
+          <div class="rd-chips" id="rdChips"></div>
+        </div>
+      </div>
+      <div class="rd-foot">
+        <button type="button" class="ctl" id="rdPrev">← PREV</button>
+        <button type="button" class="ctl" id="rdNext">NEXT →</button>
+        <span class="rd-index mono" id="rdIndex"></span>
+      </div>
+    </section>
+  </div>
+</main>
+
+<noscript><p class="mono">This deck screen needs script to deal, open and close cards.</p></noscript>
+</div>
+
+<script>
+/* – the card store, copied from Projects/Design System/data/deck-data.js –
+   Twelve real cards on the deck's one axis: the three Sets, the three Cores,
+   the REALM Triad counter pair, the REALM Group counter pair and the LIFE/FIRE
+   polar pair. Lead holdings first, then the Singles: the sheet's own order. */
+var DECK = [
+{"set":"Abstract REALM","setKey":"r","id":"r-set","holds":12,"row":"SET","type":"Set","titles":["REALM"],"picks":[0,1,2,3,4,5],"blendPicks":[0,1,2,3,4,5],"grid":[{"w":"LIFE","col":"#00D460"},{"w":"TONE","col":"#99DD00"},{"w":"FLUX","col":"#FFD100"},{"w":"FLOW","col":"#FFB000"},{"w":"LOVE","col":"#FF7700"},{"w":"BOND","col":"#FF5500"},{"w":"FIRE","col":"#FF0000"},{"w":"PATH","col":"#E02888"},{"w":"TIME","col":"#9933CC"},{"w":"META","col":"#6655FF"},{"w":"FORM","col":"#2277FF"},{"w":"TYPE","col":"#00BBDD"}],"gloss":"The world a thing belongs to","reading":"Realm names the widest frame, with nobody in it. The answer stays true whether anyone is standing there or not.","question":"Where does this belong?","lastLabel":"","last":""},
+{"set":"Aspect STATE","setKey":"s","id":"s-set","holds":12,"row":"SET","type":"Set","titles":["STATE"],"picks":[0,1,2,3,4,5],"blendPicks":[0,1,2,3,4,5],"grid":[{"w":"BODY","col":"#00D460"},{"w":"MOOD","col":"#99DD00"},{"w":"HIGH","col":"#FFD100"},{"w":"TRUE","col":"#FFB000"},{"w":"SOUL","col":"#FF7700"},{"w":"NEED","col":"#FF5500"},{"w":"WILL","col":"#FF0000"},{"w":"WANT","col":"#E02888"},{"w":"MIND","col":"#9933CC"},{"w":"VIEW","col":"#6655FF"},{"w":"SELF","col":"#2277FF"},{"w":"MODE","col":"#00BBDD"}],"gloss":"Something you are in, not near","reading":"State is the condition, not the object sitting in it. It moves fastest of the three, and it colours everything attention lands on while it lasts.","question":"What are you in, right now?","lastLabel":"","last":""},
+{"set":"Anchor TAG","setKey":"t","id":"t-set","holds":12,"row":"SET","type":"Set","titles":["TAG"],"picks":[0,1,2,3,4,5],"blendPicks":[0,1,2,3,4,5],"grid":[{"w":"ECO","col":"#00D460"},{"w":"FUN","col":"#99DD00"},{"w":"JOY","col":"#FFD100"},{"w":"ART","col":"#FFB000"},{"w":"GOD","col":"#FF7700"},{"w":"SEX","col":"#FF5500"},{"w":"MAX","col":"#FF0000"},{"w":"WAY","col":"#E02888"},{"w":"WIT","col":"#9933CC"},{"w":"AIM","col":"#6655FF"},{"w":"EGO","col":"#2277FF"},{"w":"POP","col":"#00BBDD"}],"gloss":"What a thing gets called","reading":"The name comes from whatever it attaches to, in ordinary speech. Easiest of the three to say out loud.","question":"What would you call this?","lastLabel":"","last":""},
+{"set":"Abstract REALM","setKey":"r","id":"r-core","holds":0,"row":"CORE","type":"Core","titles":["ZONE"],"picks":[],"blendPicks":[],"gloss":"All potential, before orientation","reading":"Nothing here has taken a direction yet. What follows arises from this quiet centre, which carries no colour of its own because it is looking rather than being looked at.","question":"Is anything pointing anywhere yet?","lastLabel":"","last":""},
+{"set":"Aspect STATE","setKey":"s","id":"s-core","holds":0,"row":"CORE","type":"Core","titles":["HERE"],"picks":[],"blendPicks":[],"gloss":"Still, under every passing mood","reading":"Nothing has to be felt for this to be present. It sits behind whatever passes, unchanged by any of it.","question":"What is here when the feeling goes?","lastLabel":"","last":""},
+{"set":"Anchor TAG","setKey":"t","id":"t-core","holds":0,"row":"CORE","type":"Core","titles":["YOU"],"picks":[],"blendPicks":[],"gloss":"Witness with no label attached","reading":"Perception arrives before naming does. This is the point that observes and takes no category of its own.","question":"Who is doing the looking?","lastLabel":"","last":""},
+{"set":"Abstract REALM","setKey":"r","id":"r-triad-prime","holds":3,"row":"TRIAD","type":"Triad","titles":["PRIME"],"picks":[1,3,5],"blendPicks":[],"grid":[{"w":"FLUX","col":"#FFD100"},{"w":"FIRE","col":"#FF0000"},{"w":"FORM","col":"#2277FF"}],"gloss":"A triangle, held in balance","reading":"No position here opposes another. The weight sits evenly rather than pulling to one side.","question":"Which of the three anchors holds your focus?","lastLabel":"Counter","last":"PART","counterId":"r-triad-part"},
+{"set":"Abstract REALM","setKey":"r","id":"r-triad-part","holds":3,"row":"TRIAD","type":"Triad","titles":["PART"],"picks":[0,2,4],"blendPicks":[],"grid":[{"w":"LIFE","col":"#00D460"},{"w":"LOVE","col":"#FF7700"},{"w":"TIME","col":"#9933CC"}],"gloss":"The triangle the first leaves","reading":"The positions the other arrangement passes over. Between them the structure closes.","question":"Which quieter anchor steadies the noise?","lastLabel":"Counter","last":"PRIME","counterId":"r-triad-prime"},
+{"set":"Abstract REALM","setKey":"r","id":"r-base","holds":6,"row":"BASE","type":"Base","titles":["BASE"],"picks":[0,1,2,3,4,5],"blendPicks":[],"grid":[{"w":"LIFE","col":"#00D460"},{"w":"FLUX","col":"#FFD100"},{"w":"LOVE","col":"#FF7700"},{"w":"FIRE","col":"#FF0000"},{"w":"TIME","col":"#9933CC"},{"w":"FORM","col":"#2277FF"}],"gloss":"Where each circle is centred","reading":"These map the main outline. The rest take their bearings from them.","question":"Which centre are you standing on?","lastLabel":"Counter","last":"BLEND","counterId":"r-blend"},
+{"set":"Abstract REALM","setKey":"r","id":"r-blend","holds":6,"row":"BLEND","type":"Blend","titles":["BLEND"],"picks":[],"blendPicks":[0,1,2,3,4,5],"grid":[{"w":"TONE","col":"#99DD00"},{"w":"FLOW","col":"#FFB000"},{"w":"BOND","col":"#FF5500"},{"w":"PATH","col":"#E02888"},{"w":"META","col":"#6655FF"},{"w":"TYPE","col":"#00BBDD"}],"gloss":"Where two circles cross","reading":"Two overlapping fields make a third thing that belongs to neither. The geometry has a name for it before language does.","question":"Which meeting point are you at?","lastLabel":"Counter","last":"BASE","counterId":"r-base"},
+{"set":"Abstract REALM","setKey":"r","id":"r-single-12","holds":1,"row":"SINGLE","type":"Single","titles":["LIFE"],"picks":[0],"blendPicks":[],"gloss":"Raw animation, before intent","reading":"It beats without asking permission and continues whether or not anything is decided. The plainest sign of it is movement that nobody ordered.","question":"What is alive in this moment?","lastLabel":"Polar","last":"FIRE"},
+{"set":"Abstract REALM","setKey":"r","id":"r-single-06","holds":1,"row":"SINGLE","type":"Single","titles":["FIRE"],"picks":[3],"blendPicks":[],"gloss":"Energy that consumes to clear","reading":"It insists on full expression and takes the obsolete with it. What is left afterwards is heat and space.","question":"Where is the sudden spark coming from?","lastLabel":"Polar","last":"LIFE"}
+];
+
+/* the position colours, from tokens/colours.css via the deck's own grids */
+var BASE_HEX = ['#00D460','#FFD100','#FF7700','#FF0000','#9933CC','#2277FF'];
+var BLEND_HEX = ['#99DD00','#FFB000','#FF5500','#E02888','#6655FF','#00BBDD'];
+var SHORT = {'Abstract REALM':'REALM','Aspect STATE':'STATE','Anchor TAG':'TAG'};
+
+var body = document.body;
+var lattice = document.getElementById('lattice');
+var reader = document.getElementById('reader');
+var statusEl = document.getElementById('status');
+var state = { open: null, compact: false };
+var cards = [];        /* the twelve closed cells, in deck order */
+var cardById = {};
+
+function byId(id){ for (var i=0;i<DECK.length;i++) if (DECK[i].id===id) return DECK[i]; return null; }
+function indexOf(id){ for (var i=0;i<DECK.length;i++) if (DECK[i].id===id) return i; return -1; }
+function wordOf(e){ return e.titles.join(' • '); }
+function pad2(n){ return String(n).padStart(2,'0'); }
+
+/* the card's accent: colour is a stroke on the shape, never a fill behind text */
+function accentOf(e){
+  if (e.row === 'SET') return '#FFFFFF';
+  if (e.row === 'CORE') return '#555555';
+  if ((e.picks || []).length) return (e.grid && e.grid[0]) ? e.grid[0].col : BASE_HEX[e.picks[0]];
+  return (e.grid && e.grid[0]) ? e.grid[0].col : BLEND_HEX[e.blendPicks[0]];
+}
+
+/* the clock-face position label, the shared lib's own rule */
+function posLabelOf(e){
+  var picks = e.picks || [], blend = e.blendPicks || [];
+  var count = picks.length + blend.length;
+  if (count === 0) return 'VOID';
+  if (count === 12) return 'P01–P12';
+  var nums = picks.map(function(i){ return i*60; })
+    .concat(blend.map(function(i){ return i*60+30; }))
+    .map(function(a){ return ((a/30 + 11) % 12) + 1; });
+  var sorted = nums.slice().sort(function(a,b){ return a-b; });
+  var step2 = sorted.length > 3 && sorted.every(function(n,k){ return k===0 || n - sorted[k-1] === 2; });
+  if (step2) return 'P' + pad2(sorted[0]) + '–P' + pad2(sorted[sorted.length-1]);
+  var leadA = picks.length ? picks[0]*60 : blend[0]*60+30;
+  var leadN = ((leadA/30 + 11) % 12) + 1;
+  var run = sorted.slice();
+  var at = run.indexOf(leadN);
+  if (at > 0) run = [run[at]].concat(run.slice(0,at), run.slice(at+1));
+  return 'P' + run.map(pad2).join('·');
+}
+
+/* the relation this card names, resolved inside the twelve */
+function relOf(e){
+  if (e.counterId){
+    var t = byId(e.counterId);
+    if (t) return { label: e.lastLabel || 'Counter', id: t.id };
+  }
+  if (e.row === 'SINGLE' && e.last){
+    for (var i=0;i<DECK.length;i++){
+      var x = DECK[i];
+      if (x.set === e.set && x.row === 'SINGLE' && x.titles[0] === e.last)
+        return { label: e.lastLabel || 'Polar', id: x.id };
+    }
+  }
+  return null;
+}
+
+/* the mark: twelve faint petals, the lit picks in position colour, whole
+   coordinates only. Petal circles r29 at centre distance 29 on a 120 field. */
+function markFor(e){
+  var s = '', i;
+  if (e.row !== 'SET'){
+    for (i = 0; i < 12; i++)
+      s += '<circle cx="60" cy="31" r="29" fill="none" stroke="#333333" stroke-width="1" transform="rotate(' + (i*30) + ' 60 60)"/>';
+  }
+  if (e.row === 'SET'){
+    e.grid.forEach(function(g,j){
+      s += '<circle cx="60" cy="31" r="29" fill="none" stroke="' + g.col + '" stroke-width="3" transform="rotate(' + (j*30) + ' 60 60)"/>';
+    });
+  } else {
+    (e.picks || []).forEach(function(p,k){
+      var col = (e.grid && e.grid[k]) ? e.grid[k].col : BASE_HEX[p];
+      var w = (e.picks.length === 1) ? 5 : 3;
+      s += '<circle cx="60" cy="31" r="29" fill="none" stroke="' + col + '" stroke-width="' + w + '" transform="rotate(' + (p*60) + ' 60 60)"/>';
+    });
+    (e.blendPicks || []).forEach(function(p,k){
+      var col = (e.grid && e.grid[k]) ? e.grid[k].col : BLEND_HEX[p];
+      var w = (e.blendPicks.length === 1) ? 5 : 3;
+      s += '<circle cx="60" cy="31" r="29" fill="none" stroke="' + col + '" stroke-width="' + w + '" transform="rotate(' + (p*60+30) + ' 60 60)"/>';
+    });
+  }
+  s += '<circle cx="60" cy="60" r="29" fill="none" stroke="#333333" stroke-width="1"/>';
+  s += '<circle cx="60" cy="60" r="4" fill="#FFFFFF"/>';
+  return s;
+}
+
+/* – build the twelve closed cells – */
+function renderCards(){
+  DECK.forEach(function(e, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'card';
+    b.dataset.id = e.id;
+    b.style.borderTop = '3px solid ' + accentOf(e);
+    b.style.animationDelay = (i * 60) + 'ms'; /* the motion token's stagger, 60ms unit */
+    var rel = relOf(e);
+    var relWord = rel ? wordOf(byId(rel.id)) : '';
+    b.setAttribute('aria-label', wordOf(e) + ', ' + e.row.toLowerCase() + ' card, ' + e.set +
+      (rel ? ', ' + rel.label.toLowerCase() + ' ' + relWord : '') + '. Open the card.');
+    b.innerHTML =
+      '<span class="c-top"><span class="mono c-set">' + SHORT[e.set] + '</span><span class="mono">' + e.row + '</span></span>' +
+      '<svg class="c-mark" viewBox="0 0 120 120" aria-hidden="true">' + markFor(e) + '</svg>' +
+      '<span class="c-title">' + wordOf(e) + '</span>' +
+      '<span class="c-gloss">' + e.gloss + '</span>' +
+      '<span class="c-foot"><span class="mono c-pos">' + posLabelOf(e) + '</span><span class="mono c-rel"></span></span>' +
+      '<span class="c-badge mono" hidden></span>';
+    b.addEventListener('click', function(){ openCard(e.id); });
+    lattice.appendChild(b);
+    cards.push(b);
+    cardById[e.id] = b;
+  });
+}
+
+function updateRelTexts(){
+  DECK.forEach(function(e){
+    var rel = relOf(e);
+    var cell = cardById[e.id];
+    var el = cell.querySelector('.c-rel');
+    var posEl = cell.querySelector('.c-pos');
+    if (!rel){ el.textContent = ''; posEl.style.display = ''; return; }
+    el.textContent = state.compact ? wordOf(byId(rel.id)) : rel.label.toUpperCase() + ' · ' + wordOf(byId(rel.id));
+    /* compact cards carry one footer fact: the relation. The position reads in the sheet. */
+    posEl.style.display = state.compact ? 'none' : '';
+  });
+}
+
+/* – the lattice, measured off the frame it sits in – */
+function layout(){
+  var frame = lattice.clientWidth;
+  var mobile = frame < 721;
+  var cols, cardW, gapv, osp;
+  if (mobile){
+    gapv = 8;
+    cols = 3;
+    cardW = Math.min(180, Math.floor((frame - 2 * gapv) / 3));
+    if (cardW < 96){ cols = 2; cardW = Math.min(180, Math.floor((frame - gapv) / 2)); }
+    if (cardW < 96){ cols = 1; cardW = Math.max(96, frame); }
+  } else {
+    cardW = 180; gapv = 24;
+    var fits = function(n){ return n * cardW + (n - 1) * gapv <= frame; };
+    cols = [6,4,3,2,1].filter(function(n){ return 12 % n === 0; }).find(fits) || 1;
+  }
+  var cardH = Math.round(cardW * 504 / 360);
+  osp = cols >= 4 ? cols / 2 : cols;
+  lattice.style.setProperty('--slot', cardW + 'px');
+  lattice.style.setProperty('--cardh', cardH + 'px');
+  lattice.style.setProperty('--gapv', gapv + 'px');
+  lattice.style.setProperty('--ocols', String(cols));
+  lattice.style.setProperty('--osp', String(osp));
+  body.dataset.mode = mobile ? 'sheet' : 'grid';
+  state.compact = cardW < 160;
+  body.classList.toggle('compact', state.compact);
+  updateRelTexts();
+  setSheetH();
+}
+
+function setSheetH(){
+  if (body.dataset.mode === 'sheet' && state.open)
+    lattice.style.setProperty('--sheet-h', reader.offsetHeight + 'px');
+}
+
+/* – open, close, step, deal – */
+function markLattice(){
+  var open = state.open ? byId(state.open) : null;
+  var openRel = open ? relOf(open) : null;
+  cards.forEach(function(el){
+    var id = el.dataset.id;
+    var e = byId(id);
+    var here = state.open === id;
+    var relHit = false, relLabel = '';
+    if (open && !here){
+      if (openRel && openRel.id === id){ relHit = true; relLabel = openRel.label.toUpperCase(); }
+      var own = relOf(e);
+      if (!relHit && own && own.id === state.open){ relHit = true; relLabel = own.label.toUpperCase(); }
+    }
+    el.classList.toggle('here', here);
+    el.classList.toggle('rel', relHit);
+    var badge = el.querySelector('.c-badge');
+    badge.hidden = !relHit;
+    badge.textContent = relLabel;
+  });
+}
+
+function fillReader(e){
+  document.getElementById('rdSet').textContent = e.set.toUpperCase();
+  document.getElementById('rdRow').textContent = e.row;
+  document.getElementById('rdMark').innerHTML = markFor(e);
+  document.getElementById('rdPos').textContent = posLabelOf(e);
+  document.getElementById('rdHolds').textContent = 'HOLDS ' + e.holds;
+  document.getElementById('rdTitle').textContent = wordOf(e);
+  document.getElementById('rdGloss').textContent = e.gloss;
+  document.getElementById('rdReading').textContent = e.reading;
+  document.getElementById('rdQuestion').textContent = e.question;
+  reader.style.borderTopColor = accentOf(e);
+  document.getElementById('rdIndex').textContent = (indexOf(e.id) + 1) + ' OF ' + DECK.length;
+
+  var chips = document.getElementById('rdChips');
+  chips.innerHTML = '';
+  var rel = relOf(e);
+  if (rel){
+    var t = byId(rel.id);
+    var c = document.createElement('button');
+    c.type = 'button'; c.className = 'chip';
+    c.style.borderColor = accentOf(t);
+    c.textContent = rel.label.toUpperCase() + ' · ' + wordOf(t);
+    c.setAttribute('aria-label', 'Open ' + wordOf(t) + ', the ' + rel.label.toLowerCase() + ' of this card');
+    c.addEventListener('click', function(){ openCard(t.id); });
+    chips.appendChild(c);
+  }
+  var setId = e.setKey + '-set';
+  if (setId !== e.id && byId(setId)){
+    var sc = document.createElement('button');
+    sc.type = 'button'; sc.className = 'chip';
+    sc.textContent = 'SET · ' + SHORT[e.set];
+    sc.setAttribute('aria-label', 'Open the ' + SHORT[e.set] + ' set card');
+    sc.addEventListener('click', function(){ openCard(setId); });
+    chips.appendChild(sc);
+  }
+
+  var idx = indexOf(e.id);
+  var prev = document.getElementById('rdPrev'), next = document.getElementById('rdNext');
+  prev.setAttribute('aria-disabled', idx === 0 ? 'true' : 'false');
+  next.setAttribute('aria-disabled', idx === DECK.length - 1 ? 'true' : 'false');
+}
+
+function openCard(id, opts){
+  var e = byId(id);
+  if (!e) return;
+  state.open = id;
+  body.dataset.open = '1';
+  fillReader(e);
+  markLattice();
+  reader.hidden = false;
+  reader.classList.remove('in');
+  void reader.offsetWidth;
+  reader.classList.add('in');
+  requestAnimationFrame(setSheetH);
+  if (!opts || !opts.noFocus){
+    var target = body.dataset.mode === 'sheet' ? document.getElementById('rdClose') : reader;
+    target.focus({ preventScroll: true });
+  }
+  if (!opts || !opts.quiet) say(wordOf(e) + ' opened.');
+  if (cardById[id]) cardById[id].scrollIntoView({ block: 'nearest' });
+}
+
+function closeCard(quiet){
+  if (!state.open) return;
+  var e = byId(state.open);
+  var returnTo = cardById[state.open];
+  state.open = null;
+  body.dataset.open = '0';
+  reader.hidden = true;
+  reader.classList.remove('in','full');
+  document.getElementById('grab').setAttribute('aria-expanded','false');
+  markLattice();
+  if (!quiet) say(wordOf(e) + ' closed.');
+  if (returnTo && !quiet) returnTo.focus({ preventScroll: true });
+}
+
+function step(d){
+  if (!state.open) return;
+  var idx = indexOf(state.open);
+  var next = Math.min(Math.max(idx + d, 0), DECK.length - 1);
+  if (next !== idx) openCard(DECK[next].id);
+  else say(next === 0 ? 'First card in the deck.' : 'Last card in the deck.');
+}
+
+function deal(){
+  closeCard(true);
+  cards.forEach(function(el){ el.classList.remove('dealt'); });
+  void lattice.offsetWidth;
+  cards.forEach(function(el){ el.classList.add('dealt'); });
+  say('Dealt the deck.');
+}
+
+function say(msg){ statusEl.textContent = msg; }
+
+function moveFocus(d){
+  var idx = cards.indexOf(document.activeElement);
+  if (idx < 0){ cards[0].focus(); return; }
+  var next = Math.min(Math.max(idx + d, 0), cards.length - 1);
+  cards[next].focus();
+}
+
+/* – hands: pointer, keys, and the legend that names them – */
+document.getElementById('deal').addEventListener('click', deal);
+document.getElementById('rdClose').addEventListener('click', function(){ closeCard(); });
+document.getElementById('rdPrev').addEventListener('click', function(){
+  if (this.getAttribute('aria-disabled') !== 'true') step(-1);
+});
+document.getElementById('rdNext').addEventListener('click', function(){
+  if (this.getAttribute('aria-disabled') !== 'true') step(1);
+});
+document.getElementById('grab').addEventListener('click', function(){
+  var full = reader.classList.toggle('full');
+  this.setAttribute('aria-expanded', full ? 'true' : 'false');
+  this.setAttribute('aria-label', full ? 'Pack the card' : 'Expand the card');
+  requestAnimationFrame(setSheetH);
+  say(full ? 'Card expanded.' : 'Card packed.');
+});
+lattice.addEventListener('click', function(ev){
+  if (ev.target === lattice && body.dataset.mode === 'sheet') closeCard();
+});
+document.addEventListener('keydown', function(ev){
+  var t = ev.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (ev.key === 'Escape' && state.open){ closeCard(); ev.preventDefault(); }
+  else if (ev.key === 'ArrowRight' || ev.key === 'ArrowLeft'){
+    var d = ev.key === 'ArrowRight' ? 1 : -1;
+    if (state.open) step(d); else moveFocus(d);
+    ev.preventDefault();
+  }
+  else if ((ev.key === 'd' || ev.key === 'D') && !ev.metaKey && !ev.ctrlKey && !ev.altKey){
+    deal(); ev.preventDefault();
+  }
+});
+
+/* – boot – */
+function legend(){
+  var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  document.getElementById('legend').textContent = coarse
+    ? 'TAP A CARD TO OPEN · HANDLE EXPANDS · TAP THE DECK TO PACK'
+    : 'CLICK OR ENTER OPEN · ESC CLOSE · ← → STEP · D DEAL';
+}
+function stamp(){
+  var d = new Date(document.lastModified);
+  document.getElementById('stamp').textContent = 'RE.SOURCE · POLISH ROUND · UPDATED ' +
+    d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + ' ' +
+    pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+}
+renderCards();
+layout();
+legend();
+stamp();
+cards.forEach(function(el){ el.classList.add('dealt'); });
+openCard('r-single-12', { noFocus: true, quiet: true });
+say('Dealt the deck. LIFE is open.');
+if (typeof ResizeObserver === 'function'){
+  new ResizeObserver(layout).observe(lattice);
+}
+window.addEventListener('resize', layout);
+</script>
+</body>
+</html>

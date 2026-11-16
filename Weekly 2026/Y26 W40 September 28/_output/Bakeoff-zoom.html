@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Bake-off at full size – every capture, zoomable</title>
+<style>
+/* Tokens, exact values from Projects/Design System/tokens/ (colours, greys,
+   space, typography). Whole numbers only. Radius 8 / 12 / 24. Colour is a
+   stroke, never a fill behind text. Tracking is left to the font.
+   Mobile first: the phone column is the base, wider frames step up. */
+@font-face{
+  font-family:'Figtree';
+  src:url('../../../Projects/Design System/assets/fonts/Figtree-Variable.woff2') format('woff2-variations');
+  font-weight:300 900;font-display:swap;
+}
+@font-face{
+  font-family:'JetBrains Mono';
+  src:url('../../../Projects/Design System/assets/fonts/JetBrainsMono-Variable.woff2') format('woff2-variations');
+  font-weight:100 800;font-display:swap;
+}
+:root{
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g12:#1A1A1A;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --white:#FFFFFF;
+  --cl-02-flux:#FFD100;
+  --cl-10-form:#2277FF;
+  --cl-12-life:#00D460;
+  --stroke:3px;
+
+  --fs-caption:12px; --lh-caption:18px; --fw-caption:300;
+  --fs-body:18px;    --lh-body:30px;    --fw-body:400;
+  --fs-h2:24px;      --lh-h2:36px;      --fw-h2:600;
+  --fs-h1:36px;      --lh-h1:48px;      --fw-h1:700;
+
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:24px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:24px;
+
+  --sans:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--sans);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%}
+.wrap{max-width:1080px;margin:0 auto;padding:var(--space-lg) var(--space-md)}
+
+/* --- head --- */
+.kicker{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:0}
+h1{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-h1);margin:var(--space-sm) 0 0}
+.stamp{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g48);margin:var(--space-sm) 0 0}
+.lede{margin:var(--space-md) 0 0;max-width:46ch}
+.finding{
+  margin:var(--space-md) 0 0;
+  padding:var(--space-sm) 0 var(--space-sm) var(--space-md);
+  border-left:var(--stroke) solid var(--cl-10-form);
+  font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);
+  max-width:34ch;
+}
+
+/* --- sections --- */
+section{margin-top:var(--space-lg);padding-top:var(--space-md);border-top:1px solid var(--g24)}
+h2{font-size:var(--fs-h2);line-height:var(--lh-h2);font-weight:var(--fw-h2);margin:0 0 var(--space-md)}
+h3{font-family:var(--mono);font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-h2);margin:var(--space-lg) 0 var(--space-sm)}
+h3:first-of-type{margin-top:0}
+.note{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66);margin:0 0 var(--space-md);max-width:56ch}
+.note a{color:var(--g66)}
+a{color:var(--cl-10-form)}
+
+/* --- the viewer: one capture per row, at its own pixel size, in a frame
+       that scrolls instead of stretching the page sideways. --- */
+.shot{margin:0 0 var(--space-lg)}
+.shot:last-child{margin-bottom:0}
+.frame{
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  max-height:min(78vh,900px);
+  background:var(--g06);
+  border:1px solid var(--g24);
+  border-radius:var(--radius-sm);
+}
+.frame img{display:block;background:var(--black);height:auto;max-width:none}
+.frame.fit img{max-width:100%;width:100%;height:auto}
+.bar{
+  display:flex;flex-wrap:wrap;gap:var(--space-sm);
+  align-items:baseline;justify-content:space-between;
+  margin-top:var(--space-sm);
+}
+.who{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g66)}
+.who b{color:var(--white);font-weight:var(--fw-caption)}
+.ctrls{display:flex;gap:var(--space-md);align-items:baseline}
+.zoom-btn{
+  font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);text-transform:uppercase;
+  color:var(--white);background:var(--g12);
+  border:1px solid var(--g24);border-radius:var(--radius-sm);
+  padding:var(--space-xs) var(--space-md);
+  min-height:32px;cursor:pointer;
+}
+.zoom-btn:hover,.zoom-btn:focus-visible{border-color:var(--g66)}
+.zoom-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+.raw{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption)}
+
+/* --- links out --- */
+.jump{list-style:none;margin:0;padding:0}
+.jump li{
+  position:relative;padding-left:16px;margin-bottom:var(--space-sm);
+  font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);
+}
+.jump li::before{content:"";position:absolute;left:0;top:8px;width:8px;height:1px;background:var(--g48)}
+
+.foot{font-family:var(--mono);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-caption);color:var(--g48);margin:var(--space-lg) 0 0}
+
+/* --- wider frames: the page margin steps up, the viewer keeps one column --- */
+@media (min-width:720px){
+  .wrap{padding:var(--space-lg)}
+  h1{font-size:48px;line-height:54px}
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-zoom.html</span>
+</nav>
+<div class="wrap">
+
+  <header>
+    <p class="kicker">Re.SOURCE · bake-off · every capture at its own size</p>
+    <h1>The bake-off, full size</h1>
+    <p class="stamp">Updated 2026-09-29 12:35</p>
+    <p class="lede">Eighteen captures from the component and deck rounds, each at the pixels it was taken at, in a frame you can drag and pinch.</p>
+    <p class="finding">Two of the six models are absent: Fable 5.1 from all three rounds, mimo-v2.6-pro from the deck round.</p>
+  </header>
+
+  <section aria-labelledby="how">
+    <h2 id="how">How to use it</h2>
+    <p class="note">Each capture opens at full size, so drag inside the frame to pan and pinch to zoom. <b>Fit to screen</b> shrinks it back to the column, <b>Open raw</b> loads the PNG on its own for the browser's own zoom.</p>
+    <ul class="jump">
+      <li><a href="Bakeoff-preview.html">The preview bench – every build running, one tap between models</a></li>
+      <li><a href="DeckScreen-comparison.html">The deck round's scores, review and defects</a></li>
+      <li><a href="Bakeoff-R2-comparison.html">The component round's scores, review and defects</a></li>
+      <li>The sketch round has no captures, its five builds are live pages further down</li>
+      <li>Builds are listed in ladder order, strongest to weakest: qwen3.8-max, mimo-v2.6-flash, minimax-m3, glm-5.3-flash, mimo-v2.6-pro</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="deck">
+    <h2 id="deck">Deck screen round · four builds</h2>
+    <p class="note">The real brief: twelve cards on the deck lattice, one card open, relationships legible without a diagram. Judged 29 September 2026.</p>
+
+    <h3>qwen3.8-max</h3>
+    <figure class="shot">
+      <div class="frame"><img src="DeckScreen-qwen38max-1440.png" width="1440" height="2970" alt="qwen3.8-max deck screen, full page at 1440 wide"></div>
+      <div class="bar">
+        <span class="who"><b>qwen3.8-max</b> · desktop · 1440 × 2970</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="DeckScreen-qwen38max-1440.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><img src="DeckScreen-qwen38max-390.png" width="390" height="6480" alt="qwen3.8-max deck screen, full page at 390 wide"></div>
+      <div class="bar">
+        <span class="who"><b>qwen3.8-max</b> · phone · 390 × 6480</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="DeckScreen-qwen38max-390.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+
+    <h3>mimo-v2.6-flash</h3>
+    <figure class="shot">
+      <div class="frame"><img src="DeckScreen-mimoflash-1440.png" width="1440" height="1096" alt="mimo-v2.6-flash deck screen, full page at 1440 wide"></div>
+      <div class="bar">
+        <span class="who"><b>mimo-v2.6-flash</b> · desktop · 1440 × 1096</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="DeckScreen-mimoflash-1440.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><img src="DeckScreen-mimoflash-390.png" width="390" height="4298" alt="mimo-v2.6-flash deck screen, full page at 390 wide"></div>
+      <div class="bar">
+        <span class="who"><b>mimo-v2.6-flash</b> · phone · 390 × 4298</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="DeckScreen-mimoflash-390.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+
+    <h3>minimax-m3</h3>
+    <figure class="shot">
+      <div class="frame"><img src="DeckScreen-minimaxm3-1440.png" width="1440" height="1438" alt="minimax-m3 deck screen, full page at 1440 wide"></div>
+      <div class="bar">
+        <span class="who"><b>minimax-m3</b> · desktop · 1440 × 1438</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="DeckScreen-minimaxm3-1440.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><img src="DeckScreen-minimaxm3-390.png" width="390" height="1432" alt="minimax-m3 deck screen, full page at 390 wide"></div>
+      <div class="bar">
+        <span class="who"><b>minimax-m3</b> · phone · 390 × 1432</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="DeckScreen-minimaxm3-390.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+
+    <h3>glm-5.3-flash</h3>
+    <figure class="shot">
+      <div class="frame"><img src="DeckScreen-glmflash-1440.png" width="1440" height="1753" alt="glm-5.3-flash deck screen, full page at 1440 wide"></div>
+      <div class="bar">
+        <span class="who"><b>glm-5.3-flash</b> · desktop · 1440 × 1753</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="DeckScreen-glmflash-1440.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><img src="DeckScreen-glmflash-390.png" width="390" height="3546" alt="glm-5.3-flash deck screen, full page at 390 wide"></div>
+      <div class="bar">
+        <span class="who"><b>glm-5.3-flash</b> · phone · 390 × 3546</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="DeckScreen-glmflash-390.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+
+    <p class="note"><b>mimo-v2.6-pro</b> attempted this brief twice and returned no file either time, so it has no capture here. Its seat stays judgement and direction, not heavy builds.</p>
+  </section>
+
+  <section aria-labelledby="component">
+    <h2 id="component">Component round · five builds</h2>
+    <p class="note">The printed Word CARD at 360 × 504 in three states. Captured 28 September 2026. The letters used on the scores page are unsealed here: the blind rule was dropped on 29 September.</p>
+
+    <h3>qwen3.8-max · build A</h3>
+    <figure class="shot">
+      <div class="frame"><img src="Bakeoff-R2-A-1440.png" width="1440" height="1040" alt="qwen3.8-max component build, desktop capture at 1440 wide"></div>
+      <div class="bar">
+        <span class="who"><b>qwen3.8-max</b> · desktop · 1440 × 1040</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="Bakeoff-R2-A-1440.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><img src="Bakeoff-R2-A-390.png" width="390" height="2126" alt="qwen3.8-max component build, phone capture at 390 wide"></div>
+      <div class="bar">
+        <span class="who"><b>qwen3.8-max</b> · phone · 390 × 2126</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="Bakeoff-R2-A-390.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+
+    <h3>mimo-v2.6-flash · build E</h3>
+    <figure class="shot">
+      <div class="frame"><img src="Bakeoff-R2-E-1440.png" width="1440" height="950" alt="mimo-v2.6-flash component build, desktop capture at 1440 wide"></div>
+      <div class="bar">
+        <span class="who"><b>mimo-v2.6-flash</b> · desktop · 1440 × 950</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="Bakeoff-R2-E-1440.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><img src="Bakeoff-R2-E-390.png" width="390" height="2042" alt="mimo-v2.6-flash component build, phone capture at 390 wide"></div>
+      <div class="bar">
+        <span class="who"><b>mimo-v2.6-flash</b> · phone · 390 × 2042</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="Bakeoff-R2-E-390.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+
+    <h3>minimax-m3 · build C</h3>
+    <figure class="shot">
+      <div class="frame"><img src="Bakeoff-R2-C-1440.png" width="1440" height="908" alt="minimax-m3 component build, desktop capture at 1440 wide"></div>
+      <div class="bar">
+        <span class="who"><b>minimax-m3</b> · desktop · 1440 × 908</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="Bakeoff-R2-C-1440.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><img src="Bakeoff-R2-C-390.png" width="390" height="1948" alt="minimax-m3 component build, phone capture at 390 wide"></div>
+      <div class="bar">
+        <span class="who"><b>minimax-m3</b> · phone · 390 × 1948</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="Bakeoff-R2-C-390.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+
+    <h3>glm-5.3-flash · build B</h3>
+    <figure class="shot">
+      <div class="frame"><img src="Bakeoff-R2-B-1440.png" width="1440" height="1130" alt="glm-5.3-flash component build, desktop capture at 1440 wide"></div>
+      <div class="bar">
+        <span class="who"><b>glm-5.3-flash</b> · desktop · 1440 × 1130</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="Bakeoff-R2-B-1440.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><img src="Bakeoff-R2-B-390.png" width="390" height="2286" alt="glm-5.3-flash component build, phone capture at 390 wide"></div>
+      <div class="bar">
+        <span class="who"><b>glm-5.3-flash</b> · phone · 390 × 2286</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="Bakeoff-R2-B-390.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+
+    <h3>mimo-v2.6-pro · build D</h3>
+    <figure class="shot">
+      <div class="frame"><img src="Bakeoff-R2-D-1440.png" width="1440" height="2009" alt="mimo-v2.6-pro component build, desktop capture at 1440 wide"></div>
+      <div class="bar">
+        <span class="who"><b>mimo-v2.6-pro</b> · desktop · 1440 × 2009</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="Bakeoff-R2-D-1440.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><img src="Bakeoff-R2-D-390.png" width="390" height="2683" alt="mimo-v2.6-pro component build, phone capture at 390 wide"></div>
+      <div class="bar">
+        <span class="who"><b>mimo-v2.6-pro</b> · phone · 390 × 2683</span>
+        <span class="ctrls"><button type="button" class="zoom-btn" aria-pressed="false">Fit to screen</button><a class="raw" href="Bakeoff-R2-D-390.png" target="_blank" rel="noopener">Open raw</a></span>
+      </div>
+    </figure>
+
+    <p class="note"><b>Fable 5.1</b> was held out of this round on retention until you rule on it, so it has no build and no capture.</p>
+  </section>
+
+  <section aria-labelledby="sketch">
+    <h2 id="sketch">Sketch round · five live builds</h2>
+    <p class="note">Three layout directions each, throwaway exploration. No captures were taken for this round, so the builds themselves are the outcome: open one and pinch it the same way.</p>
+    <ul class="jump">
+      <li><a href="Bakeoff-R1-A.html">mimo-v2.6-flash</a> · an instrument, a specimen label, a seal</li>
+      <li><a href="Bakeoff-R1-B.html">qwen3.8-max</a> · dial readout, question-first, position unrolled to a rail</li>
+      <li><a href="Bakeoff-R1-C.html">mimo-v2.6-pro</a> · word leads, wheel leads, ask leads</li>
+      <li><a href="Bakeoff-R1-D.html">glm-5.3-flash</a> · card as page, position as ruler, question leads</li>
+      <li><a href="Bakeoff-R1-E.html">minimax-m3</a> · wheel as title, vertical spine, word as wheel</li>
+    </ul>
+  </section>
+
+  <p class="foot">Captures: headless Chrome, full page, 1440 and 390, 28 and 29 September 2026.</p>
+
+</div>
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.zoom-btn');
+  if(!btn) return;
+  var frame = btn.closest('.shot').querySelector('.frame');
+  var fitted = frame.classList.toggle('fit');
+  btn.textContent = fitted ? 'Full size' : 'Fit to screen';
+  btn.setAttribute('aria-pressed', fitted ? 'true' : 'false');
+});
+</script>
+</body>
+</html>

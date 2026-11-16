@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Word CARD — FORM · position 10</title>
+<style>
+/* Tokens copied exactly from Projects/Design System/tokens/ — colours.css, greys.css, space.css, typography.css */
+:root{
+  /* colours.css — position 10 · 300°. Colour is a stroke on a shape, never a fill behind text. */
+  --cl-10-form:#2277FF;
+  --stroke:3px;
+  /* greys.css */
+  --black:#000000;
+  --g06:#0D0D0D;
+  --g24:#333333;
+  --g48:#555555;
+  --g66:#888888;
+  --white:#FFFFFF;
+  --text-primary:var(--white);
+  --text-secondary:var(--g66);
+  --text-dim:var(--g48);
+  --surface-page:var(--black);
+  --surface-card:var(--g06);
+  --surface-border:var(--g24);
+  /* space.css */
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:24px;
+  --space-xl:48px;
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:24px;
+  /* typography.css — letter spacing is never declared */
+  --fs-caption:12px; --lh-caption:18px; --fw-caption:300;
+  --fs-body:18px;    --lh-body:30px;    --fw-body:400;
+  --fs-h2:24px;      --lh-h2:36px;      --fw-h2:600;
+  --fs-h1:36px;      --lh-h1:48px;      --fw-h1:700;
+  --fs-display:48px; --lh-display:54px; --fw-display:800;
+  /* System stacks, no external fetch */
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{background:var(--surface-page)}
+body{
+  background:var(--surface-page);
+  color:var(--text-primary);
+  font-family:var(--font-sans);
+  padding:var(--space-md);
+}
+@media (min-width:720px){
+  body{padding:var(--space-lg)}
+}
+
+.page{max-width:1248px;margin:0 auto}
+
+header{margin-bottom:var(--space-lg)}
+@media (min-width:720px){
+  header{margin-bottom:var(--space-xl)}
+}
+h1{
+  font-size:var(--fs-h1);
+  line-height:var(--lh-h1);
+  font-weight:var(--fw-h1);
+  color:var(--text-primary);
+}
+.sub{
+  margin-top:var(--space-xs);
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-dim);
+}
+
+main{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-start;
+  justify-content:center;
+  gap:var(--space-lg);
+}
+@media (min-width:720px){
+  main{gap:var(--space-xl)}
+}
+
+.exhibit{max-width:100%}
+.exhibit h2{
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-secondary);
+  margin-bottom:var(--space-md);
+}
+
+/* The card: one component at a scale, 360 x 504 */
+.card{
+  width:360px;
+  max-width:100%;
+  height:504px;
+  background:var(--surface-card);
+  border:var(--stroke) solid var(--cl-10-form);
+  border-radius:var(--radius-lg);
+  padding:var(--space-lg);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+@media (max-width:383px){
+  .card{padding:var(--space-md)}
+}
+
+/* State 1 — at rest */
+.rest{justify-content:space-between}
+.face{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-sm);
+}
+.markrow{display:flex;justify-content:flex-end}
+.mark{
+  width:96px;
+  height:96px;
+  background:var(--black);
+  border:var(--stroke) solid var(--cl-10-form);
+  border-radius:var(--radius-lg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.markcore{
+  width:48px;
+  height:48px;
+  background:var(--black);
+  border:var(--stroke) solid var(--cl-10-form);
+  border-radius:var(--radius-lg);
+}
+
+/* Shared card furniture */
+.row{
+  display:flex;
+  align-items:center;
+  gap:var(--space-md);
+}
+.badge{
+  width:48px;
+  height:48px;
+  flex:none;
+  background:var(--black);
+  border:var(--stroke) solid var(--cl-10-form);
+  border-radius:var(--radius-md);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+}
+.word{
+  font-size:var(--fs-display);
+  line-height:var(--lh-display);
+  font-weight:var(--fw-display);
+  color:var(--text-primary);
+}
+.gloss{
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  color:var(--text-primary);
+}
+
+/* State 2 — opened: reading and question */
+.open .gloss{margin-top:var(--space-md)}
+.block{margin-top:var(--space-lg)}
+.block p{margin-top:var(--space-sm)}
+.label{
+  font-family:var(--font-mono);
+  font-size:var(--fs-caption);
+  line-height:var(--lh-caption);
+  font-weight:var(--fw-caption);
+  color:var(--text-dim);
+}
+.reading{
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:var(--fw-body);
+  color:var(--text-primary);
+}
+.question{
+  font-size:var(--fs-h2);
+  line-height:var(--lh-h2);
+  font-weight:var(--fw-h2);
+  color:var(--text-primary);
+}
+
+/* State 3 — the card as a bottom sheet on a 390 wide frame */
+.frame{
+  position:relative;
+  width:390px;
+  max-width:100%;
+  height:844px;
+  background:var(--black);
+  border:var(--stroke) solid var(--surface-border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+}
+.sheet{
+  position:absolute;
+  left:var(--space-md);
+  right:var(--space-md);
+  bottom:var(--space-md);
+  background:var(--surface-card);
+  border:var(--stroke) solid var(--cl-10-form);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+}
+.handle{
+  width:48px;
+  height:8px;
+  background:var(--g48);
+  border-radius:var(--radius-sm);
+  margin:var(--space-md) auto;
+}
+.sheetbody{
+  display:flex;
+  flex-direction:column;
+  padding:0 var(--space-lg) var(--space-lg);
+}
+</style>
+<style>.rs-back-link{position:fixed;top:0;left:0;right:0;z-index:99998;display:flex;gap:12px;align-items:center;padding:6px 12px;background:var(--surface-page,#0d0d0f);border-bottom:1px solid var(--surface-border,#26262b);font-family:var(--font-mono,ui-monospace,Menlo,monospace);font-size:11px;line-height:16px;letter-spacing:0.02em}.rs-back-link a{color:var(--text-secondary,#888);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;min-height:32px;display:inline-flex;align-items:center}.rs-back-link a:hover{color:#fff;border-bottom-color:var(--surface-border,#26262b)}.rs-back-link a:focus-visible{outline:2px solid var(--g66,#888);outline-offset:2px}.rs-back-link .p{margin-left:auto;color:var(--text-dim,#8a8a94);overflow-wrap:anywhere}@media (max-width:720px){.rs-back-link{gap:8px;padding:4px 8px}.rs-back-link .p{display:none}}@media print{rs-back-link{display:none}}</style>
+</head>
+<body>
+<!-- rs-back-link: stage-time front door, Projects/Publish/back-link.cjs.
+Injected into the published copy only; the vault file is unchanged. -->
+<nav class="rs-back-link" aria-label="Front door">
+<a href="../../../index.html">Estate HQ</a>
+<a href="../../../Projects/HQ/pages.html">All pages</a>
+<span class="p">Weekly 2026/Y26 W40 September 28/_output/Bakeoff-R2-A.html</span>
+</nav>
+<div class="page">
+
+  <header>
+    <h1>Word CARD</h1>
+    <p class="sub">FORM at position 10 · one component at a scale, 360 × 504 · three states</p>
+  </header>
+
+  <main>
+
+    <section class="exhibit" aria-labelledby="state1">
+      <h2 id="state1">1 — At rest</h2>
+      <div class="card rest">
+        <div class="badge">10</div>
+        <div class="face">
+          <div class="word">FORM</div>
+          <p class="gloss">Form is the shape a thing takes when it holds together.</p>
+        </div>
+        <div class="markrow">
+          <div class="mark" aria-hidden="true"><div class="markcore"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="exhibit" aria-labelledby="state2">
+      <h2 id="state2">2 — Opened</h2>
+      <div class="card open">
+        <div class="row">
+          <div class="badge">10</div>
+          <div class="word">FORM</div>
+        </div>
+        <p class="gloss">Form is the shape a thing takes when it holds together.</p>
+        <div class="block">
+          <div class="label">READING</div>
+          <p class="reading">The card reads the shape, the pair and the position, in that order.</p>
+        </div>
+        <div class="block">
+          <div class="label">QUESTION</div>
+          <p class="question">What is holding your shape together right now?</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="exhibit" aria-labelledby="state3">
+      <h2 id="state3">3 — Bottom sheet on a 390 wide frame</h2>
+      <div class="frame">
+        <div class="sheet">
+          <div class="handle" aria-hidden="true"></div>
+          <div class="sheetbody open">
+            <div class="row">
+              <div class="badge">10</div>
+              <div class="word">FORM</div>
+            </div>
+            <p class="gloss">Form is the shape a thing takes when it holds together.</p>
+            <div class="block">
+              <div class="label">READING</div>
+              <p class="reading">The card reads the shape, the pair and the position, in that order.</p>
+            </div>
+            <div class="block">
+              <div class="label">QUESTION</div>
+              <p class="question">What is holding your shape together right now?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+</body>
+</html>

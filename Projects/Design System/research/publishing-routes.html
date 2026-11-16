@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Where Re.SOURCE pages get a link that lasts. Four routes, checked against what this repo actually is. One ruling needed.">
+  <title>Publishing routes · Re.SOURCE</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../lib/publishing.css">
+</head>
+<body class="pub">
+  <a class="skip-link" href="#main">Skip to the decision</a>
+
+  <header class="masthead shell" data-pad>
+    <a class="brand" href="../HQ.html" aria-label="Back to Re.SOURCE HQ">Re.SOURCE <span>HQ</span></a>
+    <span class="spacer"></span>
+    <div class="stamp">
+      <span class="eyebrow">Updated 20 Sep 2026 · 20:05 BST</span>
+      <span class="caption">Lane 4 · publishing · decision page · ruled</span>
+    </div>
+  </header>
+
+  <main class="shell" id="main" data-pad data-grid tabindex="-1">
+
+    <section class="ask" data-span="12" aria-labelledby="ask-title">
+      <span class="eyebrow">One ruling needed · Mark</span>
+      <h1 id="ask-title">Your pages need a home, not a website.</h1>
+      <p>The pages are already built. HQ, the masters, the walkthrough — 78 HTML files, self-hosted fonts, no build step. What they are missing is an address. Every route below gives you one link that opens on any device and stays the same.</p>
+      <p class="question">The ruling: is a Re.SOURCE page allowed to be readable by anyone who has the link?</p>
+      <p>That single question splits the four routes in two. Say yes and route 1 costs nothing and needs nothing from you. Say no and route 2 is the only one that keeps the pages behind you, and it needs a Cloudflare account.</p>
+      <p class="ruled">Ruled 20 Sep 2026. Mark, quoted: &ldquo;Update HQ and keep going to facilitate public sharing.&rdquo; Route 1 is go, HQ leads the first publish, and the vault side is built and tested. The one-time setup step, with the exact clicks: <a href="publishing-setup.html">the setup runbook</a>.</p>
+    </section>
+
+    <section class="why" data-span="12" aria-labelledby="why-title">
+      <h2 id="why-title">Why nothing has worked so far</h2>
+      <dl class="facts">
+        <dt>GitHub shows you the file, not the page</dt>
+        <dd>GitHub renders <code>.html</code> as source code. It has never shown you a Re.SOURCE page, and it never will. Nothing is broken in your browser.</dd>
+        <dt>The Arena preview dies with the session</dt>
+        <dd>It is a live server in a workspace that is thrown away when the session ends, and it opens only inside Arena’s own viewer: a phone browser pointed at the preview address meets a “Preview Unavailable” wall that says exactly that (Mark’s Android Chrome, 20 Sep, evening). Good for reviewing a change today, from inside the chat. It cannot be the link you keep.</dd>
+        <dt>The vault is private, and has to stay that way</dt>
+        <dd><code>markshikada/Re.SOURCE</code> is private, and it holds your notes, session memory and prompts. It cannot simply be turned into a website.</dd>
+        <dt>The old mechanism is gone</dt>
+        <dd>Claude Design's &ldquo;Publish as artifact&rdquo; left the system on 2026-09-13. Lane 4 has been blocked on this ruling ever since.</dd>
+      </dl>
+    </section>
+
+    <section class="routes" data-span="12" aria-labelledby="routes-title" data-grid>
+      <h2 id="routes-title" data-span="12">The four routes</h2>
+
+      <article class="route recommended" data-span="6" aria-labelledby="route1-title">
+        <div class="route-top">
+          <span class="rank">Route 1</span>
+          <h3 id="route1-title">A public site repo, fed by the vault</h3>
+          <span class="badge">Recommended</span>
+        </div>
+        <p class="lede">A second, separate repository holds only the finished pages. The vault stays private and untouched. A GitHub Action copies the pages across whenever you say publish.</p>
+        <dl class="facts">
+          <dt>Cost</dt>
+          <dd>Nothing. Free plan, both repos.</dd>
+          <dt>Stable link</dt>
+          <dd><span class="yes">Yes.</span> One address, forever, same link when the page changes.</dd>
+          <dt>Vault stays private</dt>
+          <dd><span class="yes">Yes.</span> Only the pages you send across are public.</dd>
+          <dt>Anyone with the link can read it</dt>
+          <dd><span class="no">Yes, they can.</span> This is the ruling.</dd>
+          <dt>What you do</dt>
+          <dd>Say go once. After that, nothing — a session publishes and puts the link in the note.</dd>
+          <dt>What blocks it</dt>
+          <dd>Only this ruling. Nothing technical.</dd>
+        </dl>
+        <details>
+          <summary>How it works<span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>One repo stays private: the vault. One repo is public: the site. The public one holds no notes, no prompts, no session memory — only the pages that are meant to be seen.</p>
+            <p>A small workflow in the private vault reads a list of page names, copies those files and their assets, and pushes them to the public repo. GitHub Pages serves the public repo at a fixed address. Nothing about the vault changes shape, and the list of what goes public is a file you can read and cut down at any time.</p>
+            <p>Free plan is enough on both sides. GitHub gives private repositories a monthly allowance of build minutes at no charge, and a copy-and-push job takes seconds.</p>
+          </div>
+        </details>
+      </article>
+
+      <article class="route viable" data-span="6" aria-labelledby="route2-title">
+        <div class="route-top">
+          <span class="rank">Route 2</span>
+          <h3 id="route2-title">A private window onto the vault</h3>
+          <span class="badge">If nothing may be public</span>
+        </div>
+        <p class="lede">A small Cloudflare Worker sits in front of the vault and fetches a page only when you ask for it, using a read-only key. Nothing is copied anywhere, so there is nothing public to find.</p>
+        <dl class="facts">
+          <dt>Cost</dt>
+          <dd>Nothing. Free tier covers this easily.</dd>
+          <dt>Stable link</dt>
+          <dd><span class="yes">Yes.</span> And it always shows the current file, not a snapshot.</dd>
+          <dt>Vault stays private</dt>
+          <dd><span class="yes">Yes.</span> The pages are never published anywhere.</dd>
+          <dt>Anyone with the link can read it</dt>
+          <dd><span class="yes">No.</span> The link can be gated on a word only you know.</dd>
+          <dt>What you do</dt>
+          <dd>Make a free Cloudflare account and paste a read-only key into it once.</dd>
+          <dt>What blocks it</dt>
+          <dd>The account. A session cannot make one for you, and the key has to be placed by hand.</dd>
+        </dl>
+        <details>
+          <summary>The honest trade<span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>This is the only route here that keeps a Re.SOURCE page away from the open internet, and it is genuinely free. The trade is that a read-only key to the vault lives in a third party's system, and the page has to be fetched from GitHub on every view rather than served as a plain file. Slower, and one more account in your setup.</p>
+            <p>Worth it if the answer to the ruling is no. Not worth it if the answer is yes, because route 1 is simpler and has no key to look after.</p>
+          </div>
+        </details>
+      </article>
+
+      <article class="route fallback" data-span="6" aria-labelledby="route3-title">
+        <div class="route-top">
+          <span class="rank">Route 3</span>
+          <h3 id="route3-title">Open the file on the Mac</h3>
+          <span class="badge">Already works today</span>
+        </div>
+        <p class="lede">The vault is synced to the Mac at <code>/Users/sushi/Documents/Vaults/Re.SOURCE/</code>. Double-click any HTML file and it opens as a page in your browser, because every page carries its own fonts and needs no server.</p>
+        <dl class="facts">
+          <dt>Cost</dt>
+          <dd>Nothing.</dd>
+          <dt>Stable link</dt>
+          <dd><span class="no">No.</span> A file path, not an address.</dd>
+          <dt>Works on the phone</dt>
+          <dd><span class="no">No.</span> This is the gap it does not close.</dd>
+          <dt>Anything public</dt>
+          <dd><span class="no">Nothing.</span> Stays entirely on your machines.</dd>
+        </dl>
+        <details>
+          <summary>Where it fits<span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>Not a route to choose — a fact worth knowing. It is why the pages look right when they open, and it is the fallback if every hosted route is refused. It just cannot follow you onto the phone, which is the whole ask.</p>
+            <p>One caution: the vault copy on the Mac falls behind unless it is pulled. A page opened there may be an older one.</p>
+          </div>
+        </details>
+      </article>
+
+      <article class="route fallback" data-span="6" aria-labelledby="route4-title">
+        <div class="route-top">
+          <span class="rank">Route 4</span>
+          <h3 id="route4-title">Turn the vault itself into a website</h3>
+          <span class="badge">Ruled out</span>
+        </div>
+        <p class="lede">Publishing <code>markshikada/Re.SOURCE</code> directly. It answers the question you asked — is it time to flesh this out as a live website — and the answer is no, for one reason that cannot be worked around.</p>
+        <dl class="facts">
+          <dt>Why it fails</dt>
+          <dd><span class="no">It would make the whole vault public.</span> Notes, prompts, session memory, all of it.</dd>
+          <dt>On the free plan</dt>
+          <dd><span class="no">Not available at all.</span> A private repository cannot serve Pages without a paid plan.</dd>
+          <dt>Even on a paid plan</dt>
+          <dd><span class="no">Still public.</span> Pages from a private repo are served to anyone. Hiding a site needs the top enterprise tier.</dd>
+        </dl>
+        <details>
+          <summary>The part worth keeping<span class="chevron" aria-hidden="true"></span></summary>
+          <div class="disclosure-body">
+            <p>The instinct behind the question is right, and route 1 is that instinct with the danger removed. You do get a live website. It is simply a second repository holding only the pages, rather than the vault with the doors taken off.</p>
+            <p>The other thing worth keeping: no new build is needed. There is no framework to adopt, no bundler, no deploy pipeline. These are already complete, self-contained pages. The work is a copy step and a list of names.</p>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <section data-span="12" aria-labelledby="ask-list-title">
+      <h2 id="ask-list-title">What was asked, and what was ruled</h2>
+      <ul>
+        <li><strong>The ruling, answered 20 Sep 2026.</strong> Mark, quoted: &ldquo;Update HQ and keep going to facilitate public sharing.&rdquo; A Re.SOURCE page may be readable by anyone who has the link. Route 1 it is; route 2 stays researched and unbuilt.</li>
+        <li><strong>The vault side, built the same day.</strong> The copy list (<code>Projects/Publish/manifest.txt</code>), the publish script (<code>Projects/Publish/publish.sh</code>: stage, check, push), the link checker (<code>Projects/Publish/check-links.cjs</code>) and the workflow (<code>.github/workflows/publish-site.yml</code>) are in the repo, and the staged set was verified serving as a site before any of it was committed.</li>
+        <li><strong>The first page, named.</strong> HQ leads, from the ruling message itself (&ldquo;Update HQ&rdquo;); the masters and hub pages ride with it because HQ links and frames them.</li>
+        <li><strong>The one thing left is the one-time setup step.</strong> Only Mark's GitHub account can create the public repository and grant the sessions access to it. Exact clicks, and the honest reason no session can do it: <a href="publishing-setup.html">the setup runbook</a>.</li>
+      </ul>
+    </section>
+
+    <section data-span="12" aria-labelledby="ledger-title">
+      <h2 id="ledger-title">What was checked, and how</h2>
+      <details open>
+        <summary>The ledger<span class="chevron" aria-hidden="true"></span></summary>
+        <div class="disclosure-body">
+          <p>Every claim above came from a command run against this repository or an official source on 20 September 2026. Nothing here is assumed.</p>
+          <div class="ledger-wrap">
+          <table class="ledger">
+            <thead>
+              <tr><th scope="col">Claim</th><th scope="col">Where it came from</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>The vault is private and has no site</td><td class="code">gh api repos/markshikada/Re.SOURCE &rarr; "private": true, "has_pages": false</td></tr>
+              <tr><td>78 HTML files, 489 files tracked</td><td class="code">git ls-files | wc -l &rarr; 489 · grep '\.html$' &rarr; 78</td></tr>
+              <tr><td>The pages need no server and no CDN</td><td class="code">HQ.html loads styles.css, lib/hq.css, lib/hq.js, lib/masters-nav.js and screenshots by relative path only; fonts are self-hosted woff2 in assets/fonts/</td></tr>
+              <tr><td>The pages serve cleanly from the repo root</td><td class="code">python3 -m http.server 8080 &mdash; HQ, styles, fonts, masters and W38 captures all returned 200</td></tr>
+              <tr><td>A private repo cannot serve Pages on the free plan</td><td class="code">GitHub plan documentation: Pages from a private personal repository needs GitHub Pro or higher</td></tr>
+              <tr><td>A published site is public even when its repo is private</td><td class="code">GitHub documentation: a privately served site needs an Enterprise Cloud organisation with Pages access control</td></tr>
+              <tr><td>Private repositories get free build minutes</td><td class="code">GitHub Actions billing documentation: free minutes on private repositories by plan, 2,000 a month on Free</td></tr>
+              <tr><td>Your GitHub plan</td><td class="code">Not visible to a session &mdash; the API returns no plan for another account. Check Settings &rarr; Billing. Route 1 works on Free either way.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <footer class="foot" data-span="12">
+      <p class="caption">Re.SOURCE · lane 4 · publishing routes · 20 September 2026. Sources for every route: the repository itself, GitHub's plan and Actions documentation, and the vault's own rules in VAULT.md and Projects/HQ/queue.md.</p>
+    </footer>
+
+  </main>
+</body>
+</html>

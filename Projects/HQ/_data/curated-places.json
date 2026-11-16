@@ -1,0 +1,90 @@
+{
+ "note": "The estate's own list of the places a person goes. A page here is a place to go; a page not here is a record, a version, or a step. Intel, 20 October 2026. Names carry no leading article: a list of names that all open with one reads as overused. Mark, 20 October 2026, on the front door: \"'THE' is to be carefully used.\"",
+ "places": [
+  {
+   "path": "Projects/Design System/HQ.html",
+   "name": "Hub",
+   "line": "Every page and the current state of the design work, in one place."
+  },
+  {
+   "path": "Projects/Design System/Masters.html",
+   "name": "Masters",
+   "line": "Seven style masters: the rulebook every surface answers to."
+  },
+  {
+   "path": "Projects/Design System/flower-work.html",
+   "name": "Flower work",
+   "line": "Colour flower work: the rings, the builders, the mark."
+  },
+  {
+   "path": "Projects/Design System/control-room.html",
+   "name": "Control room",
+   "line": "All seven masters on one standing surface."
+  },
+  {
+   "path": "Projects/HQ/the-house.html",
+   "name": "House",
+   "line": "The estate's vocabulary as a deck, cellar to main floor."
+  },
+  {
+   "path": "Projects/Re.Source WEBSITE/copywriter-trainer.html",
+   "name": "Copy workbench",
+   "line": "The site's copy, worked and trained where it lives."
+  },
+  {
+   "path": "Projects/HQ/state-of-play.html",
+   "name": "State of play",
+   "line": "What moved across the lanes, what is open, where the console goes."
+  },
+  {
+   "path": "Projects/HQ/lanes.html",
+   "name": "Lanes",
+   "line": "Who is working in the estate right now, and what has landed."
+  },
+  {
+   "path": "Projects/HQ/feed.html",
+   "name": "Feed",
+   "line": "One card per page the estate tracks, with a verdict on each."
+  },
+  {
+   "path": "Projects/HQ/interfaces.html",
+   "name": "Interface map",
+   "line": "Which window of the estate is which, answered in one place."
+  },
+  {
+   "path": "Projects/HQ/system-map.html",
+   "name": "Estate map",
+   "line": "How the estate's pieces relate, drawn once and kept honest."
+  },
+  {
+   "path": "Projects/HQ/model-ladder.html",
+   "name": "Model ladder",
+   "line": "Which model seat does what, standing answer, no asking."
+  },
+  {
+   "path": "Projects/HQ/tips.html",
+   "name": "Tips",
+   "line": "The short answers, kept where the long ones are not."
+  },
+  {
+   "path": "Projects/HQ/sweep.html",
+   "name": "Sweep",
+   "line": "What has been filed, and what is still out in the open."
+  },
+  {
+   "path": "Projects/HQ/ultrawork.html",
+   "name": "Ultrawork",
+   "line": "What the standing directive actually changes."
+  },
+  {
+   "path": "Projects/HQ/harness-scorecard.html",
+   "name": "Harness scorecard",
+   "line": "What you use, and what you never touch."
+  },
+  {
+   "path": "Projects/Publish/root-index.html",
+   "name": "Home page",
+   "line": "Everything the site publishes, starting at the index."
+  }
+ ]
+}
